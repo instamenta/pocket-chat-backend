@@ -1,0 +1,51 @@
+version: '3.8'
+
+networks:
+  pocket-network:
+    driver: bridge
+
+services:
+  sender-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3002:3002"
+    depends_on:
+      - pocket-postgres
+      - pocket-redis
+    networks:
+      - pocket-network
+
+  pocket-postgres:
+    image: postgres:latest
+    container_name: pocket-postgres
+    environment:
+      POSTGRES_USER: "username"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "pocket"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pocket-postgres-data:/var/lib/postgresql/data
+    networks:
+      - pocket-network
+
+  pocket-redis:
+    image: "redis:latest"
+    container_name: pocket-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - pocket-redis-data:/data
+    networks:
+      - pocket-network
+
+volumes:
+  pocket-postgres-data:
+  pocket-redis-data:

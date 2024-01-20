@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(uuid())
+  username         String    @unique
+  email            String    @unique
+  password         String    @unique
+  firstName        String    @unique
+  lastName         String    @unique
+  picture          String    @default("https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("RecievedMessages")
+
+  // replies          MessageReply[]      @relation("RepliedMessages")
+  // groupMembers     GroupMember[]
+  // groupMessage     GroupMessage[]      @relation("SendGroupMessages")
+  // groupReplies     GroupMessageReply[] @relation("RepliedGroupMessages")
+  @@index([id, username, email])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  sender     User     @relation(name: "SentMessages", fields: [senderId], references: [id])
+  senderId   String
+  reciever   User     @relation(name: "RecievedMessages", fields: [recieverId], references: [id])
+  recieverId String
+  content    String
+  createdAt  DateTime @default(now()) @db.Date
+  updatedAt  DateTime @updatedAt @db.Date
+  upvotes    String[]
+  downvotes  String[]
+
+  // replies    MessageReply[]
+  @@index([id, createdAt, senderId, recieverId])
+}
+
+//
+// model Group {
+//   id        String         @id @default(uuid())
+//   name      String
+//   createdAt DateTime       @default(now()) @db.Date
+//   members   GroupMember[]
+//   messages  GroupMessage[]
+// }
+//
+// model GroupMember {
+//   id        String   @id @default(uuid())
+//   user      User     @relation(fields: [userId], references: [id])
+//   userId    String
+//   group     Group    @relation(fields: [groupId], references: [id])
+//   groupId   String
+//   createdAt DateTime @default(now()) @db.Date
+// }
+//
+// model GroupMessage {
+//   id        String              @id @default(uuid())
+//   group     Group               @relation(fields: [groupId], references: [id])
+//   groupId   String
+//   sender    User                @relation(name: "SendGroupMessages", fields: [senderId], references: [id])
+//   senderId  String
+//   content   String
+//   createdAt DateTime            @default(now()) @db.Date
+//   updatedAt DateTime            @updatedAt @db.Date
+//   replies   GroupMessageReply[]
+//   upvotes   String[]
+//   downvotes String[]
+//
+//   @@index([id, createdAt])
+// }
+//
+// model MessageReply {
+//   id        String   @id @default(uuid())
+//   message   Message  @relation(fields: [messageId], references: [id])
+//   messageId String
+//   sender    User     @relation(name: "RepliedMessages", fields: [senderId], references: [id])
+//   senderId  String
+//   content   String
+//   createdAt DateTime @default(now()) @db.Date
+//   updatedAt DateTime @updatedAt @db.Date
+//   upvotes   String[]
+//   downvotes String[]
+//
+//   @@index([id, createdAt])
+// }
+//
+// model GroupMessageReply {
+//   id             String       @id @default(uuid())
+//   groupMessage   GroupMessage @relation(fields: [groupMessageId], references: [id])
+//   groupMessageId String
+//   sender         User         @relation(name: "RepliedGroupMessages", fields: [senderId], references: [id])
+//   senderId       String
+//   content        String
+//   createdAt      DateTime     @default(now()) @db.Date
+//   updatedAt      DateTime     @updatedAt @db.Date
+//   upvotes        String[]
+//   downvotes      String[]
+//
+//   @@index([id, createdAt])
+// }
