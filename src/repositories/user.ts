@@ -4,21 +4,33 @@ import z from 'zod';
 import {v4 as uuid_generate_v4} from 'uuid';
 import {create_user_schema} from "../validators";
 
+type T_getByUsername = {
+	id: string,
+	username: string,
+	password: string,
+	email: string
+}
+
 export default class UserRepository {
 	constructor(private readonly prisma: PrismaClient) {
 	}
 
-	public async getByUsername(username: string): Promise<{
-		id: string,
-		username: string,
-		password: string,
-		email: string
-	} | null> {
-		return this.prisma.$queryRaw`
+	public async getByUsername(username: string): Promise<T_getByUsername | null> {
+		const data = await this.prisma.$queryRaw`
         SELECT id, username, password, email
         FROM "User" u
         WHERE u.username = ${username}
         LIMIT 1
+		` as Array<T_getByUsername>;
+
+		return data.length ? data[0] : null;
+	}
+
+	public async updateLastActiveAtById(id: string) {
+		return this.prisma.$queryRaw`
+        UPDATE "User"
+        SET "lastActiveAt" = NOW()
+        WHERE id = ${id}
 		`;
 	}
 
@@ -30,7 +42,7 @@ export default class UserRepository {
 
 		const userId = uuid_generate_v4()
 
-		return await this.prisma.$executeRaw`
+		return await this.prisma.$queryRaw`
         INSERT INTO "User" ("id",
                             "username",
                             "email",
@@ -38,13 +50,15 @@ export default class UserRepository {
                             "firstName",
                             "lastName",
                             "createdAt",
-                            "updatedAt")
+                            "updatedAt",
+                            "lastActiveAt")
         VALUES (${userId},
                 ${username},
                 ${email},
                 ${hashedPassword},
                 ${firstName},
                 ${lastName},
+                NOW(),
                 NOW(),
                 NOW())`
 			.then((data): any => {

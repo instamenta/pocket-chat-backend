@@ -1,24 +1,34 @@
-import fs from "fs";
-import Certificate from "selfsigned";
 import {env, SECURITY} from "./config";
 import {PrismaClient} from "@prisma/client";
 import Redis from "ioredis";
-import https from "node:https";
+import http from "node:http";
 import express from "express";
 import {Server} from "socket.io";
-import bodyParser from 'body-parser';
+import BODY_PARSER from 'body-parser';
+import CORS from 'cors';
+import MORGAN from 'morgan';
+import COOKIE_PARSER from 'cookie-parser';
+
 
 export default function initialize_all() {
-	initialize_certificates()
+	// initialize_certificates()
+
+	const corsOptions: CORS.CorsOptions = {
+		origin: 'http://localhost:3001',
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		credentials: true,
+		optionsSuccessStatus: 204,
+		allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
+	}
 
 	const api = express();
-	api.use(require('cors')());
-	api.use(bodyParser.json());
+	api.use(CORS(corsOptions));
+	api.use(COOKIE_PARSER());
+	api.use(BODY_PARSER.json());
+	api.use(MORGAN('dev'))
+	api.use(BODY_PARSER.urlencoded({extended: true}));
 
-	const server = https.createServer({
-		key: fs.readFileSync(SECURITY.SERVER_KEY_PATH),
-		cert: fs.readFileSync(SECURITY.SERVER_CERT_PATH),
-	}, api);
+	const server = http.createServer(api);
 
 	const io = new Server(server, {});
 
@@ -35,19 +45,18 @@ export default function initialize_all() {
 	return {io, server, api, prisma, redis}
 }
 
-
-function initialize_certificates(): void {
-	if (!fs.existsSync(SECURITY.FOLDER)) fs.mkdirSync(SECURITY.FOLDER);
-	if (!fs.existsSync(SECURITY.SERVER_KEY_PATH)
-		|| !fs.existsSync(SECURITY.SERVER_CERT_PATH)
-		|| !fs.existsSync(SECURITY.SERVER_CERT_PATH)
-	) {
-		const generated_result = Certificate.generate(
-			[{name: SECURITY.NAME, value: env.SERVER_HOST}],
-			{days: parseInt(SECURITY.AGE)}
-		);
-		fs.writeFileSync(SECURITY.SERVER_KEY_PATH, generated_result.private);
-		fs.writeFileSync(SECURITY.SERVER_CERT_PATH, generated_result.cert);
-		fs.writeFileSync(SECURITY.CLIENT_CERT_PATH, generated_result.public);
-	}
-}
+// function initialize_certificates(): void {
+// 	if (!fs.existsSync(SECURITY.FOLDER)) fs.mkdirSync(SECURITY.FOLDER);
+// 	if (!fs.existsSync(SECURITY.SERVER_KEY_PATH)
+// 		|| !fs.existsSync(SECURITY.SERVER_CERT_PATH)
+// 		|| !fs.existsSync(SECURITY.SERVER_CERT_PATH)
+// 	) {
+// 		const generated_result = Certificate.generate(
+// 			[{name: SECURITY.NAME, value: env.SERVER_HOST}],
+// 			{days: parseInt(SECURITY.AGE)}
+// 		);
+// 		fs.writeFileSync(SECURITY.SERVER_KEY_PATH, generated_result.private);
+// 		fs.writeFileSync(SECURITY.SERVER_CERT_PATH, generated_result.cert);
+// 		fs.writeFileSync(SECURITY.CLIENT_CERT_PATH, generated_result.public);
+// 	}
+// }

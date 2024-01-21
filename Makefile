@@ -1,8 +1,8 @@
 SHELL := /bin/bash
 
-.PHONY: create_cache create_database
+.PHONY: create_cache create_database create_pgadmin
 
-all: create_cache create_database
+all: create_cache create_database create_pgadmin
 
 create_cache:
 	docker run -d \
@@ -18,3 +18,12 @@ create_database:
        -e POSTGRES_DB=pocket \
        -p 5432:5432 \
        postgres:latest
+
+create_pgadmin:
+	docker run -d \
+      --name pgadmin \
+      -e PGADMIN_DEFAULT_EMAIL=admin@admin.com \
+      -e PGADMIN_DEFAULT_PASSWORD=admin \
+      -p 9999:80 \
+      --link pocket-postgres:postgres \
+      -d dpage/pgadmin4

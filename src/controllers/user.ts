@@ -24,6 +24,8 @@ export default class UserController {
 				id: userId
 			});
 
+			console.log(token);
+
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).end();
 		} catch (error) {
 			console.log(error);
@@ -36,7 +38,7 @@ export default class UserController {
 			const {username, password} = login_user_schema.parse(r.body);
 
 			const userData = await this.repository.getByUsername(username);
-
+			
 			if (!userData) return w.status(status_codes.UNAUTHORIZED).end();
 
 			const isMatch = await BCrypt.comparePasswords(userData.password, password);
@@ -49,9 +51,11 @@ export default class UserController {
 				email: userData.email,
 			});
 
-			w.cookie(SECURITY.JWT_TOKEN_NAME, token);
+			w.cookie(SECURITY.JWT_TOKEN_NAME, token)
+				.status(status_codes.OK)
+				.json(userData);
 
-			w.status(status_codes.OK).json(userData);
+			await this.repository.updateLastActiveAtById(userData.id).catch(console.error);
 		} catch (error) {
 			console.error('Login error:', error);
 			w.status(status_codes.BAD_REQUEST).end();

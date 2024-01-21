@@ -11,12 +11,13 @@ model User {
   id               String    @id @default(uuid())
   username         String    @unique
   email            String    @unique
-  password         String    @unique
-  firstName        String    @unique
-  lastName         String    @unique
+  password         String
+  firstName        String
+  lastName         String
   picture          String    @default("https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png")
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  lastActiveAt     DateTime  @default(now())
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("RecievedMessages")
 
