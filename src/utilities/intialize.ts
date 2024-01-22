@@ -1,5 +1,5 @@
 import {env, SECURITY} from "./config";
-import {PrismaClient} from "@prisma/client";
+import {Client} from "pg";
 import Redis from "ioredis";
 import http from "node:http";
 import express from "express";
@@ -10,7 +10,7 @@ import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
 
 
-export default function initialize_all() {
+export default async function initialize_all() {
 	// initialize_certificates()
 
 	const corsOptions: CORS.CorsOptions = {
@@ -36,13 +36,12 @@ export default function initialize_all() {
 	server.on("error", console.error);
 	api.on('error', console.error);
 
-	const prisma = new PrismaClient()
-	const redis = new Redis({
-		host: env.REDIS_HOST || 'localhost',
-		port: parseInt(env.REDIS_PORT || '6379', 10),
-	});
+	const database = new Client({connectionString: env.DATABASE_URL});
+	await database.connect();
 
-	return {io, server, api, prisma, redis}
+	const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
+
+	return {io, server, api, database, cache}
 }
 
 // function initialize_certificates(): void {

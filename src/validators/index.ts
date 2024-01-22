@@ -24,3 +24,7 @@ export const login_user_schema = z.object({
 		.min(8, {message: 'Password must be at least 8 characters'}),
 });
 
+export const send_friend_request_schema = z.object({
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
+})

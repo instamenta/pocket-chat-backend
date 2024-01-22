@@ -5,12 +5,15 @@ import UserRouter from "./routers/user";
 import UserController from "./controllers/user";
 import UserRepository from "./repositories/user";
 import Middlewares from "./middlewares";
+import {Client} from "pg";
+import Redis from "ioredis";
 
-void function start_service() {
+void async function start_service() {
 
-	const {io, server, api, prisma, redis} = initialize_all();
+	const {io, server, api, database, cache} = await initialize_all();
+	await graceful_shutdown(database, cache);
 
-	const userRepository = new UserRepository(prisma);
+	const userRepository = new UserRepository(database);
 	const userController = new UserController(userRepository);
 	const userRouter = new UserRouter(userController).getRouter();
 
@@ -26,5 +29,20 @@ void function start_service() {
 		env.SERVER_HOST,
 		(): void =>
 			console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
-
 }();
+
+async function graceful_shutdown(database: Client, cache: Redis) {
+	['uncaughtException', 'unhandledRejection'].map(type => {
+		process.on(type, async (...args) => {
+			try {
+				console.error(`process.on ${type} with ${args}`, args);
+				await database.end();
+				await cache.disconnect();
+			} catch (error: Error | unknown) {
+				console.error(error)
+			} finally {
+				process.exit(1)
+			}
+		});
+	});
+}

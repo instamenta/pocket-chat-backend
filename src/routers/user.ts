@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import UserController from '../controllers/user';
+import {isAuthorized, isGuest} from "../middlewares";
 
 export default class UserRouter {
 
@@ -12,8 +13,10 @@ export default class UserRouter {
 	}
 
 	private initialize(c: UserController) {
-		this.router.post('/sign-up', c.createUser.bind(c));
-		this.router.post('/sign-in', c.loginUser.bind(c));
+		this.router.post('/sign-up', isGuest, c.createUser.bind(c));
+		this.router.post('/sign-in', isGuest, c.loginUser.bind(c));
+
+		this.router.post('/friend/{id}', isAuthorized, c.sendFriendRequest.bind(c));
 	}
 
 	public getRouter(): Router {
