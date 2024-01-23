@@ -2,7 +2,10 @@ SHELL := /bin/bash
 
 .PHONY: create_cache create_database create_pgadmin
 
-all: create_cache create_database create_pgadmin
+all: create_cache create_database create_pgadmin start
+
+start:
+	docker start pocket-redis pocket-postgres pgadmin
 
 create_cache:
 	docker run -d \

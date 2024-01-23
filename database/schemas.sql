@@ -14,10 +14,7 @@ CREATE TABLE IF NOT EXISTS "users"
     picture                 VARCHAR(255)     DEFAULT 'https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png',
     created_at              TIMESTAMPTZ      DEFAULT NOW(),
     updated_at              TIMESTAMPTZ      DEFAULT NOW(),
-    last_active_at          TIMESTAMPTZ      DEFAULT NOW(),
-    friendships             UUID[] UNIQUE    DEFAULT ARRAY []::UUID[],
-    friend_requests_send    UUID[] UNIQUE    DEFAUlt ARRAY []::UUID[],
-    friend_requests_pending UUID[] UNIQUE    DEFAUlt ARRAY []::UUID[]
+    last_active_at          TIMESTAMPTZ      DEFAULT NOW()
 );
 
 -- Add Indexes to Users table:
