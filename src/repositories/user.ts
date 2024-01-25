@@ -2,6 +2,7 @@ import BCrypt from "../utilities/bcrypt";
 import z from 'zod';
 import {create_user_schema} from "../validators";
 import {Client} from 'pg';
+import {I_UserSchema} from "../types/user";
 
 type T_getByUsername = {
 	id: string,
@@ -14,6 +15,27 @@ export default class UserRepository {
 	constructor(private readonly database: Client) {
 	}
 
+	public async listUsers(skip: number = 0, limit: number = 0) {
+		return this.database.query<Omit<I_UserSchema, 'updated_at'>>(`
+        SELECT id,
+               username,
+               email,
+               password,
+               first_name,
+               last_name,
+               picture,
+               created_at,
+               last_active_at
+        FROM users
+        OFFSET $1 LIMIT $2
+		`, [skip, limit])
+			.then(data => data.rows)
+			.catch((error) => {
+				console.error(`${this.constructor.name}.listUsers(): Error`, error);
+				return null;
+			})
+	}
+
 	public async getByUsername(username: string): Promise<T_getByUsername | null> {
 		return this.database.query<T_getByUsername>(`
         SELECT id, username, password, email
@@ -23,7 +45,7 @@ export default class UserRepository {
 		`, [username])
 			.then((data) => data.rows.length ? data.rows[0] : null)
 			.catch((error) => {
-				console.error(`${this.constructor.name}.getByUsername(): Error`, error)
+				console.error(`${this.constructor.name}.getByUsername(): Error`, error);
 				return null;
 			});
 	}
@@ -68,4 +90,54 @@ export default class UserRepository {
 				return null
 			});
 	}
+
+	public async deleteFriendRequest(sender: string, recipient: string) {
+		return this.database.query(`
+        DELETE
+        FROM friendships
+        WHERE sender_id = $1
+          AND recipient_id = $2
+		`, [sender, recipient])
+			.then((data) => data.rowCount)
+			.catch((error) => {
+				console.error(`${this.constructor.name}.sendFriendRequest(): Error`, error);
+				return null
+			});
+	}
+
+	public async listFriendRequests(id: string) {
+		return this.database.query<T_FriendRequestData[]>(`
+                SELECT u.id,
+                       u.first_name,
+                       u.last_name,
+                       u.picture,
+                       u.username,
+                       f.created_at AS request_date,
+                       CASE
+                           WHEN f.sender_id = $1 THEN 'sent'
+                           WHEN f.recipient_id = $1 THEN 'received'
+                           END
+                                    AS request_type
+                FROM friendships f
+                         JOIN users u ON (f.sender_id = u.id AND f.recipient_id = $1)
+                    OR (f.recipient_id = u.id AND f.sender_id = $1);
+			`, [id]
+		)
+			.then((data) => data.rows)
+			.catch((error) => {
+				console.error(`${this.constructor.name}.sendFriendRequest(): Error`, error);
+				return null
+			});
+	}
+
+}
+
+type T_FriendRequestData = {
+	id: string,
+	first_name: string,
+	last_name: string,
+	picture: string,
+	username: string,
+	request_date: string,
+	request_type: 'sent' | 'received'
 }
