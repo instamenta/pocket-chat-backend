@@ -1,17 +1,27 @@
 import {NextFunction as Next, Request, Response} from 'express';
 import JWT from '../utilities/jwt';
 import status_codes from "@instamenta/http-status-codes";
+import {TokenExpiredError} from "jsonwebtoken";
 
 export function isGuest(r: Request, w: Response, next: Next) {
 	const token = JWT.getTokenFromCookie(r);
 
 	if (token) {
-		const user = JWT.verifyToken(token);
+		try {
+			const user = JWT.verifyToken(token)
 
-		if (user) {
-			console.log('Middleware.isGuest(): FORBIDDEN', user);
+			if (user) {
+				console.log('Middleware.isGuest(): FORBIDDEN', user);
 
-			return w.status(status_codes.FORBIDDEN).json({message: 'User is already authenticated'});
+				return w.status(status_codes.FORBIDDEN).json({message: 'User is already authenticated'});
+			}
+		} catch (error: Error | TokenExpiredError | unknown) {
+			if (error instanceof TokenExpiredError) {
+				console.log('Middleware.isGuest(): Token expired');
+				JWT.removeTokenFromCookie(w);
+			}
+
+			return w.status(status_codes.EXPECTATION_FAILED).end();
 		}
 	}
 	next();

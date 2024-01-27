@@ -41,6 +41,17 @@ class JWT {
 		(req as any).user = user;
 		next();
 	}
+
+	static removeTokenFromCookie(res: Response): void {
+		res.setHeader(
+			'Set-Cookie',
+			[
+				'X-Authorization-Token=;'
+				+ 'Expires=Thu, 01 Jan 1970 00:00:00 GMT;'
+				+ 'HttpOnly; Path=/;',
+			]
+		);
+	}
 }
 
 export default JWT;

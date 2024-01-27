@@ -32,6 +32,16 @@ export const send_friend_request_schema = z.object({
 export const delete_friend_request_schema = z.object({
 	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
 	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
+});
+
+export const accept_friend_request_schema = z.object({
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
 })
 
 export const uuid_schema = z.string().uuid({message: 'Must be a valid UUID'});
+
+export const name_schema = z.string()
+	.min(3, {message: 'Username must be at least 3 characters'})
+	.max(32, {message: 'Username cannot exceed 32 characters'})
+;

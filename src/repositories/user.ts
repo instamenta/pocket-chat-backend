@@ -105,6 +105,63 @@ export default class UserRepository {
 			});
 	}
 
+	public async getUserById(id: string) {
+		return this.database.query<I_UserSchema>(`
+        SELECT *
+        FROM users
+        WHERE id = $1
+		`, [id])
+			.then((data) => data.rowCount ? data.rows[0] : null)
+			.catch((error) => {
+				throw new Error(`${this.constructor.name}.getUserById(): Error`, {cause: error})
+			});
+	}
+
+	public async getUserByUsername(username: string) {
+		return this.database.query<I_UserSchema>(`
+        SELECT *
+        FROM users
+        WHERE username = $1
+		`, [username])
+			.then((data) => data.rowCount ? data.rows[0] : null)
+			.catch((error) => {
+				throw new Error(`${this.constructor.name}.getUserByUsername(): Error`, {cause: error})
+			});
+	}
+
+	public async listFriendRecommendations(id: string) {
+		return this.database.query<{ id: string, first_name: string, picture: string, username: string }>(`
+        SELECT u.id, u.first_name, u.last_name, u.picture, u.username
+        FROM users u
+                 LEFT JOIN friendships f_sender
+                           ON u.id = f_sender.sender_id
+                               AND f_sender.recipient_id = $1
+                 LEFT JOIN friendships f_recipient
+                           ON u.id = f_recipient.recipient_id
+                               AND f_recipient.sender_id = $1
+        WHERE f_sender.id IS NULL
+          AND f_recipient.id IS NULL;
+		`, [id])
+			.then((data) => data.rows)
+			.catch((error) => {
+				console.error(`${this.constructor.name}.listFriendRecommendations(): Error`, error);
+				return null
+			});
+	}
+
+	public async acceptFriendRequest(sender: string, recipient: string) {
+		return this.database.query(`
+        UPDATE friendships
+        SET friendship_status = 'accepted'
+        WHERE sender_id = $2
+          AND recipient_id = $1;
+		`, [sender, recipient])
+			.then((data) => !!data.rowCount)
+			.catch((error) => {
+				throw new Error(`${this.constructor.name}.acceptFriendRequest(): Error`, {cause: error})
+			});
+	}
+
 	public async listFriendRequests(id: string) {
 		return this.database.query<T_FriendRequestData[]>(`
                 SELECT u.id,
@@ -114,8 +171,12 @@ export default class UserRepository {
                        u.username,
                        f.created_at AS request_date,
                        CASE
-                           WHEN f.sender_id = $1 THEN 'sent'
-                           WHEN f.recipient_id = $1 THEN 'received'
+                           WHEN f.sender_id = $1
+                               AND friendship_status != 'accepted'
+                               THEN 'sent'
+                           WHEN f.recipient_id = $1
+                               AND friendship_status != 'accepted'
+                               THEN 'received'
                            END
                                     AS request_type
                 FROM friendships f
