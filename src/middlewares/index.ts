@@ -9,7 +9,6 @@ export function isGuest(r: Request, w: Response, next: Next) {
 	if (token) {
 		try {
 			const user = JWT.verifyToken(token)
-
 			if (user) {
 				console.log('Middleware.isGuest(): FORBIDDEN', user);
 

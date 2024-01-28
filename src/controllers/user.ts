@@ -32,7 +32,7 @@ export default class UserController {
 		}
 	}
 
-	public async signUp(r: Request<{}, z.infer<typeof create_user_schema>>, w: Response) {
+	public async signUp(r: Request<{}, z.infer<typeof create_user_schema>>, w: Response<{ token: string, id: string }>) {
 		try {
 			const userData = create_user_schema.parse(r.body);
 
@@ -48,13 +48,13 @@ export default class UserController {
 				id: userId
 			});
 
-			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).end();
+			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userId});
 		} catch (error) {
 			controllerErrorHandler(error, w)
 		}
 	}
 
-	public async signIn(r: Request<{ username: string, password: string }>, w: Response<{ token: string }>) {
+	public async signIn(r: Request<{ username: string, password: string }>, w: Response<{ token: string, id: string }>) {
 		try {
 			const {username, password} = login_user_schema.parse(r.body);
 
@@ -72,14 +72,28 @@ export default class UserController {
 
 			const token = JWT.signToken({id: userData.id, email: userData.email, username});
 
-			console.log(token);
-
-			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token});
+			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userData.id});
 
 			await this.repository.updateLastActiveAtById(userData.id)
 				.catch(console.error);
 		} catch (error) {
 			controllerErrorHandler(error, w)
+		}
+	}
+
+	public async authUser(r: Request, w: Response<I_UserSchema>) {
+		try {
+			const id = uuid_schema.parse(r.user.id);
+
+			const user = await this.repository.getUserById(id);
+			if (!user) {
+				console.log(`${this.constructor.name}.authUser(): User not found`);
+				return w.status(status_codes.NOT_FOUND).end();
+			}
+
+			w.status(status_codes.OK).json(user);
+		} catch (error) {
+			controllerErrorHandler(error, w);
 		}
 	}
 

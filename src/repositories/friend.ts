@@ -66,7 +66,8 @@ export default class FriendRepository {
                            ON u.id = f_recipient.recipient_id
                                AND f_recipient.sender_id = $1
         WHERE f_sender.id IS NULL
-          AND f_recipient.id IS NULL;
+          AND f_recipient.id IS NULL
+          AND u.id != $1;
 		`, [id])
 			.then((data) => data.rows)
 			.catch((error) => {
@@ -131,16 +132,16 @@ export default class FriendRepository {
 
 	public async listFriendRequestsOnly(id: string) {
 		return this.database.query<T_FriendRequestData[]>(`
-                SELECT u.id,
-                       u.first_name,
-                       u.last_name,
-                       u.picture,
-                       u.username,
-                       f.created_at AS request_date
-                FROM friendships f
-                         JOIN users u ON f.recipient_id = u.id
-                WHERE f.sender_id = $1
-                  AND friendship_status != 'accepted';
+        SELECT u.id,
+               u.first_name,
+               u.last_name,
+               u.picture,
+               u.username,
+               f.created_at AS request_date
+        FROM friendships f
+                 JOIN users u ON f.sender_id = u.id
+        WHERE f.recipient_id = $1
+          AND friendship_status != 'accepted';
 			`, [id]
 		)
 			.then((data) => data.rows)
@@ -157,8 +158,8 @@ export default class FriendRepository {
                        u.username,
                        f.created_at AS request_date
                 FROM friendships f
-                         JOIN users u ON f.sender_id = u.id
-                WHERE f.recipient_id = $1
+                         JOIN users u ON f.recipient_id = u.id
+                WHERE f.sender_id = $1
                   AND friendship_status != 'accepted';
 			`, [id]
 		)
