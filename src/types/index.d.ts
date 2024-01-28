@@ -14,14 +14,3 @@ declare global {
 		}
 	}
 }
-
-declare global {
-	namespace Express {
-		interface Request {
-			user?: UserPayload;
-			cookies: {
-				[key: string]: string;
-			};
-		}
-	}
-}

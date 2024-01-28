@@ -7,6 +7,9 @@ import UserRepository from "./repositories/user";
 import Middlewares from "./middlewares";
 import {Client} from "pg";
 import Redis from "ioredis";
+import FriendRepository from "./repositories/friend";
+import FriendController from "./controllers/friend";
+import FriendRouter from "./routers/friend";
 
 void async function start_service() {
 
@@ -17,7 +20,12 @@ void async function start_service() {
 	const userController = new UserController(userRepository);
 	const userRouter = new UserRouter(userController).getRouter();
 
+	const friendRepository = new FriendRepository(database);
+	const friendController = new FriendController(friendRepository);
+	const friendRouter = new FriendRouter(friendController).getRouter();
+
 	api.use('/api/user', userRouter);
+	api.use('/api/friend', friendRouter);
 	api.use(Middlewares.errorHandler);
 
 	io.on("connection", (socket) => {

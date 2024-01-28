@@ -1,14 +1,6 @@
 import UserRepository from "../repositories/user";
 import {Request, Response} from "express";
-import {
-	accept_friend_request_schema,
-	create_user_schema,
-	delete_friend_request_schema,
-	login_user_schema,
-	name_schema,
-	send_friend_request_schema,
-	uuid_schema
-} from "../validators";
+import {create_user_schema, login_user_schema, name_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import JWT from "../utilities/jwt";
 import {SECURITY} from "../utilities/config";
@@ -40,7 +32,7 @@ export default class UserController {
 		}
 	}
 
-	public async signUp(r: Request<z.infer<typeof create_user_schema>>, w: Response<void>) {
+	public async signUp(r: Request<{}, z.infer<typeof create_user_schema>>, w: Response) {
 		try {
 			const userData = create_user_schema.parse(r.body);
 
@@ -88,88 +80,6 @@ export default class UserController {
 				.catch(console.error);
 		} catch (error) {
 			controllerErrorHandler(error, w)
-		}
-	}
-
-	public async sendFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: string }>) {
-		try {
-			const {sender, recipient} = send_friend_request_schema.parse({sender: r.user.id, recipient: r.params.id})
-
-			const status = await this.repository.sendFriendRequest(sender, recipient);
-
-			if (!status) {
-				console.log(`${this.constructor.name}.sendFriendRequest(): Failed to send friend request`);
-				return w.status(status_codes.BAD_GATEWAY).end();
-			}
-
-			w.status(status_codes.OK).json({friendship_id: status});
-		} catch (error) {
-			controllerErrorHandler(error, w);
-		}
-	}
-
-	public async listFriendRequests(r: Request, w: Response) {
-		try {
-			const id = uuid_schema.parse(r.user.id);
-
-			const friendRequests = await this.repository.listFriendRequests(id);
-			if (!friendRequests) {
-				console.log(`${this.constructor.name}.listFriendRequests(): Failed to get friend request`);
-				return w.status(status_codes.BAD_GATEWAY).end();
-			}
-
-			w.status(status_codes.OK).json(friendRequests);
-		} catch (error) {
-			controllerErrorHandler(error, w);
-		}
-	}
-
-	public async listFriendRecommendations(r: Request, w: Response) {
-		try {
-			const id = uuid_schema.parse(r.user.id);
-
-			const recommendations = await this.repository.listFriendRecommendations(id);
-			if (!recommendations) {
-				console.log(`${this.constructor.name}.listFriendRecommendations(): Failed to get friend request`);
-				return w.status(status_codes.BAD_GATEWAY).end();
-			}
-
-			w.status(status_codes.OK).json(recommendations);
-		} catch (error) {
-			controllerErrorHandler(error, w);
-		}
-	}
-
-	public async acceptFriendRequest(r: Request<{ id: string }>, w: Response) {
-		try {
-			const {sender, recipient} = accept_friend_request_schema.parse({sender: r.user.id, recipient: r.params.id})
-
-			const status = await this.repository.acceptFriendRequest(sender, recipient);
-			if (!status) {
-				console.log(`${this.constructor.name}.deleteFriendRequest(): Failed to delete friend request`);
-				return w.status(status_codes.BAD_GATEWAY).end();
-			}
-
-			w.status(status_codes.OK).json({friendship_id: status});
-		} catch (error) {
-			controllerErrorHandler(error, w);
-		}
-	}
-
-	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response) {
-		try {
-			const {sender, recipient} = delete_friend_request_schema.parse({sender: r.user.id, recipient: r.params.id})
-
-			const status = await this.repository.deleteFriendRequest(sender, recipient);
-
-			if (!status) {
-				console.log(`${this.constructor.name}.deleteFriendRequest(): Failed to delete friend request`);
-				return w.status(status_codes.BAD_GATEWAY).end();
-			}
-
-			w.status(status_codes.OK).json({friendship_id: status});
-		} catch (error) {
-			controllerErrorHandler(error, w);
 		}
 	}
 
