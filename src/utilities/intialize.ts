@@ -3,45 +3,44 @@ import {Client} from "pg";
 import Redis from "ioredis";
 import http from "node:http";
 import express from "express";
-import {Server} from "socket.io";
 import BODY_PARSER from 'body-parser';
 import CORS from 'cors';
 import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
-
+import {WebSocketServer} from 'ws';
 
 export default async function initialize_all() {
-	// initialize_certificates()
+    // initialize_certificates()
 
-	const corsOptions: CORS.CorsOptions = {
-		origin: 'http://localhost:3001',
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-		credentials: true,
-		optionsSuccessStatus: 204,
-		allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
-	}
+    const corsOptions: CORS.CorsOptions = {
+        origin: 'http://localhost:3001',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+        optionsSuccessStatus: 204,
+        allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
+    }
 
-	const api = express();
-	api.use(CORS(corsOptions));
-	api.use(COOKIE_PARSER());
-	api.use(BODY_PARSER.json());
-	api.use(MORGAN('dev'))
-	api.use(BODY_PARSER.urlencoded({extended: true}));
+    const api = express();
+    api.use(CORS(corsOptions));
+    api.use(COOKIE_PARSER());
+    api.use(BODY_PARSER.json());
+    api.use(MORGAN('dev'))
+    api.use(BODY_PARSER.urlencoded({extended: true}));
 
-	const server = http.createServer(api);
+    const server = http.createServer();
 
-	const io = new Server(server, {});
+    const socket = new WebSocketServer({server});
 
-	io.engine.on("connection_error", console.error);
-	server.on("error", console.error);
-	api.on('error', console.error);
+    server.on("error", console.error);
 
-	const database = new Client({connectionString: env.DATABASE_URL});
-	await database.connect();
+    api.on('error', console.error);
 
-	const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
+    const database = new Client({connectionString: env.DATABASE_URL});
+    await database.connect();
 
-	return {io, server, api, database, cache}
+    const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
+
+    return {server, api, database, cache, socket};
 }
 
 // function initialize_certificates(): void {

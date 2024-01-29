@@ -10,47 +10,50 @@ import Redis from "ioredis";
 import FriendRepository from "./repositories/friend";
 import FriendController from "./controllers/friend";
 import FriendRouter from "./routers/friend";
+import SocketController from "./socket";
 
 void async function start_service() {
 
-	const {io, server, api, database, cache} = await initialize_all();
-	await graceful_shutdown(database, cache);
+    const {server, api, database, cache, socket} = await initialize_all();
+    await graceful_shutdown(database, cache);
 
-	const userRepository = new UserRepository(database);
-	const userController = new UserController(userRepository);
-	const userRouter = new UserRouter(userController).getRouter();
+    const userRepository = new UserRepository(database);
+    const userController = new UserController(userRepository);
+    const userRouter = new UserRouter(userController).getRouter();
 
-	const friendRepository = new FriendRepository(database);
-	const friendController = new FriendController(friendRepository);
-	const friendRouter = new FriendRouter(friendController).getRouter();
+    const friendRepository = new FriendRepository(database);
+    const friendController = new FriendController(friendRepository);
+    const friendRouter = new FriendRouter(friendController).getRouter();
 
-	api.use('/api/user', userRouter);
-	api.use('/api/friend', friendRouter);
-	api.use(Middlewares.errorHandler);
+    api.use('/api/user', userRouter);
+    api.use('/api/friend', friendRouter);
+    api.use(Middlewares.errorHandler);
 
-	io.on("connection", (socket) => {
-		console.log("Socket connected:", socket.id);
-	});
+    api.listen(
+        parseInt(env.SERVER_PORT),
+        env.SERVER_HOST,
+        (): void =>
+            console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
 
-	server.listen(
-		parseInt(env.SERVER_PORT),
-		env.SERVER_HOST,
-		(): void =>
-			console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
+    server.listen(env.SOCKET_PORT, () => {
+        console.log(`WebSocket is running on ws://${env.SERVER_HOST}:${env.SOCKET_PORT}`);
+    })
+
+    new SocketController(socket);
 }();
 
 async function graceful_shutdown(database: Client, cache: Redis) {
-	['uncaughtException', 'unhandledRejection'].map(type => {
-		process.on(type, async (...args) => {
-			try {
-				console.error(`process.on ${type} with ${args}`, args);
-				await database.end();
-				await cache.disconnect();
-			} catch (error: Error | unknown) {
-				console.error(error)
-			} finally {
-				process.exit(1)
-			}
-		});
-	});
+    ['uncaughtException', 'unhandledRejection'].map(type => {
+        process.on(type, async (...args) => {
+            try {
+                console.error(`process.on ${type} with ${args}`, args);
+                await database.end();
+                cache.disconnect();
+            } catch (error: Error | unknown) {
+                console.error(error)
+            } finally {
+                process.exit(1)
+            }
+        });
+    });
 }
