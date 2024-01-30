@@ -45,6 +45,7 @@ export default class UserController {
 			const token = JWT.signToken({
 				username: userData.username,
 				email: userData.email,
+				picture: 'https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png',
 				id: userId
 			});
 
@@ -70,7 +71,7 @@ export default class UserController {
 				return w.status(status_codes.UNAUTHORIZED).end();
 			}
 
-			const token = JWT.signToken({id: userData.id, email: userData.email, username});
+			const token = JWT.signToken({id: userData.id, email: userData.email, username, picture: userData.picture});
 
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userData.id});
 

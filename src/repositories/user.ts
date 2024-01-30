@@ -8,7 +8,8 @@ type T_getByUsername = {
 	id: string,
 	username: string,
 	password: string,
-	email: string
+	email: string,
+	picture: string,
 }
 
 export default class UserRepository {
@@ -38,7 +39,7 @@ export default class UserRepository {
 
 	public async getByUsername(username: string): Promise<T_getByUsername | null> {
 		return this.database.query<T_getByUsername>(`
-        SELECT id, username, password, email
+        SELECT id, username, password, email, username
         FROM users u
         WHERE u.username = $1
         LIMIT 1;

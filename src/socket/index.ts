@@ -1,67 +1,73 @@
-import {WebSocket, WebSocketServer, RawData} from "ws";
+import {RawData, WebSocket, WebSocketServer} from "ws";
 import {env} from "../utilities/config";
 import url from "node:url";
 import {v4 as uuid} from "uuid";
 import {IncomingMessage} from "node:http";
+import JWT from "../utilities/jwt";
 
 export default class SocketController {
 
-    connections: Map<string, WebSocket>;
-    users: Map<string, { username: string, state: object }>;
+	connections: Map<string, WebSocket>;
+	users: Map<string, { username: string, state: object }>;
 
-    constructor(private readonly socket: WebSocketServer) {
-        this.connections = new Map()
-        this.users = new Map()
-        this.start();
-    }
+	constructor(private readonly socket: WebSocketServer) {
+		this.connections = new Map()
+		this.users = new Map()
+		this.start();
+	}
 
-    start() {
-        this.socket.on('connection', (connection, request) => this.handleConnection(connection, request));
-    }
+	start() {
+		this.socket.on('connection', this.handleConnection);
+	}
 
-    handleConnection = (connection: WebSocket, request: IncomingMessage) => {
-        console.log(`Socket is running on ws://${env.SERVER_HOST}:${env.SERVER_PORT}`)
+	handleConnection = (connection: WebSocket, request: IncomingMessage) => {
+		console.log(`Socket is running on ws://${env.SERVER_HOST}:${env.SERVER_PORT}`)
 
-        // @ts-ignore
-        const {query: {username}} = url.parse(request.url, true)
-        if (!username) return console.log('No username')
-        const id = uuid();
+		// @ts-ignore
+		const {query: {username}} = url.parse(request.url, true)
 
-        console.log(username);
+		const user = JWT.getUser(request.headers.cookie ?? '');
 
-        this.connections.set(id, connection);
 
-        this.users.set(id, {
-            username: username.toString(),
-            state: {x: 0, y: 0,}
-        });
+		if (!username) return console.log('No username')
 
-        connection.on('close', (code, reason) => this.handleClose(code, reason, id))
-        connection.on('message', (message) => this.handleMessage(message, id))
-    }
+		const id = uuid();
 
-    handleMessage(bytes: RawData, id: string) {
-        const message: { username: string; state: object; } = JSON.parse(bytes.toString());
-        this.users.set(id, message);
-        this.handleBroadcast();
-        console.log(message);
-    }
+		console.log(username);
 
-    handleBroadcast() {
-        Object.keys(this.connections).forEach((id) => {
-            const connection = this.connections.get(id);
-            if (!connection) return;
+		this.connections.set(id, connection);
 
-            const message = JSON.stringify(this.users);
+		this.users.set(id, {
+			username: username.toString(),
+			state: {x: 0, y: 0,}
+		});
 
-            connection.send(message);
-        })
-    }
+		connection.on('close', (code, reason) => this.handleClose(code, reason, id))
+		connection.on('message', (message) => this.handleMessage(message, id))
+	}
 
-    handleClose(code: number, reason: Buffer, id: string) {
-        console.error(`Exiting with number (${code}) for reason`, reason.toString())
+	handleMessage(bytes: RawData, id: string) {
+		const message: { username: string; state: object; } = JSON.parse(bytes.toString());
+		this.users.set(id, message);
+		this.handleBroadcast();
+		console.log(message);
+	}
 
-        this.connections.delete(id);
-        this.connections.delete(id);
-    }
+	handleBroadcast() {
+		Object.keys(this.connections).forEach((id) => {
+			const connection = this.connections.get(id);
+			if (!connection) return;
+
+			const message = JSON.stringify(this.users);
+
+			connection.send(message);
+		})
+	}
+
+	handleClose(code: number, reason: Buffer, id: string) {
+		console.error(`Exiting with number (${code}) for reason`, reason.toString())
+
+		this.connections.delete(id);
+		this.connections.delete(id);
+	}
 }
