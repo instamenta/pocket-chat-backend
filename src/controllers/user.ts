@@ -84,7 +84,10 @@ export default class UserController {
 
 	public async authUser(r: Request, w: Response<I_UserSchema>) {
 		try {
+			console.log(r.user);
 			const id = uuid_schema.parse(r.user.id);
+
+			console.log(id);
 
 			const user = await this.repository.getUserById(id);
 			if (!user) {

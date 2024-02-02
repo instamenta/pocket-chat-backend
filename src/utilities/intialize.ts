@@ -10,37 +10,37 @@ import COOKIE_PARSER from 'cookie-parser';
 import {WebSocketServer} from 'ws';
 
 export default async function initialize_all() {
-    // initialize_certificates()
+	// initialize_certificates()
 
-    const corsOptions: CORS.CorsOptions = {
-        origin: ['http://localhost:3001', 'http://localhost:3000'],
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
-        optionsSuccessStatus: 204,
-        allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
-    }
+	const corsOptions: CORS.CorsOptions = {
+		origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:5173'],
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		credentials: true,
+		optionsSuccessStatus: 204,
+		allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
+	}
 
-    const api = express();
-    api.use(CORS(corsOptions));
-    api.use(COOKIE_PARSER());
-    api.use(BODY_PARSER.json());
-    api.use(MORGAN('dev'))
-    api.use(BODY_PARSER.urlencoded({extended: true}));
+	const api = express();
+	api.use(CORS(corsOptions));
+	api.use(COOKIE_PARSER());
+	api.use(BODY_PARSER.json());
+	api.use(MORGAN('dev'))
+	api.use(BODY_PARSER.urlencoded({extended: true}));
 
-    const server = http.createServer();
+	const server = http.createServer();
 
-    const socket = new WebSocketServer({server});
+	const socket = new WebSocketServer({server});
 
-    server.on("error", console.error);
+	server.on("error", console.error);
 
-    api.on('error', console.error);
+	api.on('error', console.error);
 
-    const database = new Client({connectionString: env.DATABASE_URL});
-    await database.connect();
+	const database = new Client({connectionString: env.DATABASE_URL});
+	await database.connect();
 
-    const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
+	const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
 
-    return {server, api, database, cache, socket};
+	return {server, api, database, cache, socket};
 }
 
 // function initialize_certificates(): void {

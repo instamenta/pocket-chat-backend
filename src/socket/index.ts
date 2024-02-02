@@ -1,14 +1,13 @@
 import {RawData, WebSocket, WebSocketServer} from "ws";
-import {env} from "../utilities/config";
-import url from "node:url";
-import {v4 as uuid} from "uuid";
+import {env, SECURITY} from "../utilities/config";
 import {IncomingMessage} from "node:http";
 import JWT from "../utilities/jwt";
+import * as Cookies from 'cookie';
 
 export default class SocketController {
 
 	connections: Map<string, WebSocket>;
-	users: Map<string, { username: string, state: object }>;
+	users: Map<string, { username: string }>;
 
 	constructor(private readonly socket: WebSocketServer) {
 		this.connections = new Map()
@@ -23,23 +22,16 @@ export default class SocketController {
 	handleConnection = (connection: WebSocket, request: IncomingMessage) => {
 		console.log(`Socket is running on ws://${env.SERVER_HOST}:${env.SERVER_PORT}`)
 
-		// @ts-ignore
-		const {query: {username}} = url.parse(request.url, true)
+		const user = JWT.getUser(
+			Cookies.parse(request.headers.cookie ?? '')[SECURITY.JWT_TOKEN_NAME] ?? ''
+		);
 
-		const user = JWT.getUser(request.headers.cookie ?? '');
+		if (!user) return connection.close();
 
+		this.connections.set(user.id, connection);
 
-		if (!username) return console.log('No username')
-
-		const id = uuid();
-
-		console.log(username);
-
-		this.connections.set(id, connection);
-
-		this.users.set(id, {
-			username: username.toString(),
-			state: {x: 0, y: 0,}
+		this.users.set(user.id, {
+			username: user.username,
 		});
 
 		connection.on('close', (code, reason) => this.handleClose(code, reason, id))
