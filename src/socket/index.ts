@@ -57,14 +57,8 @@ export default class SocketController {
 				content: r.content,
 				friendship: friendship.id
 			});
-
 			if (!messageId) {
 				return console.error("Failed to save message to the database");
-			}
-
-			const connection = this.connections.get(r.recipient);
-			if (!connection) {
-				return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
 			}
 
 			const response = Buffer.from(JSON.stringify({
@@ -72,15 +66,19 @@ export default class SocketController {
 				created_at: r.date,
 				updated_at: r.date,
 				content: r.content,
-
 				sender_id: r.sender,
 				message_id: messageId,
 				recipient_id: r.recipient,
 				friendship_id: friendship.id,
 			}));
 
-			connection.send(response);
 			host.send(response);
+
+			const connection = this.connections.get(r.recipient);
+			if (!connection) {
+				return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
+			}
+			connection.send(response);
 		} catch (error) {
 			console.error(`Error handling message from senderId: ${id}`, error);
 		}
