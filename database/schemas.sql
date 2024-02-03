@@ -48,15 +48,17 @@ CREATE TYPE message_status AS ENUM ('seen', 'sent', 'pending');
 CREATE TABLE IF NOT EXISTS "messages"
 (
     id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    content        varchar(255),
+    content        TEXT,
     message_status message_status   DEFAULT 'pending',
     updated_at     TIMESTAMPTZ      DEFAULT NOW(),
     created_at     TIMESTAMPTZ      DEFAULT NOW(),
     edited         BOOL             DEFAULT false,
     sender_id      UUID,
     recipient_id   UUID,
+    friendship_id  UUID,
     FOREIGN KEY (sender_id) REFERENCES "users" (id),
-    FOREIGN KEY (recipient_id) REFERENCES "users" (id)
+    FOREIGN KEY (recipient_id) REFERENCES "users" (id),
+    FOREIGN KEY (friendship_id) REFERENCES "friendships" (id)
 );
 
 -- Add Indexes to Messages table:

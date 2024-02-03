@@ -1,5 +1,6 @@
 import {Client} from 'pg';
 import {I_UserSchema} from "../types/user";
+import {I_Friendship} from "../types";
 
 type T_FriendRequestData = {
 	id: string,
@@ -15,96 +16,105 @@ export default class FriendRepository {
 	constructor(private readonly database: Client) {
 	}
 
-	public async sendFriendRequest(sender: string, recipient: string) {
+	private errorHandler(error: unknown | Error, method: string): never {
+		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
+	}
+
+	public sendFriendRequest(sender: string, recipient: string) {
 		return this.database.query<{ id: string }>(`
-        INSERT INTO friendships (sender_id, recipient_id)
-        VALUES ($1, $2)
-        RETURNING id;
-		`, [sender, recipient])
-			.then((data) => data.rows[0].id)
-			.catch((error) => {
-				console.error(`${this.constructor.name}.sendFriendRequest(): Error`, error);
-				return null
-			});
+
+                INSERT INTO friendships (sender_id, recipient_id)
+                VALUES ($1, $2)
+                RETURNING id;
+			`,
+			[sender, recipient]
+		).then((data) => data.rows[0].id)
+
+			.catch(e => this.errorHandler(e, 'sendFriendRequest'));
+
 	}
 
-	public async deleteFriendRequest(sender: string, recipient: string) {
+	public deleteFriendRequest(sender: string, recipient: string) {
 		return this.database.query(`
-        DELETE
-        FROM friendships
-        WHERE sender_id = $1
-          AND recipient_id = $2
-		`, [sender, recipient])
-			.then((data) => !!data.rowCount)
-			.catch((error) => {
-				console.error(`${this.constructor.name}.sendFriendRequest(): Error`, error);
-				return null
-			});
+
+                DELETE
+                FROM friendships
+                WHERE sender_id = $1
+                  AND recipient_id = $2
+			`,
+			[sender, recipient]
+		).then((data) => !!data.rowCount)
+
+			.catch(e => this.errorHandler(e, 'deleteFriendRequest'));
 	}
 
-	public async declineFriendRequest(sender: string, recipient: string) {
+	public declineFriendRequest(sender: string, recipient: string) {
 		return this.database.query(`
-        DELETE
-        FROM friendships
-        WHERE sender_id = $2
-          AND recipient_id = $1;
-		`, [sender, recipient])
-			.then((data) => !!data.rowCount)
-			.catch((error) => {
-				throw new Error(`${this.constructor.name}.declineFriendRequest(): Error`, {cause: error})
-			});
+
+                DELETE
+                FROM friendships
+                WHERE sender_id = $2
+                  AND recipient_id = $1;
+			`,
+			[sender, recipient]
+		).then((data) => !!data.rowCount)
+
+			.catch(e => this.errorHandler(e, 'declineFriendRequest'));
 	}
 
-	public async listFriendRecommendations(id: string) {
+	public listFriendRecommendations(id: string) {
 		return this.database.query<{ id: string, first_name: string, picture: string, username: string }>(`
-        SELECT u.id, u.first_name, u.last_name, u.picture, u.username
-        FROM users u
-                 LEFT JOIN friendships f_sender
-                           ON u.id = f_sender.sender_id
-                               AND f_sender.recipient_id = $1
-                 LEFT JOIN friendships f_recipient
-                           ON u.id = f_recipient.recipient_id
-                               AND f_recipient.sender_id = $1
-        WHERE f_sender.id IS NULL
-          AND f_recipient.id IS NULL
-          AND u.id != $1;
-		`, [id])
-			.then((data) => data.rows)
-			.catch((error) => {
-				console.error(`${this.constructor.name}.listFriendRecommendations(): Error`, error);
-				return null
-			});
+
+                SELECT u.id, u.first_name, u.last_name, u.picture, u.username
+                FROM users u
+                         LEFT JOIN friendships f_sender
+                                   ON u.id = f_sender.sender_id
+                                       AND f_sender.recipient_id = $1
+                         LEFT JOIN friendships f_recipient
+                                   ON u.id = f_recipient.recipient_id
+                                       AND f_recipient.sender_id = $1
+                WHERE f_sender.id IS NULL
+                  AND f_recipient.id IS NULL
+                  AND u.id != $1;
+			`,
+			[id]
+		).then((data) => data.rows)
+
+			.catch(e => this.errorHandler(e, 'listFriendRecommendations'));
 	}
 
-	public async acceptFriendRequest(sender: string, recipient: string) {
+	public acceptFriendRequest(sender: string, recipient: string) {
 		return this.database.query(`
-        UPDATE friendships
-        SET friendship_status = 'accepted'
-        WHERE sender_id = $2
-          AND recipient_id = $1;
-		`, [sender, recipient])
-			.then((data) => !!data.rowCount)
-			.catch((error) => {
-				throw new Error(`${this.constructor.name}.acceptFriendRequest(): Error`, {cause: error})
-			});
+
+                UPDATE friendships
+                SET friendship_status = 'accepted'
+                WHERE sender_id = $2
+                  AND recipient_id = $1;
+			`,
+			[sender, recipient]
+		).then((data) => !!data.rowCount)
+
+			.catch(e => this.errorHandler(e, 'acceptFriendRequest'));
 	}
 
-	public async listFriendsByUserId(id: string) {
+	public listFriendsByUserId(id: string) {
 		return this.database.query<I_UserSchema>(`
-        SELECT *
-        FROM friendships f
-                 JOIN users u
-                      ON (f.sender_id = u.id AND f.recipient_id = $1)
-                          OR (f.recipient_id = u.id AND f.sender_id = $1);
-		`, [id])
-			.then((data) => data.rows)
-			.catch((error) => {
-				throw new Error(`${this.constructor.name}.listFriendsByUserId(): Error`, {cause: error})
-			});
+
+                SELECT *
+                FROM friendships f
+                         JOIN users u
+                              ON (f.sender_id = u.id AND f.recipient_id = $1)
+                                  OR (f.recipient_id = u.id AND f.sender_id = $1);
+			`,
+			[id]
+		).then((data) => data.rows)
+
+			.catch(e => this.errorHandler(e, 'listFriendsByUserId'));
 	}
 
-	public async listFriendRequests(id: string) {
+	public listFriendRequests(id: string) {
 		return this.database.query<T_FriendRequestData[]>(`
+
                 SELECT u.id,
                        u.first_name,
                        u.last_name,
@@ -123,33 +133,35 @@ export default class FriendRepository {
                 FROM friendships f
                          JOIN users u ON (f.sender_id = u.id AND f.recipient_id = $1)
                     OR (f.recipient_id = u.id AND f.sender_id = $1);
-			`, [id]
-		)
-			.then((data) => data.rows)
-			.catch((error) =>
-				console.error(`${this.constructor.name}.sendFriendRequest(): Error`, error));
+			`,
+			[id]
+		).then((data) => data.rows)
+
+			.catch(e => this.errorHandler(e, 'listFriendRequests'));
 	}
 
-	public async listFriendRequestsOnly(id: string) {
+	public listFriendRequestsOnly(id: string) {
 		return this.database.query<T_FriendRequestData[]>(`
-        SELECT u.id,
-               u.first_name,
-               u.last_name,
-               u.picture,
-               u.username,
-               f.created_at AS request_date
-        FROM friendships f
-                 JOIN users u ON f.sender_id = u.id
-        WHERE f.recipient_id = $1
-          AND friendship_status != 'accepted';
-			`, [id]
-		)
-			.then((data) => data.rows)
-			.catch((error) =>
-				console.error(`${this.constructor.name}.listFriendRequestsOnly(): Error`, error));
+
+                SELECT u.id,
+                       u.first_name,
+                       u.last_name,
+                       u.picture,
+                       u.username,
+                       f.created_at AS request_date
+                FROM friendships f
+                         JOIN users u ON f.sender_id = u.id
+                WHERE f.recipient_id = $1
+                  AND friendship_status != 'accepted';
+			`,
+			[id]
+		).then((data) => data.rows)
+
+			.catch(e => this.errorHandler(e, 'listFriendRequestsOnly'));
+
 	}
 
-	public async listFriendSentOnly(id: string) {
+	public listFriendSentOnly(id: string) {
 		return this.database.query<T_FriendRequestData[]>(`
                 SELECT u.id,
                        u.first_name,
@@ -161,11 +173,26 @@ export default class FriendRepository {
                          JOIN users u ON f.recipient_id = u.id
                 WHERE f.sender_id = $1
                   AND friendship_status != 'accepted';
-			`, [id]
-		)
-			.then((data) => data.rows)
-			.catch((error) =>
-				console.error(`${this.constructor.name}.listFriendSentOnly(): Error`, error));
+			`,
+			[id]
+		).then((data) => data.rows)
+
+			.catch(e => this.errorHandler(e, 'listFriendSentOnly'));
+	}
+
+	public getBySenderAndRecipient(sender: string, recipient: string) {
+		return this.database.query<I_Friendship>(`
+
+                SELECT *
+                FROM friendships
+                WHERE sender_id = $1 AND recipient_id = $2
+                   OR sender_id = $2 AND recipient_id = $1
+                LIMIT 1
+			`,
+			[sender, recipient]
+		).then(data => data.rows[0] ?? null)
+
+			.catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
 	}
 
 }

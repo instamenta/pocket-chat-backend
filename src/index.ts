@@ -11,6 +11,9 @@ import FriendRepository from "./repositories/friend";
 import FriendController from "./controllers/friend";
 import FriendRouter from "./routers/friend";
 import SocketController from "./socket";
+import MessageRepository from "./repositories/message";
+import MessageController from "./controllers/message";
+import MessageRouter from "./routers/message";
 
 void async function start_service() {
 
@@ -25,8 +28,13 @@ void async function start_service() {
     const friendController = new FriendController(friendRepository);
     const friendRouter = new FriendRouter(friendController).getRouter();
 
+		const messageRepository = new MessageRepository(database);
+		const messageController = new MessageController(messageRepository);
+		const messageRouter = new MessageRouter(messageController).getRouter();
+
     api.use('/api/user', userRouter);
     api.use('/api/friend', friendRouter);
+		api.use('/api/message', messageRouter);
     api.use(Middlewares.errorHandler);
 
     api.listen(
@@ -39,7 +47,7 @@ void async function start_service() {
         console.log(`WebSocket is running on ws://${env.SERVER_HOST}:${env.SOCKET_PORT}`);
     })
 
-    new SocketController(socket);
+    new SocketController(socket, messageRepository, friendRepository);
 }();
 
 async function graceful_shutdown(database: Client, cache: Redis) {

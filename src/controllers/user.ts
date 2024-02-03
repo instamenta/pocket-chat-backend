@@ -75,8 +75,7 @@ export default class UserController {
 
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userData.id});
 
-			await this.repository.updateLastActiveAtById(userData.id)
-				.catch(console.error);
+			await this.repository.updateLastActiveAtById(userData.id).catch(console.error);
 		} catch (error) {
 			controllerErrorHandler(error, w)
 		}

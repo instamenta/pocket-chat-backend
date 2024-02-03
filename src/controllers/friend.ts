@@ -154,4 +154,22 @@ export default class FriendController {
 		}
 	}
 
+	public async getBySenderAndRecipient(r: Request<{ sender: string, recipient: string }>, w: Response) {
+		try {
+			const sender = uuid_schema.parse(r.params.sender);
+			const recipient = uuid_schema.parse(r.params.recipient);
+
+			const friendship = await this.repository.getBySenderAndRecipient(sender, recipient);
+			if (!friendship) {
+				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to list friends`);
+				return w.status(status_codes.BAD_GATEWAY).end();
+			}
+
+			w.status(status_codes.OK).json(friendship);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+
 }

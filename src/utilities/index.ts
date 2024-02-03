@@ -10,6 +10,7 @@ export function controllerErrorHandler(error: ZodError | unknown, w: Response) {
 		})));
 		w.status(status_codes.BAD_REQUEST).end();
 	} else {
+		console.error(error);
 		w.status(status_codes.INTERNAL_SERVER_ERROR).end()
 	}
 }

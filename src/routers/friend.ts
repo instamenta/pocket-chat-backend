@@ -25,6 +25,7 @@ export default class FriendRouter {
 		this.router.delete('/:id', isAuthorized, c.deleteFriendRequest.bind(c))
 		this.router.put('/:id/accept', isAuthorized, c.acceptFriendRequest.bind(c));
 		this.router.put('/:id/decline', isAuthorized, c.declineFriendRequest.bind(c));
+		this.router.get('/:sender/:recipient', isAuthorized, c.getBySenderAndRecipient.bind(c))
 	}
 
 	public getRouter(): Router {

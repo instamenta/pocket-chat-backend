@@ -15,3 +15,11 @@ declare global {
 		}
 	}
 }
+
+export interface I_Friendship {
+	id: string,
+	created_at: string,
+	sender_id: string,
+	recipient_id: string,
+	friendship_status: 'accepted' | 'pending'
+}

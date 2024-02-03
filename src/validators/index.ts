@@ -35,3 +35,17 @@ export const name_schema = z.string()
 	.min(3, {message: 'Username must be at least 3 characters'})
 	.max(32, {message: 'Username cannot exceed 32 characters'})
 ;
+
+export const create_message_schema = z.object({
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
+	friendship: z.string().uuid({message: 'Friendship must be a valid UUID'}),
+	content: z.string().min(1, {message: "Invalid content size"}),
+});
+
+export const message_schema = z.object({
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
+	content: z.string().min(1, {message: "Invalid content size"}),
+	date: z.string().default(new Date().toISOString),
+})
