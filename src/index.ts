@@ -43,11 +43,9 @@ void async function start_service() {
         (): void =>
             console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
 
-    server.listen(env.SOCKET_PORT, () => {
-        console.log(`WebSocket is running on ws://${env.SERVER_HOST}:${env.SOCKET_PORT}`);
-    })
 
-    new SocketController(socket, messageRepository, friendRepository);
+
+    new SocketController(socket,server, messageRepository, friendRepository);
 }();
 
 async function graceful_shutdown(database: Client, cache: Redis) {
