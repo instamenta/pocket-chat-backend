@@ -1,5 +1,3 @@
-import {I_UserSchema} from "./user";
-
 export interface UserPayload {
 	id: string;
 	username: string;
@@ -14,15 +12,6 @@ declare global {
 			cookies: {
 				[key: string]: string;
 			};
-		}
-	}
-}
-
-declare global {
-	namespace "node:http" {
-
-		interface IncomingMessage {
-			user: I_UserSchema
 		}
 	}
 }

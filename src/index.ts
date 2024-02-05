@@ -17,49 +17,55 @@ import MessageRouter from "./routers/message";
 
 void async function start_service() {
 
-    const {server, api, database, cache, socket} = await initialize_all();
-    await graceful_shutdown(database, cache);
+	const {server, api, database, cache, socket} = await initialize_all();
+	await graceful_shutdown(database, cache);
 
-    const userRepository = new UserRepository(database);
-    const userController = new UserController(userRepository);
-    const userRouter = new UserRouter(userController).getRouter();
+	const userRepository = new UserRepository(database);
+	const userController = new UserController(userRepository);
+	const userRouter = new UserRouter(userController).getRouter();
 
-    const friendRepository = new FriendRepository(database);
-    const friendController = new FriendController(friendRepository);
-    const friendRouter = new FriendRouter(friendController).getRouter();
+	const friendRepository = new FriendRepository(database);
+	const friendController = new FriendController(friendRepository);
+	const friendRouter = new FriendRouter(friendController).getRouter();
 
-		const messageRepository = new MessageRepository(database);
-		const messageController = new MessageController(messageRepository);
-		const messageRouter = new MessageRouter(messageController).getRouter();
+	const messageRepository = new MessageRepository(database);
+	const messageController = new MessageController(messageRepository);
+	const messageRouter = new MessageRouter(messageController).getRouter();
 
-    api.use('/api/user', userRouter);
-    api.use('/api/friend', friendRouter);
-		api.use('/api/message', messageRouter);
-    api.use(Middlewares.errorHandler);
+	api.use('/api/user', userRouter);
+	api.use('/api/friend', friendRouter);
+	api.use('/api/message', messageRouter);
+	api.use(Middlewares.errorHandler);
 
-    api.listen(
-        parseInt(env.SERVER_PORT),
-        env.SERVER_HOST,
-        (): void =>
-            console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
+	api.listen(
+		parseInt(env.SERVER_PORT),
+		env.SERVER_HOST,
+		(): void =>
+			console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
 
 
-
-    new SocketController(socket,server, messageRepository, friendRepository);
+	new SocketController(
+		socket,
+		server,
+		cache,
+		messageRepository,
+		friendRepository,
+		userRepository
+	);
 }();
 
 async function graceful_shutdown(database: Client, cache: Redis) {
-    ['uncaughtException', 'unhandledRejection'].map(type => {
-        process.on(type, async (...args) => {
-            try {
-                console.error(`process.on ${type} with ${args}`, args);
-                await database.end();
-                cache.disconnect();
-            } catch (error: Error | unknown) {
-                console.error(error)
-            } finally {
-                process.exit(1)
-            }
-        });
-    });
+	['uncaughtException', 'unhandledRejection'].map(type => {
+		process.on(type, async (...args) => {
+			try {
+				console.error(`process.on ${type} with ${args}`, args);
+				await database.end();
+				cache.disconnect();
+			} catch (error: Error | unknown) {
+				console.error(error)
+			} finally {
+				process.exit(1)
+			}
+		});
+	});
 }

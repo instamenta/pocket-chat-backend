@@ -6,25 +6,24 @@ import {message_schema} from "../validators";
 import {I_MessageRequest} from "../types/message";
 import MessageRepository from "../repositories/message";
 import FriendRepository from "../repositories/friend";
-import {IncomingMessage, Server, ServerResponse} from 'node:http'
-import {Socket} from 'node:net';
+import {Server} from 'node:http'
 import UserRepository from "../repositories/user";
 import {I_UserSchema} from "../types/user";
+import Redis from "ioredis";
 
 export default class SocketController {
 
 	connections: Map<string, WebSocket>;
-	users: Map<string, I_UserSchema>;
 
 	constructor(
 		private readonly wss: WebSocketServer,
-		private readonly server: Server<IncomingMessage, ServerResponse>,
+		private readonly server: Server,
+		private readonly cache: Redis,
 		private readonly messageRepository: MessageRepository,
 		private readonly friendRepository: FriendRepository,
 		private readonly userRepository: UserRepository
 	) {
 		this.connections = new Map()
-		this.users = new Map()
 		this.start();
 	}
 
@@ -72,8 +71,8 @@ export default class SocketController {
 
 	private handleBroadcast() {
 		this.connections.forEach((connection, id) => {
-			const message = JSON.stringify(this.users.get(id));
-			connection.send(message);
+			// const message = JSON.stringify(this.users.get(id));
+			// connection.send(message);
 		});
 	}
 
@@ -81,44 +80,29 @@ export default class SocketController {
 		this.server.listen(env.SOCKET_PORT, () => {
 			console.log(`WebSocket is running on ws://${env.SERVER_HOST}:${env.SOCKET_PORT}`);
 		});
-
-		this.server.on('upgrade', async (r: IncomingMessage, socket: Socket, head: Buffer) => {
-			const user = JWT.getUser(Cookies.parse(r.headers.cookie ?? '')[SECURITY.JWT_TOKEN_NAME] ?? '');
-			if (!user) {
-				socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-				socket.destroy();
-				return;
-			}
-
-			const userData = await this.userRepository.getUserById(user.username)
-			if (!userData) {
-				socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-				socket.destroy();
-				return;
-			}
-
-			r.user = userData;
-			this.wss.handleUpgrade(r, socket, head, (ws: WebSocket) => {
-				this.wss.emit('connection', ws, r);
-			});
-
-		})
-
 		this.wss.on('connection', this.onConnection);
 	}
 
-	private onConnection = (connection: WebSocket, r: IncomingMessage) => {
-		this.connections.set(r.user.id, connection);
-		this.users.set(r.user.id, r.user);
+	private onConnection = async (ws: WebSocket, r: any) => {
+		const user = JWT.getUser(Cookies.parse(r.headers.cookie ?? '')[SECURITY.JWT_TOKEN_NAME] ?? '');
+		if (!user) return ws.close(1);
 
-		connection.on('message', (message) => this.onMessage(message, connection, r.user));
-		connection.on('close', (code, reason) => this.onClose(code, reason, r.user));
+		const userData = await this.userRepository.getUserById(user.id)
+		if (!userData) return ws.close(1)
+
+
+		this.connections.set(userData.id, ws);
+		this.cache.set(`user=${user.id}`, JSON.stringify(userData));
+
+		ws.on('message', (message) => this.onMessage(message, ws, userData));
+		ws.on('close', (code, reason) => this.onClose(code, reason, userData));
+		ws.on('error', console.error);
 	}
 
 	private onClose(code: number, reason: Buffer, user: I_UserSchema) {
 		console.error(`Exiting with number (${code}) for reason`, reason.toString())
 
 		this.connections.delete(user.id);
-		this.users.delete(user.id);
+		this.cache.del(`user=${user.id}`);
 	}
 }
