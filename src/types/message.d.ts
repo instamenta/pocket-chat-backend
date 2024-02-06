@@ -15,14 +15,25 @@ export interface I_Message {
 	friendship_id: string,
 }
 
+export type T_MessageTypes =  'video-call-invite' | 'message'
+
 export type I_MessageRequest = {
+	type: T_MessageTypes,
 	sender: string,
 	recipient: string,
 	content: string,
-	date: string,
+	date?: string,
+}
+
+export type T_VideoCallRequest = {
+	type: T_MessageTypes,
+	sender: string,
+	recipient: string,
+	room: string,
 }
 
 export type T_MessageResponse = {
+	type: string,
 	date: string,
 	sender: string,
 	content: string,

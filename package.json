@@ -25,6 +25,7 @@
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "peer": "^1.0.2",
     "pg": "^8.11.3",
     "selfsigned": "^2.4.1",
     "uuid": "^9.0.1",

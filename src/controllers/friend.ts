@@ -161,7 +161,7 @@ export default class FriendController {
 
 			const friendship = await this.repository.getBySenderAndRecipient(sender, recipient);
 			if (!friendship) {
-				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to list friends`);
+				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to get friendship`);
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 

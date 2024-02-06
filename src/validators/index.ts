@@ -44,8 +44,16 @@ export const create_message_schema = z.object({
 });
 
 export const message_schema = z.object({
+	type: z.string(),
 	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
 	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
 	content: z.string().min(1, {message: "Invalid content size"}),
 	date: z.string().default(new Date().toISOString),
+})
+
+export const video_call_invitation_request_schema = z.object({
+	type: z.string(),
+	sender: z.string(),
+	recipient: z.string(),
+	room: z.string(),
 })

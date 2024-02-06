@@ -8,12 +8,13 @@ import CORS from 'cors';
 import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
 import {WebSocketServer} from 'ws';
+import {ExpressPeerServer} from "peer";
 
 export default async function initialize_all() {
 	// initialize_certificates()
 
 	const corsOptions: CORS.CorsOptions = {
-		origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:5173'],
+		origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173'],
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
 		optionsSuccessStatus: 204,
@@ -21,6 +22,15 @@ export default async function initialize_all() {
 	}
 
 	const api = express();
+
+	const peer_server = http.createServer(api);
+
+	const peer = ExpressPeerServer(peer_server, {path: '/'})
+
+	api.use('/peerjs', peer);
+
+	peer_server.listen(3004, () => console.log('Peer on 3004'));
+
 	api.use(CORS(corsOptions));
 	api.use(COOKIE_PARSER());
 	api.use(BODY_PARSER.json());

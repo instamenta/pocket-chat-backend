@@ -2,8 +2,8 @@ import {RawData, WebSocket, WebSocketServer} from "ws";
 import {env, SECURITY} from "../utilities/config";
 import JWT from "../utilities/jwt";
 import * as Cookies from 'cookie';
-import {message_schema} from "../validators";
-import {I_MessageRequest} from "../types/message";
+import {message_schema, video_call_invitation_request_schema} from "../validators";
+import {I_MessageRequest, T_VideoCallRequest} from "../types/message";
 import MessageRepository from "../repositories/message";
 import FriendRepository from "../repositories/friend";
 import {Server} from 'node:http'
@@ -27,43 +27,75 @@ export default class SocketController {
 		this.start();
 	}
 
-	private async onMessage(bytes: RawData, host: WebSocket, user: I_UserSchema,) {
+	private async onMessage(request: I_MessageRequest, host: WebSocket, user: I_UserSchema) {
+		const r = message_schema.parse(request);
+
+		const friendship = await this.friendRepository.getBySenderAndRecipient(user.id, r.recipient);
+		if (!friendship) {
+			return console.error('No friendship found between users', {data: r, sender: user.id});
+		}
+
+		const messageId = await this.messageRepository.createMessage({
+			sender: r.sender,
+			recipient: r.recipient,
+			content: r.content,
+			friendship: friendship.id
+		});
+		if (!messageId) {
+			return console.error("Failed to save message to the database");
+		}
+
+		const response = Buffer.from(JSON.stringify({
+			type: r.type,
+			edited: false,
+			created_at: r.date,
+			updated_at: r.date,
+			content: r.content,
+			sender_id: r.sender,
+			message_id: messageId,
+			recipient_id: r.recipient,
+			friendship_id: friendship.id,
+		}));
+
+		host.send(response);
+
+		const connection = this.connections.get(r.recipient);
+		if (!connection) {
+			return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
+		}
+		connection.send(response);
+	}
+
+	private async onVideoCallInvite(request: T_VideoCallRequest, host: WebSocket, user: I_UserSchema) {
+		const r = video_call_invitation_request_schema.parse(request);
+
+		const connection = this.connections.get(r.recipient);
+		if (!connection) {
+			return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
+		}
+
+		const response = Buffer.from(JSON.stringify({
+			type: r.type,
+			room_id: r.room,
+			sender_id: r.sender,
+			recipient_id: r.recipient,
+			date: new Date().toISOString(),
+		}));
+
+		connection.send(response);
+	}
+
+	private async onData(bytes: RawData, host: WebSocket, user: I_UserSchema,) {
 		try {
-			const r: I_MessageRequest = message_schema.parse(JSON.parse(bytes.toString()));
+			const request: I_MessageRequest | T_VideoCallRequest = JSON.parse(bytes.toString());
 
-			const friendship = await this.friendRepository.getBySenderAndRecipient(user.id, r.recipient);
-			if (!friendship) {
-				return console.error('No friendship found between users', {data: r, sender: user.id});
+			if (request.type === 'message') {
+				await this.onMessage(request as I_MessageRequest, host, user);
+			} else if (request.type === 'video-call-invite') {
+				await this.onVideoCallInvite(request as T_VideoCallRequest, host, user);
+			} else {
+				return console.log(`Unimplemented type`, request);
 			}
-
-			const messageId = await this.messageRepository.createMessage({
-				sender: r.sender,
-				recipient: r.recipient,
-				content: r.content,
-				friendship: friendship.id
-			});
-			if (!messageId) {
-				return console.error("Failed to save message to the database");
-			}
-
-			const response = Buffer.from(JSON.stringify({
-				edited: false,
-				created_at: r.date,
-				updated_at: r.date,
-				content: r.content,
-				sender_id: r.sender,
-				message_id: messageId,
-				recipient_id: r.recipient,
-				friendship_id: friendship.id,
-			}));
-
-			host.send(response);
-
-			const connection = this.connections.get(r.recipient);
-			if (!connection) {
-				return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
-			}
-			connection.send(response);
 		} catch (error) {
 			console.error(`Error handling message from senderId: ${user.id}`, error);
 		}
@@ -94,7 +126,7 @@ export default class SocketController {
 		this.connections.set(userData.id, ws);
 		this.cache.set(`user=${user.id}`, JSON.stringify(userData));
 
-		ws.on('message', (message) => this.onMessage(message, ws, userData));
+		ws.on('message', (data) => this.onData(data, ws, userData));
 		ws.on('close', (code, reason) => this.onClose(code, reason, userData));
 		ws.on('error', console.error);
 	}

@@ -181,16 +181,20 @@ export default class FriendRepository {
 	}
 
 	public getBySenderAndRecipient(sender: string, recipient: string) {
+		console.log({sender, recipient});
 		return this.database.query<I_Friendship>(`
 
                 SELECT *
                 FROM friendships
-                WHERE sender_id = $1 AND recipient_id = $2
-                   OR sender_id = $2 AND recipient_id = $1
+								WHERE (sender_id = $1 AND recipient_id = $2)
+								OR (sender_id = $2 AND recipient_id = $1)
                 LIMIT 1
 			`,
 			[sender, recipient]
-		).then(data => data.rows[0] ?? null)
+		).then(data => {
+			console.log(data);
+			return data.rows[0] ?? null
+		})
 
 			.catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
 	}
