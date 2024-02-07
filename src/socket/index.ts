@@ -1,14 +1,14 @@
-import {RawData, WebSocket, WebSocketServer} from "ws";
-import {env, SECURITY} from "../utilities/config";
-import JWT from "../utilities/jwt";
-import * as Cookies from 'cookie';
 import {message_schema, video_call_invitation_request_schema} from "../validators";
 import {I_MessageRequest, T_VideoCallRequest} from "../types/message";
 import MessageRepository from "../repositories/message";
+import {RawData, WebSocket, WebSocketServer} from "ws";
 import FriendRepository from "../repositories/friend";
-import {Server} from 'node:http'
+import {env, SECURITY} from "../utilities/config";
 import UserRepository from "../repositories/user";
 import {I_UserSchema} from "../types/user";
+import JWT from "../utilities/jwt";
+import * as Cookies from 'cookie';
+import {Server} from 'node:http'
 import Redis from "ioredis";
 
 export default class SocketController {
@@ -25,6 +25,33 @@ export default class SocketController {
 	) {
 		this.connections = new Map()
 		this.start();
+	}
+
+	private async onData(bytes: RawData, host: WebSocket, user: I_UserSchema,) {
+		try {
+			const request: I_MessageRequest | T_VideoCallRequest = JSON.parse(bytes.toString());
+
+			console.log(`Websocket received message request with type:`, request.type);
+
+			switch (request.type) {
+				case socket_events.MESSAGE: {
+					await this.onMessage(request as I_MessageRequest, host, user);
+					break;
+				}
+				case socket_events.VIDEO_CALL_INVITE: {
+					await this.onVideoCallInvite(request as T_VideoCallRequest, host, user);
+					break;
+				}
+				case socket_events.VOICE_CALL_INVITE: {
+					await this.onVideoCallInvite(request as T_VideoCallRequest, host, user)
+					break
+				}
+				default:
+					console.log(`Unimplemented type`, request);
+			}
+		} catch (error) {
+			console.error(`Error handling message from senderId: ${user.id}`, error);
+		}
 	}
 
 	private async onMessage(request: I_MessageRequest, host: WebSocket, user: I_UserSchema) {
@@ -60,10 +87,12 @@ export default class SocketController {
 		host.send(response);
 
 		const connection = this.connections.get(r.recipient);
-		if (!connection) {
-			return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
+		if (connection) {
+			connection.send(response);
+			console.log(`Found WebSocket connection for recipient ${r.recipient} and Send Message`)
+		} else {
+			console.error(`No WebSocket connection for recipient: ${r.recipient} and Pushed To Notifications`);
 		}
-		connection.send(response);
 	}
 
 	private async onVideoCallInvite(request: T_VideoCallRequest, host: WebSocket, user: I_UserSchema) {
@@ -85,28 +114,6 @@ export default class SocketController {
 		connection.send(response);
 	}
 
-	private async onData(bytes: RawData, host: WebSocket, user: I_UserSchema,) {
-		try {
-			const request: I_MessageRequest | T_VideoCallRequest = JSON.parse(bytes.toString());
-
-			if (request.type === 'message') {
-				await this.onMessage(request as I_MessageRequest, host, user);
-			} else if (request.type === 'video-call-invite') {
-				await this.onVideoCallInvite(request as T_VideoCallRequest, host, user);
-			} else {
-				return console.log(`Unimplemented type`, request);
-			}
-		} catch (error) {
-			console.error(`Error handling message from senderId: ${user.id}`, error);
-		}
-	}
-
-	private handleBroadcast() {
-		this.connections.forEach((connection, id) => {
-			// const message = JSON.stringify(this.users.get(id));
-			// connection.send(message);
-		});
-	}
 
 	private start() {
 		this.server.listen(env.SOCKET_PORT, () => {
@@ -117,18 +124,26 @@ export default class SocketController {
 
 	private onConnection = async (ws: WebSocket, r: any) => {
 		const user = JWT.getUser(Cookies.parse(r.headers.cookie ?? '')[SECURITY.JWT_TOKEN_NAME] ?? '');
-		if (!user) return ws.close(1);
-
+		if (!user) {
+			return ws.close(1);
+		}
 		const userData = await this.userRepository.getUserById(user.id)
-		if (!userData) return ws.close(1)
-
-
+		if (!userData) {
+			return ws.close(1)
+		}
 		this.connections.set(userData.id, ws);
 		this.cache.set(`user=${user.id}`, JSON.stringify(userData));
 
 		ws.on('message', (data) => this.onData(data, ws, userData));
 		ws.on('close', (code, reason) => this.onClose(code, reason, userData));
 		ws.on('error', console.error);
+	}
+
+	private handleBroadcast() {
+		this.connections.forEach((connection, id) => {
+			// const message = JSON.stringify(this.users.get(id));
+			// connection.send(message);
+		});
 	}
 
 	private onClose(code: number, reason: Buffer, user: I_UserSchema) {

@@ -1,8 +1,8 @@
 export interface UserPayload {
 	id: string;
-	username: string;
 	email: string;
 	picture: string;
+	username: string;
 }
 
 declare global {
@@ -18,8 +18,18 @@ declare global {
 
 export interface I_Friendship {
 	id: string,
-	created_at: string,
 	sender_id: string,
+	created_at: string,
 	recipient_id: string,
 	friendship_status: 'accepted' | 'pending'
+}
+
+export interface I_Notifications {
+	id: string,
+	type: string,
+	seen: boolean,
+	content: string,
+	sender_id: string,
+	created_at: string,
+	recipient_id: string,
 }

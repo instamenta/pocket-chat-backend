@@ -5,31 +5,29 @@ export type T_CreateMessage = z.infer<typeof create_message_schema>;
 
 export interface I_Message {
 	id: string,
-	content: string,
-	message_status: 'seen' | 'sent' | 'pending',
-	updated_at: string,
-	created_at: string,
 	edited: boolean,
+	content: string,
 	sender_id: string,
+	created_at: string,
+	updated_at: string,
 	recipient_id: string,
 	friendship_id: string,
+	message_status: 'seen' | 'sent' | 'pending',
 }
 
-export type T_MessageTypes =  'video-call-invite' | 'message'
-
 export type I_MessageRequest = {
-	type: T_MessageTypes,
-	sender: string,
-	recipient: string,
-	content: string,
 	date?: string,
+	sender: string,
+	content: string,
+	recipient: string,
+	type: socket_events,
 }
 
 export type T_VideoCallRequest = {
-	type: T_MessageTypes,
+	room: string,
 	sender: string,
 	recipient: string,
-	room: string,
+	type: socket_events,
 }
 
 export type T_MessageResponse = {

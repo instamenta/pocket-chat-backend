@@ -65,4 +65,20 @@ CREATE TABLE IF NOT EXISTS "messages"
 CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON "messages" (sender_id);
 CREATE INDEX IF NOT EXISTS idx_messages_recipient_id ON "messages" (recipient_id);
 
+-- Create Table Notifications:
+CREATE TABLE IF NOT EXISTS "notifications"
+(
+    id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at   TIMESTAMPTZ      DEFAULT NOW(),
+    type         VARCHAR(255),
+    seen         BOOL,
+    content      TEXT,
+    sender_id    UUID,
+    recipient_id UUID,
+    FOREIGN KEY (sender_id) REFERENCES "users" (id),
+    FOREIGN KEY (recipient_id) REFERENCES "users" (id)
+);
 
+-- Add Indexes to Notifications table:
+CREATE INDEX IF NOT EXISTS idx_notifications_sender_id ON "notifications" (sender_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_recipient_id ON "notifications" (recipient_id);

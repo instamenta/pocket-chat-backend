@@ -19,6 +19,7 @@ const env = z.object({
 	JWT_TOKEN_NAME: z.string(),
 	JWT_EXPIRATION_TIME: z.string(),
 	SOCKET_PORT: z.string(),
+	PEER_PORT: z.string(),
 }).parse(process.env);
 
 const SECURITY = {

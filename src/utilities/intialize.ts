@@ -29,7 +29,9 @@ export default async function initialize_all() {
 
 	api.use('/peerjs', peer);
 
-	peer_server.listen(3004, () => console.log('Peer on 3004'));
+	peer_server.listen(env.PEER_PORT, () =>
+		console.log(`Peer is running on http://${env.SERVER_HOST}:${env.PEER_PORT}/peerjs`)
+	);
 
 	api.use(CORS(corsOptions));
 	api.use(COOKIE_PARSER());

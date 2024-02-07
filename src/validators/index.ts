@@ -10,10 +10,10 @@ export const create_user_schema = z.object({
 	username: z.string()
 		.min(3, {message: 'Username must be at least 3 characters'})
 		.max(32, {message: 'Username cannot exceed 32 characters'}),
-	email: z.string()
-		.email({message: 'Invalid email address'}),
 	password: z.string()
 		.min(8, {message: 'Password must be at least 8 characters'}),
+	email: z.string()
+		.email({message: 'Invalid email address'}),
 });
 
 export const login_user_schema = z.object({
@@ -53,7 +53,7 @@ export const message_schema = z.object({
 
 export const video_call_invitation_request_schema = z.object({
 	type: z.string(),
-	sender: z.string(),
-	recipient: z.string(),
-	room: z.string(),
+	room: z.string().uuid({message: 'Room must be a valid UUID'}),
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
 })

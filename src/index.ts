@@ -37,12 +37,9 @@ void async function start_service() {
 	api.use('/api/message', messageRouter);
 	api.use(Middlewares.errorHandler);
 
-	api.listen(
-		parseInt(env.SERVER_PORT),
-		env.SERVER_HOST,
-		(): void =>
-			console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`));
-
+	api.listen(+env.SERVER_PORT, env.SERVER_HOST, () =>
+		console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`)
+	);
 
 	new SocketController(
 		socket,

@@ -5,6 +5,7 @@ export default class BCrypt {
 	public static async hashPassword(password: string) {
 		try {
 			const salt = await bcrypt.genSalt(SECURITY.SALT_ROUNDS);
+
 			return await bcrypt.hash(password, salt)
 		} catch (error) {
 			console.error(error);
