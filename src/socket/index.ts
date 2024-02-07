@@ -10,6 +10,7 @@ import JWT from "../utilities/jwt";
 import * as Cookies from 'cookie';
 import {Server} from 'node:http'
 import Redis from "ioredis";
+import NotificationRepository from "../repositories/notification";
 
 export default class SocketController {
 
@@ -19,9 +20,10 @@ export default class SocketController {
 		private readonly wss: WebSocketServer,
 		private readonly server: Server,
 		private readonly cache: Redis,
-		private readonly messageRepository: MessageRepository,
+		private readonly userRepository: UserRepository,
 		private readonly friendRepository: FriendRepository,
-		private readonly userRepository: UserRepository
+		private readonly messageRepository: MessageRepository,
+		private readonly notificationRepository: NotificationRepository,
 	) {
 		this.connections = new Map()
 		this.start();
@@ -86,11 +88,26 @@ export default class SocketController {
 
 		host.send(response);
 
+		const notification = {
+			seen: true,
+			type: r.type,
+			sender_id: r.sender,
+			recipient_id: r.recipient,
+			content: `Message from ${user.username}`
+		};
+
 		const connection = this.connections.get(r.recipient);
 		if (connection) {
+			await this.notificationRepository.createNotification(notification);
+
 			connection.send(response);
+
 			console.log(`Found WebSocket connection for recipient ${r.recipient} and Send Message`)
 		} else {
+			notification.seen = false;
+
+			await this.notificationRepository.createNotification(notification);
+
 			console.error(`No WebSocket connection for recipient: ${r.recipient} and Pushed To Notifications`);
 		}
 	}

@@ -14,6 +14,9 @@ import SocketController from "./socket";
 import MessageRepository from "./repositories/message";
 import MessageController from "./controllers/message";
 import MessageRouter from "./routers/message";
+import NotificationRepository from "./repositories/notification";
+import NotificationController from "./controllers/notification";
+import NotificationRouter from "./routers/notification";
 
 void async function start_service() {
 
@@ -32,9 +35,14 @@ void async function start_service() {
 	const messageController = new MessageController(messageRepository);
 	const messageRouter = new MessageRouter(messageController).getRouter();
 
+	const notificationRepository = new NotificationRepository(database);
+	const notificationController = new NotificationController(notificationRepository);
+	const notificationRouter = new NotificationRouter(notificationController).getRouter();
+
 	api.use('/api/user', userRouter);
 	api.use('/api/friend', friendRouter);
 	api.use('/api/message', messageRouter);
+	api.use('/api/notification', notificationRouter);
 	api.use(Middlewares.errorHandler);
 
 	api.listen(+env.SERVER_PORT, env.SERVER_HOST, () =>
@@ -45,9 +53,10 @@ void async function start_service() {
 		socket,
 		server,
 		cache,
-		messageRepository,
+		userRepository,
 		friendRepository,
-		userRepository
+		messageRepository,
+		notificationRepository,
 	);
 }();
 

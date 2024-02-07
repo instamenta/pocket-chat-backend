@@ -57,3 +57,11 @@ export const video_call_invitation_request_schema = z.object({
 	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
 	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
 })
+
+export const create_notification_schema = z.object({
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
+	content: z.string().min(1, {message: "Invalid content size"}),
+	seen: z.boolean().default(false),
+	type: z.string()
+});
