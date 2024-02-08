@@ -14,6 +14,7 @@ export default class FriendRouter {
 
 	private initialize(c: FriendController) {
 		this.router.get('/', isAuthorized, c.listFriendRequests.bind(c));
+		this.router.get('/one/:id', isAuthorized, c.getById.bind(c));
 		this.router.get('/requests', isAuthorized, c.listFriendRequestsOnly.bind(c));
 		this.router.get('/sent', isAuthorized, c.listFriendSentOnly.bind(c));
 

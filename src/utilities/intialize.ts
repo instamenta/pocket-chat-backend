@@ -14,7 +14,7 @@ export default async function initialize_all() {
 	// initialize_certificates()
 
 	const corsOptions: CORS.CorsOptions = {
-		origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173'],
+		origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173', 'http://192.168.1.8:3001'],
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
 		optionsSuccessStatus: 204,

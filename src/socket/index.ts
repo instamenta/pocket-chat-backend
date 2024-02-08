@@ -11,6 +11,7 @@ import * as Cookies from 'cookie';
 import {Server} from 'node:http'
 import Redis from "ioredis";
 import NotificationRepository from "../repositories/notification";
+import {socket_events} from "../utilities/enumerations";
 
 export default class SocketController {
 
@@ -113,6 +114,7 @@ export default class SocketController {
 	}
 
 	private async onVideoCallInvite(request: T_VideoCallRequest, host: WebSocket, user: I_UserSchema) {
+		console.log(request);
 		const r = video_call_invitation_request_schema.parse(request);
 
 		const connection = this.connections.get(r.recipient);

@@ -171,5 +171,20 @@ export default class FriendController {
 		}
 	}
 
+	public async getById(r: Request<{ id: string }>, w: Response) {
+		try {
+			const friendship_id = uuid_schema.parse(r.params.id);
+
+			const friendship = await this.repository.getById(friendship_id);
+			if (!friendship) {
+				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to get friendship`);
+				return w.status(status_codes.BAD_GATEWAY).end();
+			}
+
+			w.status(status_codes.OK).json(friendship);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
 
 }
