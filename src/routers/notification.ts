@@ -5,11 +5,9 @@ import NotificationController from "../controllers/notification";
 export default class NotificationRouter {
 
 	private readonly router: Router = Router();
-	private readonly controller: NotificationController;
 
 	constructor(controller: NotificationController) {
-		this.controller = controller;
-		this.initialize(this.controller);
+		this.initialize(controller);
 	}
 
 	private initialize(c: NotificationController) {

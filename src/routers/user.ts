@@ -5,11 +5,9 @@ import {isAuthorized, isGuest} from "../middlewares";
 export default class UserRouter {
 
 	private readonly router: Router = Router();
-	private readonly controller: UserController;
 
 	constructor(controller: UserController) {
-		this.controller = controller;
-		this.initialize(this.controller);
+		this.initialize(controller);
 	}
 
 	private initialize(c: UserController) {
@@ -20,6 +18,9 @@ export default class UserRouter {
 		this.router.get('/auth', isAuthorized,c.authUser.bind(c));
 		this.router.get('/:id', c.getUserById.bind(c));
 		this.router.get('/username/:username', c.getUserByUsername.bind(c));
+
+		this.router.put('/', isAuthorized, c.updateProfilePublicInformation.bind(c));
+		this.router.put('/picture', isAuthorized, c.updateProfilePicture.bind(c));
 	}
 
 	public getRouter(): Router {

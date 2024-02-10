@@ -17,6 +17,12 @@ import MessageRouter from "./routers/message";
 import NotificationRepository from "./repositories/notification";
 import NotificationController from "./controllers/notification";
 import NotificationRouter from "./routers/notification";
+import PublicationRepository from "./repositories/publication";
+import PublicationController from "./controllers/publication";
+import PublicationRouter from "./routers/publication";
+import CommentController from "./controllers/comment";
+import CommentRepository from "./repositories/comment";
+import CommentRouter from "./routers/comment";
 
 void async function start_service() {
 
@@ -31,9 +37,17 @@ void async function start_service() {
 	const friendController = new FriendController(friendRepository);
 	const friendRouter = new FriendRouter(friendController).getRouter();
 
+	const commentRepository = new CommentRepository(database);
+	const commentController = new CommentController(commentRepository);
+	const commentRouter = new CommentRouter(commentController).getRouter();
+
 	const messageRepository = new MessageRepository(database);
 	const messageController = new MessageController(messageRepository);
 	const messageRouter = new MessageRouter(messageController).getRouter();
+
+	const publicationsRepository = new PublicationRepository(database);
+	const publicationController = new PublicationController(publicationsRepository);
+	const publicationRouter = new PublicationRouter(publicationController).getRouter();
 
 	const notificationRepository = new NotificationRepository(database);
 	const notificationController = new NotificationController(notificationRepository);
@@ -41,7 +55,9 @@ void async function start_service() {
 
 	api.use('/api/user', userRouter);
 	api.use('/api/friend', friendRouter);
+	api.use('/api/comment', commentRouter);
 	api.use('/api/message', messageRouter);
+	api.use('/api/publication', publicationRouter);
 	api.use('/api/notification', notificationRouter);
 	api.use(Middlewares.errorHandler);
 
@@ -68,9 +84,9 @@ async function graceful_shutdown(database: Client, cache: Redis) {
 				await database.end();
 				cache.disconnect();
 			} catch (error: Error | unknown) {
-				console.error(error)
+				console.error(error);
 			} finally {
-				process.exit(1)
+				process.exit(1);
 			}
 		});
 	});

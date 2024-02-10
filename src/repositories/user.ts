@@ -109,4 +109,56 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'getUserByUsername'));
 	}
 
+
+	public updateProfilePicture(id: string, pictureUrl: string) {
+		return this.database.query<I_UserSchema>(`
+
+                UPDATE "users"
+                SET picture = $2
+                WHERE id = $1
+                RETURNING *
+			`,
+			[id, pictureUrl]
+		).then(data => data.rows.length ? data.rows[0] : null)
+
+			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
+	}
+
+	public updateProfilePublicInformation(
+		id: string,
+		{username, email, firstName, lastName}: { username?: string; email?: string; firstName?: string; lastName?: string }
+	) {
+		const fields = [];
+		const values = [id];
+
+		if (username) {
+			fields.push(`username = $${fields.length + 2}`);
+			values.push(username);
+		}
+		if (email) {
+			fields.push(`email = $${fields.length + 2}`);
+			values.push(email);
+		}
+		if (firstName) {
+			fields.push(`first_name = $${fields.length + 2}`);
+			values.push(firstName);
+		}
+		if (lastName) {
+			fields.push(`last_name = $${fields.length + 2}`);
+			values.push(lastName);
+		}
+
+		return this.database.query<I_UserSchema>(`
+                UPDATE "users"
+                SET ${fields.join(', ')}
+                WHERE id = $1
+                RETURNING *
+			`,
+			values
+		).then(data => data.rows.length ? data.rows[0] : null)
+
+			.catch(e => this.errorHandler(e, 'updateProfilePublicInformation'));
+	}
+
+
 }
