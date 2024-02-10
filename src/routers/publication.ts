@@ -12,10 +12,10 @@ export default class PublicationRouter {
 
 	private initializeRoutes(c: PublicationController) {
 		this.router.get('/', isAuthorized, c.listPublications.bind(c));
+		this.router.get('/recommendations', isAuthorized, c.getRecommendations.bind(c));
 		this.router.get('/:id', isAuthorized, c.getPublicationById.bind(c));
 		this.router.get('/user/:userId', isAuthorized, c.getPublicationsByUserId.bind(c));
 
-		this.router.get('/recommendations', isAuthorized, c.getRecommendations.bind(c));
 		this.router.post('/', isAuthorized, c.createPublication.bind(c));
 		this.router.put('/:id', isAuthorized, c.updatePublication.bind(c));
 		this.router.put('/:id/like', isAuthorized, c.likePublication.bind(c));

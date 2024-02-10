@@ -45,6 +45,8 @@ export default class PublicationsRepository {
           SELECT p.*,
                  u.username,
                  u.picture,
+                 u.first_name,
+                 u.last_name,
                  CASE
                      WHEN pl.user_id IS NOT NULL THEN TRUE
                      ELSE FALSE
@@ -145,32 +147,29 @@ export default class PublicationsRepository {
 
 	async likePublication(publicationId: string, userId: string): Promise<void> {
 		try {
+			await this.database.query('BEGIN');
+
 			const likeExistsQuery = 'SELECT id FROM publication_likes WHERE publication_id = $1 AND user_id = $2';
 			const likeExistsResult = await this.database.query(likeExistsQuery, [publicationId, userId]);
 
 			if (likeExistsResult.rows.length > 0) {
-				const removeLikeQuery = `
-            DELETE
-            FROM publication_likes
-            WHERE publication_id = $1
-              AND user_id = $2;
-            UPDATE publications
-            SET likes_count = likes_count - 1
-            WHERE id = $1;
-				`;
+				const removeLikeQuery = 'DELETE FROM publication_likes WHERE publication_id = $1 AND user_id = $2';
 				await this.database.query(removeLikeQuery, [publicationId, userId]);
+
+				const decrementLikeCountQuery = 'UPDATE publications SET likes_count = likes_count - 1 WHERE id = $1';
+				await this.database.query(decrementLikeCountQuery, [publicationId]);
 			} else {
-				const addLikeQuery = `
-            INSERT INTO publication_likes (publication_id, user_id)
-            VALUES ($1, $2);
-            UPDATE publications
-            SET likes_count = likes_count + 1
-            WHERE id = $1;
-				`;
+				const addLikeQuery = 'INSERT INTO publication_likes (publication_id, user_id) VALUES ($1, $2)';
 				await this.database.query(addLikeQuery, [publicationId, userId]);
+
+				const incrementLikeCountQuery = 'UPDATE publications SET likes_count = likes_count + 1 WHERE id = $1';
+				await this.database.query(incrementLikeCountQuery, [publicationId]);
 			}
+
+			await this.database.query('COMMIT');
 		} catch (error) {
-			this.errorHandler(error, 'likePublication');
+			await this.database.query('ROLLBACK');
+			throw error;
 		}
 	}
 

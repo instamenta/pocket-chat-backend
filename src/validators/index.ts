@@ -88,7 +88,7 @@ export const url_schema = z.string().url();
 
 export const create_publication_schema = z.object({
 	publisher_id: z.string().uuid({ message: 'Publisher ID must be a valid UUID' }),
-	description: z.string().min(1, { message: 'Description must be at least 1 character' }),
+	description: z.string().default(''),
 	images: z.array(z.string()).min(1, { message: 'At least one image must be provided' }),
 	publication_status: z.enum(['draft', 'published']),
 });
