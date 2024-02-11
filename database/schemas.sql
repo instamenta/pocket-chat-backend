@@ -159,5 +159,22 @@ CREATE TABLE IF NOT EXISTS "comment_likes"
 CREATE INDEX IF NOT EXISTS idx_comment_likes_on_comment_id ON comment_likes (comment_id);
 CREATE INDEX IF NOT EXISTS idx_comment_likes_on_user_id ON comment_likes (user_id);
 
+-- Create Enum type for Story Visibility Status:
+CREATE TYPE story_visibility AS ENUM ('public', 'private', 'archive');
+
+-- Create Table Stories:
+CREATE TABLE IF NOT EXISTS "stories"
+(
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL,
+    image_url       VARCHAR(255) NOT NULL,
+    created_at      TIMESTAMPTZ   DEFAULT NOW(),
+    visibility      story_visibility DEFAULT 'public',
+    FOREIGN KEY (user_id) REFERENCES "users" (id)
+);
+
+-- Add Indexes to Stories table:
+CREATE INDEX IF NOT EXISTS idx_stories_user_id ON "stories" (user_id);
+CREATE INDEX IF NOT EXISTS idx_stories_created_at ON "stories" (created_at);
 
 

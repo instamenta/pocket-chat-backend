@@ -1,4 +1,3 @@
-// CommentsRouter.js
 import { Router } from 'express';
 import CommentController from '../controllers/comment';
 import { isAuthorized } from '../middlewares';
