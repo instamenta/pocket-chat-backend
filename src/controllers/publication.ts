@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import PublicationsRepository from '../repositories/publication';
 import statusCodes from '@instamenta/http-status-codes';
-import { controllerErrorHandler } from '../utilities';
-import { create_publication_schema, update_publication_schema, uuid_schema } from "../validators";
-import { I_Publication } from '../types/publication';
+import {controllerErrorHandler} from '../utilities';
+import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
 
 export default class PublicationController {
-	constructor(private readonly repository: PublicationsRepository) {}
+	constructor(private readonly repository: PublicationsRepository) {
+	}
 
 	public async listPublications(req: Request, res: Response) {
 		try {
@@ -22,7 +22,7 @@ export default class PublicationController {
 			const id = uuid_schema.parse(req.params.id);
 			const publication = await this.repository.getPublicationById(id);
 			if (!publication) {
-				res.status(statusCodes.NOT_FOUND).json({ message: 'Publication not found' });
+				res.status(statusCodes.NOT_FOUND).json({message: 'Publication not found'});
 			} else {
 				res.status(statusCodes.OK).json(publication);
 			}
@@ -61,7 +61,7 @@ export default class PublicationController {
 			});
 			const publicationId = await this.repository.createPublication(data);
 
-			res.status(statusCodes.CREATED).json({ id: publicationId });
+			res.status(statusCodes.CREATED).json({id: publicationId});
 		} catch (error) {
 			controllerErrorHandler(error, res);
 		}
@@ -73,7 +73,7 @@ export default class PublicationController {
 			const publicationData = update_publication_schema.parse(req.body);
 			const updatedPublicationId = await this.repository.updatePublication(id, publicationData);
 
-			res.status(statusCodes.OK).json({ id: updatedPublicationId });
+			res.status(statusCodes.OK).json({id: updatedPublicationId});
 		} catch (error) {
 			controllerErrorHandler(error, res);
 		}

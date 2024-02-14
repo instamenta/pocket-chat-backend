@@ -4,7 +4,7 @@ import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import StoryRepository from "../repositories/story";
 import {z} from "zod";
-import {T_StoryFull} from "../types";
+import {T_FeedStory, T_StoryFull} from "../types";
 
 export default class StoryController {
 	constructor(private readonly repository: StoryRepository) {
@@ -32,11 +32,12 @@ export default class StoryController {
 		}
 	}
 
-	public async listStories(r: Request, w: Response) {
+	public async listStories(r: Request, w: Response<T_FeedStory[]>) {
 		try {
-			const userId = uuid_schema.parse(r.params.recipientId);
+			const userId = uuid_schema.parse(r.user.id);
 
 			const stories = await this.repository.listStories(userId);
+			console.log(stories);
 			if (!stories) {
 				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -48,7 +49,7 @@ export default class StoryController {
 		}
 	}
 
-	public async listFeedStories(r: Request, w: Response<T_StoryFull[]>) {
+	public async listFeedStories(r: Request, w: Response<T_FeedStory[]>) {
 		try {
 			const userId = uuid_schema.parse(r.user.id);
 

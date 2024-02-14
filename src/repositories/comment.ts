@@ -18,6 +18,8 @@ export default class CommentRepository {
                c.user_id,
                u.username,
                u.picture,
+               u.first_name,
+               u.last_name,
                CASE WHEN cl.comment_id IS NOT NULL THEN TRUE ELSE FALSE END AS liked_by_user
         FROM comments c
                  JOIN users u ON c.user_id = u.id
@@ -33,19 +35,24 @@ export default class CommentRepository {
 	}
 
 	async createComment(publicationId: string, userId: string, content: string): Promise<T_Comment> {
-		const query = `
-            WITH inserted_comment AS (
-                INSERT INTO comments (content, publication_id, user_id)
-                VALUES ($1, $2, $3)
-                RETURNING *
-            )
-            UPDATE publications
-            SET comments_count = comments_count + 1
-            WHERE id = $2
-            RETURNING inserted_comment.*`;
+		const insertQuery = `
+        INSERT INTO comments (content, publication_id, user_id)
+        VALUES ($1, $2, $3)
+        RETURNING *`;
+
+		const updateQuery = `
+        UPDATE publications
+        SET comments_count = comments_count + 1
+        WHERE id = $1`;
+
 		try {
-			const result = await this.database.query<T_Comment>(query, [content, publicationId, userId]);
-			return result.rows[0];
+			const insertResult = await this.database.query<T_Comment>(insertQuery, [content, publicationId, userId]);
+			if (insertResult.rows.length === 0) {
+				throw new Error('Failed to insert comment');
+			}
+
+			await this.database.query(updateQuery, [publicationId]);
+			return insertResult.rows[0];
 		} catch (error) {
 			this.errorHandler(error, 'createComment');
 		}
@@ -55,7 +62,8 @@ export default class CommentRepository {
 		const query = `
         DELETE
         FROM comments
-        WHERE id = $1 AND user_id = $2`;
+        WHERE id = $1
+          AND user_id = $2`;
 		try {
 			const result = await this.database.query(query, [commentId, userId]);
 			return !!result.rowCount

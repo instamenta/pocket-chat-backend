@@ -15,4 +15,6 @@ export interface T_PopulatedComment {
 	username: string,
 	picture: string,
 	liked_by_user: boolean
+	first_name: string
+	last_name: string
 }

@@ -1,5 +1,5 @@
 import {Client} from "pg";
-import {T_StoryFull} from "../types";
+import {T_FeedStory, T_StoryFull} from "../types";
 
 export default class StoryRepository {
 	constructor(private readonly database: Client) {
@@ -23,9 +23,12 @@ export default class StoryRepository {
 	}
 
 	async listStories(userId: string) {
-		const query = `SELECT s.*,
-                          u.username AS user_username,
-                          u.picture  AS user_picture
+		const query = `SELECT u.id AS user_id,
+                          u.picture as user_picture,
+                          u.username,
+                          u.first_name,
+                          u.last_name,
+                          s.image_url
                    FROM stories s
                             JOIN
                         friendships f ON s.user_id = f.sender_id OR s.user_id = f.recipient_id
@@ -35,7 +38,7 @@ export default class StoryRepository {
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
 		try {
-			const result = await this.database.query<T_StoryFull>(query, [userId]);
+			const result = await this.database.query<T_FeedStory>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listStories');
@@ -68,14 +71,7 @@ export default class StoryRepository {
 		`;
 
 		try {
-			const result = await this.database.query<{
-				id: string,
-				user_picture: string,
-				username: string,
-				first_name: string,
-				last_name: string,
-				image_url: string
-			}>(query, [userId]);
+			const result = await this.database.query<T_FeedStory>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listFeedStories');

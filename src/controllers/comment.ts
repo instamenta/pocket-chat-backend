@@ -26,7 +26,7 @@ export default class CommentController {
 		try {
 			const publicationId = uuid_schema.parse(req.params.publicationId);
 			const userId = uuid_schema.parse(req.user.id);
-			const content = z.string().min(1).max(150).parse(req.body.content);
+			const content = z.string().min(1).parse(req.body.content);
 
 			const comment = await this.repository.createComment(publicationId, userId, content);
 			res.status(statusCodes.CREATED).json(comment);

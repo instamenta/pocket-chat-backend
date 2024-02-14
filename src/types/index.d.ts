@@ -44,6 +44,15 @@ interface I_Story {
 	visibility: E_StoryVisibility;
 }
 
+export type T_FeedStory = {
+	id: string;
+	username: string;
+	first_name: string;
+	last_name: string;
+	user_picture: string;
+	image_url: string;
+};
+
 export type T_StoryFull = I_Story | {
 	user_picture: string,
 	user_username: string

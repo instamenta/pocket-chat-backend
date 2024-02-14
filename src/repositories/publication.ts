@@ -71,6 +71,8 @@ export default class PublicationsRepository {
             SELECT p.*,
                    u.username,
                    u.picture,
+                   u.first_name,
+                   u.last_name,
                    CASE
                        WHEN pl.user_id IS NOT NULL THEN TRUE
                        ELSE FALSE
