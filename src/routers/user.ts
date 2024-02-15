@@ -21,6 +21,7 @@ export default class UserRouter {
 
 		this.router.put('/', isAuthorized, c.updateProfilePublicInformation.bind(c));
 		this.router.put('/picture', isAuthorized, c.updateProfilePicture.bind(c));
+		this.router.put('/bio', isAuthorized, c.updateBio.bind(c))
 	}
 
 	public getRouter(): Router {

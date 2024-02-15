@@ -139,6 +139,30 @@ export default class UserController {
 		}
 	}
 
+	public async updateBio(r: Request<{}, { bio: string }>, w: Response) {
+		try {
+			const id = uuid_schema.parse(r.user.id);
+			const bio = z.string().parse(r.body.bio);
+
+			const userData = await this.repository.updateBio(id, bio);
+			if (!userData) {
+				console.log(`${this.constructor.name}.updateBio(): Failed to update`);
+				return w.status(status_codes.NOT_FOUND).end();
+			}
+
+			const token = JWT.signToken({
+				id: userData.id,
+				email: userData.email,
+				username: userData.username,
+				picture: userData.picture
+			});
+
+			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
 	public async updateProfilePicture(r: Request<{}, { picture_url: string }>, w: Response) {
 		try {
 			const id = uuid_schema.parse(r.user.id);

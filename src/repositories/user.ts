@@ -124,6 +124,20 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
 	}
 
+	public updateBio(id: string, bio: string) {
+		return this.database.query<I_UserSchema>(`
+
+                UPDATE "users"
+                SET bio = $2
+                WHERE id = $1
+                RETURNING *
+			`,
+			[id, bio]
+		).then(data => data.rows.length ? data.rows[0] : null)
+
+			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
+	}
+
 	public updateProfilePublicInformation(
 		id: string,
 		{username, email, firstName, lastName}: { username?: string; email?: string; firstName?: string; lastName?: string }

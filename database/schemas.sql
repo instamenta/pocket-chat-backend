@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS "users"
     password       VARCHAR(255),
     first_name     VARCHAR(255),
     last_name      VARCHAR(255),
+    bio            TEXT             DEFAULT '',
     picture        VARCHAR(255)     DEFAULT 'https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png',
     created_at     TIMESTAMPTZ      DEFAULT NOW(),
     updated_at     TIMESTAMPTZ      DEFAULT NOW(),
@@ -96,8 +97,8 @@ CREATE TABLE IF NOT EXISTS "publications"
     images             VARCHAR(255)[],
     description        TEXT               DEFAULT '',
     publisher_id       UUID,
-    likes_count INT DEFAULT 0,
-    comments_count INT DEFAULT 0,
+    likes_count        INT                DEFAULT 0,
+    comments_count     INT                DEFAULT 0,
     FOREIGN KEY (publisher_id) REFERENCES "users" (id)
 );
 
@@ -165,11 +166,11 @@ CREATE TYPE story_visibility AS ENUM ('public', 'private', 'archive');
 -- Create Table Stories:
 CREATE TABLE IF NOT EXISTS "stories"
 (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id         UUID NOT NULL,
-    image_url       VARCHAR(255) NOT NULL,
-    created_at      TIMESTAMPTZ   DEFAULT NOW(),
-    visibility      story_visibility DEFAULT 'public',
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id    UUID         NOT NULL,
+    image_url  VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    visibility story_visibility DEFAULT 'public',
     FOREIGN KEY (user_id) REFERENCES "users" (id)
 );
 

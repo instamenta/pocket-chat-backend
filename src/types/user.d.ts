@@ -4,6 +4,7 @@ export interface I_UserSchema {
 	picture: string;
 	username: string;
 	password: string;
+	bio: string;
 	first_name: string;
 	last_name: string;
 	created_at: string; // Timestamp in ISO
