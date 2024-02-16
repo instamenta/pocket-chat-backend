@@ -166,7 +166,7 @@ export default class SocketController {
 	}
 
 	private onClose(code: number, reason: Buffer, user: I_UserSchema) {
-		console.error(`Exiting with number (${code}) for reason`, reason.toString())
+		console.error(`Exiting with number (${code}) for reason`, reason.toString() + '.')
 
 		this.connections.delete(user.id);
 		this.cache.del(`user=${user.id}`);
