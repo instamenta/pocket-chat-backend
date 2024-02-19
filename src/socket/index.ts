@@ -60,6 +60,8 @@ export default class SocketController {
 	private async onMessage(request: I_MessageRequest, host: WebSocket, user: I_UserSchema) {
 		const r = message_schema.parse(request);
 
+		if (!r.images?.length && !r.content.length) return console.log('Empty');
+
 		const friendship = await this.friendRepository.getBySenderAndRecipient(user.id, r.recipient);
 		if (!friendship) {
 			return console.error('No friendship found between users', {data: r, sender: user.id});
@@ -69,7 +71,9 @@ export default class SocketController {
 			sender: r.sender,
 			recipient: r.recipient,
 			content: r.content,
-			friendship: friendship.id
+			friendship: friendship.id,
+			images: r.images,
+			files: r.files,
 		});
 		if (!messageId) {
 			return console.error("Failed to save message to the database");
@@ -82,6 +86,8 @@ export default class SocketController {
 			updated_at: r.date,
 			content: r.content,
 			sender_id: r.sender,
+			files: r.files,
+			images: r.images,
 			message_id: messageId,
 			recipient_id: r.recipient,
 			friendship_id: friendship.id,

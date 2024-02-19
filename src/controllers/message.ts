@@ -9,7 +9,7 @@ export default class MessageController {
 	}
 
 	public async sendMessage(
-		r: Request<{}, {}, { recipient: string, content: string, friendship: string }>,
+		r: Request<{}, {}, { recipient: string, content: string, friendship: string, images?: string[], files?: string[] }>,
 		w: Response<{ id: string }>
 	) {
 		try {
@@ -18,6 +18,8 @@ export default class MessageController {
 				recipient: r.body.recipient,
 				content: r.body.content,
 				friendship: r.body.friendship,
+				images: r.body.images,
+				files: r.body.files,
 			});
 
 			const messageId = await this.repository.createMessage(message);

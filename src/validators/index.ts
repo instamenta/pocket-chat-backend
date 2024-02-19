@@ -40,15 +40,19 @@ export const create_message_schema = z.object({
 	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
 	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
 	friendship: z.string().uuid({message: 'Friendship must be a valid UUID'}),
-	content: z.string().min(1, {message: "Invalid content size"}),
+	images: z.string().array().default([]),
+	files: z.string().array().default([]),
+	content: z.string(),
 });
 
 export const message_schema = z.object({
 	type: z.string(),
 	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
 	recipient: z.string().uuid({message: 'Recipient must be a valid UUID'}),
-	content: z.string().min(1, {message: "Invalid content size"}),
+	content: z.string(),
 	date: z.string().default(new Date().toISOString),
+	images: z.string().array().default([]),
+	files: z.string().array().default([]),
 })
 
 export const video_call_invitation_request_schema = z.object({
@@ -87,9 +91,9 @@ export const update_profile_public_information_schema = z.object({
 export const url_schema = z.string().url();
 
 export const create_publication_schema = z.object({
-	publisher_id: z.string().uuid({ message: 'Publisher ID must be a valid UUID' }),
+	publisher_id: z.string().uuid({message: 'Publisher ID must be a valid UUID'}),
 	description: z.string().default(''),
-	images: z.array(z.string()).min(1, { message: 'At least one image must be provided' }),
+	images: z.array(z.string()).min(1, {message: 'At least one image must be provided'}),
 	publication_status: z.enum(['draft', 'published']),
 });
 

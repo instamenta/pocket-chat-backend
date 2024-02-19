@@ -57,6 +57,8 @@ CREATE TABLE IF NOT EXISTS "messages"
     sender_id      UUID,
     recipient_id   UUID,
     friendship_id  UUID,
+    images         VARCHAR(255)[],
+    files          VARCHAR(255)[],
     FOREIGN KEY (sender_id) REFERENCES "users" (id),
     FOREIGN KEY (recipient_id) REFERENCES "users" (id),
     FOREIGN KEY (friendship_id) REFERENCES "friendships" (id)
@@ -72,7 +74,7 @@ CREATE TABLE IF NOT EXISTS "notifications"
     id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at   TIMESTAMPTZ      DEFAULT NOW(),
     type         VARCHAR(255),
-    seen         BOOL,
+    seen         BOOL             DEFAULT false,
     content      TEXT,
     sender_id    UUID,
     recipient_id UUID,

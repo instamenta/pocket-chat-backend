@@ -1,4 +1,4 @@
-import {T_CreateMessage, I_Message} from "../types/message";
+import {I_Message, T_CreateMessage} from "../types/message";
 import {Client} from "pg";
 
 export default class MessageRepository {
@@ -9,14 +9,19 @@ export default class MessageRepository {
 		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
 	}
 
-	public createMessage({sender, recipient, content, friendship}: T_CreateMessage) {
+	public createMessage({sender, recipient, content, friendship, images = [], files = []}: T_CreateMessage) {
 		return this.database.query<{ id: string }>(`
 
-                INSERT INTO "messages" (sender_id, recipient_id, friendship_id, content)
-                VALUES ($1, $2, $3, $4)
+                INSERT INTO "messages" (sender_id,
+                                        recipient_id,
+                                        friendship_id,
+                                        content,
+                                        images,
+                                        files)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`,
-			[sender, recipient, friendship, content]
+			[sender, recipient, friendship, content, images, files]
 		).then((data) => data.rows[0].id)
 
 			.catch(e => this.errorHandler(e, 'createMessage'));

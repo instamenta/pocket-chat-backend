@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import type {create_message_schema} from "../validators";
+import {socket_events} from "../utilities/enumerations";
 
 export type T_CreateMessage = z.infer<typeof create_message_schema>;
 
@@ -12,6 +13,8 @@ export interface I_Message {
 	updated_at: string,
 	recipient_id: string,
 	friendship_id: string,
+	images?: string[],
+	files?: string[],
 	message_status: 'seen' | 'sent' | 'pending',
 }
 
@@ -20,6 +23,8 @@ export type I_MessageRequest = {
 	sender: string,
 	content: string,
 	recipient: string,
+	images?: string[],
+	files?: string[],
 	type: socket_events,
 }
 
@@ -38,4 +43,6 @@ export type T_MessageResponse = {
 	recipient: string,
 	messageId: string,
 	friendship: string,
+	images?: string[],
+	files?: string[],
 }
