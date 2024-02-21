@@ -11,7 +11,6 @@ export default class NotificationRouter {
 	}
 
 	private initialize(c: NotificationController) {
-		this.router.get('/', isAuthorized, c.createNotification.bind(c));
 		this.router.post('/', isAuthorized, c.createNotification.bind(c));
 		this.router.put('/', isAuthorized, c.markAllNotificationsAsSeen.bind(c));
 		this.router.put('/:id', isAuthorized, c.markNotificationAsSeen.bind(c));
