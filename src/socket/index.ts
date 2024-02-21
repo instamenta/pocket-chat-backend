@@ -60,7 +60,7 @@ export default class SocketController {
 	private async onMessage(request: I_MessageRequest, host: WebSocket, user: I_UserSchema) {
 		const r = message_schema.parse(request);
 
-		if (!r.images?.length && !r.content.length) return console.log('Empty');
+		if (!r.images?.length && !r.content.length && !r.files.length) return console.log('Empty');
 
 		const friendship = await this.friendRepository.getBySenderAndRecipient(user.id, r.recipient);
 		if (!friendship) {
