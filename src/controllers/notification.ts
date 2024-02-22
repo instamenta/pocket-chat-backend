@@ -3,7 +3,7 @@ import {create_notification_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import NotificationRepository from "../repositories/notification";
-import {I_Notifications} from "../types";
+import {I_Notifications, I_PopulatedNotification} from "../types";
 
 export default class NotificationController {
 	constructor(private readonly repository: NotificationRepository) {
@@ -47,12 +47,12 @@ export default class NotificationController {
 	}
 
 	public async listNotifications(
-		r: Request<{ recipientId: string }, {}, {}, { filter?: 'all' | 'seen' | 'unseen' }>,
-		w: Response
+		r: Request<{}, {}, {}, { filter?: 'all' | 'seen' | 'unseen' }>,
+		w: Response<I_PopulatedNotification[]>
 	) {
 		try {
 			const notifications = await this.repository.listNotifications(
-				uuid_schema.parse(r.params.recipientId),
+				uuid_schema.parse(r.user.id),
 				r.query.filter
 			);
 
@@ -88,7 +88,7 @@ export default class NotificationController {
 	}
 
 	public async markAllNotificationsAsSeen(
-		r: Request<{ recipientId: string }>,
+		r: Request,
 		w: Response<void>
 	) {
 		try {

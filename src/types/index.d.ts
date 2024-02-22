@@ -34,6 +34,19 @@ export interface I_Notifications {
 	recipient_id: string,
 }
 
+export interface I_PopulatedNotification {
+	id: string
+	type: string
+	boolean: string
+	content: string
+	sender_id: string
+	created_at: string
+	recipient_id: string
+	picture: string
+	first_name: string
+	last_name: string
+}
+
 type E_StoryVisibility = 'public' | 'private' | 'archive';
 
 interface I_Story {

@@ -1,5 +1,5 @@
 import {Client} from "pg";
-import {I_Notifications} from "../types";
+import {I_Notifications, I_PopulatedNotification} from "../types";
 
 export default class NotificationRepository {
 	constructor(private readonly database: Client) {
@@ -23,15 +23,25 @@ export default class NotificationRepository {
 			.catch(e => this.errorHandler(e, 'createNotification'));
 	}
 
-	async listNotifications(recipientId: string, filter: 'all' | 'seen' | 'unseen' = 'all'): Promise<I_Notifications[]> {
+	async listNotifications(recipientId: string, filter: 'all' | 'seen' | 'unseen' = 'all') {
 		let query: string;
 
 		switch (filter) {
 			case "all":
-				query = `SELECT *
-                 FROM notifications
-                 WHERE recipient_id = $1
-                 ORDER BY created_at DESC `
+				query = `SELECT n.id,
+                        n.type,
+                        n.seen,
+                        n.content,
+                        n.sender_id,
+                        n.created_at,
+                        n.recipient_id,
+                        u.picture,
+                        u.first_name,
+                        u.last_name
+                 FROM notifications n
+                          JOIN "users" u ON n.recipient_id = u.id
+                 WHERE n.recipient_id = $1
+                 ORDER BY n.created_at DESC `
 				break;
 			case "unseen":
 				query = `SELECT *
@@ -51,7 +61,7 @@ export default class NotificationRepository {
 				throw new Error(`Unknown filter type ${filter} ${recipientId}`);
 		}
 
-		return this.database.query<I_Notifications>(
+		return this.database.query<I_PopulatedNotification>(
 			query,
 			[recipientId]
 		).then(data => data.rows)
