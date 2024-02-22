@@ -35,7 +35,7 @@ export default class CommentController {
 		}
 	}
 
-	public async delete(req: Request<{ commentId: string }>, res: Response) {
+	public async delete(req: Request<{ commentId: string }>, res: Response<void>) {
 		try {
 			const commentId = uuid_schema.parse(req.params.commentId);
 			const userId = uuid_schema.parse(req.user.id);
@@ -47,7 +47,7 @@ export default class CommentController {
 		}
 	}
 
-	public async like(req: Request<{ commentId: string }>, res: Response) {
+	public async like(req: Request<{ commentId: string }>, res: Response<void>) {
 		try {
 			const commentId = uuid_schema.parse(req.params.commentId);
 			const userId = uuid_schema.parse(req.user.id);

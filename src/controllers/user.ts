@@ -90,10 +90,7 @@ export default class UserController {
 
 	public async authUser(r: Request, w: Response<I_UserSchema>) {
 		try {
-			console.log(r.user);
 			const id = uuid_schema.parse(r.user.id);
-
-			console.log(id);
 
 			const user = await this.repository.getUserById(id);
 			if (!user) {
@@ -139,7 +136,14 @@ export default class UserController {
 		}
 	}
 
-	public async updateBio(r: Request<{}, { bio: string }>, w: Response) {
+	public async updateBio(
+		r: Request<{}, { bio: string }>,
+		w: Response<{
+			token: string,
+			id: string,
+			userData: I_UserSchema,
+		}>
+	) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 			const bio = z.string().parse(r.body.bio);
@@ -163,7 +167,14 @@ export default class UserController {
 		}
 	}
 
-	public async updateProfilePicture(r: Request<{}, { picture_url: string }>, w: Response) {
+	public async updateProfilePicture(
+		r: Request<{}, { picture_url: string }>,
+		w: Response<{
+			token: string,
+			id: string,
+			userData: I_UserSchema,
+		}>
+	) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 			const picture_url = url_schema.parse(r.body.picture_url);
@@ -187,7 +198,14 @@ export default class UserController {
 		}
 	}
 
-	public async updateProfilePublicInformation(r: Request, w: Response) {
+	public async updateProfilePublicInformation(
+		r: Request,
+		w: Response<{
+			token: string,
+			id: string,
+			userData: I_UserSchema,
+		}>
+	) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 			const data = update_profile_public_information_schema.parse({
@@ -215,6 +233,5 @@ export default class UserController {
 			controllerErrorHandler(error, w);
 		}
 	}
-
 
 }

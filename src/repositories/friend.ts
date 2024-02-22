@@ -2,7 +2,7 @@ import {Client} from 'pg';
 import {I_UserSchema} from "../types/user";
 import {I_Friendship} from "../types";
 
-type T_FriendRequestData = {
+export type T_FriendRequestData = {
 	id: string,
 	first_name: string,
 	last_name: string,
@@ -113,7 +113,7 @@ export default class FriendRepository {
 	}
 
 	public listFriendRequests(id: string) {
-		return this.database.query<T_FriendRequestData[]>(`
+		return this.database.query<T_FriendRequestData>(`
 
                 SELECT u.id,
                        u.first_name,
@@ -141,7 +141,7 @@ export default class FriendRepository {
 	}
 
 	public listFriendRequestsOnly(id: string) {
-		return this.database.query<T_FriendRequestData[]>(`
+		return this.database.query<T_FriendRequestData>(`
 
                 SELECT u.id,
                        u.first_name,
@@ -162,7 +162,7 @@ export default class FriendRepository {
 	}
 
 	public listFriendSentOnly(id: string) {
-		return this.database.query<T_FriendRequestData[]>(`
+		return this.database.query<T_FriendRequestData>(`
                 SELECT u.id,
                        u.first_name,
                        u.last_name,

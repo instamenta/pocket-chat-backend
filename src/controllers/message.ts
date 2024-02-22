@@ -3,6 +3,7 @@ import {create_message_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import MessageRepository from "../repositories/message";
+import {I_Message} from "../types/message";
 
 export default class MessageController {
 	constructor(private readonly repository: MessageRepository) {
@@ -36,7 +37,7 @@ export default class MessageController {
 
 	public async listMessagesByFriendship(
 		r: Request<{ friendshipId: string }, {}, {}, { skip?: string; limit?: string }>,
-		w: Response
+		w: Response<I_Message[]>
 	) {
 		try {
 			const messages = await this.repository.getMessagesByFriendshipId(
@@ -59,7 +60,7 @@ export default class MessageController {
 
 	public async listMessagesByUsers(
 		r: Request<{ user1: string, user2: string }, {}, {}, { skip?: string; limit?: string }>,
-		w: Response
+		w: Response<I_Message[]>
 	) {
 		try {
 			const messages = await this.repository.getMessagesByUsers(

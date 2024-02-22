@@ -2,7 +2,9 @@ import {Request, Response} from "express";
 import {sender_recipient_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
-import FriendRepository from "../repositories/friend";
+import FriendRepository, {T_FriendRequestData} from "../repositories/friend";
+import {I_Friendship} from "../types";
+import {I_UserSchema} from "../types/user";
 
 export default class FriendController {
 	constructor(private readonly repository: FriendRepository) {
@@ -25,7 +27,7 @@ export default class FriendController {
 		}
 	}
 
-	public async listFriendRequestsOnly(r: Request, w: Response) {
+	public async listFriendRequestsOnly(r: Request, w: Response<T_FriendRequestData[]>) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 
@@ -41,7 +43,7 @@ export default class FriendController {
 		}
 	}
 
-	public async listFriendSentOnly(r: Request, w: Response) {
+	public async listFriendSentOnly(r: Request, w: Response<T_FriendRequestData[]>) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 
@@ -57,7 +59,7 @@ export default class FriendController {
 		}
 	}
 
-	public async listFriendRequests(r: Request, w: Response) {
+	public async listFriendRequests(r: Request, w: Response<T_FriendRequestData[]>) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 
@@ -73,7 +75,7 @@ export default class FriendController {
 		}
 	}
 
-	public async listFriendRecommendations(r: Request, w: Response) {
+	public async listFriendRecommendations(r: Request, w: Response<{id: string, first_name: string, picture: string, username: string}[]>) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 
@@ -89,7 +91,7 @@ export default class FriendController {
 		}
 	}
 
-	public async acceptFriendRequest(r: Request<{ id: string }>, w: Response) {
+	public async acceptFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
 		try {
 			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
 
@@ -105,7 +107,7 @@ export default class FriendController {
 		}
 	}
 
-	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response) {
+	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response<{friendship_id: boolean}>) {
 		try {
 			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
 
@@ -122,7 +124,7 @@ export default class FriendController {
 		}
 	}
 
-	public async declineFriendRequest(r: Request<{ id: string }>, w: Response) {
+	public async declineFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
 		try {
 			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
 
@@ -138,7 +140,7 @@ export default class FriendController {
 		}
 	}
 
-	public async listFriendsByUserId(r: Request<{ id: string }>, w: Response) {
+	public async listFriendsByUserId(r: Request<{ id: string }>, w: Response<I_UserSchema[]>) {
 		try {
 			const id = uuid_schema.parse(r.params.id);
 
@@ -154,7 +156,7 @@ export default class FriendController {
 		}
 	}
 
-	public async getBySenderAndRecipient(r: Request<{ sender: string, recipient: string }>, w: Response) {
+	public async getBySenderAndRecipient(r: Request<{ sender: string, recipient: string }>, w: Response<I_Friendship>) {
 		try {
 			const sender = uuid_schema.parse(r.params.sender);
 			const recipient = uuid_schema.parse(r.params.recipient);
@@ -171,7 +173,7 @@ export default class FriendController {
 		}
 	}
 
-	public async getById(r: Request<{ id: string }>, w: Response) {
+	public async getById(r: Request<{ id: string }>, w: Response<I_Friendship>) {
 		try {
 			const friendship_id = uuid_schema.parse(r.params.id);
 

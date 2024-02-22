@@ -3,12 +3,13 @@ import PublicationsRepository from '../repositories/publication';
 import statusCodes from '@instamenta/http-status-codes';
 import {controllerErrorHandler} from '../utilities';
 import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
+import {I_Publication} from "../types/publication";
 
 export default class PublicationController {
 	constructor(private readonly repository: PublicationsRepository) {
 	}
 
-	public async listPublications(req: Request, res: Response) {
+	public async listPublications(req: Request, res: Response<I_Publication[]>) {
 		try {
 			const publications = await this.repository.listPublications();
 			res.status(statusCodes.OK).json(publications);
@@ -17,12 +18,12 @@ export default class PublicationController {
 		}
 	}
 
-	public async getPublicationById(req: Request<{ id: string }>, res: Response) {
+	public async getPublicationById(req: Request<{ id: string }>, res: Response<I_Publication>) {
 		try {
 			const id = uuid_schema.parse(req.params.id);
 			const publication = await this.repository.getPublicationById(id);
 			if (!publication) {
-				res.status(statusCodes.NOT_FOUND).json({message: 'Publication not found'});
+				res.status(statusCodes.NOT_FOUND).end();
 			} else {
 				res.status(statusCodes.OK).json(publication);
 			}
@@ -31,7 +32,7 @@ export default class PublicationController {
 		}
 	}
 
-	public async getPublicationsByUserId(req: Request<{ id: string }>, res: Response) {
+	public async getPublicationsByUserId(req: Request<{ id: string }>, res: Response<I_Publication[]>) {
 		console.log()
 		try {
 			const id = uuid_schema.parse(req.params.id);
@@ -42,7 +43,7 @@ export default class PublicationController {
 		}
 	}
 
-	public async getRecommendations(req: Request, res: Response) {
+	public async getRecommendations(req: Request, res: Response<I_Publication[]>) {
 		try {
 			const userId = uuid_schema.parse(req.user.id);
 			const recommendations = await this.repository.getRecommendations(userId);
@@ -52,7 +53,13 @@ export default class PublicationController {
 		}
 	}
 
-	public async createPublication(req: Request, res: Response) {
+	public async createPublication(
+		req: Request<{
+			description: string,
+			images: string,
+			publication_status: string
+		}, {}>,
+		res: Response<{ id: string }>) {
 		try {
 			const data = create_publication_schema.parse({
 				publisher_id: uuid_schema.parse(req.user.id),
@@ -68,7 +75,7 @@ export default class PublicationController {
 		}
 	}
 
-	public async updatePublication(req: Request<{ id: string }>, res: Response) {
+	public async updatePublication(req: Request<{ id: string }>, res: Response<{ id: string }>) {
 		try {
 			const id = uuid_schema.parse(req.params.id);
 			const publicationData = update_publication_schema.parse(req.body);
@@ -80,7 +87,7 @@ export default class PublicationController {
 		}
 	}
 
-	public async likePublication(req: Request<{ id: string }>, res: Response) {
+	public async likePublication(req: Request<{ id: string }>, res: Response<void>) {
 		try {
 			const publicationId = uuid_schema.parse(req.params.id);
 			const userId = uuid_schema.parse(req.user.id);

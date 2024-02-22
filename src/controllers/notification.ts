@@ -69,7 +69,7 @@ export default class NotificationController {
 
 	public async markNotificationAsSeen(
 		r: Request<{ id: string }>,
-		w: Response
+		w: Response<void>
 	) {
 		try {
 			const messages = await this.repository.markNotificationAsSeen(
@@ -89,7 +89,7 @@ export default class NotificationController {
 
 	public async markAllNotificationsAsSeen(
 		r: Request<{ recipientId: string }>,
-		w: Response
+		w: Response<void>
 	) {
 		try {
 			const messages = await this.repository.markAllNotificationsAsSeen(
