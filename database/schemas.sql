@@ -180,4 +180,17 @@ CREATE TABLE IF NOT EXISTS "stories"
 CREATE INDEX IF NOT EXISTS idx_stories_user_id ON "stories" (user_id);
 CREATE INDEX IF NOT EXISTS idx_stories_created_at ON "stories" (created_at);
 
+-- Create Table Shorts:
+CREATE TABLE IF NOT EXISTS "shorts"
+(
+    id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id     UUID         NOT NULL,
+    video_url   VARCHAR(255) NOT NULL,
+    description TEXT             DEFAULT '',
+    created_at  TIMESTAMPTZ      DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES "users" (id)
+);
+
+-- Add Indexes to Stories table:
+CREATE INDEX IF NOT EXISTS user_id ON "stories" (user_id);
 

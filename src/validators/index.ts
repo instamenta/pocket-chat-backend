@@ -102,3 +102,9 @@ export const update_publication_schema = z.object({
 	images: z.array(z.string()).optional(),
 	publication_status: z.enum(['draft', 'published']).optional(),
 });
+
+export const create_story_schema = z.object({
+	userId: z.string().uuid(),
+	videoUrl: z.string(),
+	description: z.string().default(''),
+});

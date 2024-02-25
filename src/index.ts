@@ -26,6 +26,9 @@ import CommentRouter from "./routers/comment";
 import StoryRepository from "./repositories/story";
 import StoryController from "./controllers/story";
 import StoryRouter from "./routers/story";
+import ShortRepository from "./repositories/short";
+import ShortRouter from "./routers/short";
+import ShortController from "./controllers/short";
 
 void async function start_service() {
 
@@ -39,6 +42,10 @@ void async function start_service() {
 	const storyRepository = new StoryRepository(database);
 	const storyController = new StoryController(storyRepository);
 	const storyRouter = new StoryRouter(storyController).getRouter();
+
+	const shortRepository = new ShortRepository(database);
+	const shortController = new ShortController(shortRepository);
+	const shortRouter = new ShortRouter(shortController).getRouter();
 
 	const friendRepository = new FriendRepository(database);
 	const friendController = new FriendController(friendRepository);
@@ -62,6 +69,7 @@ void async function start_service() {
 
 	api.use('/api/user', userRouter);
 	api.use('/api/story', storyRouter);
+	api.use('/api/short', shortRouter);
 	api.use('/api/friend', friendRouter);
 	api.use('/api/comment', commentRouter);
 	api.use('/api/message', messageRouter);
