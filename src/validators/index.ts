@@ -108,3 +108,9 @@ export const create_story_schema = z.object({
 	videoUrl: z.string(),
 	description: z.string().default(''),
 });
+
+export const create_group_schema = z.object({
+	userId: z.string().uuid(),
+	name: z.string(),
+	description: z.string().default(''),
+});

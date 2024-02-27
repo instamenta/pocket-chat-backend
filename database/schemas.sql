@@ -101,6 +101,8 @@ CREATE TABLE IF NOT EXISTS "publications"
     publisher_id       UUID,
     likes_count        INT                DEFAULT 0,
     comments_count     INT                DEFAULT 0,
+    group_id           UUID,
+    FOREIGN KEY (group_id) REFERENCES "groups" (id),
     FOREIGN KEY (publisher_id) REFERENCES "users" (id)
 );
 
@@ -194,3 +196,33 @@ CREATE TABLE IF NOT EXISTS "shorts"
 -- Add Indexes to Stories table:
 CREATE INDEX IF NOT EXISTS user_id ON "stories" (user_id);
 
+-- Create Table Groups:
+CREATE TABLE IF NOT EXISTS "groups"
+(
+    id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id      UUID         NOT NULL,
+    name          VARCHAR(255) NOT NULL,
+    description   TEXT             DEFAULT '',
+    created_at    TIMESTAMPTZ      DEFAULT NOW(),
+    members_count INT8             DEFAULT 1,
+    FOREIGN KEY (owner_id) REFERENCES "users" (id)
+);
+
+-- Create Enum type for Group Roles:
+CREATE TYPE group_roles AS ENUM ('owner', 'moderator', 'member');
+
+-- Create Table Group Members
+CREATE TABLE IF NOT EXISTS "group_members"
+(
+    id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    group_id     UUID NOT NULL,
+    user_id      UUID NOT NULL,
+    member_since TIMESTAMPTZ      DEFAULT NOW(),
+    role         group_roles      DEFAULT 'member',
+    FOREIGN KEY (group_id) REFERENCES "groups" (id),
+    FOREIGN KEY (user_id) REFERENCES "users" (id)
+);
+
+-- Add Indexes to Group Members table:
+CREATE INDEX IF NOT EXISTS idx_member_group_id ON "group_members" (group_id);
+CREATE INDEX IF NOT EXISTS idx_member_id ON "group_members" (user_id);

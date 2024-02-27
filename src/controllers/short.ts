@@ -50,7 +50,7 @@ export default class ShortController {
 
 	public async listShortsByUsername(r: Request<{ id: string }>, w: Response<I_ShortPopulated[]>) {
 		try {
-			const userId = name_schema.parse(r.params.id);
+			const userId = uuid_schema.parse(r.params.id);
 
 			const stories = await this.repository.listShortsById(userId);
 			if (!stories) {

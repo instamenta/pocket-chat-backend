@@ -54,7 +54,7 @@ export default class PublicationController {
 	}
 
 	public async createPublication(
-		req: Request<{
+		req: Request<{},  { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string
