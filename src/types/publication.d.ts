@@ -14,6 +14,7 @@ export interface I_Publication {
 	likes_count: number;
 	comments_count: number;
 	publisher: string;
+	group_id?: string;
 }
 
 export interface I_Recommendation {
@@ -32,4 +33,5 @@ export interface I_Recommendation {
 	liked_by_user: boolean
 	first_name: string
 	last_name: string
+	group_id?: string;
 }

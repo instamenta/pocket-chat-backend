@@ -205,6 +205,7 @@ CREATE TABLE IF NOT EXISTS "groups"
     description   TEXT             DEFAULT '',
     created_at    TIMESTAMPTZ      DEFAULT NOW(),
     members_count INT8             DEFAULT 1,
+    image_url         VARCHAR(255) NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES "users" (id)
 );
 

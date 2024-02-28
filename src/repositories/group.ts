@@ -1,4 +1,4 @@
-import {Client, QueryResult} from "pg";
+import {Client} from "pg";
 import {group_roles} from "../utilities/enumerations";
 import {I_Group, I_GroupMemberPopulated} from "../types/group";
 import {I_Publication} from "../types/publication";
@@ -11,14 +11,14 @@ export default class GroupRepository {
 		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
 	}
 
-	async createGroup(userId: string, name: string, description: string): Promise<string> {
+	async createGroup(userId: string, name: string, description: string, imageUrl: string): Promise<string> {
 		return this.database.query<{ id: string }>(`
 
-                INSERT INTO "groups" (owner_id, name, description)
-                VALUES ($1, $2, $3)
+                INSERT INTO "groups" (owner_id, name, description, image_url)
+                VALUES ($1, $2, $3, $4)
                 RETURNING id
 			`,
-			[userId, name, description]
+			[userId, name, description, imageUrl]
 		).then((data) => data.rows[0].id)
 
 			.catch(e => this.errorHandler(e, 'createShort'));
@@ -73,7 +73,8 @@ export default class GroupRepository {
                g.name,
                g.description,
                g.created_at,
-               g.members_count
+               g.members_count,
+               g.image_url
         FROM groups g
                  LEFT JOIN group_members gm ON g.id = gm.group_id AND gm.user_id = $1
         WHERE gm.user_id IS NULL
@@ -189,7 +190,7 @@ export default class GroupRepository {
         WHERE group_id = $1
           AND user_id = $2;`;
 		try {
-			const [senderRole, recipientRole] = await Promise.any([
+			const [senderRole, recipientRole] = await Promise.all([
 				this.database.query(getSenderRoleQuery, [groupId, senderId]),
 				this.database.query(getRecipientRoleQuery, [groupId, senderId]),
 			]);
@@ -264,7 +265,7 @@ export default class GroupRepository {
                      FROM publications
                      WHERE group_id = $1
                      ORDER BY created_at DESC`;
-			const result: QueryResult<I_Publication> = await this.database.query(query, [groupId]);
+			const result = await this.database.query<I_Publication>(query, [groupId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listPublications');
@@ -289,7 +290,7 @@ export default class GroupRepository {
           INSERT INTO publications (publisher_id, description, images, publication_status, group_id)
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id`;
-			const result: QueryResult<{ id: string }> = await this.database.query(query, [
+			const result = await this.database.query<{ id: string }>(query, [
 				publisher_id,
 				description,
 				images,

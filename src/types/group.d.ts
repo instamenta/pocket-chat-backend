@@ -7,6 +7,7 @@ export interface I_Group {
 	description: string,
 	created_at: string,
 	members_count: number,
+	image_url: string,
 }
 
 export interface I_GroupMember {

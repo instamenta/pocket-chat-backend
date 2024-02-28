@@ -19,3 +19,7 @@ ALTER TABLE "publications"
 ALTER TABLE "publications"
     ADD CONSTRAINT fk_publications_group_id
         FOREIGN KEY (group_id) REFERENCES "groups" (id);
+
+-- Alter table groups to add new column
+ALTER TABLE "groups"
+    ADD COLUMN IF NOT EXISTS image_url VARCHAR(255);

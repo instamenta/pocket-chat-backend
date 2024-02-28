@@ -14,17 +14,18 @@ export default class GroupController {
 	}
 
 	public async createGroup(
-		r: Request<{}, { name: string, description: string }>,
+		r: Request<{}, { id: string }, { name: string, description: string, imageUrl: string }>,
 		w: Response<{ id: string }>
 	) {
 		try {
-			const {userId, name, description} = create_group_schema.parse({
+			const {userId, name, description, imageUrl} = create_group_schema.parse({
 				userId: r.user.id,
 				name: r.body.name,
-				description: r.body.description
+				description: r.body.description,
+				imageUrl: r.body.imageUrl,
 			});
 
-			const groupId = await this.repository.createGroup(userId, name, description);
+			const groupId = await this.repository.createGroup(userId, name, description, imageUrl);
 			if (!groupId) {
 				console.error(`${this.constructor.name}.createGroup(): Failed to create group`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -37,7 +38,7 @@ export default class GroupController {
 	}
 
 	public async removeGroup(
-		r: Request<{groupId: string}>,
+		r: Request<{ groupId: string }>,
 		w: Response
 	) {
 		try {
@@ -72,7 +73,7 @@ export default class GroupController {
 		}
 	}
 
-	public async listGroupsByUser(r: Request<{ userId }>, w: Response<I_Group[]>) {
+	public async listGroupsByUser(r: Request<{ userId: string }>, w: Response<I_Group[]>) {
 		try {
 			const userId = uuid_schema.parse(r.params.userId);
 
