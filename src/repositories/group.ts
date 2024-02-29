@@ -75,8 +75,8 @@ export default class GroupRepository {
                g.created_at,
                g.members_count,
                g.image_url
-        FROM groups g
-                 LEFT JOIN group_members gm ON g.id = gm.group_id AND gm.user_id = $1
+        FROM "groups" g
+                 LEFT JOIN "group_members" gm ON g.id = gm.group_id AND gm.user_id = $1
         WHERE gm.user_id IS NULL
         ORDER BY g.members_count DESC;
 		`;
@@ -232,7 +232,7 @@ export default class GroupRepository {
 
 	async getGroupById(groupId: string) {
 		const query = `
-        SELECT g.id, g.name, g.description, g.created_at, g.members_count, g.owner_id
+        SELECT *
         FROM "groups" g
         WHERE g.id = $1;
 		`;
