@@ -53,6 +53,13 @@ export const message_schema = z.object({
 	date: z.string().default(new Date().toISOString),
 	images: z.string().array().default([]),
 	files: z.string().array().default([]),
+});
+
+export const live_message_schema = z.object({
+	type: z.string(),
+	sender: z.string().uuid({message: 'Sender must be a valid UUID'}),
+	liveId: z.string().uuid({message: 'LiveId must be a valid UUID'}),
+	content: z.string(),
 })
 
 export const video_call_invitation_request_schema = z.object({

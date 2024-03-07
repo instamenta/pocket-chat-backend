@@ -28,6 +28,18 @@ export type I_MessageRequest = {
 	type: socket_events,
 }
 
+export type I_JoinLiveRequest = {
+	type: socket_events,
+	liveId: string,
+}
+
+export type I_LiveMessageRequest = {
+	sender: string,
+	content: string,
+	liveId: string,
+	type: socket_events,
+}
+
 export type T_VideoCallRequest = {
 	room: string,
 	sender: string,
@@ -46,3 +58,6 @@ export type T_MessageResponse = {
 	images?: string[],
 	files?: string[],
 }
+
+
+

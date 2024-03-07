@@ -1,7 +1,7 @@
 import {Client} from "pg";
 import {group_roles} from "../utilities/enumerations";
 import {I_Group, I_GroupMemberPopulated} from "../types/group";
-import {I_Publication} from "../types/publication";
+import {I_Publication, I_Recommendation} from "../types/publication";
 
 export default class GroupRepository {
 	constructor(private readonly database: Client) {
@@ -259,13 +259,24 @@ export default class GroupRepository {
 		}
 	}
 
-	async listPublications(groupId: string): Promise<I_Publication[]> {
+	async listPublications(groupId: string) {
 		try {
-			const query = `SELECT *
-                     FROM publications
-                     WHERE group_id = $1
-                     ORDER BY created_at DESC`;
-			const result = await this.database.query<I_Publication>(query, [groupId]);
+			const query = `SELECT p.*,
+                            u.username,
+                            u.picture,
+                            u.first_name,
+                            u.last_name,
+                            CASE
+                                WHEN pl.user_id IS NOT NULL THEN TRUE
+                                ELSE FALSE
+                                END AS liked_by_user
+                     FROM publications p
+                              JOIN users u ON p.publisher_id = u.id
+                              LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
+                     WHERE p.publication_status = 'published'
+                       AND p.group_id = $1
+                     ORDER BY p.created_at DESC`;
+			const result = await this.database.query<I_Recommendation>(query, [groupId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listPublications');
@@ -273,12 +284,12 @@ export default class GroupRepository {
 	}
 
 	async createPublication({
-		                        publisher_id,
-		                        description,
-		                        images,
-		                        publication_status,
-		                        groupId
-	                        }: {
+	  publisher_id,
+	  description,
+	  images,
+	  publication_status,
+	  groupId
+	}: {
 		publisher_id: string;
 		description: string;
 		images: string[];

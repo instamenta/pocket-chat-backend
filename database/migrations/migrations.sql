@@ -23,3 +23,12 @@ ALTER TABLE "publications"
 -- Alter table groups to add new column
 ALTER TABLE "groups"
     ADD COLUMN IF NOT EXISTS image_url VARCHAR(255);
+
+-- Alter table lives messages to add new column
+ALTER TABLE "lives_messages"
+    ADD COLUMN IF NOT EXISTS content TEXT;
+
+-- Alter table lives messages to add remove new column
+ALTER TABLE "lives"
+    DROP COLUMN IF EXISTS content;
+

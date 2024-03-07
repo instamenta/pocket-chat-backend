@@ -97,11 +97,11 @@ export default class PublicationsRepository {
 	}
 
 	async createPublication({
-		                        publisher_id,
-		                        description,
-		                        images,
-		                        publication_status,
-	                        }: {
+	  publisher_id,
+	  description,
+	  images,
+	  publication_status,
+	}: {
 		publisher_id: string;
 		description: string;
 		images: string[];

@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS "groups"
     description   TEXT             DEFAULT '',
     created_at    TIMESTAMPTZ      DEFAULT NOW(),
     members_count INT8             DEFAULT 1,
-    image_url         VARCHAR(255) NOT NULL,
+    image_url     VARCHAR(255) NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES "users" (id)
 );
 
@@ -227,3 +227,34 @@ CREATE TABLE IF NOT EXISTS "group_members"
 -- Add Indexes to Group Members table:
 CREATE INDEX IF NOT EXISTS idx_member_group_id ON "group_members" (group_id);
 CREATE INDEX IF NOT EXISTS idx_member_id ON "group_members" (user_id);
+
+-- Create Enum type for Live States:
+CREATE TYPE live_state AS ENUM ('active', 'paused', 'ended');
+
+-- Create Table Lives:
+CREATE TABLE IF NOT EXISTS "lives"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id    UUID NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    state      live_state       DEFAULT 'active',
+    FOREIGN KEY (user_id) REFERENCES "users" (id)
+);
+
+-- Add Indexes to Lives table:
+CREATE INDEX IF NOT EXISTS idx_user_id ON "lives" (user_id);
+
+-- Create Table Lives Messages:
+CREATE TABLE IF NOT EXISTS "lives_messages"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    sender_id  UUID NOT NULL,
+    live_id    UUID NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    content        TEXT,
+    FOREIGN KEY (sender_id) REFERENCES "users" (id),
+    FOREIGN KEY (live_id) REFERENCES "lives" (id)
+);
+
+-- Add Indexes to Lives Messages table:
+CREATE INDEX IF NOT EXISTS idx_live_id ON "lives_messages" (live_id);

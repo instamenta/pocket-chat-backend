@@ -32,6 +32,9 @@ import ShortController from "./controllers/short";
 import GroupRouter from "./routers/group";
 import GroupRepository from "./repositories/group";
 import GroupController from "./controllers/group";
+import LiveRepository from "./repositories/live";
+import LiveController from "./controllers/live";
+import LiveRouter from "./routers/live";
 
 void async function start_service() {
 
@@ -41,6 +44,10 @@ void async function start_service() {
 	const userRepository = new UserRepository(database);
 	const userController = new UserController(userRepository);
 	const userRouter = new UserRouter(userController).getRouter();
+
+	const liveRepository = new LiveRepository(database);
+	const liveController = new LiveController(liveRepository);
+	const liveRouter = new LiveRouter(liveController).getRouter();
 
 	const storyRepository = new StoryRepository(database);
 	const storyController = new StoryController(storyRepository);
@@ -74,6 +81,7 @@ void async function start_service() {
 	const notificationRouter = new NotificationRouter(notificationController).getRouter();
 
 	api.use('/api/user', userRouter);
+	api.use('/api/live', liveRouter);
 	api.use('/api/story', storyRouter);
 	api.use('/api/short', shortRouter);
 	api.use('/api/group', groupRouter);
@@ -93,6 +101,7 @@ void async function start_service() {
 		server,
 		cache,
 		userRepository,
+		liveRepository,
 		friendRepository,
 		messageRepository,
 		notificationRepository,

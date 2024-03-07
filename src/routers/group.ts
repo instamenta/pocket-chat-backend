@@ -11,10 +11,10 @@ export default class GroupRouter {
 
 	private initializeRoutes(c: GroupController) {
 		this.router.get('/', isAuthorized, c.listGroups.bind(c));
+		this.router.get('/:id', isAuthorized, c.getGroupById.bind(c));
 		this.router.get('/list/:userId', c.listGroupsByUser.bind(c));
 		this.router.get('/member/:id', isAuthorized, c.getMembersByGroupId.bind(c));
-		this.router.get('/post/', isAuthorized, c.listPublications.bind(c));
-		this.router.get('/:id', isAuthorized, c.getGroupById.bind(c));
+		this.router.get('/post/:groupId', isAuthorized, c.listPublications.bind(c));
 
 		this.router.post('/', isAuthorized, c.createGroup.bind(c));
 		this.router.post('/post', isAuthorized, c.createPublication.bind(c));
