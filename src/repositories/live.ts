@@ -46,13 +46,13 @@ export default class LiveRepository {
 	}
 
 	async getLiveById(liveId: string) {
-		const query = `SELECT id, state
+		const query = `SELECT id, state, user_id
                    FROM "lives"
                    WHERE state = 'active'
                      AND id = $1`;
 		try {
-			const result = await this.database.query(query, [liveId]);
-			return !!result.rowCount;
+			const result = await this.database.query<{id: string, state: string, user_id: string}>(query, [liveId]);
+			return result.rows.length ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getLiveById');
 		}
@@ -93,9 +93,11 @@ export default class LiveRepository {
                           u.last_name,
                           lm.content,
                           lm.created_at,
-                          lm.id
+                          lm.id as message_id,
+                          lm.live_id
                    FROM "lives_messages" lm
                             JOIN users u ON u.id = lm.sender_id
+                   WHERE lm.live_id = $1
                    ORDER BY lm.created_at DESC
 		`;
 		try {

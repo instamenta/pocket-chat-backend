@@ -20,12 +20,19 @@ export default class CommentRepository {
                u.picture,
                u.first_name,
                u.last_name,
-               CASE WHEN cl.comment_id IS NOT NULL THEN TRUE ELSE FALSE END AS liked_by_user
+               CASE WHEN cl.comment_id IS NOT NULL THEN TRUE ELSE FALSE END AS liked_by_user,
+               COALESCE(l.likes_count, 0) AS likes_count
         FROM comments c
                  JOIN users u ON c.user_id = u.id
                  LEFT JOIN comment_likes cl ON c.id = cl.comment_id AND cl.user_id = $2
+                 LEFT JOIN (
+            SELECT comment_id, COUNT(*) AS likes_count
+            FROM comment_likes
+            GROUP BY comment_id
+        ) l ON c.id = l.comment_id
         WHERE c.publication_id = $1
-        ORDER BY c.created_at DESC`;
+        ORDER BY c.created_at DESC;
+		`;
 		try {
 			const result = await this.database.query<T_PopulatedComment>(query, [publicationId, userId]);
 			return result.rows;

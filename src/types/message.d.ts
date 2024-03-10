@@ -33,6 +33,11 @@ export type I_JoinLiveRequest = {
 	liveId: string,
 }
 
+export type I_LeaveLiveRequest = {
+	type: socket_events,
+	liveId: string,
+}
+
 export type I_LiveMessageRequest = {
 	sender: string,
 	content: string,
@@ -59,5 +64,8 @@ export type T_MessageResponse = {
 	files?: string[],
 }
 
-
+export type T_JoinLiveResponse = {
+	type: socket_events,
+	hostPeerId: string,
+}
 
