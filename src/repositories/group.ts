@@ -269,10 +269,15 @@ export default class GroupRepository {
                             CASE
                                 WHEN pl.user_id IS NOT NULL THEN TRUE
                                 ELSE FALSE
-                                END AS liked_by_user
+                                END AS liked_by_user,
+                         CASE
+                       WHEN f.friendship_status IS NOT NULL THEN TRUE
+                       ELSE FALSE
+      END AS is_friend_with_user
                      FROM publications p
                               JOIN users u ON p.publisher_id = u.id
                               LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
+                     				LEFT JOIN friendships f ON p.publisher_id 
                      WHERE p.publication_status = 'published'
                        AND p.group_id = $1
                      ORDER BY p.created_at DESC`;

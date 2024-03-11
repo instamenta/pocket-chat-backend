@@ -50,7 +50,11 @@ export default class PublicationsRepository {
                  CASE
                      WHEN pl.user_id IS NOT NULL THEN TRUE
                      ELSE FALSE
-                     END AS liked_by_user
+                     END AS liked_by_user,
+                 CASE
+                     WHEN f.friendship_status IS NOT NULL THEN TRUE
+                     ELSE FALSE
+                     END AS is_friend_with_user
           FROM publications p
                    JOIN friendships f ON p.publisher_id = f.sender_id OR p.publisher_id = f.recipient_id
                    JOIN users u ON p.publisher_id = u.id
@@ -58,15 +62,15 @@ export default class PublicationsRepository {
           WHERE f.friendship_status = 'accepted'
             AND (f.sender_id = $1 OR f.recipient_id = $1)
             AND p.publication_status = 'published'
-          ORDER BY RANDOM()
-          LIMIT 5`;
+          ORDER BY p.created_at
+          LIMIT 20`;
 			const result: QueryResult<I_Publication & {
 				liked_by_user: boolean
 			}> = await this.database.query(query, [userId]);
 			const recommendations = result.rows;
 
-			if (recommendations.length < 5) {
-				const remainingLimit = 5 - recommendations.length;
+			if (recommendations.length < 20) {
+				const remainingLimit = 20 - recommendations.length;
 				const additionalQuery = `
             SELECT p.*,
                    u.username,
@@ -76,12 +80,17 @@ export default class PublicationsRepository {
                    CASE
                        WHEN pl.user_id IS NOT NULL THEN TRUE
                        ELSE FALSE
-                       END AS liked_by_user
+                       END AS liked_by_user,
+                   CASE
+                       WHEN f.friendship_status IS NOT NULL THEN TRUE
+                       ELSE FALSE
+                       END AS is_friend_with_user
             FROM publications p
                      JOIN users u ON p.publisher_id = u.id
                      LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
-            WHERE p.publication_status = 'published'
-            ORDER BY RANDOM()
+                     JOIN friendships f ON p.publisher_id = f.sender_id OR p.publisher_id = f.recipient_id
+            WHERE p.publication_status = 'published' AND f.sender_id = $1 OR f.recipient_id = $1
+            ORDER BY p.created_at
             LIMIT $2`;
 				const additionalResult: QueryResult<I_Publication & {
 					liked_by_user: boolean
