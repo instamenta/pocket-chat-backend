@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS "notifications"
     content      TEXT,
     sender_id    UUID,
     recipient_id UUID,
+    reference_id UUID,
     FOREIGN KEY (sender_id) REFERENCES "users" (id),
     FOREIGN KEY (recipient_id) REFERENCES "users" (id)
 );
@@ -251,7 +252,7 @@ CREATE TABLE IF NOT EXISTS "lives_messages"
     sender_id  UUID NOT NULL,
     live_id    UUID NOT NULL,
     created_at TIMESTAMPTZ      DEFAULT NOW(),
-    content        TEXT,
+    content    TEXT,
     FOREIGN KEY (sender_id) REFERENCES "users" (id),
     FOREIGN KEY (live_id) REFERENCES "lives" (id)
 );

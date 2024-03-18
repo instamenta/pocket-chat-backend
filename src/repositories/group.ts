@@ -1,7 +1,7 @@
 import {Client} from "pg";
 import {group_roles} from "../utilities/enumerations";
 import {I_Group, I_GroupMemberPopulated} from "../types/group";
-import {I_Publication, I_Recommendation} from "../types/publication";
+import {I_Recommendation} from "../types/publication";
 
 export default class GroupRepository {
 	constructor(private readonly database: Client) {
@@ -269,15 +269,10 @@ export default class GroupRepository {
                             CASE
                                 WHEN pl.user_id IS NOT NULL THEN TRUE
                                 ELSE FALSE
-                                END AS liked_by_user,
-                         CASE
-                       WHEN f.friendship_status IS NOT NULL THEN TRUE
-                       ELSE FALSE
-      END AS is_friend_with_user
+                                END AS liked_by_user
                      FROM publications p
                               JOIN users u ON p.publisher_id = u.id
                               LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
-                     				LEFT JOIN friendships f ON p.publisher_id 
                      WHERE p.publication_status = 'published'
                        AND p.group_id = $1
                      ORDER BY p.created_at DESC`;
@@ -289,12 +284,12 @@ export default class GroupRepository {
 	}
 
 	async createPublication({
-	  publisher_id,
-	  description,
-	  images,
-	  publication_status,
-	  groupId
-	}: {
+		                        publisher_id,
+		                        description,
+		                        images,
+		                        publication_status,
+		                        groupId
+	                        }: {
 		publisher_id: string;
 		description: string;
 		images: string[];

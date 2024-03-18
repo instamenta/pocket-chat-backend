@@ -32,3 +32,7 @@ ALTER TABLE "lives_messages"
 ALTER TABLE "lives"
     DROP COLUMN IF EXISTS content;
 
+-- Alter table notifications to add new column
+ALTER TABLE "notifications"
+    ADD COLUMN IF NOT EXISTS reference_id UUID;
+

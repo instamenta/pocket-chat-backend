@@ -4,9 +4,13 @@ import statusCodes from '@instamenta/http-status-codes';
 import {controllerErrorHandler} from '../utilities';
 import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
 import {I_Publication} from "../types/publication";
+import NotificationRepository from "../repositories/notification";
 
 export default class PublicationController {
-	constructor(private readonly repository: PublicationsRepository) {
+	constructor(
+		private readonly repository: PublicationsRepository,
+		private readonly notification: NotificationRepository
+	) {
 	}
 
 	public async listPublications(req: Request, res: Response<I_Publication[]>) {
@@ -54,7 +58,7 @@ export default class PublicationController {
 	}
 
 	public async createPublication(
-		req: Request<{},  { id: string }, {
+		req: Request<{}, { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string

@@ -5,9 +5,13 @@ import {controllerErrorHandler} from "../utilities";
 import FriendRepository, {T_FriendRequestData} from "../repositories/friend";
 import {I_Friendship} from "../types";
 import {I_UserSchema} from "../types/user";
+import NotificationRepository from "../repositories/notification";
 
 export default class FriendController {
-	constructor(private readonly repository: FriendRepository) {
+	constructor(
+		private readonly repository: FriendRepository,
+		private readonly notification: NotificationRepository
+	) {
 	}
 
 	public async sendFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: string }>) {
@@ -75,7 +79,12 @@ export default class FriendController {
 		}
 	}
 
-	public async listFriendRecommendations(r: Request, w: Response<{id: string, first_name: string, picture: string, username: string}[]>) {
+	public async listFriendRecommendations(r: Request, w: Response<{
+		id: string,
+		first_name: string,
+		picture: string,
+		username: string
+	}[]>) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 
@@ -107,7 +116,7 @@ export default class FriendController {
 		}
 	}
 
-	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response<{friendship_id: boolean}>) {
+	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: boolean }>) {
 		try {
 			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
 

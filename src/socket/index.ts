@@ -17,7 +17,7 @@ import * as Cookies from 'cookie';
 import {Server} from 'node:http'
 import Redis from "ioredis";
 import NotificationRepository from "../repositories/notification";
-import {socket_events} from "../utilities/enumerations";
+import {notification_types, socket_events} from "../utilities/enumerations";
 import LiveRepository from "../repositories/live";
 import {T_LiveMessageResponse} from "../types/live";
 
@@ -121,10 +121,11 @@ export default class SocketController {
 
 		const notification = {
 			seen: true,
-			type: r.type,
+			type: notification_types.MESSAGE,
 			sender_id: r.sender,
 			recipient_id: r.recipient,
-			content: `Message from ${user.username}`
+			content: `Message from ${user.username}`,
+			reference_id: r.sender
 		};
 
 		const connection = this.connections.get(r.recipient);

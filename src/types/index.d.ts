@@ -32,6 +32,7 @@ export interface I_Notifications {
 	sender_id: string,
 	created_at: string,
 	recipient_id: string,
+	reference_id?: string,
 }
 
 export interface I_PopulatedNotification {

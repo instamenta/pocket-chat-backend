@@ -9,15 +9,22 @@ export default class NotificationRepository {
 		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
 	}
 
-	async createNotification({sender_id, recipient_id, type, seen, content}: Omit<I_Notifications, 'created_at' | 'id'>
+	async createNotification({
+		                         sender_id,
+		                         recipient_id,
+		                         type,
+		                         seen,
+		                         content,
+		                         reference_id = ''
+	                         }: Omit<I_Notifications, 'created_at' | 'id'>
 	) {
 		return this.database.query<{ id: string }>(`
 
-                INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content)
-                VALUES ($1, $2, $3, $4, $5)
+                INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content, reference_id)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`,
-			[sender_id, recipient_id, type, seen, content]
+			[sender_id, recipient_id, type, seen, content, reference_id]
 		).then((data) => data.rows[0].id)
 
 			.catch(e => this.errorHandler(e, 'createNotification'));

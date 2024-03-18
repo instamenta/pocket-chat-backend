@@ -12,3 +12,11 @@ export enum group_roles {
 	MODERATOR = 'moderator',
 	MEMBER = 'member'
 }
+
+export enum notification_types {
+	CALL = 'call',
+	LIKE = 'like',
+	COMMENT = 'comment',
+	MESSAGE = 'message',
+	LIVE = 'live'
+}

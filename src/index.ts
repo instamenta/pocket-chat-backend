@@ -49,6 +49,14 @@ void async function start_service() {
 	const liveController = new LiveController(liveRepository);
 	const liveRouter = new LiveRouter(liveController).getRouter();
 
+	const notificationRepository = new NotificationRepository(database);
+	const notificationController = new NotificationController(notificationRepository);
+	const notificationRouter = new NotificationRouter(notificationController).getRouter();
+
+	const publicationsRepository = new PublicationRepository(database);
+	const publicationController = new PublicationController(publicationsRepository, notificationRepository);
+	const publicationRouter = new PublicationRouter(publicationController).getRouter();
+
 	const storyRepository = new StoryRepository(database);
 	const storyController = new StoryController(storyRepository);
 	const storyRouter = new StoryRouter(storyController).getRouter();
@@ -62,23 +70,16 @@ void async function start_service() {
 	const groupRouter = new GroupRouter(groupController).getRouter();
 
 	const friendRepository = new FriendRepository(database);
-	const friendController = new FriendController(friendRepository);
+	const friendController = new FriendController(friendRepository, notificationRepository);
 	const friendRouter = new FriendRouter(friendController).getRouter();
+
 	const commentRepository = new CommentRepository(database);
-	const commentController = new CommentController(commentRepository);
+	const commentController = new CommentController(commentRepository, notificationRepository, publicationsRepository);
 	const commentRouter = new CommentRouter(commentController).getRouter();
 
 	const messageRepository = new MessageRepository(database);
 	const messageController = new MessageController(messageRepository);
 	const messageRouter = new MessageRouter(messageController).getRouter();
-
-	const publicationsRepository = new PublicationRepository(database);
-	const publicationController = new PublicationController(publicationsRepository);
-	const publicationRouter = new PublicationRouter(publicationController).getRouter();
-
-	const notificationRepository = new NotificationRepository(database);
-	const notificationController = new NotificationController(notificationRepository);
-	const notificationRouter = new NotificationRouter(notificationController).getRouter();
 
 	api.use('/api/user', userRouter);
 	api.use('/api/live', liveRouter);

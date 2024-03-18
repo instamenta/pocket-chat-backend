@@ -6,12 +6,18 @@ import {controllerErrorHandler} from '../utilities';
 import {uuid_schema} from "../validators";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
+import NotificationRepository from "../repositories/notification";
+import PublicationsRepository from "../repositories/publication";
 
 export default class CommentController {
-	constructor(private readonly repository: CommentRepository) {
+	constructor(
+		private readonly repository: CommentRepository,
+		private readonly notification: NotificationRepository,
+		private readonly publication: PublicationsRepository,
+	) {
 	}
 
-	public async listByPublication(req: Request<{publicationId: string}>, res: Response<T_PopulatedComment[]>) {
+	public async listByPublication(req: Request<{ publicationId: string }>, res: Response<T_PopulatedComment[]>) {
 		try {
 			const publicationId = uuid_schema.parse(req.params.publicationId);
 			const userId = uuid_schema.parse(req.user.id);
@@ -30,6 +36,19 @@ export default class CommentController {
 
 			const comment = await this.repository.createComment(publicationId, userId, content);
 			res.status(statusCodes.CREATED).json(comment);
+
+			const publication = this.publication.getPublicationById(publicationId);
+			if (!publication) {
+				return console.error('Failed to get publication with id', publicationId);
+			}
+
+			// this.notification.createNotification({
+			// 	reference_id: publicationId,
+			// 	sender_id: userId,
+			// 	content: content,
+			// 	seen: false,
+			//
+			// });
 		} catch (error) {
 			controllerErrorHandler(error, res);
 		}
