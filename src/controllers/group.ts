@@ -26,6 +26,7 @@ export default class GroupController {
 			});
 
 			const groupId = await this.repository.createGroup(userId, name, description, imageUrl);
+
 			if (!groupId) {
 				console.error(`${this.constructor.name}.createGroup(): Failed to create group`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -46,6 +47,7 @@ export default class GroupController {
 			const groupId = uuid_schema.parse(r.params.groupId);
 
 			const success = await this.repository.removeGroup(userId, groupId);
+
 			if (!success) {
 				console.error(`${this.constructor.name}.removeGroup(): Failed to remove group`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -62,6 +64,7 @@ export default class GroupController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const groups = await this.repository.listGroups(userId);
+
 			if (!groups) {
 				console.error(`${this.constructor.name}.listGroups(): Failed to get groups`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -78,6 +81,7 @@ export default class GroupController {
 			const userId = uuid_schema.parse(r.params.userId);
 
 			const groups = await this.repository.listGroupsByUser(userId);
+
 			if (!groups) {
 				console.error(`${this.constructor.name}.listUsersGroups(): Failed to get groups`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -94,6 +98,7 @@ export default class GroupController {
 			const groupId = uuid_schema.parse(r.params.id);
 
 			const group = await this.repository.getGroupById(groupId);
+
 			if (!group) {
 				console.error(`${this.constructor.name}.getGroupById(): Error`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -111,6 +116,7 @@ export default class GroupController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const success = await this.repository.joinGroup(userId, groupId);
+
 			if (!success) {
 				console.error(`${this.constructor.name}.joinGroup(): Error`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -128,6 +134,7 @@ export default class GroupController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const success = await this.repository.leaveGroup(userId, groupId);
+
 			if (!success) {
 				console.error(`${this.constructor.name}.leaveGroup(): Error`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -150,6 +157,7 @@ export default class GroupController {
 			}
 
 			const success = await this.repository.changeRole(groupId, senderId, recipientId, r.body.newRole);
+
 			if (!success) {
 				console.error(`${this.constructor.name}.changeRole(): Error`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -168,6 +176,7 @@ export default class GroupController {
 			const recipientId = uuid_schema.parse(r.params.recipientId);
 
 			const success = await this.repository.removeMember(groupId, senderId, recipientId);
+
 			if (!success) {
 				console.error(`${this.constructor.name}.removeMember(): Error`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -185,6 +194,7 @@ export default class GroupController {
 			const groupId = uuid_schema.parse(r.params.id);
 
 			const members = await this.repository.getMembersByGroupId(groupId);
+
 			if (!members) {
 				console.error(`${this.constructor.name}.changeRole(): Error`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -211,6 +221,7 @@ export default class GroupController {
 				images: r.body.images,
 				publication_status: r.body.publication_status,
 			});
+
 			const groupId = uuid_schema.parse(r.body.groupId);
 
 			const publicationId = await this.repository.createPublication({...data, groupId});
@@ -226,6 +237,7 @@ export default class GroupController {
 			const groupId = uuid_schema.parse(r.params.groupId);
 
 			const publications = await this.repository.listPublications(groupId);
+
 			w.status(statusCodes.OK).json(publications);
 		} catch (error) {
 			controllerErrorHandler(error, w);

@@ -13,92 +13,101 @@ export default class PublicationController {
 	) {
 	}
 
-	public async listPublications(req: Request, res: Response<I_Publication[]>) {
+	public async listPublications(r: Request, w: Response<I_Publication[]>) {
 		try {
 			const publications = await this.repository.listPublications();
-			res.status(statusCodes.OK).json(publications);
+
+			w.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async getPublicationById(req: Request<{ id: string }>, res: Response<I_Publication>) {
+	public async getPublicationById(r: Request<{ id: string }>, w: Response<I_Publication>) {
 		try {
-			const id = uuid_schema.parse(req.params.id);
+			const id = uuid_schema.parse(r.params.id);
+
 			const publication = await this.repository.getPublicationById(id);
-			if (!publication) {
-				res.status(statusCodes.NOT_FOUND).end();
-			} else {
-				res.status(statusCodes.OK).json(publication);
-			}
+
+			!publication
+				? w.status(statusCodes.NOT_FOUND).end()
+				: w.status(statusCodes.OK).json(publication);
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async getPublicationsByUserId(req: Request<{ id: string }>, res: Response<I_Publication[]>) {
+	public async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<I_Publication[]>) {
 		console.log()
 		try {
-			const id = uuid_schema.parse(req.params.id);
+			const id = uuid_schema.parse(r.params.id);
+
 			const publications = await this.repository.getPublicationsByUserId(id);
-			res.status(statusCodes.OK).json(publications);
+
+			w.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async getRecommendations(req: Request, res: Response<I_Publication[]>) {
+	public async getRecommendations(r: Request, w: Response<I_Publication[]>) {
 		try {
-			const userId = uuid_schema.parse(req.user.id);
+			const userId = uuid_schema.parse(r.user.id);
+
 			const recommendations = await this.repository.getRecommendations(userId);
-			res.status(statusCodes.OK).json(recommendations);
+
+			w.status(statusCodes.OK).json(recommendations);
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
 	public async createPublication(
-		req: Request<{}, { id: string }, {
+		r: Request<{}, { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string
 		}, {}>,
-		res: Response<{ id: string }>) {
+		w: Response<{ id: string }>) {
 		try {
 			const data = create_publication_schema.parse({
-				publisher_id: uuid_schema.parse(req.user.id),
-				description: req.body.description,
-				images: req.body.images,
-				publication_status: req.body.publication_status,
+				publisher_id: uuid_schema.parse(r.user.id),
+				description: r.body.description,
+				images: r.body.images,
+				publication_status: r.body.publication_status,
 			});
+
 			const publicationId = await this.repository.createPublication(data);
 
-			res.status(statusCodes.CREATED).json({id: publicationId});
+			w.status(statusCodes.CREATED).json({id: publicationId});
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async updatePublication(req: Request<{ id: string }>, res: Response<{ id: string }>) {
+	public async updatePublication(r: Request<{ id: string }>, w: Response<{ id: string }>) {
 		try {
-			const id = uuid_schema.parse(req.params.id);
-			const publicationData = update_publication_schema.parse(req.body);
+			const id = uuid_schema.parse(r.params.id);
+			const publicationData = update_publication_schema.parse(r.body);
+
 			const updatedPublicationId = await this.repository.updatePublication(id, publicationData);
 
-			res.status(statusCodes.OK).json({id: updatedPublicationId});
+			w.status(statusCodes.OK).json({id: updatedPublicationId});
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async likePublication(req: Request<{ id: string }>, res: Response<void>) {
+	public async likePublication(r: Request<{ id: string }>, w: Response<void>) {
 		try {
-			const publicationId = uuid_schema.parse(req.params.id);
-			const userId = uuid_schema.parse(req.user.id);
+			const publicationId = uuid_schema.parse(r.params.id);
+			const userId = uuid_schema.parse(r.user.id);
+
 			await this.repository.likePublication(publicationId, userId);
-			res.status(statusCodes.OK).end();
+
+			w.status(statusCodes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 }

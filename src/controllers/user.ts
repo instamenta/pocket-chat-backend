@@ -28,6 +28,7 @@ export default class UserController {
 			const {skip, limit} = {skip: 0, limit: 10};
 
 			const userList = await this.repository.listUsers(skip, limit);
+
 			if (!userList) {
 				console.error(`${this.constructor.name}.listUsers(): Failed to get user list`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -44,6 +45,7 @@ export default class UserController {
 			const userData = create_user_schema.parse(r.body);
 
 			const userId = await this.repository.createUser(userData);
+
 			if (!userId) {
 				console.error(`${this.constructor.name}.createUser(): failed to create User`);
 				return w.status(status_codes.I_AM_A_TEAPOT).end();
@@ -67,12 +69,14 @@ export default class UserController {
 			const {username, password} = login_user_schema.parse(r.body);
 
 			const userData = await this.repository.getByUsername(username);
+
 			if (!userData) {
 				console.log(`${this.constructor.name}.loginUser(): failed to login user`);
 				return w.status(status_codes.UNAUTHORIZED).end();
 			}
 
 			const isMatch = await BCrypt.comparePasswords(password, userData.password);
+
 			if (!isMatch) {
 				console.log(`${this.constructor.name}.loginUser(): Invalid password`);
 				return w.status(status_codes.UNAUTHORIZED).end();
@@ -93,6 +97,7 @@ export default class UserController {
 			const id = uuid_schema.parse(r.user.id);
 
 			const user = await this.repository.getUserById(id);
+
 			if (!user) {
 				console.log(`${this.constructor.name}.authUser(): User not found`);
 				return w.status(status_codes.NOT_FOUND).end();
@@ -109,6 +114,7 @@ export default class UserController {
 			const id = uuid_schema.parse(r.params.id);
 
 			const user = await this.repository.getUserById(id);
+
 			if (!user) {
 				console.log(`${this.constructor.name}.getUserById(): User not found`);
 				return w.status(status_codes.NOT_FOUND).end();
@@ -125,6 +131,7 @@ export default class UserController {
 			const username = name_schema.parse(r.params.username);
 
 			const user = await this.repository.getUserByUsername(username);
+
 			if (!user) {
 				console.log(`${this.constructor.name}.getUserByUsername(): User not found`);
 				return w.status(status_codes.NOT_FOUND).end();
@@ -149,6 +156,7 @@ export default class UserController {
 			const bio = z.string().parse(r.body.bio);
 
 			const userData = await this.repository.updateBio(id, bio);
+
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateBio(): Failed to update`);
 				return w.status(status_codes.NOT_FOUND).end();
@@ -180,6 +188,7 @@ export default class UserController {
 			const picture_url = url_schema.parse(r.body.picture_url);
 
 			const userData = await this.repository.updateProfilePicture(id, picture_url);
+
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateProfilePicture(): Failed to update`);
 				return w.status(status_codes.NOT_FOUND).end();
@@ -216,6 +225,7 @@ export default class UserController {
 			});
 
 			const userData = await this.repository.updateProfilePublicInformation(id, data);
+
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateProfilePublicInformation(): Failed to update`, r.body);
 				return w.status(status_codes.NOT_FOUND).end();

@@ -21,6 +21,7 @@ export default class ShortController {
 			});
 
 			const shortId = await this.repository.createShort(userId, videoUrl, description);
+
 			if (!shortId) {
 				console.error(`${this.constructor.name}.createShort(): Failed to send message`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -37,6 +38,7 @@ export default class ShortController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const shorts = await this.repository.listShorts(userId);
+
 			if (!shorts) {
 				console.error(`${this.constructor.name}.listShorts(): Failed to get stories`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -53,6 +55,7 @@ export default class ShortController {
 			const userId = uuid_schema.parse(r.params.id);
 
 			const stories = await this.repository.listShortsById(userId);
+
 			if (!stories) {
 				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();

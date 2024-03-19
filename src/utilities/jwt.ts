@@ -23,22 +23,22 @@ class JWT {
 		}
 	}
 
-	static setTokenCookie(res: Response, token: string): void {
-		res.cookie(SECURITY.JWT_TOKEN_NAME, token, {httpOnly: true});
+	static setTokenCookie(w: Response, token: string): void {
+		w.cookie(SECURITY.JWT_TOKEN_NAME, token, {httpOnly: true});
 	}
 
-	static getTokenFromCookie(req: Request): string | null {
-		return req.cookies[SECURITY.JWT_TOKEN_NAME] || null;
+	static getTokenFromCookie(r: Request): string | null {
+		return r.cookies[SECURITY.JWT_TOKEN_NAME] || null;
 	}
 
-	static authenticate(req: Request, res: Response, next: NextFunction) {
-		const token = this.getTokenFromCookie(req);
-		if (!token) return res.status(401).json({message: 'Unauthorized'});
+	static authenticate(r: Request, w: Response, next: NextFunction) {
+		const token = this.getTokenFromCookie(r);
+		if (!token) return w.status(401).json({message: 'Unauthorized'});
 
 		const user = this.verifyToken(token);
-		if (!user) return res.status(401).json({message: 'Unauthorized'});
+		if (!user) return w.status(401).json({message: 'Unauthorized'});
 
-		(req as any).user = user;
+		(r as any).user = user;
 		next();
 	}
 
@@ -46,8 +46,8 @@ class JWT {
 		return this.verifyToken(token) ?? null;
 	}
 
-	static removeTokenFromCookie(res: Response): void {
-		res.setHeader(
+	static removeTokenFromCookie(w: Response): void {
+		w.setHeader(
 			'Set-Cookie',
 			[
 				'X-Authorization-Token=;'

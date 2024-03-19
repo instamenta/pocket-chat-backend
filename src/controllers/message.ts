@@ -24,6 +24,7 @@ export default class MessageController {
 			});
 
 			const messageId = await this.repository.createMessage(message);
+
 			if (!messageId) {
 				console.error(`${this.constructor.name}.sendMessage(): Failed to send message`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -90,6 +91,7 @@ export default class MessageController {
 				uuid_schema.parse(r.params.id),
 				r.body.status
 			);
+
 			if (!result) {
 				console.error(`${this.constructor.name}.updateMessageStatus(): Failed to update message status`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();

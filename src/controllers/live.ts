@@ -17,6 +17,7 @@ export default class LiveController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const shortId = await this.repository.createLive(userId);
+
 			if (!shortId) {
 				console.error(`${this.constructor.name}.createLive(): Failed to create live`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -33,6 +34,7 @@ export default class LiveController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const lives = await this.repository.listLives(userId);
+
 			if (!lives) {
 				console.error(`${this.constructor.name}.listLives(): Failed to list lives`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -49,6 +51,7 @@ export default class LiveController {
 			const liveId = uuid_schema.parse(r.params.liveId);
 
 			const messages = await this.repository.listLiveMessages(liveId);
+
 			if (!messages) {
 				console.error(`${this.constructor.name}.listLiveMessages(): Failed to list live messages`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -71,6 +74,7 @@ export default class LiveController {
 			}
 
 			const lives = await this.repository.updateLiveState(userId, r.params.state);
+
 			if (!lives) {
 				console.error(`${this.constructor.name}.updateLiveState(): Failed to update live state`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();

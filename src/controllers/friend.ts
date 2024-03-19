@@ -36,6 +36,7 @@ export default class FriendController {
 			const id = uuid_schema.parse(r.user.id);
 
 			const list = await this.repository.listFriendRequestsOnly(id);
+
 			if (!list) {
 				console.log(`${this.constructor.name}.listFriendRequestsOnly(): Failed to get friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -52,6 +53,7 @@ export default class FriendController {
 			const id = uuid_schema.parse(r.user.id);
 
 			const list = await this.repository.listFriendSentOnly(id);
+
 			if (!list) {
 				console.log(`${this.constructor.name}.listFriendSentOnly(): Failed to get friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -68,6 +70,7 @@ export default class FriendController {
 			const id = uuid_schema.parse(r.user.id);
 
 			const friendRequests = await this.repository.listFriendRequests(id);
+
 			if (!friendRequests) {
 				console.log(`${this.constructor.name}.listFriendRequests(): Failed to get friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -89,6 +92,7 @@ export default class FriendController {
 			const id = uuid_schema.parse(r.user.id);
 
 			const recommendations = await this.repository.listFriendRecommendations(id);
+
 			if (!recommendations) {
 				console.log(`${this.constructor.name}.listFriendRecommendations(): Failed to get friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -105,6 +109,7 @@ export default class FriendController {
 			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.acceptFriendRequest(sender, recipient);
+
 			if (!status) {
 				console.log(`${this.constructor.name}.acceptFriendRequest(): Failed to accept friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -138,6 +143,7 @@ export default class FriendController {
 			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.declineFriendRequest(sender, recipient);
+
 			if (!status) {
 				console.log(`${this.constructor.name}.declineFriendRequest(): Failed to delete friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -171,6 +177,7 @@ export default class FriendController {
 			const recipient = uuid_schema.parse(r.params.recipient);
 
 			const friendship = await this.repository.getBySenderAndRecipient(sender, recipient);
+
 			if (!friendship) {
 				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to get friendship`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -187,6 +194,7 @@ export default class FriendController {
 			const friendship_id = uuid_schema.parse(r.params.id);
 
 			const friendship = await this.repository.getById(friendship_id);
+
 			if (!friendship) {
 				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to get friendship`);
 				return w.status(status_codes.BAD_GATEWAY).end();

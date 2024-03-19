@@ -21,6 +21,7 @@ export default class StoryController {
 			const imageUrl = z.string().url().parse(r.body.imageUrl);
 
 			const storyId = await this.repository.createStory({userId, imageUrl});
+
 			if (!storyId) {
 				console.error(`${this.constructor.name}.createStory(): Failed to send message`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -37,7 +38,7 @@ export default class StoryController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const stories = await this.repository.listStories(userId);
-			console.log(stories);
+
 			if (!stories) {
 				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -54,6 +55,7 @@ export default class StoryController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			const stories = await this.repository.listFeedStories(userId);
+
 			if (!stories) {
 				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
@@ -70,6 +72,7 @@ export default class StoryController {
 			const userId = name_schema.parse(r.params.username);
 
 			const stories = await this.repository.listFriendStoriesByUsername(userId);
+
 			if (!stories) {
 				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();

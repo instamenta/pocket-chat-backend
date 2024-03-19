@@ -17,25 +17,28 @@ export default class CommentController {
 	) {
 	}
 
-	public async listByPublication(req: Request<{ publicationId: string }>, res: Response<T_PopulatedComment[]>) {
+	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T_PopulatedComment[]>) {
 		try {
-			const publicationId = uuid_schema.parse(req.params.publicationId);
-			const userId = uuid_schema.parse(req.user.id);
+			const publicationId = uuid_schema.parse(r.params.publicationId);
+			const userId = uuid_schema.parse(r.user.id);
+
 			const comments = await this.repository.listCommentsByPublication(publicationId, userId);
-			res.status(statusCodes.OK).json(comments);
+
+			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async create(req: Request<{ publicationId: string }, {}, { content: string }>, res: Response<T_Comment>) {
+	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T_Comment>) {
 		try {
-			const publicationId = uuid_schema.parse(req.params.publicationId);
-			const userId = uuid_schema.parse(req.user.id);
-			const content = z.string().min(1).parse(req.body.content);
+			const publicationId = uuid_schema.parse(r.params.publicationId);
+			const userId = uuid_schema.parse(r.user.id);
+			const content = z.string().min(1).parse(r.body.content);
 
 			const comment = await this.repository.createComment(publicationId, userId, content);
-			res.status(statusCodes.CREATED).json(comment);
+
+			w.status(statusCodes.CREATED).json(comment);
 
 			const publication = this.publication.getPublicationById(publicationId);
 			if (!publication) {
@@ -50,31 +53,32 @@ export default class CommentController {
 			//
 			// });
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async delete(req: Request<{ commentId: string }>, res: Response<void>) {
+	public async delete(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(req.params.commentId);
-			const userId = uuid_schema.parse(req.user.id);
+			const commentId = uuid_schema.parse(r.params.commentId);
+			const userId = uuid_schema.parse(r.user.id);
 
 			await this.repository.deleteComment(commentId, userId);
-			res.status(statusCodes.NO_CONTENT).end();
+
+			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
-	public async like(req: Request<{ commentId: string }>, res: Response<void>) {
+	public async like(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(req.params.commentId);
-			const userId = uuid_schema.parse(req.user.id);
+			const commentId = uuid_schema.parse(r.params.commentId);
+			const userId = uuid_schema.parse(r.user.id);
 
 			await this.repository.likeComment(commentId, userId);
-			res.status(statusCodes.OK).end();
+			w.status(statusCodes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, res);
+			controllerErrorHandler(error, w);
 		}
 	}
 
