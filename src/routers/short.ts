@@ -18,10 +18,10 @@ export default class ShortRouter {
 		this.router.put('/:id/like', isAuthorized, c.likeShort.bind(c));
 
 		//* Comments
-		this.router.get('/comment/:shortId', isAuthorized, c.listCommentsByShort.bind(c));
-		this.router.post('/comment/:shortId', isAuthorized, c.createShortComment.bind(c));
-		this.router.delete('/comment/:commentId', isAuthorized, c.deleteShortComment.bind(c));
-		this.router.put('/comment/:commentId', isAuthorized, c.likeShortComment.bind(c));
+		this.router.get('/comments/:shortId', isAuthorized, c.listCommentsByShort.bind(c));
+		this.router.post('/comments/:shortId', isAuthorized, c.createShortComment.bind(c));
+		this.router.delete('/comments/:commentId', isAuthorized, c.deleteShortComment.bind(c));
+		this.router.put('/comments/:commentId', isAuthorized, c.likeShortComment.bind(c));
 	}
 
 	public getRouter(): Router {

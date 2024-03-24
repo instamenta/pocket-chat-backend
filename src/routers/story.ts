@@ -19,10 +19,10 @@ export default class StoryRouter {
 		this.router.put('/:id/like', isAuthorized, c.likeStory.bind(c));
 
 		//* Comments
-		this.router.get('/comment/:shortId', isAuthorized, c.listCommentsByStory.bind(c));
-		this.router.post('/comment/:shortId', isAuthorized, c.createStoryComment.bind(c));
-		this.router.delete('/comment/:commentId', isAuthorized, c.deleteStoryComment.bind(c));
-		this.router.put('/comment/:commentId', isAuthorized, c.likeStoryComment.bind(c));
+		this.router.get('/comments/:shortId', isAuthorized, c.listCommentsByStory.bind(c));
+		this.router.post('/comments/:shortId', isAuthorized, c.createStoryComment.bind(c));
+		this.router.delete('/comments/:commentId', isAuthorized, c.deleteStoryComment.bind(c));
+		this.router.put('/comments/:commentId', isAuthorized, c.likeStoryComment.bind(c));
 
 	}
 

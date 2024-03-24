@@ -1,9 +1,9 @@
 export interface I_Short {
-	id: string;
-	user_id: string;
-	video_url: string;
-	description: string;
-	created_at: string; // Timestamp in ISO
+	id: string
+	user_id: string
+	video_url: string
+	description: string
+	created_at: string // Timestamp in ISO
 	likes_count: number
 	comments_count: number
 }
