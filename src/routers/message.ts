@@ -16,8 +16,10 @@ export default class MessageRouter {
 		this.router.post('/', isAuthorized, c.sendMessage.bind(c));
 		this.router.put('/:id', isAuthorized, c.updateMessageStatus.bind(c));
 
-		this.router.get('/:friendshipId', c.listMessagesByFriendship.bind(c))
-		this.router.get('/:user1/:user2', c.listMessagesByUsers.bind(c))
+		this.router.get('/conversations', isAuthorized, c.listConversations.bind(c));
+		this.router.get('/:friendshipId', c.listMessagesByFriendship.bind(c));
+		this.router.get('/:user1/:user2', c.listMessagesByUsers.bind(c));
+
 	}
 
 	public getRouter(): Router {

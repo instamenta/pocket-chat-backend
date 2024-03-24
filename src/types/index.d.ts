@@ -1,17 +1,17 @@
 export interface UserPayload {
-	id: string;
-	email: string;
-	picture: string;
-	username: string;
+	id: string
+	email: string
+	picture: string
+	username: string
 }
 
 declare global {
 	namespace Express {
 		interface Request {
-			user: UserPayload;
+			user: UserPayload
 			cookies: {
-				[key: string]: string;
-			};
+				[key: string]: string
+			}
 		}
 	}
 }
@@ -48,24 +48,26 @@ export interface I_PopulatedNotification {
 	last_name: string
 }
 
-type E_StoryVisibility = 'public' | 'private' | 'archive';
+type E_StoryVisibility = 'public' | 'private' | 'archive'
 
 interface I_Story {
-	id: string;
-	user_id: string;
-	image_url: string;
-	created_at: string; // Timestamp with time zone
-	visibility: E_StoryVisibility;
+	id: string
+	user_id: string
+	image_url: string
+	created_at: string // Timestamp with time zone
+	visibility: E_StoryVisibility
+	likes_count: number
+	comments_count: number
 }
 
 export type T_FeedStory = {
-	id: string;
-	username: string;
-	first_name: string;
-	last_name: string;
-	user_picture: string;
-	image_url: string;
-};
+	id: string
+	username: string
+	first_name: string
+	last_name: string
+	user_picture: string
+	image_url: string
+}
 
 export type T_StoryFull = I_Story | {
 	user_picture: string,

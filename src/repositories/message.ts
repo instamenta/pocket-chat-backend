@@ -1,5 +1,5 @@
-import {I_Message, T_CreateMessage} from "../types/message";
-import {Client} from "pg";
+import {I_Message, T_Conversations, T_CreateMessage} from "../types/message";
+import {Client, QueryResult} from "pg";
 
 export default class MessageRepository {
 	constructor(private readonly database: Client) {
@@ -72,6 +72,54 @@ export default class MessageRepository {
 		).then(data => data.rowCount ?? null)
 
 			.catch(e => this.errorHandler(e, 'updateMessageStatus'));
+	}
+
+	public async listConversations(userId: string) {
+		const query = `
+        WITH DistinctConversations AS (
+            SELECT
+                CASE
+                    WHEN sender_id = $1 THEN recipient_id
+                    ELSE sender_id
+                    END AS other_user_id,
+                MAX(created_at) as latest_message_time
+            FROM
+                messages
+            WHERE
+                sender_id = $1 OR recipient_id = $1
+            GROUP BY
+                other_user_id
+        ), LatestMessages AS (
+            SELECT
+                m.id AS message_id,
+                m.content AS last_message,
+                m.created_at,
+                u.id AS user_id,
+                u.username,
+                u.first_name,
+                u.last_name,
+                u.picture
+            FROM
+                messages m
+                    JOIN DistinctConversations dc ON m.created_at = dc.latest_message_time
+                    JOIN users u ON u.id = dc.other_user_id
+            WHERE
+                (m.sender_id = $1 AND m.recipient_id = dc.other_user_id) OR
+                (m.recipient_id = $1 AND m.sender_id = dc.other_user_id)
+        )
+        SELECT
+            *
+        FROM
+            LatestMessages
+        ORDER BY
+            created_at DESC;
+		`;
+		try {
+			const result: QueryResult<T_Conversations> = await this.database.query(query, [userId]);
+			return result.rows;
+		} catch (error) {
+			this.errorHandler(error, 'listConversations');
+		}
 	}
 
 }

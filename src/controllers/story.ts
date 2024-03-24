@@ -5,6 +5,8 @@ import {controllerErrorHandler} from "../utilities";
 import StoryRepository from "../repositories/story";
 import {z} from "zod";
 import {T_FeedStory, T_StoryFull} from "../types";
+import statusCodes from "@instamenta/http-status-codes";
+import {T_Comment, T_PopulatedComment} from "../types/comment";
 
 export default class StoryController {
 	constructor(private readonly repository: StoryRepository) {
@@ -79,6 +81,73 @@ export default class StoryController {
 			}
 
 			w.status(status_codes.OK).json(stories);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+
+	public async likeStory(r: Request<{ id: string }>, w: Response<void>) {
+		try {
+			const storyId = uuid_schema.parse(r.params.id);
+			const userId = uuid_schema.parse(r.user.id);
+
+			await this.repository.likeStory(storyId, userId);
+
+			w.status(statusCodes.OK).end();
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+
+	public async listCommentsByStory(r: Request<{ storyId: string }>, w: Response<T_PopulatedComment[]>) {
+		try {
+			const storyId = uuid_schema.parse(r.params.storyId);
+			const userId = uuid_schema.parse(r.user.id);
+
+			const comments = await this.repository.listCommentsByStoryId(storyId, userId);
+
+			w.status(statusCodes.OK).json(comments);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async createStoryComment(r: Request<{ storyId: string }, {}, { content: string }>, w: Response<T_Comment>) {
+		try {
+			const storyId = uuid_schema.parse(r.params.storyId);
+			const userId = uuid_schema.parse(r.user.id);
+			const content = z.string().min(1).parse(r.body.content);
+
+			const comment = await this.repository.createStoryComment(storyId, userId, content);
+
+			w.status(statusCodes.CREATED).json(comment);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async deleteStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
+		try {
+			const commentId = uuid_schema.parse(r.params.commentId);
+			const userId = uuid_schema.parse(r.user.id);
+
+			await this.repository.deleteStoryComment(commentId, userId);
+
+			w.status(statusCodes.NO_CONTENT).end();
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async likeStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
+		try {
+			const commentId = uuid_schema.parse(r.params.commentId);
+			const userId = uuid_schema.parse(r.user.id);
+
+			await this.repository.likeStoryComment(commentId, userId);
+			w.status(statusCodes.OK).end();
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}

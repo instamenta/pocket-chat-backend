@@ -89,7 +89,8 @@ export default class PublicationsRepository {
                      JOIN users u ON p.publisher_id = u.id
                      LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
                      JOIN friendships f ON p.publisher_id = f.sender_id OR p.publisher_id = f.recipient_id
-            WHERE p.publication_status = 'published' AND f.sender_id = $1 OR f.recipient_id = $1
+            WHERE p.publication_status = 'published' AND f.sender_id = $1
+               OR f.recipient_id = $1
             ORDER BY p.created_at
             LIMIT $2`;
 				const additionalResult: QueryResult<I_Publication & {
@@ -106,11 +107,11 @@ export default class PublicationsRepository {
 	}
 
 	async createPublication({
-	  publisher_id,
-	  description,
-	  images,
-	  publication_status,
-	}: {
+		                        publisher_id,
+		                        description,
+		                        images,
+		                        publication_status,
+	                        }: {
 		publisher_id: string;
 		description: string;
 		images: string[];
@@ -165,16 +166,20 @@ export default class PublicationsRepository {
 
 			if (likeExistsResult.rows.length > 0) {
 				const removeLikeQuery = 'DELETE FROM publication_likes WHERE publication_id = $1 AND user_id = $2';
-				await this.database.query(removeLikeQuery, [publicationId, userId]);
-
 				const decrementLikeCountQuery = 'UPDATE publications SET likes_count = likes_count - 1 WHERE id = $1';
-				await this.database.query(decrementLikeCountQuery, [publicationId]);
+
+				await Promise.all([
+					await this.database.query(removeLikeQuery, [publicationId, userId]),
+					await this.database.query(decrementLikeCountQuery, [publicationId]),
+				]);
 			} else {
 				const addLikeQuery = 'INSERT INTO publication_likes (publication_id, user_id) VALUES ($1, $2)';
-				await this.database.query(addLikeQuery, [publicationId, userId]);
-
 				const incrementLikeCountQuery = 'UPDATE publications SET likes_count = likes_count + 1 WHERE id = $1';
-				await this.database.query(incrementLikeCountQuery, [publicationId]);
+
+				await Promise.all([
+					await this.database.query(addLikeQuery, [publicationId, userId]),
+					await this.database.query(incrementLikeCountQuery, [publicationId]),
+				])
 			}
 
 			await this.database.query('COMMIT');

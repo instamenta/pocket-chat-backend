@@ -104,8 +104,9 @@ export default class FriendRepository {
                 FROM friendships f
                          JOIN users u
                               ON (f.sender_id = u.id AND f.recipient_id = $1)
-                                  OR (f.recipient_id = u.id AND f.sender_id = $1);
-			`,
+                                  OR (f.recipient_id = u.id AND f.sender_id = $1)
+                WHERE f.friendship_status = 'accepted'
+                ;`,
 			[id]
 		).then((data) => data.rows)
 

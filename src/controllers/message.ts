@@ -3,7 +3,7 @@ import {create_message_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import MessageRepository from "../repositories/message";
-import {I_Message} from "../types/message";
+import {I_Message, T_Conversations} from "../types/message";
 
 export default class MessageController {
 	constructor(private readonly repository: MessageRepository) {
@@ -102,4 +102,25 @@ export default class MessageController {
 			controllerErrorHandler(error, w);
 		}
 	}
+
+	public async listConversations(
+		r: Request,
+		w: Response<T_Conversations[]>
+	) {
+		try {
+			const userId = uuid_schema.parse(r.user.id);
+
+			const conversations = await this.repository.listConversations(userId);
+
+			if (!conversations) {
+				console.error(`${this.constructor.name}.listConversations(): Failed to list conversations`);
+				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+			}
+
+			w.status(status_codes.OK).json(conversations);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
 }

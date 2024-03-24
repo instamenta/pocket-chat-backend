@@ -36,3 +36,18 @@ ALTER TABLE "lives"
 ALTER TABLE "notifications"
     ADD COLUMN IF NOT EXISTS reference_id UUID;
 
+-- Alter table shorts to add new columns for likes_count
+ALTER TABLE "shorts"
+    ADD COLUMN IF NOT EXISTS likes_count INT DEFAULT 0;
+
+-- Alter table shorts to add new columns for comments_count
+ALTER TABLE "shorts"
+    ADD COLUMN IF NOT EXISTS comments_count INT DEFAULT 0;
+
+-- Alter table stories to add new columns for likes_count
+ALTER TABLE "stories"
+    ADD COLUMN IF NOT EXISTS likes_count INT DEFAULT 0;
+
+-- Alter table stories to add new columns for comments_count
+ALTER TABLE "stories"
+    ADD COLUMN IF NOT EXISTS comments_count INT DEFAULT 0;

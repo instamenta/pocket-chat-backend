@@ -176,6 +176,8 @@ CREATE TABLE IF NOT EXISTS "stories"
     image_url  VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ      DEFAULT NOW(),
     visibility story_visibility DEFAULT 'public',
+    likes_count    INT              DEFAULT 0,
+    comments_count INT              DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES "users" (id)
 );
 
@@ -183,19 +185,114 @@ CREATE TABLE IF NOT EXISTS "stories"
 CREATE INDEX IF NOT EXISTS idx_stories_user_id ON "stories" (user_id);
 CREATE INDEX IF NOT EXISTS idx_stories_created_at ON "stories" (created_at);
 
--- Create Table Shorts:
-CREATE TABLE IF NOT EXISTS "shorts"
+-- Create Table for Likes on stories
+CREATE TABLE IF NOT EXISTS "story_likes"
 (
-    id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id     UUID         NOT NULL,
-    video_url   VARCHAR(255) NOT NULL,
-    description TEXT             DEFAULT '',
-    created_at  TIMESTAMPTZ      DEFAULT NOW(),
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    story_id   UUID NOT NULL,
+    user_id    UUID NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    FOREIGN KEY (story_id) REFERENCES "stories" (id),
+    FOREIGN KEY (user_id) REFERENCES "users" (id),
+    UNIQUE (story_id, user_id)
+);
+
+-- Add indexes for story_likes
+CREATE INDEX IF NOT EXISTS idx_story_likes_on_story_id ON story_likes (story_id);
+CREATE INDEX IF NOT EXISTS idx_story_likes_on_user_id ON story_likes (user_id);
+
+-- Create Table for Comments on stories
+CREATE TABLE IF NOT EXISTS "story_comments"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    content    TEXT NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    story_id   UUID NOT NULL,
+    user_id    UUID NOT NULL,
+    FOREIGN KEY (story_id) REFERENCES "stories" (id),
     FOREIGN KEY (user_id) REFERENCES "users" (id)
 );
 
--- Add Indexes to Stories table:
-CREATE INDEX IF NOT EXISTS user_id ON "stories" (user_id);
+-- Add indexes for story_comments
+CREATE INDEX IF NOT EXISTS idx_story_comments_on_story_id ON story_comments (story_id);
+CREATE INDEX IF NOT EXISTS idx_story_comments_on_user_id ON story_comments (user_id);
+
+-- Create Table for Likes on Comments
+CREATE TABLE IF NOT EXISTS "story_comment_likes"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    comment_id UUID NOT NULL,
+    user_id    UUID NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    FOREIGN KEY (comment_id) REFERENCES "story_comments" (id),
+    FOREIGN KEY (user_id) REFERENCES "users" (id),
+    UNIQUE (comment_id, user_id)
+);
+
+-- Add indexes for story_comment_likes
+CREATE INDEX IF NOT EXISTS idx_story_comment_likes_on_comment_id ON story_comment_likes (comment_id);
+CREATE INDEX IF NOT EXISTS idx_story_comment_likes_on_user_id ON story_comment_likes (user_id);
+
+-- Create Table Shorts:
+CREATE TABLE IF NOT EXISTS "shorts"
+(
+    id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id        UUID         NOT NULL,
+    video_url      VARCHAR(255) NOT NULL,
+    description    TEXT             DEFAULT '',
+    created_at     TIMESTAMPTZ      DEFAULT NOW(),
+    likes_count    INT              DEFAULT 0,
+    comments_count INT              DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES "users" (id)
+);
+
+-- Create Table for Likes on Shorts
+CREATE TABLE IF NOT EXISTS "short_likes"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    short_id   UUID NOT NULL,
+    user_id    UUID NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    FOREIGN KEY (short_id) REFERENCES "shorts" (id),
+    FOREIGN KEY (user_id) REFERENCES "users" (id),
+    UNIQUE (short_id, user_id)
+);
+
+-- Add indexes for short_likes
+CREATE INDEX IF NOT EXISTS idx_short_likes_on_short_id ON short_likes (short_id);
+CREATE INDEX IF NOT EXISTS idx_short_likes_on_user_id ON short_likes (user_id);
+
+-- Create Table for Comments on Shorts
+CREATE TABLE IF NOT EXISTS "short_comments"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    content    TEXT NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    short_id   UUID NOT NULL,
+    user_id    UUID NOT NULL,
+    FOREIGN KEY (short_id) REFERENCES "shorts" (id),
+    FOREIGN KEY (user_id) REFERENCES "users" (id)
+);
+
+-- Add indexes for short_comments
+CREATE INDEX IF NOT EXISTS idx_short_comments_on_short_id ON short_comments (short_id);
+CREATE INDEX IF NOT EXISTS idx_short_comments_on_user_id ON short_comments (user_id);
+
+-- Create Table for Likes on Comments
+CREATE TABLE IF NOT EXISTS "short_comment_likes"
+(
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    comment_id UUID NOT NULL,
+    user_id    UUID NOT NULL,
+    created_at TIMESTAMPTZ      DEFAULT NOW(),
+    FOREIGN KEY (comment_id) REFERENCES "short_comments" (id),
+    FOREIGN KEY (user_id) REFERENCES "users" (id),
+    UNIQUE (comment_id, user_id)
+);
+
+-- Add indexes for short_comment_likes
+CREATE INDEX IF NOT EXISTS idx_short_comment_likes_on_comment_id ON short_comment_likes (comment_id);
+CREATE INDEX IF NOT EXISTS idx_short_comment_likes_on_user_id ON short_comment_likes (user_id);
 
 -- Create Table Groups:
 CREATE TABLE IF NOT EXISTS "groups"

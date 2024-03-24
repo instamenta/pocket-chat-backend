@@ -69,3 +69,13 @@ export type T_JoinLiveResponse = {
 	hostPeerId: string,
 }
 
+export type T_Conversations = {
+	created_at: string
+	first_name: string
+	last_message: string
+	last_name: string
+	message_id: string
+	user_id: string
+	username: string
+	picture: string
+}

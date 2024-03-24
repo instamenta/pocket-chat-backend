@@ -4,6 +4,8 @@ export interface I_Short {
 	video_url: string;
 	description: string;
 	created_at: string; // Timestamp in ISO
+	likes_count: number
+	comments_count: number
 }
 
 export interface I_ShortPopulated {
@@ -16,4 +18,6 @@ export interface I_ShortPopulated {
 	video_url: string
 	description: string
 	created_at: string
+	likes_count: number
+	comments_count: number
 }
