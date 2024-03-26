@@ -24,18 +24,19 @@ The Pocket Chat Backend powers the innovative features of the Pocket Chat platfo
 
 ## Features
 
-### Real-Time Communication
-- Supports instant messaging, enriched with emojis and media sharing.
-- Manages video and voice calls, including group calls.
-- Enables real-time updates for live sessions and notifications.
+### Real-Time Communication 😊📞
 
-### Scalable Groups & Live Sessions
-- Facilitates the creation and management of user groups.
-- Handles live session broadcasting to a broad audience.
+Supports instant messaging, enriched with emojis 😄 and media sharing 📸.
+* Manages video 📹 and voice calls 📞, including group calls 👥.
+* Enables real-time updates for live sessions 🎥 and notifications 🔔.
 
-### Shorts & Media Management
-- Processes and stores short videos, enabling quick sharing and viewing.
-- Optimizes media storage and retrieval for efficient data handling.
+### Scalable Groups & Live Sessions 🌐👥
+* Facilitates the creation and management of user groups 👨‍👩‍👧‍👦.
+* Handles live session broadcasting 📡 to a broad audience 🌎.
+
+### Shorts & Media Management 🎬💾
+* Processes and stores short videos 🎥, enabling quick sharing and viewing 👀.
+* Optimizes media storage and retrieval for efficient data handling 🚀.
 
 ## Getting Started
 
@@ -51,11 +52,11 @@ npm install
 ### Setup
 use the Make file to create and start the Postgres database and Redis as well as PG Admin.
 
-### Contributing
+### Contributing 🤝
 As a solo developer, I welcome contributions and feedback to improve Pocket Chat.
 
-### Support
+### Support 🆘
 If you encounter any issues or have questions, please file an issue on GitHub.
 
-### License
+### License 📄
 Pocket Chat is released under the MIT License. Feel free to fork, modify, and use it in your projects.
