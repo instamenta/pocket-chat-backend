@@ -38,6 +38,19 @@ Supports instant messaging, enriched with emojis 😄 and media sharing 📸.
 * Processes and stores short videos 🎥, enabling quick sharing and viewing 👀.
 * Optimizes media storage and retrieval for efficient data handling 🚀.
 
+## Technologies Used 💻🛠️
+
+Pocket Chat Backend is built with a powerful stack of technologies to ensure high performance, reliability, and scalability:
+
+- **Node.js** 🟢: A JavaScript runtime built on Chrome's V8 JavaScript engine, perfect for building fast and scalable network applications.
+- **TypeScript** 📘: A typed superset of JavaScript that compiles to plain JavaScript, providing optional static typing, classes, and interfaces.
+- **Express.js** 🚂: A minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
+- **PostgreSQL** 🐘: An open-source, powerful, and advanced relational database system known for its reliability, feature robustness, and performance.
+- **Redis** 🟥: An open-source, in-memory data structure store, used as a database, cache, and message broker, enhancing performance by caching frequently accessed data.
+- **WebSocket** 🌐: A communication protocol that enables interactive communication sessions between a user's browser and a server.
+- **Docker** 🐳: A set of platform-as-a-service (PaaS) products that use OS-level virtualization to deliver software in packages called containers.
+- **JWT (JSON Web Tokens)** 🔑: A compact, URL-safe means of representing claims to be transferred between two parties, used for secure user authentication.
+
 ## Getting Started
 
 ### Installation
