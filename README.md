@@ -2,6 +2,26 @@
 
 The Pocket Chat Backend powers the innovative features of the Pocket Chat platform, ensuring seamless, real-time communication across various functionalities. Developed to support the comprehensive suite of communication tools provided by the frontend, the backend is robust, scalable, and easy to integrate.
 
+## Project structure
+
+```
+.
+├── database                # Database scripts and schemas
+│   └── migrations          # SQL migration scripts
+├── dist                    # Compiled JavaScript files from TypeScript source
+├── security                # Security configurations and certificates
+├── src                     # Source code of the application
+│   ├── controllers         # Controllers handle incoming requests and return responses
+│   ├── middlewares         # Express middlewares for request processing
+│   ├── repositories        # Data access layer: interact with the database
+│   ├── routers             # Route definitions for the API endpoints
+│   ├── socket              # WebSocket or socket.io configuration for real-time features
+│   ├── types               # TypeScript type definitions and interfaces
+│   └── utilities           # Utility functions and helper modules
+└── validators              # Input validation logic for API endpoints
+```
+
+
 ## Features
 
 ### Real-Time Communication
