@@ -49,7 +49,7 @@ npm install
 ```
 
 ### Setup
-use the Make file to create and start postgres database and redis as well as pgadmin.
+use the Make file to create and start the Postgres database and Redis as well as PG Admin.
 
 ### Contributing
 As a solo developer, I welcome contributions and feedback to improve Pocket Chat.
