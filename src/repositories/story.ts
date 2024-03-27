@@ -79,6 +79,19 @@ export default class StoryRepository {
 		}
 	}
 
+	async getStoryById (id: string) {
+		const query = `
+        SELECT user_id, id, likes_count
+        FROM stories
+        WHERE id = $1`;
+		try {
+			const result = await this.database.query<{ user_id: string, id: string, likes_count: string }>(query, [id]);
+			return result.rowCount ? result.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'listFeedStories');
+		}
+	}
+
 
 	async listFriendStoriesByUsername(username: string) {
 		const friendStoriesQuery = `

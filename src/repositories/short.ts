@@ -72,6 +72,31 @@ export default class ShortRepository {
 		}
 	}
 
+	async getShortById(id: string) {
+		const query = `SELECT u.id      AS user_id,
+                          u.picture as user_picture,
+                          u.username,
+                          u.first_name,
+                          u.last_name,
+                          s.video_url,
+                          s.description,
+                          s.created_at,
+                          s.id,
+                          s.comments_count,
+                          s.likes_count
+                   FROM shorts s
+                            JOIN users u ON u.id = s.user_id
+                   WHERE s.id = $1
+                   LIMIT 1`;
+		try {
+			const result = await this.database.query<I_ShortPopulated>(query, [id]);
+			return result.rowCount ? result.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'listShortsById');
+		}
+	}
+
+
 	async likeShort(shortId: string, userId: string): Promise<void> {
 		try {
 			await this.database.query('BEGIN');

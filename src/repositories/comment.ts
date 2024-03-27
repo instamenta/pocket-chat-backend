@@ -79,6 +79,24 @@ export default class CommentRepository {
 		}
 	}
 
+	async getCommentById(id: string) {
+		const query = `
+        SELECT c.id,
+               c.user_id,
+               COUNT(cl.user_id) AS likes_count
+        FROM comments c
+                 LEFT JOIN comment_likes cl ON c.id = cl.comment_id
+        WHERE c.id = $1
+        GROUP BY c.id;
+		`;
+		try {
+			const result = await this.database.query<{id: string, user_id: string, likes_count}>(query, [id]);
+			return result.rowCount ? result.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'listCommentsByPublication');
+		}
+	}
+
 	async likeComment(commentId: string, userId: string): Promise<void> {
 		try {
 			const likeExistsQuery = 'SELECT id FROM comment_likes WHERE comment_id = $1 AND user_id = $2';

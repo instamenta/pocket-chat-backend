@@ -3,7 +3,8 @@ import {
 	I_JoinLiveRequest,
 	I_LeaveLiveRequest,
 	I_LiveMessageRequest,
-	I_MessageRequest, T_JoinLiveResponse,
+	I_MessageRequest,
+	T_JoinLiveResponse,
 	T_VideoCallRequest
 } from "../types/message";
 import MessageRepository from "../repositories/message";
@@ -16,10 +17,10 @@ import JWT from "../utilities/jwt";
 import * as Cookies from 'cookie';
 import {Server} from 'node:http'
 import Redis from "ioredis";
-import NotificationRepository from "../repositories/notification";
 import {notification_types, socket_events} from "../utilities/enumerations";
 import LiveRepository from "../repositories/live";
 import {T_LiveMessageResponse} from "../types/live";
+import Notificator from "../utilities/notificator";
 
 export default class SocketController {
 
@@ -34,7 +35,7 @@ export default class SocketController {
 		private readonly liveRepository: LiveRepository,
 		private readonly friendRepository: FriendRepository,
 		private readonly messageRepository: MessageRepository,
-		private readonly notificationRepository: NotificationRepository,
+		private readonly notificator: Notificator,
 	) {
 		this.connections = new Map();
 		this.liveRoomsConnections = new Map();
@@ -120,27 +121,27 @@ export default class SocketController {
 		host.send(response);
 
 		const notification = {
-			seen: true,
 			type: notification_types.MESSAGE,
-			sender_id: r.sender,
 			recipient_id: r.recipient,
-			content: `Message from ${user.username}`,
-			reference_id: r.sender
+			reference_id: r.sender,
+			sender_id: r.sender,
+			content: r.content,
+			seen: true,
 		};
 
 		const connection = this.connections.get(r.recipient);
 		if (connection) {
-			await this.notificationRepository.createNotification(notification);
-
 			connection.send(response);
 
 			console.log(`Found WebSocket connection for recipient ${r.recipient} and Send Message`)
+
+			await this.notificator.handleNotification(notification);
 		} else {
 			notification.seen = false;
 
-			await this.notificationRepository.createNotification(notification);
-
 			console.error(`No WebSocket connection for recipient: ${r.recipient} and Pushed To Notifications`);
+
+			await this.notificator.handleNotification(notification);
 		}
 	}
 
@@ -152,11 +153,7 @@ export default class SocketController {
 			return console.error('No friendship found between users', r);
 		}
 
-		const messageId = await this.liveRepository.createLiveMessage(
-			r.liveId,
-			r.sender,
-			r.content
-		);
+		const messageId = await this.liveRepository.createLiveMessage(r.liveId, r.sender, r.content);
 		if (!messageId) {
 			return console.error("Failed to save live message to the database");
 		}

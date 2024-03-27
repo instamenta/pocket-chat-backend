@@ -5,11 +5,13 @@ import {controllerErrorHandler} from '../utilities';
 import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
 import {I_Publication} from "../types/publication";
 import NotificationRepository from "../repositories/notification";
+import {notification_types} from "../utilities/enumerations";
+import Notificator from "../utilities/notificator";
 
 export default class PublicationController {
 	constructor(
 		private readonly repository: PublicationsRepository,
-		private readonly notification: NotificationRepository
+		private readonly notificator: Notificator,
 	) {
 	}
 
@@ -106,6 +108,16 @@ export default class PublicationController {
 			await this.repository.likePublication(publicationId, userId);
 
 			w.status(statusCodes.OK).end();
+
+			await this.notificator.handleNotification({
+				type: notification_types.LIKE,
+				reference_id: publicationId,
+				recipient_id: '',
+				sender_id: userId,
+				content: '',
+				seen: false,
+			}).catch(console.error);
+
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}

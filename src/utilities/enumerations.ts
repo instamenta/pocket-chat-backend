@@ -16,7 +16,20 @@ export enum group_roles {
 export enum notification_types {
 	CALL = 'call',
 	LIKE = 'like',
-	COMMENT = 'comment',
+	LIVE = 'live',
 	MESSAGE = 'message',
-	LIVE = 'live'
+
+	//* Publications
+	COMMENT = 'comment',
+	LIKE_COMMENT = 'like_comment',
+
+	//* Short
+	LIKE_SHORT = 'like_short',
+	COMMENT_SHORT = 'comment_short',
+	LIKE_SHORT_COMMENT = 'like_comment_short',
+
+	//* Story
+	LIKE_STORY = 'like_story',
+	COMMENT_STORY = 'comment_story',
+	LIKE_STORY_COMMENT = 'like_comment_story',
 }

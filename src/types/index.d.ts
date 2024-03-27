@@ -1,3 +1,5 @@
+import {notification_types} from "../utilities/enumerations";
+
 export interface UserPayload {
 	id: string
 	email: string
@@ -26,7 +28,7 @@ export interface I_Friendship {
 
 export interface I_Notifications {
 	id: string,
-	type: string,
+	type: notification_types,
 	seen: boolean,
 	content: string,
 	sender_id: string,

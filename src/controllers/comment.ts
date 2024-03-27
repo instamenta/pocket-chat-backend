@@ -1,4 +1,3 @@
-// CommentController.ts
 import {Request, Response} from 'express';
 import CommentRepository from '../repositories/comment';
 import statusCodes from '@instamenta/http-status-codes';
@@ -6,14 +5,13 @@ import {controllerErrorHandler} from '../utilities';
 import {uuid_schema} from "../validators";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
-import NotificationRepository from "../repositories/notification";
-import PublicationsRepository from "../repositories/publication";
+import {notification_types} from "../utilities/enumerations";
+import Notificator from "../utilities/notificator";
 
 export default class CommentController {
 	constructor(
 		private readonly repository: CommentRepository,
-		private readonly notification: NotificationRepository,
-		private readonly publication: PublicationsRepository,
+		private readonly notificator: Notificator,
 	) {
 	}
 
@@ -40,18 +38,15 @@ export default class CommentController {
 
 			w.status(statusCodes.CREATED).json(comment);
 
-			const publication = this.publication.getPublicationById(publicationId);
-			if (!publication) {
-				return console.error('Failed to get publication with id', publicationId);
-			}
+			await this.notificator.handleNotification({
+				type: notification_types.COMMENT,
+				reference_id: publicationId,
+				recipient_id: '',
+				sender_id: userId,
+				content: content,
+				seen: false,
+			}).catch(console.error);
 
-			// this.notification.createNotification({
-			// 	reference_id: publicationId,
-			// 	sender_id: userId,
-			// 	content: content,
-			// 	seen: false,
-			//
-			// });
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}
@@ -76,6 +71,16 @@ export default class CommentController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			await this.repository.likeComment(commentId, userId);
+
+			await this.notificator.handleNotification({
+				type: notification_types.LIKE_COMMENT,
+				reference_id: '',
+				recipient_id: '',
+				sender_id: userId,
+				content: '',
+				seen: false,
+			}).catch(console.error);
+
 			w.status(statusCodes.OK).end();
 		} catch (error) {
 			controllerErrorHandler(error, w);

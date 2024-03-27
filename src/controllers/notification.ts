@@ -4,6 +4,7 @@ import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import NotificationRepository from "../repositories/notification";
 import {I_Notifications, I_PopulatedNotification} from "../types";
+import {notification_types} from "../utilities/enumerations";
 
 export default class NotificationController {
 	constructor(private readonly repository: NotificationRepository) {
@@ -12,35 +13,36 @@ export default class NotificationController {
 	public async createNotification(
 		r: Request<{}, {}, {
 			recipient: string,
-			type: string,
+			type: notification_types,
 			seen: boolean,
 			content: string
 		}>,
-		w: Response<{ id: string }>
+		w: Response
 	) {
 		try {
-			const notification = create_notification_schema.parse({
-				type: r.body.type,
-				seen: r.body.seen,
-				sender: r.user.id,
-				content: r.body.content,
-				recipient: r.body.recipient,
-			});
-
-			const notificationId = await this.repository.createNotification({
-				sender_id: r.user.id,
-				seen: notification.seen,
-				type: notification.type,
-				content: notification.content,
-				recipient_id: notification.recipient,
-			});
-
-			if (!notificationId) {
-				console.error(`${this.constructor.name}.createNotification(): Failed to send message`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
-			w.status(status_codes.CREATED).json({id: notificationId});
+			w.status(status_codes.NOT_IMPLEMENTED).end();
+			// const notification = create_notification_schema.parse({
+			// 	type: r.body.type,
+			// 	seen: r.body.seen,
+			// 	sender: r.user.id,
+			// 	content: r.body.content,
+			// 	recipient: r.body.recipient,
+			// });
+			// const notificationId = await this.repository.createNotification({
+			// 	sender_id: r.user.id,
+			// 	seen: notification.seen,
+			// 	type: notification.type,
+			// 	content: notification.content,
+			// 	recipient_id: notification.recipient,
+			// 	reference_id: '',
+			// });
+			//
+			// if (!notificationId) {
+			// 	console.error(`${this.constructor.name}.createNotification(): Failed to send message`);
+			// 	return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+			// }
+			//
+			// w.status(status_codes.CREATED).json({id: notificationId});
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}

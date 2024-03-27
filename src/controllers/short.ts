@@ -7,9 +7,14 @@ import {I_ShortPopulated} from "../types/short";
 import statusCodes from "@instamenta/http-status-codes";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
+import {notification_types} from "../utilities/enumerations";
+import Notificator from "../utilities/notificator";
 
 export default class ShortController {
-	constructor(private readonly repository: ShortRepository) {
+	constructor(
+		private readonly repository: ShortRepository,
+		private readonly notificator: Notificator,
+	) {
 	}
 
 	public async createShort(
@@ -78,6 +83,16 @@ export default class ShortController {
 			await this.repository.likeShort(shortId, userId);
 
 			w.status(statusCodes.OK).end();
+
+			await this.notificator.handleNotification({
+				type: notification_types.LIKE_SHORT,
+				reference_id: '',
+				recipient_id: '',
+				sender_id: userId,
+				content: '',
+				seen: false,
+			}).catch(console.error);
+
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}

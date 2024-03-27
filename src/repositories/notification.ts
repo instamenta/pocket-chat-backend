@@ -1,5 +1,6 @@
 import {Client} from "pg";
 import {I_Notifications, I_PopulatedNotification} from "../types";
+import {notification_types} from "../utilities/enumerations";
 
 export default class NotificationRepository {
 	constructor(private readonly database: Client) {
@@ -100,5 +101,65 @@ export default class NotificationRepository {
 		).then(data => data.rowCount ?? null)
 
 			.catch(e => this.errorHandler(e, 'markNotificationAsSeen'));
+	}
+
+	async getNotificationByReferenceId(referenceId: string) {
+		const query = `SELECT n.id,
+                          n.type,
+                          n.seen,
+                          n.content,
+                          n.sender_id,
+                          n.created_at,
+                          n.recipient_id,
+                          u.picture,
+                          u.first_name,
+                          u.last_name
+                   FROM notifications n
+                            JOIN "users" u ON n.recipient_id = u.id
+                   WHERE n.reference_id = $1
+		`;
+		try {
+			const data = await this.database.query<I_PopulatedNotification>(query, [referenceId]);
+			return data.rowCount ? data.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'getNotificationByReferenceId')
+		}
+	}
+
+	async getNotificationBySenderAndRecipient(senderId: string, recipientId: string, type: notification_types) {
+		const query = `SELECT n.id,
+                          n.type,
+                          n.seen,
+                          n.content,
+                          n.sender_id,
+                          n.created_at,
+                          n.recipient_id,
+                          u.picture,
+                          u.first_name,
+                          u.last_name
+                   FROM notifications n
+                            JOIN "users" u ON n.recipient_id = u.id
+                   WHERE n.sender_id = $1
+                     AND n.reference_id = $2
+                     AND n.type = $3`;
+		try {
+			const data = await this.database.query<I_PopulatedNotification>(query, [senderId, recipientId, type]);
+			return data.rowCount ? data.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'getNotificationBySenderAndRecipient')
+		}
+	}
+
+	async updateNotification(id: string, content: string, seen: boolean) {
+		const query = `UPDATE notifications
+                   SET content    = $2,
+                       created_at = now(),
+                       seen       = $3
+                   WHERE id = $1`;
+		try {
+			await this.database.query(query, [id, content, seen]);
+		} catch (error) {
+			this.errorHandler(error, 'getNotificationByReferenceId')
+		}
 	}
 }

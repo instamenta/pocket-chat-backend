@@ -1,15 +1,20 @@
 import {Request, Response} from "express";
 import {name_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
+import statusCodes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import StoryRepository from "../repositories/story";
 import {z} from "zod";
 import {T_FeedStory, T_StoryFull} from "../types";
-import statusCodes from "@instamenta/http-status-codes";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
+import {notification_types} from "../utilities/enumerations";
+import Notificator from "../utilities/notificator";
 
 export default class StoryController {
-	constructor(private readonly repository: StoryRepository) {
+	constructor(
+		private readonly repository: StoryRepository,
+		private readonly notificator: Notificator
+	) {
 	}
 
 	public async createStory(
@@ -95,6 +100,16 @@ export default class StoryController {
 			await this.repository.likeStory(storyId, userId);
 
 			w.status(statusCodes.OK).end();
+
+			await this.notificator.handleNotification({
+				type: notification_types.LIKE_STORY,
+				reference_id: '',
+				recipient_id: '',
+				sender_id: userId,
+				content: '',
+				seen: false,
+			}).catch(console.error);
+
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}
