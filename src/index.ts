@@ -35,6 +35,7 @@ import GroupController from "./controllers/group";
 import LiveRepository from "./repositories/live";
 import LiveController from "./controllers/live";
 import LiveRouter from "./routers/live";
+import Notificator from "./utilities/notificator";
 
 void async function start_service() {
 
@@ -42,42 +43,51 @@ void async function start_service() {
 	await graceful_shutdown(database, cache);
 
 	const userRepository = new UserRepository(database);
+	const liveRepository = new LiveRepository(database);
+	const storyRepository = new StoryRepository(database);
+	const shortRepository = new ShortRepository(database);
+	const groupRepository = new GroupRepository(database);
+	const friendRepository = new FriendRepository(database);
+	const commentRepository = new CommentRepository(database);
+	const messageRepository = new MessageRepository(database);
+	const publicationsRepository = new PublicationRepository(database);
+	const notificationRepository = new NotificationRepository(database);
+
+	const notificator = new Notificator(
+		notificationRepository,
+		publicationsRepository,
+		commentRepository,
+		shortRepository,
+		storyRepository
+	);
+
 	const userController = new UserController(userRepository);
 	const userRouter = new UserRouter(userController).getRouter();
 
-	const liveRepository = new LiveRepository(database);
 	const liveController = new LiveController(liveRepository);
 	const liveRouter = new LiveRouter(liveController).getRouter();
 
-	const notificationRepository = new NotificationRepository(database);
 	const notificationController = new NotificationController(notificationRepository);
 	const notificationRouter = new NotificationRouter(notificationController).getRouter();
 
-	const publicationsRepository = new PublicationRepository(database);
-	const publicationController = new PublicationController(publicationsRepository, notificationRepository);
+	const publicationController = new PublicationController(publicationsRepository, notificator);
 	const publicationRouter = new PublicationRouter(publicationController).getRouter();
 
-	const storyRepository = new StoryRepository(database);
-	const storyController = new StoryController(storyRepository);
+	const storyController = new StoryController(storyRepository, notificator);
 	const storyRouter = new StoryRouter(storyController).getRouter();
 
-	const shortRepository = new ShortRepository(database);
-	const shortController = new ShortController(shortRepository);
+	const shortController = new ShortController(shortRepository, notificator);
 	const shortRouter = new ShortRouter(shortController).getRouter();
 
-	const groupRepository = new GroupRepository(database);
 	const groupController = new GroupController(groupRepository);
 	const groupRouter = new GroupRouter(groupController).getRouter();
 
-	const friendRepository = new FriendRepository(database);
 	const friendController = new FriendController(friendRepository, notificationRepository);
 	const friendRouter = new FriendRouter(friendController).getRouter();
 
-	const commentRepository = new CommentRepository(database);
-	const commentController = new CommentController(commentRepository, notificationRepository, publicationsRepository);
+	const commentController = new CommentController(commentRepository, notificator);
 	const commentRouter = new CommentRouter(commentController).getRouter();
 
-	const messageRepository = new MessageRepository(database);
 	const messageController = new MessageController(messageRepository);
 	const messageRouter = new MessageRouter(messageController).getRouter();
 
@@ -105,7 +115,7 @@ void async function start_service() {
 		liveRepository,
 		friendRepository,
 		messageRepository,
-		notificationRepository,
+		notificator,
 	);
 }();
 

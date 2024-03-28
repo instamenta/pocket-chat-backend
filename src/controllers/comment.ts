@@ -74,7 +74,7 @@ export default class CommentController {
 
 			await this.notificator.handleNotification({
 				type: notification_types.LIKE_COMMENT,
-				reference_id: '',
+				reference_id: commentId,
 				recipient_id: '',
 				sender_id: userId,
 				content: '',
@@ -87,4 +87,20 @@ export default class CommentController {
 		}
 	}
 
+	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T_Comment & { likes_count: number }>) {
+		try {
+			const commentId = uuid_schema.parse(r.params.commentId);
+
+			const comment = await this.repository.getCommentById(commentId);
+
+			if (!comment) {
+				console.error(`${this.constructor.name}.getCommentById(): Not found`, commentId);
+				return w.status(statusCodes.NOT_FOUND).end();
+			}
+
+			w.status(statusCodes.OK).json(comment);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
 }

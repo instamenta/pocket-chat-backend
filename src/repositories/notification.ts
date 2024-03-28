@@ -45,7 +45,8 @@ export default class NotificationRepository {
                         n.recipient_id,
                         u.picture,
                         u.first_name,
-                        u.last_name
+                        u.last_name,
+                        n.reference_id
                  FROM notifications n
                           JOIN "users" u ON n.recipient_id = u.id
                  WHERE n.recipient_id = $1
@@ -113,7 +114,8 @@ export default class NotificationRepository {
                           n.recipient_id,
                           u.picture,
                           u.first_name,
-                          u.last_name
+                          u.last_name,
+                          n.reference_id
                    FROM notifications n
                             JOIN "users" u ON n.recipient_id = u.id
                    WHERE n.reference_id = $1
@@ -136,7 +138,8 @@ export default class NotificationRepository {
                           n.recipient_id,
                           u.picture,
                           u.first_name,
-                          u.last_name
+                          u.last_name,
+                          n.reference_id
                    FROM notifications n
                             JOIN "users" u ON n.recipient_id = u.id
                    WHERE n.sender_id = $1
@@ -150,14 +153,15 @@ export default class NotificationRepository {
 		}
 	}
 
-	async updateNotification(id: string, content: string, seen: boolean) {
+	async updateNotification(id: string, content: string, seen: boolean, type: notification_types) {
 		const query = `UPDATE notifications
                    SET content    = $2,
                        created_at = now(),
-                       seen       = $3
+                       seen       = $3,
+                       type       = $4
                    WHERE id = $1`;
 		try {
-			await this.database.query(query, [id, content, seen]);
+			await this.database.query(query, [id, content, seen, type]);
 		} catch (error) {
 			this.errorHandler(error, 'getNotificationByReferenceId')
 		}

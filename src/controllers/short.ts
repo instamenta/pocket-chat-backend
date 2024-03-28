@@ -98,7 +98,6 @@ export default class ShortController {
 		}
 	}
 
-
 	public async listCommentsByShort(r: Request<{ shortId: string }>, w: Response<T_PopulatedComment[]>) {
 		try {
 			const shortId = uuid_schema.parse(r.params.shortId);
@@ -121,6 +120,16 @@ export default class ShortController {
 			const comment = await this.repository.createShortComment(shortId, userId, content);
 
 			w.status(statusCodes.CREATED).json(comment);
+
+			await this.notificator.handleNotification({
+				type: notification_types.COMMENT_SHORT,
+				reference_id: shortId,
+				recipient_id: '',
+				sender_id: userId,
+				content: content,
+				seen: false,
+			}).catch(console.error);
+
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}
@@ -145,7 +154,18 @@ export default class ShortController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			await this.repository.likeShortComment(commentId, userId);
+
 			w.status(statusCodes.OK).end();
+
+			await this.notificator.handleNotification({
+				type: notification_types.LIKE_SHORT_COMMENT,
+				reference_id: commentId,
+				recipient_id: '',
+				sender_id: userId,
+				content: '',
+				seen: false,
+			}).catch(console.error);
+
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}

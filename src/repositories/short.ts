@@ -214,4 +214,22 @@ export default class ShortRepository {
 		}
 	}
 
+	async getCommentById(id: string) {
+		const query = `
+        SELECT c.id,
+               c.user_id,
+               COUNT(cl.user_id) AS likes_count
+        FROM short_comments c
+                 LEFT JOIN short_comment_likes cl ON c.id = cl.comment_id
+        WHERE c.id = $1
+        GROUP BY c.id;
+		`;
+		try {
+			const result = await this.database.query<{id: string, user_id: string, likes_count: number}>(query, [id]);
+			return result.rowCount ? result.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'getCommentById');
+		}
+	}
+
 }

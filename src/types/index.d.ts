@@ -47,7 +47,9 @@ export interface I_PopulatedNotification {
 	recipient_id: string
 	picture: string
 	first_name: string
+	seen: boolean
 	last_name: string
+	reference_id: string
 }
 
 type E_StoryVisibility = 'public' | 'private' | 'archive'

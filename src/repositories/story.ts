@@ -237,6 +237,23 @@ export default class StoryRepository {
 		}
 	}
 
+	async getCommentById(id: string) {
+		const query = `
+        SELECT c.id,
+               c.user_id,
+               COUNT(cl.user_id) AS likes_count
+        FROM story_comments c
+                 LEFT JOIN story_comment_likes cl ON c.id = cl.comment_id
+        WHERE c.id = $1
+        GROUP BY c.id;
+		`;
+		try {
+			const result = await this.database.query<{id: string, user_id: string, likes_count: number}>(query, [id]);
+			return result.rowCount ? result.rows[0] : null;
+		} catch (error) {
+			this.errorHandler(error, 'getCommentById');
+		}
+	}
 
 }
 

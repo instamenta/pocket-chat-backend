@@ -81,8 +81,7 @@ export default class CommentRepository {
 
 	async getCommentById(id: string) {
 		const query = `
-        SELECT c.id,
-               c.user_id,
+        SELECT c.*,
                COUNT(cl.user_id) AS likes_count
         FROM comments c
                  LEFT JOIN comment_likes cl ON c.id = cl.comment_id
@@ -90,10 +89,10 @@ export default class CommentRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<{id: string, user_id: string, likes_count}>(query, [id]);
+			const result = await this.database.query<T_Comment & { likes_count: number}>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
-			this.errorHandler(error, 'listCommentsByPublication');
+			this.errorHandler(error, 'getCommentById ');
 		}
 	}
 

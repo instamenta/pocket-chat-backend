@@ -138,6 +138,16 @@ export default class StoryController {
 			const comment = await this.repository.createStoryComment(storyId, userId, content);
 
 			w.status(statusCodes.CREATED).json(comment);
+
+			await this.notificator.handleNotification({
+				type: notification_types.COMMENT_STORY,
+				reference_id: storyId,
+				recipient_id: '',
+				sender_id: userId,
+				content: content,
+				seen: false,
+			}).catch(console.error);
+
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}
@@ -162,6 +172,16 @@ export default class StoryController {
 			const userId = uuid_schema.parse(r.user.id);
 
 			await this.repository.likeStoryComment(commentId, userId);
+
+			await this.notificator.handleNotification({
+				type: notification_types.LIKE_STORY_COMMENT,
+				reference_id: commentId,
+				recipient_id: '',
+				sender_id: userId,
+				content: '',
+				seen: false,
+			}).catch(console.error);
+
 			w.status(statusCodes.OK).end();
 		} catch (error) {
 			controllerErrorHandler(error, w);
