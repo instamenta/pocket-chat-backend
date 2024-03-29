@@ -153,15 +153,16 @@ export default class NotificationRepository {
 		}
 	}
 
-	async updateNotification(id: string, content: string, seen: boolean, type: notification_types) {
+	async updateNotification(id: string, content: string, seen: boolean, type: notification_types, senderId: string) {
 		const query = `UPDATE notifications
                    SET content    = $2,
                        created_at = now(),
                        seen       = $3,
-                       type       = $4
+                       type       = $4,
+                       sender_id  = $5
                    WHERE id = $1`;
 		try {
-			await this.database.query(query, [id, content, seen, type]);
+			await this.database.query(query, [id, content, seen, type, senderId]);
 		} catch (error) {
 			this.errorHandler(error, 'getNotificationByReferenceId')
 		}

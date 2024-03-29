@@ -11,16 +11,15 @@ export default class ShortRepository {
 	}
 
 	async createShort(userId: string, videoUrl: string, description: string) {
-		return this.database.query<{ id: string }>(`
-
-                INSERT INTO "shorts" (user_id, video_url, description)
-                VALUES ($1, $2, $3)
-                RETURNING id
-			`,
-			[userId, videoUrl, description]
-		).then((data) => data.rows[0].id)
-
-			.catch(e => this.errorHandler(e, 'createShort'));
+		const query = `INSERT INTO "shorts" (user_id, video_url, description)
+                   VALUES ($1, $2, $3)
+                   RETURNING id`;
+		try {
+			const result = await this.database.query<{ id: string }>(query, [userId, videoUrl, description])
+			return result.rows[0].id
+		} catch (error) {
+			this.errorHandler(error, 'createShort');
+		}
 	}
 
 	async listShorts(userId: string) {
@@ -32,15 +31,18 @@ export default class ShortRepository {
                           s.video_url,
                           s.description,
                           s.created_at,
-                          s.id
+                          s.likes_count,
+                          s.comments_count,
+                          s.id,
+                          CASE WHEN sl.short_id IS NOT NULL THEN TRUE ELSE FALSE END
+                                    AS liked_by_user
                    FROM shorts s
                             JOIN users u ON u.id = s.user_id
+                            LEFT join short_likes sl ON s.id = sl.short_id AND sl.user_id = $1
                    ORDER BY s.created_at DESC`;
 		// --                    WHERE s.user_id != $1
 		try {
-			const result = await this.database.query<I_ShortPopulated>(query, [
-				// userId
-			]);
+			const result = await this.database.query<I_ShortPopulated>(query, [userId]);
 			console.log(result.rows);
 			return result.rows;
 		} catch (error) {
@@ -59,9 +61,12 @@ export default class ShortRepository {
                           s.created_at,
                           s.id,
                           s.comments_count,
-                          s.likes_count
+                          s.likes_count,
+                          CASE WHEN sl.short_id IS NOT NULL THEN TRUE ELSE FALSE END
+                                    AS liked_by_user
                    FROM shorts s
                             JOIN users u ON u.id = s.user_id
+                            LEFT join short_likes sl ON s.id = sl.short_id AND sl.user_id = $2
                    WHERE s.user_id = $1
                    ORDER BY s.created_at DESC`;
 		try {
@@ -97,12 +102,12 @@ export default class ShortRepository {
 	}
 
 
-	async likeShort(shortId: string, userId: string): Promise<void> {
+	async likeShort(shortId: string, userId: string): Promise<boolean> {
 		try {
-			await this.database.query('BEGIN');
-
 			const likeExistsQuery = 'SELECT id FROM short_likes WHERE short_id = $1 AND user_id = $2';
 			const likeExistsResult = await this.database.query(likeExistsQuery, [shortId, userId]);
+
+			await this.database.query('BEGIN');
 
 			if (likeExistsResult.rows.length > 0) {
 				const removeLikeQuery = 'DELETE FROM short_likes WHERE short_id = $1 AND user_id = $2';
@@ -123,6 +128,7 @@ export default class ShortRepository {
 			}
 
 			await this.database.query('COMMIT');
+			return !(likeExistsResult.rows.length > 0);
 		} catch (error) {
 			await this.database.query('ROLLBACK');
 			throw error;
@@ -184,13 +190,27 @@ export default class ShortRepository {
 	}
 
 	async deleteShortComment(commentId: string, userId: string): Promise<boolean> {
-		const query = `
-        DELETE
-        FROM short_comments
-        WHERE id = $1
-          AND user_id = $2`;
+		const selectQuery = `SELECT short_id
+                         FROM short_comments
+                         WHERE id = $1`;
+
+		const updateQuery = `UPDATE shorts
+                         SET comments_count = comments_count - 1
+                         WHERE id = $1`;
+
+		const deleteQuery = `DELETE
+                         FROM short_comments
+                         WHERE id = $1
+                           AND user_id = $2`;
 		try {
-			const result = await this.database.query(query, [commentId, userId]);
+			const short = await this.database.query<{ short_id: string }>(selectQuery, [commentId]);
+			if (!short.rowCount) {
+				throw new Error(`Failed to get short! Comment id ${commentId}`);
+			}
+
+			await this.database.query(updateQuery, [short.rows[0].short_id]);
+
+			const result = await this.database.query(deleteQuery, [commentId, userId]);
 			return !!result.rowCount
 		} catch (error) {
 			this.errorHandler(error, 'deleteShortComment');
@@ -225,7 +245,7 @@ export default class ShortRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<{id: string, user_id: string, likes_count: number}>(query, [id]);
+			const result = await this.database.query<{ id: string, user_id: string, likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById');

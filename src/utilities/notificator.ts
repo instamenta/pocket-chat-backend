@@ -34,7 +34,7 @@ export default class Notificator {
 			case notification_types.LIKE_COMMENT:
 				await this.#handleLikeCommentNotification(data);
 				break;
-				//* Short Handlers
+			//* Short Handlers
 			case notification_types.LIKE_SHORT:
 				await this.#handleLikeShortNotification(data);
 				break;
@@ -44,7 +44,7 @@ export default class Notificator {
 			case notification_types.LIKE_SHORT_COMMENT:
 				await this.#handleLikeShortCommentNotification(data);
 				break;
-				//* Story Handlers
+			//* Story Handlers
 			case notification_types.LIKE_STORY:
 				await this.#handleLikeStoryNotification(data);
 				break;
@@ -82,7 +82,7 @@ export default class Notificator {
 		data.recipient_id = publication.publisher_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -99,7 +99,7 @@ export default class Notificator {
 		);
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -124,7 +124,7 @@ export default class Notificator {
 		data.recipient_id = publication.publisher_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -150,7 +150,7 @@ export default class Notificator {
 		data.recipient_id = comment.user_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -176,7 +176,7 @@ export default class Notificator {
 		data.recipient_id = short.user_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -201,7 +201,7 @@ export default class Notificator {
 		data.recipient_id = short.user_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -227,7 +227,7 @@ export default class Notificator {
 		data.recipient_id = comment.user_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -253,7 +253,7 @@ export default class Notificator {
 		data.recipient_id = story.user_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -278,7 +278,7 @@ export default class Notificator {
 		data.recipient_id = publication.publisher_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}
@@ -304,7 +304,7 @@ export default class Notificator {
 		data.recipient_id = comment.user_id;
 
 		if (notification) {
-			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type);
+			await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.sender_id);
 		} else {
 			await this.repository.createNotification(data);
 		}

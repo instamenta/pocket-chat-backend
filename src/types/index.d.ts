@@ -19,22 +19,22 @@ declare global {
 }
 
 export interface I_Friendship {
-	id: string,
-	sender_id: string,
-	created_at: string,
-	recipient_id: string,
+	id: string
+	sender_id: string
+	created_at: string
+	recipient_id: string
 	friendship_status: 'accepted' | 'pending'
 }
 
 export interface I_Notifications {
-	id: string,
-	type: notification_types,
-	seen: boolean,
-	content: string,
-	sender_id: string,
-	created_at: string,
-	recipient_id: string,
-	reference_id?: string,
+	id: string
+	type: notification_types
+	seen: boolean
+	content: string
+	sender_id: string
+	created_at: string
+	recipient_id: string
+	reference_id?: string
 }
 
 export interface I_PopulatedNotification {
@@ -71,9 +71,12 @@ export type T_FeedStory = {
 	last_name: string
 	user_picture: string
 	image_url: string
+
+	comments_count: number
+	likes_count: number
 }
 
 export type T_StoryFull = I_Story | {
-	user_picture: string,
+	user_picture: string
 	user_username: string
 }

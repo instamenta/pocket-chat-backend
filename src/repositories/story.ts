@@ -24,12 +24,14 @@ export default class StoryRepository {
 	}
 
 	async listStories(userId: string) {
-		const query = `SELECT u.id AS user_id,
+		const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
                           u.first_name,
                           u.last_name,
-                          s.image_url
+                          s.image_url,
+                          s.comments_count,
+                          s.likes_count
                    FROM stories s
                             JOIN
                         friendships f ON s.user_id = f.sender_id OR s.user_id = f.recipient_id
@@ -48,12 +50,14 @@ export default class StoryRepository {
 
 	async listFeedStories(userId: string) {
 		const query = `
-        SELECT DISTINCT ON (u.id) u.id AS user_id,
+        SELECT DISTINCT ON (u.id) u.id      AS user_id,
                                   u.picture as user_picture,
                                   u.username,
                                   u.first_name,
                                   u.last_name,
-                                  s.image_url
+                                  s.image_url,
+                                  s.comments_count,
+                                  s.likes_count
         FROM stories s
                  JOIN
              users u ON s.user_id = u.id
@@ -79,7 +83,7 @@ export default class StoryRepository {
 		}
 	}
 
-	async getStoryById (id: string) {
+	async getStoryById(id: string) {
 		const query = `
         SELECT user_id, id, likes_count
         FROM stories
@@ -183,15 +187,13 @@ export default class StoryRepository {
 	}
 
 	async createStoryComment(storyId: string, userId: string, content: string): Promise<T_Comment> {
-		const insertQuery = `
-        INSERT INTO story_comments (content, story_id, user_id)
+		const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
         VALUES ($1, $2, $3)
         RETURNING *`;
 
-		const updateQuery = `
-        UPDATE stories
-        SET comments_count = comments_count + 1
-        WHERE id = $1`;
+		const updateQuery = `UPDATE stories
+                         SET comments_count = comments_count + 1
+                         WHERE id = $1`;
 
 		try {
 			const insertResult = await this.database.query<T_Comment>(insertQuery, [content, storyId, userId]);
@@ -207,13 +209,27 @@ export default class StoryRepository {
 	}
 
 	async deleteStoryComment(commentId: string, userId: string): Promise<boolean> {
-		const query = `
-        DELETE
-        FROM story_comments
-        WHERE id = $1
-          AND user_id = $2`;
+		const selectQuery = `SELECT story_id
+                         FROM story_comments
+                         WHERE id = $1`;
+
+		const updateQuery = `UPDATE stories
+                         SET comments_count = comments_count - 1
+                         WHERE id = $1`;
+
+		const deleteQuery = `DELETE
+                         FROM story_comments
+                         WHERE id = $1
+                           AND user_id = $2`;
 		try {
-			const result = await this.database.query(query, [commentId, userId]);
+			const story = await this.database.query<{ story_id: string }>(selectQuery, [commentId]);
+			if (!story.rowCount) {
+				throw new Error(`Failed to get story! Comment id ${commentId}`);
+			}
+
+			await this.database.query(updateQuery, [story.rows[0].story_id]);
+
+			const result = await this.database.query(deleteQuery, [commentId, userId]);
 			return !!result.rowCount
 		} catch (error) {
 			this.errorHandler(error, 'deleteStoryComment');
@@ -248,7 +264,7 @@ export default class StoryRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<{id: string, user_id: string, likes_count: number}>(query, [id]);
+			const result = await this.database.query<{ id: string, user_id: string, likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById');

@@ -1,10 +1,10 @@
 import {Request, Response} from "express";
-import {create_story_schema, name_schema, uuid_schema} from "../validators";
+import {create_story_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
+import statusCodes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import ShortRepository from "../repositories/short";
 import {I_ShortPopulated} from "../types/short";
-import statusCodes from "@instamenta/http-status-codes";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
@@ -80,13 +80,15 @@ export default class ShortController {
 			const shortId = uuid_schema.parse(r.params.id);
 			const userId = uuid_schema.parse(r.user.id);
 
-			await this.repository.likeShort(shortId, userId);
+			const isLiked = await this.repository.likeShort(shortId, userId);
 
 			w.status(statusCodes.OK).end();
 
+			if (!isLiked) return console.log('Unliking short')
+			console.log('Liking short')
 			await this.notificator.handleNotification({
 				type: notification_types.LIKE_SHORT,
-				reference_id: '',
+				reference_id: shortId,
 				recipient_id: '',
 				sender_id: userId,
 				content: '',
