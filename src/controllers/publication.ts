@@ -40,7 +40,6 @@ export default class PublicationController {
 	}
 
 	public async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<I_Publication[]>) {
-		console.log()
 		try {
 			const id = uuid_schema.parse(r.params.id);
 

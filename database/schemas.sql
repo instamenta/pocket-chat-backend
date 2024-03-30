@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS "short_comments"
     created_at TIMESTAMPTZ      DEFAULT NOW(),
     short_id   UUID NOT NULL,
     user_id    UUID NOT NULL,
-    FOREIGN KEY (short_id) REFERENCES "shorts" (id),
+    FOREIGN KEY (short_id) REFERENCES "shorts" (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES "users" (id)
 );
 
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS "short_comment_likes"
     comment_id UUID NOT NULL,
     user_id    UUID NOT NULL,
     created_at TIMESTAMPTZ      DEFAULT NOW(),
-    FOREIGN KEY (comment_id) REFERENCES "short_comments" (id),
+    FOREIGN KEY (comment_id) REFERENCES "short_comments" (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES "users" (id),
     UNIQUE (comment_id, user_id)
 );

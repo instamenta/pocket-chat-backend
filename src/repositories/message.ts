@@ -43,8 +43,6 @@ export default class MessageRepository {
 	}
 
 	public getMessagesByUsers(user1: string, user2: string, skip: number = 0, limit: number = 20) {
-		console.log(skip, limit)
-
 		return this.database.query<I_Message>(`
 
                 SELECT *

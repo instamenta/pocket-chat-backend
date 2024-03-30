@@ -43,7 +43,6 @@ export default class ShortRepository {
 		// --                    WHERE s.user_id != $1
 		try {
 			const result = await this.database.query<I_ShortPopulated>(query, [userId]);
-			console.log(result.rows);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listShorts');
