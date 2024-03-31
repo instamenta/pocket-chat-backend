@@ -75,6 +75,24 @@ export default class ShortController {
 		}
 	}
 
+	public async getShortById(r: Request<{ shortId: string }>, w: Response<I_ShortPopulated>) {
+		try {
+			const shortId = uuid_schema.parse(r.params.shortId);
+
+			const short = await this.repository.getShortById(shortId);
+
+			if (!short) {
+				console.error(`${this.constructor.name}.getShortById(): Not found`, shortId);
+				return w.status(statusCodes.NOT_FOUND).end();
+			}
+
+			w.status(statusCodes.OK).json(short);
+
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
 	public async likeShort(r: Request<{ id: string }>, w: Response<void>) {
 		try {
 			const shortId = uuid_schema.parse(r.params.id);
@@ -173,4 +191,20 @@ export default class ShortController {
 		}
 	}
 
+	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T_Comment & { likes_count: number }>) {
+		try {
+			const commentId = uuid_schema.parse(r.params.commentId);
+
+			const comment = await this.repository.getCommentById(commentId);
+
+			if (!comment) {
+				console.error(`${this.constructor.name}.getCommentById(): Not found`, commentId);
+				return w.status(statusCodes.NOT_FOUND).end();
+			}
+
+			w.status(statusCodes.OK).json(comment);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
 }

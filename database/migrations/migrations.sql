@@ -56,12 +56,10 @@ ALTER TABLE "stories"
 --- Alter the delete behaviour on the Short associated tables
 BEGIN;
 
--- Update foreign keys for short_comments to support cascading deletes
 ALTER TABLE "short_comments" DROP CONSTRAINT IF EXISTS "short_comments_short_id_fkey";
 ALTER TABLE "short_comments" ADD CONSTRAINT "short_comments_short_id_fkey"
     FOREIGN KEY (short_id) REFERENCES "shorts" (id) ON DELETE CASCADE;
 
--- Update foreign keys for short_comment_likes to support cascading deletes
 ALTER TABLE "short_comment_likes" DROP CONSTRAINT IF EXISTS "short_comment_likes_comment_id_fkey";
 ALTER TABLE "short_comment_likes" ADD CONSTRAINT "short_comment_likes_comment_id_fkey"
     FOREIGN KEY (comment_id) REFERENCES "short_comments" (id) ON DELETE CASCADE;
