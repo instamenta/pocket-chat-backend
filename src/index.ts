@@ -1,6 +1,6 @@
 import "dotenv/config";
 import {env} from './utilities/config'
-import initialize_all from "./utilities/intialize";
+import initialize_all, {initialize_media_server} from "./utilities/intialize";
 import UserRouter from "./routers/user";
 import UserController from "./controllers/user";
 import UserRepository from "./repositories/user";
@@ -36,6 +36,7 @@ import LiveRepository from "./repositories/live";
 import LiveController from "./controllers/live";
 import LiveRouter from "./routers/live";
 import Notificator from "./utilities/notificator";
+import MediaController from "./socket/media";
 
 void async function start_service() {
 
@@ -117,6 +118,11 @@ void async function start_service() {
 		messageRepository,
 		notificator,
 	);
+
+
+	const {io} = initialize_media_server();
+
+	new MediaController(io);
 }();
 
 async function graceful_shutdown(database: Client, cache: Redis) {

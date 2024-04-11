@@ -1,6 +1,6 @@
 import {Client} from 'pg';
 import {I_UserSchema} from "../types/user";
-import {I_Friendship} from "../types";
+import {I_Friendship, T_MutualFriend} from "../types";
 
 export type T_FriendRequestData = {
 	id: string,
@@ -95,6 +95,40 @@ export default class FriendRepository {
 		).then((data) => !!data.rowCount)
 
 			.catch(e => this.errorHandler(e, 'acceptFriendRequest'));
+	}
+
+	public async listMutualFriendsByUsers(sender: string, recipient: string) {
+		const query = `
+        SELECT u.id as user_id, u.first_name, u.last_name, u.username
+        FROM users u
+                 INNER JOIN friendships f1 ON f1.sender_id = u.id AND f1.recipient_id = $1
+                 INNER JOIN friendships f2 ON f2.sender_id = u.id AND f2.recipient_id = $2
+        WHERE f1.friendship_status = 'accepted'
+          AND f2.friendship_status = 'accepted'
+          AND f1.recipient_id <> f2.recipient_id;
+        ;`
+		try {
+			const result = await this.database.query<T_MutualFriend>(query, [sender, recipient])
+			return result.rows;
+		} catch (error) {
+			this.errorHandler(error, 'listMutualFriendsByUsers');
+		}
+	}
+
+	public async getFriendsCountByUserId(id: string) {
+		const query = `SELECT f.id
+                   FROM friendships f
+                            JOIN users u
+                                 ON (f.sender_id = u.id AND f.recipient_id = $1)
+                                     OR (f.recipient_id = u.id AND f.sender_id = $1)
+                   WHERE f.friendship_status = 'accepted'
+    ;`
+		try {
+			const result = await this.database.query(query, [id])
+			return result.rowCount ?? 0;
+		} catch (error) {
+			this.errorHandler(error, 'getFriendsCountByUserId');
+		}
 	}
 
 	public listFriendsByUserId(id: string) {

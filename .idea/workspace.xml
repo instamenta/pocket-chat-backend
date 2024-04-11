@@ -5,12 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/socket/media.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/migrations.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/migrations.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/short.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/short.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/comment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/comment.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/short.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/intialize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/intialize.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +28,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;instamenta&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/instamenta/pocket-chat-backend&quot;,
+    &quot;accountId&quot;: &quot;238d1deb-0745-4195-9d59-6173165af05d&quot;
+  }
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -33,22 +53,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/user/Desktop/myProjects/chat-app/sender-chat-api&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/user/Desktop/myProjects/chat-app/sender-chat-api/node_modules/typescript/lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "git-widget-placeholder": "master",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "/home/user/Desktop/myProjects/chat-app/nginx",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/home/user/Desktop/myProjects/chat-app/sender-chat-api/node_modules/typescript/lib"
   }
-}</component>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -65,6 +93,11 @@
       <workItem from="1711820723313" duration="1968000" />
       <workItem from="1711910804737" duration="265000" />
       <workItem from="1711911673142" duration="4055000" />
+      <workItem from="1712819719425" duration="117000" />
+      <workItem from="1712830875987" duration="3324000" />
+      <workItem from="1712839093797" duration="2619000" />
+      <workItem from="1712843860305" duration="1865000" />
+      <workItem from="1712859698331" duration="5683000" />
     </task>
     <servers />
   </component>

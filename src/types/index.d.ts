@@ -80,3 +80,10 @@ export type T_StoryFull = I_Story | {
 	user_picture: string
 	user_username: string
 }
+
+export type T_MutualFriend = {
+	user_id: string
+	first_name: string
+	last_name: string
+	username: string
+}

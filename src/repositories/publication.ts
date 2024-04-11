@@ -1,5 +1,5 @@
 import {Client, QueryResult} from 'pg';
-import {I_Publication} from '../types/publication';
+import {I_Publication, I_Recommendation} from '../types/publication';
 
 export default class PublicationsRepository {
 	constructor(private readonly database: Client) {
@@ -29,13 +29,43 @@ export default class PublicationsRepository {
 		}
 	}
 
-	async getPublicationsByUserId(userId: string): Promise<I_Publication[]> {
+	async getPublicationsByUserId(userId: string) {
 		try {
-			const query = 'SELECT * FROM publications WHERE publisher_id = $1 ORDER BY created_at DESC';
-			const result: QueryResult<I_Publication> = await this.database.query(query, [userId]);
+			const query = `SELECT p.*,
+                            u.username,
+                            u.picture,
+                            u.first_name,
+                            u.last_name,
+                            CASE
+                                WHEN pl.user_id IS NOT NULL THEN TRUE
+                                ELSE FALSE
+                                END AS liked_by_user,
+                            CASE
+                                WHEN f.friendship_status IS NOT NULL THEN TRUE
+                                ELSE FALSE
+                                END AS is_friend_with_user
+                     FROM publications p
+                              JOIN friendships f ON p.publisher_id = f.sender_id OR p.publisher_id = f.recipient_id
+                              JOIN users u ON p.publisher_id = u.id
+                              LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
+                     WHERE publisher_id = $1
+                     ORDER BY created_at DESC`;
+			const result = await this.database.query<I_Recommendation>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'getPublicationsByUserId');
+		}
+	}
+
+	async getPublicationsCountByUserId(userId: string) {
+		try {
+			const query = `SELECT id
+                     FROM publications
+                     WHERE publisher_id = $1`;
+			const result = await this.database.query(query, [userId]);
+			return result.rowCount ?? 0;
+		} catch (error) {
+			this.errorHandler(error, 'getPublicationsCountByUserId');
 		}
 	}
 

@@ -15,6 +15,7 @@ export default class PublicationRouter {
 		this.router.get('/recommendations', isAuthorized, c.getRecommendations.bind(c));
 		this.router.get('/:id', isAuthorized, c.getPublicationById.bind(c));
 		this.router.get('/user/:id', c.getPublicationsByUserId.bind(c));
+		this.router.get('/user/:id/count', c.getPublicationsCountByUserId.bind(c));
 
 		this.router.post('/', isAuthorized, c.createPublication.bind(c));
 		this.router.put('/:id', isAuthorized, c.updatePublication.bind(c));

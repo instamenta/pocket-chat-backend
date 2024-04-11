@@ -9,18 +9,19 @@ import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
 import {WebSocketServer} from 'ws';
 import {ExpressPeerServer} from "peer";
+import {Server as SocketIoServer} from 'socket.io'
+import SimplePeer from 'simple-peer';
+
+const corsOptions: CORS.CorsOptions = {
+	origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173', 'http://192.168.1.8:3001'],
+	methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+	credentials: true,
+	optionsSuccessStatus: 204,
+	allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
+}
 
 export default async function initialize_all() {
 	// initialize_certificates()
-
-	const corsOptions: CORS.CorsOptions = {
-		origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173', 'http://192.168.1.8:3001'],
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-		credentials: true,
-		optionsSuccessStatus: 204,
-		allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
-	}
-
 	const api = express();
 
 	const peer_server = http.createServer(api);
@@ -53,6 +54,21 @@ export default async function initialize_all() {
 	const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
 
 	return {server, api, database, cache, socket};
+}
+
+export function initialize_media_server() {
+	const app = express();
+	const server = http.createServer(app);
+	const io = new SocketIoServer(
+		server,
+		{cors: corsOptions}
+	);
+
+	server.listen(env.MEDIA_SOCKET_PORT, () => {
+		console.log(`Server listening on http://localhost:${env.MEDIA_SOCKET_PORT}`);
+	});
+
+	return {io};
 }
 
 // function initialize_certificates(): void {

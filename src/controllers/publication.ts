@@ -4,7 +4,6 @@ import statusCodes from '@instamenta/http-status-codes';
 import {controllerErrorHandler} from '../utilities';
 import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
 import {I_Publication} from "../types/publication";
-import NotificationRepository from "../repositories/notification";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
 
@@ -46,6 +45,18 @@ export default class PublicationController {
 			const publications = await this.repository.getPublicationsByUserId(id);
 
 			w.status(statusCodes.OK).json(publications);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async getPublicationsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+		try {
+			const id = uuid_schema.parse(r.params.id);
+
+			const count = await this.repository.getPublicationsCountByUserId(id);
+
+			w.status(statusCodes.OK).json({count});
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}

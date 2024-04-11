@@ -17,10 +17,11 @@ export default class FriendRouter {
 		this.router.get('/one/:id', isAuthorized, c.getById.bind(c));
 		this.router.get('/requests', isAuthorized, c.listFriendRequestsOnly.bind(c));
 		this.router.get('/sent', isAuthorized, c.listFriendSentOnly.bind(c));
-
+		this.router.get('/:id/mutual', isAuthorized, c.listMutualFriendsByUsers.bind(c));
 
 		this.router.get('/recommendations', isAuthorized, c.listFriendRecommendations.bind(c))
 		this.router.get('/:id', isAuthorized, c.listFriendsByUserId.bind(c));
+		this.router.get('/:id/count', isAuthorized, c.getFriendsCountByUserId.bind(c));
 
 		this.router.post('/:id', isAuthorized, c.sendFriendRequest.bind(c));
 		this.router.delete('/:id', isAuthorized, c.deleteFriendRequest.bind(c))

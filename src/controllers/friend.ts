@@ -3,7 +3,7 @@ import {sender_recipient_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import FriendRepository, {T_FriendRequestData} from "../repositories/friend";
-import {I_Friendship} from "../types";
+import {I_Friendship, T_MutualFriend} from "../types";
 import {I_UserSchema} from "../types/user";
 import NotificationRepository from "../repositories/notification";
 
@@ -150,6 +150,43 @@ export default class FriendController {
 			}
 
 			w.status(status_codes.OK).end();
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async getFriendsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+		try {
+			const id = uuid_schema.parse(r.params.id);
+
+			const count = await this.repository.getFriendsCountByUserId(id);
+			if (!count) {
+				console.log(`${this.constructor.name}.listFriendsByUserId(): Failed to get friends count`);
+				return w.status(status_codes.BAD_GATEWAY).end();
+			}
+
+			console.log(count)
+
+			w.status(status_codes.OK).json({count});
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async listMutualFriendsByUsers(r: Request<{ id: string }>, w: Response<T_MutualFriend[]>) {
+		try {
+			const recipientId = uuid_schema.parse(r.params.id);
+			const senderId = uuid_schema.parse(r.user.id);
+
+			const friends = await this.repository.listMutualFriendsByUsers(senderId, recipientId);
+			if (!friends) {
+				console.log(`${this.constructor.name}.listFriendsByUserId(): Failed to list friends`);
+				return w.status(status_codes.BAD_GATEWAY).end();
+			}
+
+			console.log(friends);
+
+			w.status(status_codes.OK).json(friends);
 		} catch (error) {
 			controllerErrorHandler(error, w);
 		}
