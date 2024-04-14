@@ -108,6 +108,9 @@ void async function start_service() {
 		console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`)
 	);
 
+	//* Websocket Handlers
+
+	//* WS Module
 	new SocketController(
 		socket,
 		server,
@@ -119,7 +122,7 @@ void async function start_service() {
 		notificator,
 	);
 
-
+	//* Socket IO Module
 	const {io} = initialize_media_server();
 
 	new MediaController(io);

@@ -147,6 +147,29 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'listFriendsByUserId'));
 	}
 
+	public listFriendsByUsername(username: string) {
+		return this.database.query<I_UserSchema>(`
+                SELECT DISTINCT u.*
+                FROM friendships f
+                         JOIN users u ON (f.sender_id = u.id OR f.recipient_id = u.id)
+                WHERE f.friendship_status = 'accepted'
+                  AND (f.sender_id = (
+                    SELECT id
+                    FROM users
+                    WHERE username = $1
+                )
+                    OR f.recipient_id = (
+                        SELECT id
+                        FROM users
+                        WHERE username = $1
+                    )
+                    );
+			`,
+			[username]
+		).then((data) => data.rows)
+			.catch(e => this.errorHandler(e, 'listFriendsByUsername'));
+	}
+
 	public listFriendRequests(id: string) {
 		return this.database.query<T_FriendRequestData>(`
 

@@ -21,6 +21,7 @@ export default class FriendRouter {
 
 		this.router.get('/recommendations', isAuthorized, c.listFriendRecommendations.bind(c))
 		this.router.get('/:id', isAuthorized, c.listFriendsByUserId.bind(c));
+		this.router.get('/username/:username', isAuthorized, c.listFriendsByUsername.bind(c));
 		this.router.get('/:id/count', isAuthorized, c.getFriendsCountByUserId.bind(c));
 
 		this.router.post('/:id', isAuthorized, c.sendFriendRequest.bind(c));

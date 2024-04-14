@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {sender_recipient_schema, uuid_schema} from "../validators";
+import {name_schema, sender_recipient_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import {controllerErrorHandler} from "../utilities";
 import FriendRepository, {T_FriendRequestData} from "../repositories/friend";
@@ -199,6 +199,22 @@ export default class FriendController {
 			const friends = await this.repository.listFriendsByUserId(id);
 			if (!friends) {
 				console.log(`${this.constructor.name}.listFriendsByUserId(): Failed to list friends`);
+				return w.status(status_codes.BAD_GATEWAY).end();
+			}
+
+			w.status(status_codes.OK).json(friends);
+		} catch (error) {
+			controllerErrorHandler(error, w);
+		}
+	}
+
+	public async listFriendsByUsername(r: Request<{ username: string }>, w: Response<I_UserSchema[]>) {
+		try {
+			const username = name_schema.parse(r.params.username);
+
+			const friends = await this.repository.listFriendsByUsername(username);
+			if (!friends) {
+				console.log(`${this.constructor.name}.listFriendsByUsername(): Failed to list friends`);
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 

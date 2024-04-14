@@ -5,20 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/socket/media.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controllers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/publication.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/publication.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/publication.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/intialize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/intialize.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/socket/media.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/socket/media.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +54,7 @@
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "git-widget-placeholder": "master",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/user/Desktop/myProjects/chat-app/nginx",
+    "last_opened_file_path": "/home/user/Desktop/myProjects/chat-app/sender-chat-api",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -97,7 +91,8 @@
       <workItem from="1712830875987" duration="3324000" />
       <workItem from="1712839093797" duration="2619000" />
       <workItem from="1712843860305" duration="1865000" />
-      <workItem from="1712859698331" duration="5683000" />
+      <workItem from="1712859698331" duration="5867000" />
+      <workItem from="1713127843114" duration="2959000" />
     </task>
     <servers />
   </component>
