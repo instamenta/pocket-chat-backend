@@ -1,16 +1,14 @@
 import {Request, Response} from "express";
-import {create_notification_schema, uuid_schema} from "../validators";
+import {uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import NotificationRepository from "../repositories/notification";
-import {I_Notifications, I_PopulatedNotification} from "../types";
+import {I_PopulatedNotification} from "../types";
 import {notification_types} from "../utilities/enumerations";
+import ControllerBase from "../base/controller.base";
 
-export default class NotificationController {
-	constructor(private readonly repository: NotificationRepository) {
-	}
+export default class NotificationController extends ControllerBase<NotificationRepository> {
 
-	public async createNotification(
+	async createNotification(
 		r: Request<{}, {}, {
 			recipient: string,
 			type: notification_types,
@@ -21,34 +19,12 @@ export default class NotificationController {
 	) {
 		try {
 			w.status(status_codes.NOT_IMPLEMENTED).end();
-			// const notification = create_notification_schema.parse({
-			// 	type: r.body.type,
-			// 	seen: r.body.seen,
-			// 	sender: r.user.id,
-			// 	content: r.body.content,
-			// 	recipient: r.body.recipient,
-			// });
-			// const notificationId = await this.repository.createNotification({
-			// 	sender_id: r.user.id,
-			// 	seen: notification.seen,
-			// 	type: notification.type,
-			// 	content: notification.content,
-			// 	recipient_id: notification.recipient,
-			// 	reference_id: '',
-			// });
-			//
-			// if (!notificationId) {
-			// 	console.error(`${this.constructor.name}.createNotification(): Failed to send message`);
-			// 	return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			// }
-			//
-			// w.status(status_codes.CREATED).json({id: notificationId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listNotifications(
+	async listNotifications(
 		r: Request<{}, {}, {}, { filter?: 'all' | 'seen' | 'unseen' }>,
 		w: Response<I_PopulatedNotification[]>
 	) {
@@ -65,11 +41,11 @@ export default class NotificationController {
 
 			w.status(status_codes.OK).json(notifications);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async markNotificationAsSeen(
+	async markNotificationAsSeen(
 		r: Request<{ id: string }>,
 		w: Response<void>
 	) {
@@ -85,11 +61,11 @@ export default class NotificationController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async markAllNotificationsAsSeen(
+	async markAllNotificationsAsSeen(
 		r: Request,
 		w: Response<void>
 	) {
@@ -105,7 +81,7 @@ export default class NotificationController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

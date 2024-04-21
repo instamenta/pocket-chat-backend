@@ -1,14 +1,8 @@
-import {Client, QueryResult} from 'pg';
+import {QueryResult} from 'pg';
 import {I_Publication, I_Recommendation} from '../types/publication';
+import RepositoryBase from "../base/repository.base";
 
-export default class PublicationsRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class PublicationsRepository extends RepositoryBase {
 	async listPublications(): Promise<I_Publication[]> {
 		try {
 			const query = 'SELECT * FROM publications ORDER BY created_at DESC';

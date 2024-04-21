@@ -1,26 +1,19 @@
 import {create_user_schema} from "../validators";
 import {I_UserSchema} from "../types/user";
 import BCrypt from "../utilities/bcrypt";
-import {Client} from 'pg';
-import z from 'zod';
+import {infer} from 'zod';
+import RepositoryBase from "../base/repository.base";
 
 type T_getByUsername = {
-	id: string,
-	username: string,
-	password: string,
-	email: string,
-	picture: string,
+	id: string
+	username: string
+	password: string
+	email: string
+	picture: string
 }
 
-export default class UserRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
-	public listUsers(skip: number = 0, limit: number = 0) {
+export default class UserRepository extends RepositoryBase {
+	listUsers(skip: number = 0, limit: number = 0) {
 		return this.database.query<Omit<I_UserSchema, 'updated_at'>>(`
 
                 SELECT id,
@@ -41,7 +34,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'listUsers'));
 	}
 
-	public getByUsername(username: string): Promise<T_getByUsername | null> {
+	getByUsername(username: string): Promise<T_getByUsername | null> {
 		return this.database.query<T_getByUsername>(`
 
                 SELECT id, username, password, email, username
@@ -55,7 +48,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'getByUsername'));
 	}
 
-	public updateLastActiveAtById(id: string) {
+	updateLastActiveAtById(id: string) {
 		return this.database.query(`
 
                 UPDATE users
@@ -68,7 +61,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'updateLastActiveAtById'));
 	}
 
-	public async createUser({username, email, password, firstName, lastName}: z.infer<typeof create_user_schema>) {
+	async createUser({username, email, password, firstName, lastName}: infer<typeof create_user_schema>) {
 		const hashedPassword = await BCrypt.hashPassword(password);
 
 		return this.database.query<{ id: string }>(`
@@ -83,7 +76,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'createUser'));
 	}
 
-	public getUserById(id: string) {
+	getUserById(id: string) {
 		return this.database.query<I_UserSchema>(`
 
                 SELECT *
@@ -96,7 +89,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'getUserById'));
 	}
 
-	public getUserByUsername(username: string) {
+	getUserByUsername(username: string) {
 		return this.database.query<I_UserSchema>(`
 
                 SELECT *
@@ -110,7 +103,7 @@ export default class UserRepository {
 	}
 
 
-	public updateProfilePicture(id: string, pictureUrl: string) {
+	updateProfilePicture(id: string, pictureUrl: string) {
 		return this.database.query<I_UserSchema>(`
 
                 UPDATE "users"
@@ -124,7 +117,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
 	}
 
-	public updateBio(id: string, bio: string) {
+	updateBio(id: string, bio: string) {
 		return this.database.query<I_UserSchema>(`
 
                 UPDATE "users"
@@ -138,7 +131,7 @@ export default class UserRepository {
 			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
 	}
 
-	public updateProfilePublicInformation(
+	updateProfilePublicInformation(
 		id: string,
 		{username, email, firstName, lastName}: { username?: string; email?: string; firstName?: string; lastName?: string }
 	) {

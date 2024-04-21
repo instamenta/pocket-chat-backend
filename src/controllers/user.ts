@@ -12,15 +12,13 @@ import status_codes from '@instamenta/http-status-codes'
 import JWT from "../utilities/jwt";
 import {SECURITY} from "../utilities/config";
 import BCrypt from "../utilities/bcrypt";
-import {controllerErrorHandler} from "../utilities";
 import {z} from 'zod';
 import {I_UserSchema} from "../types/user";
+import ControllerBase from "../base/controller.base";
 
-export default class UserController {
-	constructor(private readonly repository: UserRepository) {
-	}
+export default class UserController extends ControllerBase<UserRepository> {
 
-	public async listUsers(
+	async listUsers(
 		r: Request<{}, {}, {}, { skip?: string, number?: string }>,
 		w: Response<Omit<I_UserSchema, "updated_at">[]>
 	) {
@@ -36,11 +34,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).json(userList);
 		} catch (error) {
-			controllerErrorHandler(error, w)
+			this.errorHandler(error, w)
 		}
 	}
 
-	public async signUp(r: Request<{}, z.infer<typeof create_user_schema>>, w: Response<{ token: string, id: string }>) {
+	async signUp(r: Request<{}, z.infer<typeof create_user_schema>>, w: Response<{ token: string, id: string }>) {
 		try {
 			const userData = create_user_schema.parse(r.body);
 
@@ -60,11 +58,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userId});
 		} catch (error) {
-			controllerErrorHandler(error, w)
+			this.errorHandler(error, w)
 		}
 	}
 
-	public async signIn(r: Request<{ username: string, password: string }>, w: Response<{ token: string, id: string }>) {
+	async signIn(r: Request<{ username: string, password: string }>, w: Response<{ token: string, id: string }>) {
 		try {
 			const {username, password} = login_user_schema.parse(r.body);
 
@@ -88,11 +86,11 @@ export default class UserController {
 
 			await this.repository.updateLastActiveAtById(userData.id).catch(console.error);
 		} catch (error) {
-			controllerErrorHandler(error, w)
+			this.errorHandler(error, w)
 		}
 	}
 
-	public async authUser(r: Request, w: Response<I_UserSchema>) {
+	async authUser(r: Request, w: Response<I_UserSchema>) {
 		try {
 			const id = uuid_schema.parse(r.user.id);
 
@@ -105,11 +103,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).json(user);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getUserById(r: Request<{ id: string }>, w: Response<I_UserSchema>) {
+	async getUserById(r: Request<{ id: string }>, w: Response<I_UserSchema>) {
 		try {
 			const id = uuid_schema.parse(r.params.id);
 
@@ -122,11 +120,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).json(user);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getUserByUsername(r: Request<{ username: string }>, w: Response<I_UserSchema>) {
+	async getUserByUsername(r: Request<{ username: string }>, w: Response<I_UserSchema>) {
 		try {
 			const username = name_schema.parse(r.params.username);
 
@@ -139,11 +137,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).json(user);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async updateBio(
+	async updateBio(
 		r: Request<{}, { bio: string }>,
 		w: Response<{
 			token: string,
@@ -171,11 +169,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async updateProfilePicture(
+	async updateProfilePicture(
 		r: Request<{}, { picture_url: string }>,
 		w: Response<{
 			token: string,
@@ -203,11 +201,11 @@ export default class UserController {
 
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async updateProfilePublicInformation(
+	async updateProfilePublicInformation(
 		r: Request,
 		w: Response<{
 			token: string,
@@ -240,7 +238,7 @@ export default class UserController {
 
 			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

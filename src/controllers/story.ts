@@ -2,22 +2,23 @@ import {Request, Response} from "express";
 import {name_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import StoryRepository from "../repositories/story";
 import {z} from "zod";
 import {T_FeedStory, T_StoryFull} from "../types";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import ControllerBase from "../base/controller.base";
 
-export default class StoryController {
+export default class StoryController extends ControllerBase<StoryRepository> {
 	constructor(
-		private readonly repository: StoryRepository,
+		repository: StoryRepository,
 		private readonly notificator: Notificator
 	) {
+		super(repository);
 	}
 
-	public async createStory(
+	async createStory(
 		r: Request<{}, {}, {
 			imageUrl: string,
 		}>,
@@ -36,11 +37,11 @@ export default class StoryController {
 
 			w.status(status_codes.CREATED).json({id: storyId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listStories(r: Request, w: Response<T_FeedStory[]>) {
+	async listStories(r: Request, w: Response<T_FeedStory[]>) {
 		try {
 			const userId = uuid_schema.parse(r.user.id);
 
@@ -53,11 +54,11 @@ export default class StoryController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listFeedStories(r: Request, w: Response<T_FeedStory[]>) {
+	async listFeedStories(r: Request, w: Response<T_FeedStory[]>) {
 		try {
 			const userId = uuid_schema.parse(r.user.id);
 
@@ -70,11 +71,11 @@ export default class StoryController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listFriendStoriesByUsername(r: Request<{ username: string }>, w: Response<T_StoryFull[]>) {
+	async listFriendStoriesByUsername(r: Request<{ username: string }>, w: Response<T_StoryFull[]>) {
 		try {
 			const userId = name_schema.parse(r.params.username);
 
@@ -87,12 +88,12 @@ export default class StoryController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 
-	public async likeStory(r: Request<{ id: string }>, w: Response<void>) {
+	async likeStory(r: Request<{ id: string }>, w: Response<void>) {
 		try {
 			const storyId = uuid_schema.parse(r.params.id);
 			const userId = uuid_schema.parse(r.user.id);
@@ -111,12 +112,12 @@ export default class StoryController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 
-	public async listCommentsByStory(r: Request<{ storyId: string }>, w: Response<T_PopulatedComment[]>) {
+	async listCommentsByStory(r: Request<{ storyId: string }>, w: Response<T_PopulatedComment[]>) {
 		try {
 			const storyId = uuid_schema.parse(r.params.storyId);
 			const userId = uuid_schema.parse(r.user.id);
@@ -125,11 +126,11 @@ export default class StoryController {
 
 			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async createStoryComment(r: Request<{ storyId: string }, {}, { content: string }>, w: Response<T_Comment>) {
+	async createStoryComment(r: Request<{ storyId: string }, {}, { content: string }>, w: Response<T_Comment>) {
 		try {
 			const storyId = uuid_schema.parse(r.params.storyId);
 			const userId = uuid_schema.parse(r.user.id);
@@ -149,11 +150,11 @@ export default class StoryController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async deleteStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
+	async deleteStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
 			const commentId = uuid_schema.parse(r.params.commentId);
 			const userId = uuid_schema.parse(r.user.id);
@@ -162,11 +163,11 @@ export default class StoryController {
 
 			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async likeStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
+	async likeStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
 			const commentId = uuid_schema.parse(r.params.commentId);
 			const userId = uuid_schema.parse(r.user.id);
@@ -184,7 +185,7 @@ export default class StoryController {
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

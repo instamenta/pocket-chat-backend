@@ -1,16 +1,9 @@
-import {Client} from "pg";
 import {group_roles} from "../utilities/enumerations";
 import {I_Group, I_GroupMemberPopulated} from "../types/group";
 import {I_Recommendation} from "../types/publication";
+import RepositoryBase from "../base/repository.base";
 
-export default class GroupRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class GroupRepository extends RepositoryBase {
 	async createGroup(userId: string, name: string, description: string, imageUrl: string): Promise<string> {
 		return this.database.query<{ id: string }>(`
 
@@ -244,7 +237,7 @@ export default class GroupRepository {
 		}
 	}
 
-	public async getMembersByGroupId(groupId: string) {
+	async getMembersByGroupId(groupId: string) {
 		const query = `
         SELECT gm.user_id, u.username, u.first_name, u.last_name, u.picture, gm.role, gm.member_since
         FROM "group_members" gm

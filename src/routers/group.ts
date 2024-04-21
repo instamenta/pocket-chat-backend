@@ -1,15 +1,9 @@
-import {Router} from 'express';
 import {isAuthorized} from '../middlewares';
 import GroupController from "../controllers/group";
+import RouterBase from "../base/router.base";
 
-export default class GroupRouter {
-	private router: Router = Router();
-
-	constructor(controller: GroupController) {
-		this.initializeRoutes(controller);
-	}
-
-	private initializeRoutes(c: GroupController) {
+export default class GroupRouter extends RouterBase<GroupController> {
+	initializeRoutes(c: GroupController) {
 		this.router.get('/', isAuthorized, c.listGroups.bind(c));
 		this.router.get('/:id', isAuthorized, c.getGroupById.bind(c));
 		this.router.get('/list/:userId', c.listGroupsByUser.bind(c));
@@ -24,9 +18,5 @@ export default class GroupRouter {
 
 		this.router.delete('/:groupId', isAuthorized, c.removeGroup.bind(c));
 		this.router.delete('/:groupId/:recipientId', isAuthorized, c.removeMember.bind(c));
-	}
-
-	public getRouter(): Router {
-		return this.router;
 	}
 }

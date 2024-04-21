@@ -1,15 +1,8 @@
-import {Client} from "pg";
 import {I_ShortPopulated} from "../types/short";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
+import RepositoryBase from "../base/repository.base";
 
-export default class ShortRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class ShortRepository extends RepositoryBase {
 	async createShort(userId: string, videoUrl: string, description: string) {
 		const query = `INSERT INTO "shorts" (user_id, video_url, description)
                    VALUES ($1, $2, $3)
@@ -243,7 +236,7 @@ export default class ShortRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<T_Comment & { likes_count: number}>(query, [id]);
+			const result = await this.database.query<T_Comment & { likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById');

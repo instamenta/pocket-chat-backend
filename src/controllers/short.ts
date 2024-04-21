@@ -2,19 +2,20 @@ import {Request, Response} from "express";
 import {create_story_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import ShortRepository from "../repositories/short";
 import {I_ShortPopulated} from "../types/short";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import ControllerBase from "../base/controller.base";
 
-export default class ShortController {
+export default class ShortController extends ControllerBase<ShortRepository> {
 	constructor(
-		private readonly repository: ShortRepository,
+		repository: ShortRepository,
 		private readonly notificator: Notificator,
 	) {
+		super(repository);
 	}
 
 	public async createShort(
@@ -37,7 +38,7 @@ export default class ShortController {
 
 			w.status(status_codes.CREATED).json({id: shortId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -54,7 +55,7 @@ export default class ShortController {
 
 			w.status(status_codes.OK).json(shorts);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -71,7 +72,7 @@ export default class ShortController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -89,7 +90,7 @@ export default class ShortController {
 			w.status(statusCodes.OK).json(short);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -114,7 +115,7 @@ export default class ShortController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -127,7 +128,7 @@ export default class ShortController {
 
 			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -151,7 +152,7 @@ export default class ShortController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -164,7 +165,7 @@ export default class ShortController {
 
 			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -187,7 +188,7 @@ export default class ShortController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -204,7 +205,7 @@ export default class ShortController {
 
 			w.status(statusCodes.OK).json(comment);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 }

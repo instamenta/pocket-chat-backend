@@ -1,13 +1,11 @@
 import {Request, Response} from "express";
 import {create_message_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import MessageRepository from "../repositories/message";
 import {I_Message, T_Conversations} from "../types/message";
+import ControllerBase from "../base/controller.base";
 
-export default class MessageController {
-	constructor(private readonly repository: MessageRepository) {
-	}
+export default class MessageController extends ControllerBase<MessageRepository> {
 
 	public async sendMessage(
 		r: Request<{}, {}, { recipient: string, content: string, friendship: string, images?: string[], files?: string[] }>,
@@ -32,7 +30,7 @@ export default class MessageController {
 
 			w.status(status_codes.CREATED).json({id: messageId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -54,7 +52,7 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -78,7 +76,7 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -99,7 +97,7 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json({success: true});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -119,7 +117,7 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json(conversations);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

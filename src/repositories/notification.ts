@@ -1,15 +1,8 @@
-import {Client} from "pg";
 import {I_Notifications, I_PopulatedNotification} from "../types";
 import {notification_types} from "../utilities/enumerations";
+import RepositoryBase from "../base/repository.base";
 
-export default class NotificationRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class NotificationRepository extends RepositoryBase {
 	async createNotification({
 		                         sender_id,
 		                         recipient_id,

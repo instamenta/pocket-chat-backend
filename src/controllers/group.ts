@@ -2,16 +2,14 @@ import {Request, Response} from "express";
 import {create_group_schema, create_publication_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import GroupRepository from "../repositories/group";
 import {I_Group, I_GroupMemberPopulated} from "../types/group";
 import {I_Publication} from "../types/publication";
+import ControllerBase from "../base/controller.base";
 
 // TODO: Make post with percents based on all users engagement with post
 
-export default class GroupController {
-	constructor(private readonly repository: GroupRepository) {
-	}
+export default class GroupController extends ControllerBase<GroupRepository> {
 
 	public async createGroup(
 		r: Request<{}, { id: string }, { name: string, description: string, imageUrl: string }>,
@@ -34,7 +32,7 @@ export default class GroupController {
 
 			w.status(status_codes.CREATED).json({id: groupId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -55,7 +53,7 @@ export default class GroupController {
 
 			w.status(status_codes.CREATED).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -72,7 +70,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).json(groups);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -89,7 +87,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).json(groups);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -106,7 +104,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).json(group);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -124,7 +122,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -142,7 +140,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -165,7 +163,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -184,7 +182,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -202,7 +200,7 @@ export default class GroupController {
 
 			w.status(status_codes.OK).json(members);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -228,7 +226,7 @@ export default class GroupController {
 
 			w.status(statusCodes.CREATED).json({id: publicationId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -240,7 +238,7 @@ export default class GroupController {
 
 			w.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

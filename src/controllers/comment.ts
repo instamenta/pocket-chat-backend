@@ -1,18 +1,19 @@
 import {Request, Response} from 'express';
 import CommentRepository from '../repositories/comment';
 import statusCodes from '@instamenta/http-status-codes';
-import {controllerErrorHandler} from '../utilities';
 import {uuid_schema} from "../validators";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import ControllerBase from "../base/controller.base";
 
-export default class CommentController {
+export default class CommentController extends ControllerBase<CommentRepository>{
 	constructor(
-		private readonly repository: CommentRepository,
+		repository: CommentRepository,
 		private readonly notificator: Notificator,
 	) {
+		super(repository);
 	}
 
 	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T_PopulatedComment[]>) {
@@ -24,7 +25,7 @@ export default class CommentController {
 
 			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -48,7 +49,7 @@ export default class CommentController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -61,7 +62,7 @@ export default class CommentController {
 
 			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -83,7 +84,7 @@ export default class CommentController {
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -100,7 +101,7 @@ export default class CommentController {
 
 			w.status(statusCodes.OK).json(comment);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 }

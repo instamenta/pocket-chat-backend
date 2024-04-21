@@ -1,30 +1,31 @@
 import {Request, Response} from 'express';
 import PublicationsRepository from '../repositories/publication';
 import statusCodes from '@instamenta/http-status-codes';
-import {controllerErrorHandler} from '../utilities';
 import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
 import {I_Publication} from "../types/publication";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import ControllerBase from "../base/controller.base";
 
-export default class PublicationController {
+export default class PublicationController extends ControllerBase<PublicationsRepository> {
 	constructor(
-		private readonly repository: PublicationsRepository,
+		repository: PublicationsRepository,
 		private readonly notificator: Notificator,
 	) {
+		super(repository);
 	}
 
-	public async listPublications(r: Request, w: Response<I_Publication[]>) {
+	async listPublications(r: Request, w: Response<I_Publication[]>) {
 		try {
 			const publications = await this.repository.listPublications();
 
 			w.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getPublicationById(r: Request<{ id: string }>, w: Response<I_Publication>) {
+	async getPublicationById(r: Request<{ id: string }>, w: Response<I_Publication>) {
 		try {
 			const id = uuid_schema.parse(r.params.id);
 
@@ -34,11 +35,11 @@ export default class PublicationController {
 				? w.status(statusCodes.NOT_FOUND).end()
 				: w.status(statusCodes.OK).json(publication);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<I_Publication[]>) {
+	async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<I_Publication[]>) {
 		try {
 			const id = uuid_schema.parse(r.params.id);
 
@@ -46,11 +47,11 @@ export default class PublicationController {
 
 			w.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getPublicationsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+	async getPublicationsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
 		try {
 			const id = uuid_schema.parse(r.params.id);
 
@@ -58,11 +59,11 @@ export default class PublicationController {
 
 			w.status(statusCodes.OK).json({count});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getRecommendations(r: Request, w: Response<I_Publication[]>) {
+	async getRecommendations(r: Request, w: Response<I_Publication[]>) {
 		try {
 			const userId = uuid_schema.parse(r.user.id);
 
@@ -70,11 +71,11 @@ export default class PublicationController {
 
 			w.status(statusCodes.OK).json(recommendations);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async createPublication(
+	async createPublication(
 		r: Request<{}, { id: string }, {
 			description: string,
 			images: string,
@@ -93,11 +94,11 @@ export default class PublicationController {
 
 			w.status(statusCodes.CREATED).json({id: publicationId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async updatePublication(r: Request<{ id: string }>, w: Response<{ id: string }>) {
+	async updatePublication(r: Request<{ id: string }>, w: Response<{ id: string }>) {
 		try {
 			const id = uuid_schema.parse(r.params.id);
 			const publicationData = update_publication_schema.parse(r.body);
@@ -106,11 +107,11 @@ export default class PublicationController {
 
 			w.status(statusCodes.OK).json({id: updatedPublicationId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async likePublication(r: Request<{ id: string }>, w: Response<void>) {
+	async likePublication(r: Request<{ id: string }>, w: Response<void>) {
 		try {
 			const publicationId = uuid_schema.parse(r.params.id);
 			const userId = uuid_schema.parse(r.user.id);
@@ -129,7 +130,7 @@ export default class PublicationController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 }

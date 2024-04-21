@@ -1,6 +1,6 @@
-import {Client} from 'pg';
 import {I_UserSchema} from "../types/user";
 import {I_Friendship, T_MutualFriend} from "../types";
+import RepositoryBase from "../base/repository.base";
 
 export type T_FriendRequestData = {
 	id: string,
@@ -12,15 +12,8 @@ export type T_FriendRequestData = {
 	request_type: 'sent' | 'received'
 }
 
-export default class FriendRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
-	public sendFriendRequest(sender: string, recipient: string) {
+export default class FriendRepository extends RepositoryBase {
+	sendFriendRequest(sender: string, recipient: string) {
 		return this.database.query<{ id: string }>(`
 
                 INSERT INTO friendships (sender_id, recipient_id)
@@ -34,7 +27,7 @@ export default class FriendRepository {
 
 	}
 
-	public deleteFriendRequest(sender: string, recipient: string) {
+	deleteFriendRequest(sender: string, recipient: string) {
 		return this.database.query(`
 
                 DELETE
@@ -48,7 +41,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'deleteFriendRequest'));
 	}
 
-	public declineFriendRequest(sender: string, recipient: string) {
+	declineFriendRequest(sender: string, recipient: string) {
 		return this.database.query(`
 
                 DELETE
@@ -62,7 +55,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'declineFriendRequest'));
 	}
 
-	public listFriendRecommendations(id: string) {
+	listFriendRecommendations(id: string) {
 		return this.database.query<{ id: string, first_name: string, picture: string, username: string }>(`
 
                 SELECT u.id, u.first_name, u.last_name, u.picture, u.username
@@ -83,7 +76,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'listFriendRecommendations'));
 	}
 
-	public acceptFriendRequest(sender: string, recipient: string) {
+	acceptFriendRequest(sender: string, recipient: string) {
 		return this.database.query(`
 
                 UPDATE friendships
@@ -97,7 +90,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'acceptFriendRequest'));
 	}
 
-	public async listMutualFriendsByUsers(sender: string, recipient: string) {
+	async listMutualFriendsByUsers(sender: string, recipient: string) {
 		const query = `
         SELECT u.id as user_id, u.first_name, u.last_name, u.username
         FROM users u
@@ -115,7 +108,7 @@ export default class FriendRepository {
 		}
 	}
 
-	public async getFriendsCountByUserId(id: string) {
+	async getFriendsCountByUserId(id: string) {
 		const query = `SELECT f.id
                    FROM friendships f
                             JOIN users u
@@ -131,7 +124,7 @@ export default class FriendRepository {
 		}
 	}
 
-	public listFriendsByUserId(id: string) {
+	listFriendsByUserId(id: string) {
 		return this.database.query<I_UserSchema>(`
 
                 SELECT *
@@ -147,30 +140,50 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'listFriendsByUserId'));
 	}
 
-	public listFriendsByUsername(username: string) {
-		return this.database.query<I_UserSchema>(`
-                SELECT DISTINCT u.*
-                FROM friendships f
-                         JOIN users u ON (f.sender_id = u.id OR f.recipient_id = u.id)
-                WHERE f.friendship_status = 'accepted'
-                  AND (f.sender_id = (
-                    SELECT id
-                    FROM users
-                    WHERE username = $1
-                )
-                    OR f.recipient_id = (
-                        SELECT id
-                        FROM users
-                        WHERE username = $1
-                    )
-                    );
-			`,
-			[username]
-		).then((data) => data.rows)
-			.catch(e => this.errorHandler(e, 'listFriendsByUsername'));
+	async listFriendsByUsername(username: string, requester: string) {
+		try {
+			const data = await Promise.all([
+				this.database.query<{ id: string }>(`SELECT id
+                                             FROM users
+                                             WHERE username = $1`, [username]),
+				this.database.query<{ id: string }>(`SELECT id
+                                             FROM users
+                                             WHERE username = $1`, [requester]),
+			]);
+
+			const userData = data[0].rowCount ? data[0].rows[0] : null;
+			const requesterData = data[1].rowCount ? data[1].rows[0] : null;
+
+			if (!userData) throw new Error(`Failed to get user data for ${username}`)
+			if (!requesterData) throw new Error(`Failed to get user data for ${requester}`)
+
+			const friendsResult = await this.database.query<I_UserSchema & { friendship_status_with_requester: string }>(
+				`SELECT u.*,
+                COALESCE(
+                        (SELECT friendship_status
+                         FROM friendships
+                         WHERE (sender_id = f.sender_id AND recipient_id = f.recipient_id)
+                            OR (sender_id = f.recipient_id AND recipient_id = f.sender_id)),
+                        'none'
+                ) AS friendship_status_with_requester
+         FROM friendships f
+                  JOIN users u ON (f.sender_id = u.id OR f.recipient_id = u.id)
+         WHERE (f.sender_id = $1 OR f.recipient_id = $1)
+           AND f.friendship_status = 'accepted'`,
+				[userData.id]
+			);
+
+			return friendsResult.rows.map(friend => ({
+				...friend,
+				is_friend_with_user: true,
+				friendship_status_with_requester: friend.friendship_status_with_requester === 'accepted' ? 'friend' : 'sent'
+			}));
+		} catch (e) {
+			this.errorHandler(e, 'listFriendsByUsername');
+		}
 	}
 
-	public listFriendRequests(id: string) {
+	listFriendRequests(id: string) {
 		return this.database.query<T_FriendRequestData>(`
 
                 SELECT u.id,
@@ -198,7 +211,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'listFriendRequests'));
 	}
 
-	public listFriendRequestsOnly(id: string) {
+	listFriendRequestsOnly(id: string) {
 		return this.database.query<T_FriendRequestData>(`
 
                 SELECT u.id,
@@ -219,7 +232,7 @@ export default class FriendRepository {
 
 	}
 
-	public listFriendSentOnly(id: string) {
+	listFriendSentOnly(id: string) {
 		return this.database.query<T_FriendRequestData>(`
                 SELECT u.id,
                        u.first_name,
@@ -238,7 +251,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'listFriendSentOnly'));
 	}
 
-	public getBySenderAndRecipient(sender: string, recipient: string) {
+	getBySenderAndRecipient(sender: string, recipient: string) {
 		return this.database.query<I_Friendship>(`
 
                 SELECT *
@@ -253,7 +266,7 @@ export default class FriendRepository {
 			.catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
 	}
 
-	public getById(id: string) {
+	getById(id: string) {
 		return this.database.query<I_Friendship>(`
 
                 SELECT *

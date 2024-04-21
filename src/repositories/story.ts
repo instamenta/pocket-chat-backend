@@ -1,15 +1,8 @@
-import {Client} from "pg";
 import {T_FeedStory, T_StoryFull} from "../types";
 import {T_Comment, T_PopulatedComment} from "../types/comment";
+import RepositoryBase from "../base/repository.base";
 
-export default class StoryRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class StoryRepository extends RepositoryBase {
 	async createStory({userId, imageUrl}: { userId: string, imageUrl: string }) {
 		return this.database.query<{ id: string }>(`
 
@@ -188,8 +181,8 @@ export default class StoryRepository {
 
 	async createStoryComment(storyId: string, userId: string, content: string): Promise<T_Comment> {
 		const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
-        VALUES ($1, $2, $3)
-        RETURNING *`;
+                         VALUES ($1, $2, $3)
+                         RETURNING *`;
 
 		const updateQuery = `UPDATE stories
                          SET comments_count = comments_count + 1

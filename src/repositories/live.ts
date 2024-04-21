@@ -1,14 +1,7 @@
-import {Client} from "pg";
 import {E_LiveStates, T_LiveMessagePopulated, T_LivePopulated} from "../types/live";
+import RepositoryBase from "../base/repository.base";
 
-export default class LiveRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class LiveRepository extends RepositoryBase {
 	async createLive(userId: string) {
 		return this.database.query<{ id: string }>(`
 
@@ -51,7 +44,7 @@ export default class LiveRepository {
                    WHERE state = 'active'
                      AND id = $1`;
 		try {
-			const result = await this.database.query<{id: string, state: string, user_id: string}>(query, [liveId]);
+			const result = await this.database.query<{ id: string, state: string, user_id: string }>(query, [liveId]);
 			return result.rows.length ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getLiveById');
@@ -75,7 +68,7 @@ export default class LiveRepository {
 	async createLiveMessage(liveId: string, userId: string, content: string) {
 		return this.database.query<{ id: string }>(`
 
-                INSERT INTO "lives_messages" ( live_id, sender_id, content)
+                INSERT INTO "lives_messages" (live_id, sender_id, content)
                 VALUES ($1, $2, $3)
                 RETURNING id
 			`,
@@ -93,7 +86,7 @@ export default class LiveRepository {
                           u.last_name,
                           lm.content,
                           lm.created_at,
-                          lm.id as message_id,
+                          lm.id     as message_id,
                           lm.live_id
                    FROM "lives_messages" lm
                             JOIN users u ON u.id = lm.sender_id

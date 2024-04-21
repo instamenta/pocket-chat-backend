@@ -1,14 +1,7 @@
-import {Client} from 'pg';
 import {T_Comment, T_PopulatedComment} from "../types/comment";
+import RepositoryBase from "../base/repository.base";
 
-export default class CommentRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
+export default class CommentRepository extends RepositoryBase {
 	async listCommentsByPublication(publicationId: string, userId: string) {
 		const query = `
         SELECT c.id,
@@ -21,15 +14,13 @@ export default class CommentRepository {
                u.first_name,
                u.last_name,
                CASE WHEN cl.comment_id IS NOT NULL THEN TRUE ELSE FALSE END AS liked_by_user,
-               COALESCE(l.likes_count, 0) AS likes_count
+               COALESCE(l.likes_count, 0)                                   AS likes_count
         FROM comments c
                  JOIN users u ON c.user_id = u.id
                  LEFT JOIN comment_likes cl ON c.id = cl.comment_id AND cl.user_id = $2
-                 LEFT JOIN (
-            SELECT comment_id, COUNT(*) AS likes_count
-            FROM comment_likes
-            GROUP BY comment_id
-        ) l ON c.id = l.comment_id
+                 LEFT JOIN (SELECT comment_id, COUNT(*) AS likes_count
+                            FROM comment_likes
+                            GROUP BY comment_id) l ON c.id = l.comment_id
         WHERE c.publication_id = $1
         ORDER BY c.created_at DESC;
 		`;
@@ -89,7 +80,7 @@ export default class CommentRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<T_Comment & { likes_count: number}>(query, [id]);
+			const result = await this.database.query<T_Comment & { likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById ');
