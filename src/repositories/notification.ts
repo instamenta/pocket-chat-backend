@@ -1,8 +1,9 @@
-import {I_Notifications, I_PopulatedNotification} from "../types";
 import {notification_types} from "../utilities/enumerations";
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class NotificationRepository extends RepositoryBase {
+export default class NotificationRepository extends BaseRepository {
+
 	async createNotification({
 		                         sender_id,
 		                         recipient_id,
@@ -10,10 +11,9 @@ export default class NotificationRepository extends RepositoryBase {
 		                         seen,
 		                         content,
 		                         reference_id = ''
-	                         }: Omit<I_Notifications, 'created_at' | 'id'>
+	                         }: Omit<T.Notification.Notification, 'created_at' | 'id'>
 	) {
 		return this.database.query<{ id: string }>(`
-
                 INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content, reference_id)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
@@ -63,7 +63,7 @@ export default class NotificationRepository extends RepositoryBase {
 				throw new Error(`Unknown filter type ${filter} ${recipientId}`);
 		}
 
-		return this.database.query<I_PopulatedNotification>(
+		return this.database.query<T.Notification.Populated>(
 			query,
 			[recipientId]
 		).then(data => data.rows)
@@ -73,7 +73,6 @@ export default class NotificationRepository extends RepositoryBase {
 
 	async markNotificationAsSeen(id: string) {
 		return this.database.query(`
-
                 UPDATE notifications
                 SET seen = true
                 WHERE id = $1
@@ -86,7 +85,6 @@ export default class NotificationRepository extends RepositoryBase {
 
 	async markAllNotificationsAsSeen(recipientId: string) {
 		return this.database.query(`
-
                 UPDATE notifications
                 SET seen = true
                 WHERE recipient_id = $1
@@ -114,7 +112,7 @@ export default class NotificationRepository extends RepositoryBase {
                    WHERE n.reference_id = $1
 		`;
 		try {
-			const data = await this.database.query<I_PopulatedNotification>(query, [referenceId]);
+			const data = await this.database.query<T.Notification.Populated>(query, [referenceId]);
 			return data.rowCount ? data.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getNotificationByReferenceId')
@@ -139,7 +137,7 @@ export default class NotificationRepository extends RepositoryBase {
                      AND n.reference_id = $2
                      AND n.type = $3`;
 		try {
-			const data = await this.database.query<I_PopulatedNotification>(query, [senderId, recipientId, type]);
+			const data = await this.database.query<T.Notification.Populated>(query, [senderId, recipientId, type]);
 			return data.rowCount ? data.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getNotificationBySenderAndRecipient')

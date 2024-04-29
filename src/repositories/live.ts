@@ -1,7 +1,8 @@
-import {E_LiveStates, T_LiveMessagePopulated, T_LivePopulated} from "../types/live";
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class LiveRepository extends RepositoryBase {
+export default class LiveRepository extends BaseRepository {
+
 	async createLive(userId: string) {
 		return this.database.query<{ id: string }>(`
 
@@ -31,7 +32,7 @@ export default class LiveRepository extends RepositoryBase {
                    ORDER BY l.created_at DESC
 		`;
 		try {
-			const result = await this.database.query<T_LivePopulated>(query, [userId]);
+			const result = await this.database.query<T.Live.Populated>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listLives');
@@ -51,7 +52,7 @@ export default class LiveRepository extends RepositoryBase {
 		}
 	}
 
-	async updateLiveState(userId: string, state: E_LiveStates) {
+	async updateLiveState(userId: string, state: T.U.LiveStates) {
 		const query = `
         UPDATE "lives"
         SET state = $1
@@ -94,7 +95,7 @@ export default class LiveRepository extends RepositoryBase {
                    ORDER BY lm.created_at DESC
 		`;
 		try {
-			const result = await this.database.query<T_LiveMessagePopulated>(query, [liveId]);
+			const result = await this.database.query<T.Live.MessagePopulated>(query, [liveId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listLiveMessages');

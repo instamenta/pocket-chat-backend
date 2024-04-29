@@ -1,7 +1,8 @@
-import {T_Comment, T_PopulatedComment} from "../types/comment";
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class CommentRepository extends RepositoryBase {
+export default class CommentRepository extends BaseRepository {
+
 	async listCommentsByPublication(publicationId: string, userId: string) {
 		const query = `
         SELECT c.id,
@@ -25,14 +26,14 @@ export default class CommentRepository extends RepositoryBase {
         ORDER BY c.created_at DESC;
 		`;
 		try {
-			const result = await this.database.query<T_PopulatedComment>(query, [publicationId, userId]);
+			const result = await this.database.query<T.Comment.Populated>(query, [publicationId, userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listCommentsByPublication');
 		}
 	}
 
-	async createComment(publicationId: string, userId: string, content: string): Promise<T_Comment> {
+	async createComment(publicationId: string, userId: string, content: string): Promise<T.Comment.Comment> {
 		const insertQuery = `
         INSERT INTO comments (content, publication_id, user_id)
         VALUES ($1, $2, $3)
@@ -44,7 +45,7 @@ export default class CommentRepository extends RepositoryBase {
         WHERE id = $1`;
 
 		try {
-			const insertResult = await this.database.query<T_Comment>(insertQuery, [content, publicationId, userId]);
+			const insertResult = await this.database.query<T.Comment.Comment>(insertQuery, [content, publicationId, userId]);
 			if (insertResult.rows.length === 0) {
 				throw new Error('Failed to insert comment');
 			}
@@ -80,7 +81,7 @@ export default class CommentRepository extends RepositoryBase {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<T_Comment & { likes_count: number }>(query, [id]);
+			const result = await this.database.query<T.Comment.Comment & { likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById ');

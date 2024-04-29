@@ -1,8 +1,8 @@
-import {T_FeedStory, T_StoryFull} from "../types";
-import {T_Comment, T_PopulatedComment} from "../types/comment";
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class StoryRepository extends RepositoryBase {
+export default class StoryRepository extends BaseRepository {
+
 	async createStory({userId, imageUrl}: { userId: string, imageUrl: string }) {
 		return this.database.query<{ id: string }>(`
 
@@ -34,7 +34,7 @@ export default class StoryRepository extends RepositoryBase {
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
 		try {
-			const result = await this.database.query<T_FeedStory>(query, [userId]);
+			const result = await this.database.query<T.Story.Feed>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listStories');
@@ -69,7 +69,7 @@ export default class StoryRepository extends RepositoryBase {
 		`;
 
 		try {
-			const result = await this.database.query<T_FeedStory>(query, [userId]);
+			const result = await this.database.query<T.Story.Feed>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listFeedStories');
@@ -109,7 +109,7 @@ export default class StoryRepository extends RepositoryBase {
 		`;
 
 		try {
-			const result = await this.database.query<T_StoryFull>(friendStoriesQuery, [username]);
+			const result = await this.database.query<T.Story.Full>(friendStoriesQuery, [username]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listFriendStoriesByUsername');
@@ -172,14 +172,14 @@ export default class StoryRepository extends RepositoryBase {
         ORDER BY c.created_at DESC;
 		`;
 		try {
-			const result = await this.database.query<T_PopulatedComment>(query, [storyId, userId]);
+			const result = await this.database.query<T.Comment.Populated>(query, [storyId, userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listCommentsByStoryId');
 		}
 	}
 
-	async createStoryComment(storyId: string, userId: string, content: string): Promise<T_Comment> {
+	async createStoryComment(storyId: string, userId: string, content: string): Promise<T.Comment.Comment> {
 		const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
                          VALUES ($1, $2, $3)
                          RETURNING *`;
@@ -189,7 +189,7 @@ export default class StoryRepository extends RepositoryBase {
                          WHERE id = $1`;
 
 		try {
-			const insertResult = await this.database.query<T_Comment>(insertQuery, [content, storyId, userId]);
+			const insertResult = await this.database.query<T.Comment.Comment>(insertQuery, [content, storyId, userId]);
 			if (insertResult.rows.length === 0) {
 				throw new Error('Failed to insert comment');
 			}

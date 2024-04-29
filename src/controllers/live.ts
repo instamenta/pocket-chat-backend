@@ -1,18 +1,18 @@
 import {Request, Response} from "express";
-import {uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import LiveRepository from "../repositories/live";
-import {E_LiveStates, T_LiveMessagePopulated, T_LivePopulated} from "../types/live";
-import ControllerBase from "../base/controller.base";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class LiveController extends ControllerBase<LiveRepository> {
+export default class LiveController extends BaseController<LiveRepository> {
 
 	public async createLive(
 		r: Request<{}, {}>,
 		w: Response<{ id: string }>
 	) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const shortId = await this.repository.createLive(userId);
 
@@ -27,9 +27,9 @@ export default class LiveController extends ControllerBase<LiveRepository> {
 		}
 	}
 
-	public async listLives(r: Request, w: Response<T_LivePopulated[]>) {
+	public async listLives(r: Request, w: Response<T.Live.Populated[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const lives = await this.repository.listLives(userId);
 
@@ -44,9 +44,9 @@ export default class LiveController extends ControllerBase<LiveRepository> {
 		}
 	}
 
-	public async listLiveMessages(r: Request<{ liveId: string }>, w: Response<T_LiveMessagePopulated[]>) {
+	public async listLiveMessages(r: Request<{ liveId: string }>, w: Response<T.Live.MessagePopulated[]>) {
 		try {
-			const liveId = uuid_schema.parse(r.params.liveId);
+			const liveId = Validate.uuid.parse(r.params.liveId);
 
 			const messages = await this.repository.listLiveMessages(liveId);
 
@@ -62,9 +62,9 @@ export default class LiveController extends ControllerBase<LiveRepository> {
 	}
 
 
-	public async updateLiveState(r: Request<{ state: E_LiveStates }>, w: Response) {
+	public async updateLiveState(r: Request<{ state: T.U.LiveStates }>, w: Response) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			if (!['active', 'paused', 'ended'].includes(r.params.state)) {
 				console.error(`${this.constructor.name}.lives(): Invalid State`, r.params);

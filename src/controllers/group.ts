@@ -1,22 +1,21 @@
 import {Request, Response} from "express";
-import {create_group_schema, create_publication_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
 import GroupRepository from "../repositories/group";
-import {I_Group, I_GroupMemberPopulated} from "../types/group";
-import {I_Publication} from "../types/publication";
-import ControllerBase from "../base/controller.base";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
 // TODO: Make post with percents based on all users engagement with post
 
-export default class GroupController extends ControllerBase<GroupRepository> {
+export default class GroupController extends BaseController<GroupRepository> {
 
 	public async createGroup(
 		r: Request<{}, { id: string }, { name: string, description: string, imageUrl: string }>,
 		w: Response<{ id: string }>
 	) {
 		try {
-			const {userId, name, description, imageUrl} = create_group_schema.parse({
+			const {userId, name, description, imageUrl} = Validate.create_group.parse({
 				userId: r.user.id,
 				name: r.body.name,
 				description: r.body.description,
@@ -41,8 +40,8 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 		w: Response
 	) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
-			const groupId = uuid_schema.parse(r.params.groupId);
+			const userId = Validate.uuid.parse(r.user.id);
+			const groupId = Validate.uuid.parse(r.params.groupId);
 
 			const success = await this.repository.removeGroup(userId, groupId);
 
@@ -57,9 +56,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 		}
 	}
 
-	public async listGroups(r: Request, w: Response<I_Group[]>) {
+	public async listGroups(r: Request, w: Response<T.Group.Group[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const groups = await this.repository.listGroups(userId);
 
@@ -74,9 +73,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 		}
 	}
 
-	public async listGroupsByUser(r: Request<{ userId: string }>, w: Response<I_Group[]>) {
+	public async listGroupsByUser(r: Request<{ userId: string }>, w: Response<T.Group.Group[]>) {
 		try {
-			const userId = uuid_schema.parse(r.params.userId);
+			const userId = Validate.uuid.parse(r.params.userId);
 
 			const groups = await this.repository.listGroupsByUser(userId);
 
@@ -91,9 +90,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 		}
 	}
 
-	public async getGroupById(r: Request<{ id: string }>, w: Response<I_Group>) {
+	public async getGroupById(r: Request<{ id: string }>, w: Response<T.Group.Group>) {
 		try {
-			const groupId = uuid_schema.parse(r.params.id);
+			const groupId = Validate.uuid.parse(r.params.id);
 
 			const group = await this.repository.getGroupById(groupId);
 
@@ -110,8 +109,8 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 
 	public async joinGroup(r: Request<{ id: string }>, w: Response) {
 		try {
-			const groupId = uuid_schema.parse(r.params.id);
-			const userId = uuid_schema.parse(r.user.id);
+			const groupId = Validate.uuid.parse(r.params.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const success = await this.repository.joinGroup(userId, groupId);
 
@@ -128,8 +127,8 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 
 	public async leaveGroup(r: Request<{ id: string }>, w: Response) {
 		try {
-			const groupId = uuid_schema.parse(r.params.id);
-			const userId = uuid_schema.parse(r.user.id);
+			const groupId = Validate.uuid.parse(r.params.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const success = await this.repository.leaveGroup(userId, groupId);
 
@@ -146,9 +145,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 
 	public async changeRole(r: Request<{ groupId: string, recipientId: string }, { newRole: string }>, w: Response) {
 		try {
-			const groupId = uuid_schema.parse(r.params.groupId);
-			const senderId = uuid_schema.parse(r.user.id);
-			const recipientId = uuid_schema.parse(r.params.recipientId);
+			const groupId = Validate.uuid.parse(r.params.groupId);
+			const senderId = Validate.uuid.parse(r.user.id);
+			const recipientId = Validate.uuid.parse(r.params.recipientId);
 
 			if (r.body.newRole !== 'member' || r.body.newRole !== 'moderator') {
 				throw new Error('Invalid Role');
@@ -169,9 +168,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 
 	public async removeMember(r: Request<{ groupId: string, recipientId: string }>, w: Response) {
 		try {
-			const groupId = uuid_schema.parse(r.params.groupId);
-			const senderId = uuid_schema.parse(r.user.id);
-			const recipientId = uuid_schema.parse(r.params.recipientId);
+			const groupId = Validate.uuid.parse(r.params.groupId);
+			const senderId = Validate.uuid.parse(r.user.id);
+			const recipientId = Validate.uuid.parse(r.params.recipientId);
 
 			const success = await this.repository.removeMember(groupId, senderId, recipientId);
 
@@ -187,9 +186,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 	}
 
 
-	public async getMembersByGroupId(r: Request<{ id: string }>, w: Response<I_GroupMemberPopulated[]>) {
+	public async getMembersByGroupId(r: Request<{ id: string }>, w: Response<T.Group.MemberPopulated[]>) {
 		try {
-			const groupId = uuid_schema.parse(r.params.id);
+			const groupId = Validate.uuid.parse(r.params.id);
 
 			const members = await this.repository.getMembersByGroupId(groupId);
 
@@ -213,14 +212,14 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 		}>,
 		w: Response<{ id: string }>) {
 		try {
-			const data = create_publication_schema.parse({
-				publisher_id: uuid_schema.parse(r.user.id),
+			const data = Validate.create_publication.parse({
+				publisher_id: Validate.uuid.parse(r.user.id),
 				description: r.body.description,
 				images: r.body.images,
 				publication_status: r.body.publication_status,
 			});
 
-			const groupId = uuid_schema.parse(r.body.groupId);
+			const groupId = Validate.uuid.parse(r.body.groupId);
 
 			const publicationId = await this.repository.createPublication({...data, groupId});
 
@@ -230,9 +229,9 @@ export default class GroupController extends ControllerBase<GroupRepository> {
 		}
 	}
 
-	public async listPublications(r: Request<{ groupId: string }>, w: Response<I_Publication[]>) {
+	public async listPublications(r: Request<{ groupId: string }>, w: Response<T.Publication.Publication[]>) {
 		try {
-			const groupId = uuid_schema.parse(r.params.groupId);
+			const groupId = Validate.uuid.parse(r.params.groupId);
 
 			const publications = await this.repository.listPublications(groupId);
 

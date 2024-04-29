@@ -5,6 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/base/controller.base.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/base/repository.base.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/base/router.base.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/base/socket.base.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/unions.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
@@ -40,7 +45,21 @@
       <change beforePath="$PROJECT_DIR$/src/routers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/short.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/story.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/story.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/socket/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/socket/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/comment.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/comment.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/group.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/group.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/live.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/live.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/message.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/message.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/publication.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/publication.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/short.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/short.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/bcrypt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/bcrypt.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/enumerations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/enumerations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/jwt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/jwt.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/notificator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/notificator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/validators/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/validators/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +70,11 @@
     <execution />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -79,22 +103,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/user/Desktop/myProjects/open-source/Libraries/vanilla-utility-pack",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/home/user/Desktop/myProjects/chat-app/sender-chat-api/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;b4a55683&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/user/Desktop/myProjects/chat-app/sender-chat-api&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/user/Desktop/myProjects/chat-app/sender-chat-api/node_modules/typescript/lib&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -125,14 +149,23 @@
       <workItem from="1712843860305" duration="1865000" />
       <workItem from="1712859698331" duration="5867000" />
       <workItem from="1713127843114" duration="2959000" />
-      <workItem from="1713333007195" duration="179000" />
-      <workItem from="1713377692105" duration="427000" />
-      <workItem from="1713732094445" duration="5471000" />
+      <workItem from="1714417633216" duration="7769000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

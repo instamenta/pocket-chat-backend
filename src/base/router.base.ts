@@ -1,18 +1,18 @@
-import {Router} from 'express';
-import {NotImplementedError} from '@instamenta/vanilla-utility-pack'
+import {NotImplementedError} from '@instamenta/vanilla-utility-pack';
+import {Router} from "express";
 
-export default class RouterBase<T> {
+export default class BaseRouter<T> {
 	protected router: Router = Router();
 
 	constructor(controller: T) {
-		this.initializeRoutes(controller);
+		this.initialize(controller);
 	}
 
-	initializeRoutes(c: T) {
-		throw new NotImplementedError(`${this.constructor.name}.initializeRoutes(): Is not implemented`);
+	protected initialize(c: T): void {
+		throw new NotImplementedError(`Implement "${this.constructor.name}.initialize()"`);
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this.router;
 	}
 }

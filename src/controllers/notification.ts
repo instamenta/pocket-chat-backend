@@ -1,14 +1,14 @@
 import {Request, Response} from "express";
-import {uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import NotificationRepository from "../repositories/notification";
-import {I_PopulatedNotification} from "../types";
 import {notification_types} from "../utilities/enumerations";
-import ControllerBase from "../base/controller.base";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types';
 
-export default class NotificationController extends ControllerBase<NotificationRepository> {
+export default class NotificationController extends BaseController<NotificationRepository> {
 
-	async createNotification(
+	public async createNotification(
 		r: Request<{}, {}, {
 			recipient: string,
 			type: notification_types,
@@ -24,13 +24,13 @@ export default class NotificationController extends ControllerBase<NotificationR
 		}
 	}
 
-	async listNotifications(
+	public async listNotifications(
 		r: Request<{}, {}, {}, { filter?: 'all' | 'seen' | 'unseen' }>,
-		w: Response<I_PopulatedNotification[]>
+		w: Response<T.Notification.Populated[]>
 	) {
 		try {
 			const notifications = await this.repository.listNotifications(
-				uuid_schema.parse(r.user.id),
+				Validate.uuid.parse(r.user.id),
 				r.query.filter
 			);
 
@@ -45,13 +45,13 @@ export default class NotificationController extends ControllerBase<NotificationR
 		}
 	}
 
-	async markNotificationAsSeen(
+	public async markNotificationAsSeen(
 		r: Request<{ id: string }>,
 		w: Response<void>
 	) {
 		try {
 			const messages = await this.repository.markNotificationAsSeen(
-				uuid_schema.parse(r.params.id),
+				Validate.uuid.parse(r.params.id),
 			);
 
 			if (!messages) {
@@ -65,13 +65,13 @@ export default class NotificationController extends ControllerBase<NotificationR
 		}
 	}
 
-	async markAllNotificationsAsSeen(
+	public async markAllNotificationsAsSeen(
 		r: Request,
 		w: Response<void>
 	) {
 		try {
 			const messages = await this.repository.markAllNotificationsAsSeen(
-				uuid_schema.parse(r.user.id),
+				Validate.uuid.parse(r.user.id),
 			);
 
 			if (!messages) {

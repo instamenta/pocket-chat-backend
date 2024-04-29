@@ -1,16 +1,22 @@
 import {Request, Response} from "express";
-import {name_schema, sender_recipient_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
-import FriendRepository, {T_FriendRequestData} from "../repositories/friend";
-import {I_Friendship, T_MutualFriend} from "../types";
-import {I_UserSchema} from "../types/user";
-import ControllerBase from "../base/controller.base";
+import FriendRepository from "../repositories/friend";
+import NotificationRepository from "../repositories/notification";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class FriendController extends ControllerBase<FriendRepository> {
+export default class FriendController extends BaseController<FriendRepository> {
+	constructor(
+		repository: FriendRepository,
+		private readonly notification: NotificationRepository
+	) {
+		super(repository);
+	}
 
 	public async sendFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: string }>) {
 		try {
-			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
+			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.sendFriendRequest(sender, recipient);
 
@@ -25,12 +31,11 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async listFriendRequestsOnly(r: Request, w: Response<T_FriendRequestData[]>) {
+	public async listFriendRequestsOnly(r: Request, w: Response<T.Friend.RequestData[]>) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
+			const id = Validate.uuid.parse(r.user.id);
 
 			const list = await this.repository.listFriendRequestsOnly(id);
-
 			if (!list) {
 				console.log(`${this.constructor.name}.listFriendRequestsOnly(): Failed to get friend request`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -42,9 +47,9 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async listFriendSentOnly(r: Request, w: Response<T_FriendRequestData[]>) {
+	public async listFriendSentOnly(r: Request, w: Response<T.Friend.RequestData[]>) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
+			const id = Validate.uuid.parse(r.user.id);
 
 			const list = await this.repository.listFriendSentOnly(id);
 
@@ -59,9 +64,9 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async listFriendRequests(r: Request, w: Response<T_FriendRequestData[]>) {
+	public async listFriendRequests(r: Request, w: Response<T.Friend.RequestData[]>) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
+			const id = Validate.uuid.parse(r.user.id);
 
 			const friendRequests = await this.repository.listFriendRequests(id);
 
@@ -83,7 +88,7 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		username: string
 	}[]>) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
+			const id = Validate.uuid.parse(r.user.id);
 
 			const recommendations = await this.repository.listFriendRecommendations(id);
 
@@ -100,7 +105,7 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 
 	public async acceptFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
 		try {
-			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
+			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.acceptFriendRequest(sender, recipient);
 
@@ -117,7 +122,7 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 
 	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: boolean }>) {
 		try {
-			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
+			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.deleteFriendRequest(sender, recipient);
 
@@ -134,7 +139,7 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 
 	public async declineFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
 		try {
-			const {sender, recipient} = sender_recipient_schema.parse({sender: r.user.id, recipient: r.params.id})
+			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.declineFriendRequest(sender, recipient);
 
@@ -151,7 +156,7 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 
 	public async getFriendsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
+			const id = Validate.uuid.parse(r.params.id);
 
 			const count = await this.repository.getFriendsCountByUserId(id);
 			if (!count) {
@@ -167,10 +172,31 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async listMutualFriendsByUsers(r: Request<{ id: string }>, w: Response<T_MutualFriend[]>) {
+	public async getFriendsByUserIdAndSender(r: Request<{ id: string }>, w: Response) {
 		try {
-			const recipientId = uuid_schema.parse(r.params.id);
-			const senderId = uuid_schema.parse(r.user.id);
+			const recipientId = Validate.uuid.parse(r.params.id);
+			const senderId = Validate.uuid.parse(r.user.id);
+
+			const friends = await this.repository.getFriendsByUserIdAndSender(senderId, recipientId);
+			// @ts-ignore
+			if (!friends) {
+				console.log(`${this.constructor.name}.getFriendsByUserIdAndSender(): Failed to list friends`);
+				return w.status(status_codes.BAD_GATEWAY).end();
+			}
+
+			console.log(friends);
+
+			w.status(status_codes.OK).json(friends);
+		} catch (error) {
+			this.errorHandler(error, w);
+		}
+	}
+
+
+	public async listMutualFriendsByUsers(r: Request<{ id: string }>, w: Response<T.Friend.Mutual[]>) {
+		try {
+			const recipientId = Validate.uuid.parse(r.params.id);
+			const senderId = Validate.uuid.parse(r.user.id);
 
 			const friends = await this.repository.listMutualFriendsByUsers(senderId, recipientId);
 			if (!friends) {
@@ -186,9 +212,9 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async listFriendsByUserId(r: Request<{ id: string }>, w: Response<I_UserSchema[]>) {
+	public async listFriendsByUserId(r: Request<{ id: string }>, w: Response<T.User.Schema[]>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
+			const id = Validate.uuid.parse(r.params.id);
 
 			const friends = await this.repository.listFriendsByUserId(id);
 			if (!friends) {
@@ -202,12 +228,11 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async listFriendsByUsername(r: Request<{ username: string }>, w: Response<I_UserSchema[]>) {
+	public async listFriendsByUsername(r: Request<{ username: string }>, w: Response<T.User.Schema[]>) {
 		try {
-			const username = name_schema.parse(r.params.username);
-			const requester = name_schema.parse(r.user.username);
+			const username = Validate.name.parse(r.params.username);
 
-			const friends = await this.repository.listFriendsByUsername(username, requester);
+			const friends = await this.repository.listFriendsByUsername(username);
 			if (!friends) {
 				console.log(`${this.constructor.name}.listFriendsByUsername(): Failed to list friends`);
 				return w.status(status_codes.BAD_GATEWAY).end();
@@ -219,10 +244,13 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async getBySenderAndRecipient(r: Request<{ sender: string, recipient: string }>, w: Response<I_Friendship>) {
+	public async getBySenderAndRecipient(r: Request<{
+		sender: string,
+		recipient: string
+	}>, w: Response<T.Friend.Friendship>) {
 		try {
-			const sender = uuid_schema.parse(r.params.sender);
-			const recipient = uuid_schema.parse(r.params.recipient);
+			const sender = Validate.uuid.parse(r.params.sender);
+			const recipient = Validate.uuid.parse(r.params.recipient);
 
 			const friendship = await this.repository.getBySenderAndRecipient(sender, recipient);
 
@@ -237,10 +265,11 @@ export default class FriendController extends ControllerBase<FriendRepository> {
 		}
 	}
 
-	public async getById(r: Request<{ id: string }>, w: Response<I_Friendship>) {
+	public async getById(r: Request<{ id: string }>, w: Response<T.Friend.Friendship>) {
 		try {
-			const friendship_id = uuid_schema.parse(r.params.id);
+			const friendship_id = Validate.uuid.parse(r.params.id);
 
+			// @ts-ignore
 			const friendship = await this.repository.getById(friendship_id);
 
 			if (!friendship) {

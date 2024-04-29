@@ -1,10 +1,11 @@
 import {z} from 'zod';
-import type {create_message_schema} from "../validators";
 import {socket_events} from "../utilities/enumerations";
+import Validate from "../validators";
+import {MessageStatus} from "./unions";
 
-export type T_CreateMessage = z.infer<typeof create_message_schema>;
+export type Create = z.infer<typeof Validate.create_message>;
 
-export interface I_Message {
+export type Message = {
 	id: string,
 	edited: boolean,
 	content: string,
@@ -15,10 +16,10 @@ export interface I_Message {
 	friendship_id: string,
 	images?: string[],
 	files?: string[],
-	message_status: 'seen' | 'sent' | 'pending',
+	message_status: MessageStatus,
 }
 
-export type I_MessageRequest = {
+export type MessageRequest = {
 	date?: string,
 	sender: string,
 	content: string,
@@ -28,31 +29,31 @@ export type I_MessageRequest = {
 	type: socket_events,
 }
 
-export type I_JoinLiveRequest = {
+export type JoinLiveRequest = {
 	type: socket_events,
 	liveId: string,
 }
 
-export type I_LeaveLiveRequest = {
+export type LeaveLiveRequest = {
 	type: socket_events,
 	liveId: string,
 }
 
-export type I_LiveMessageRequest = {
+export type LiveMessageRequest = {
 	sender: string,
 	content: string,
 	liveId: string,
 	type: socket_events,
 }
 
-export type T_VideoCallRequest = {
+export type VideoCallRequest = {
 	room: string,
 	sender: string,
 	recipient: string,
 	type: socket_events,
 }
 
-export type T_MessageResponse = {
+export type MessageResponse = {
 	type: string,
 	date: string,
 	sender: string,
@@ -64,12 +65,12 @@ export type T_MessageResponse = {
 	files?: string[],
 }
 
-export type T_JoinLiveResponse = {
+export type JoinLiveResponse = {
 	type: socket_events,
 	hostPeerId: string,
 }
 
-export type T_Conversations = {
+export type Conversations = {
 	created_at: string
 	first_name: string
 	last_message: string

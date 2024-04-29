@@ -1,13 +1,13 @@
 import {Request, Response} from 'express';
 import PublicationsRepository from '../repositories/publication';
 import statusCodes from '@instamenta/http-status-codes';
-import {create_publication_schema, update_publication_schema, uuid_schema} from "../validators";
-import {I_Publication} from "../types/publication";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
-import ControllerBase from "../base/controller.base";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class PublicationController extends ControllerBase<PublicationsRepository> {
+export default class PublicationController extends BaseController<PublicationsRepository> {
 	constructor(
 		repository: PublicationsRepository,
 		private readonly notificator: Notificator,
@@ -15,7 +15,7 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		super(repository);
 	}
 
-	async listPublications(r: Request, w: Response<I_Publication[]>) {
+	public async listPublications(r: Request, w: Response<T.Publication.Publication[]>) {
 		try {
 			const publications = await this.repository.listPublications();
 
@@ -25,9 +25,9 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async getPublicationById(r: Request<{ id: string }>, w: Response<I_Publication>) {
+	public async getPublicationById(r: Request<{ id: string }>, w: Response<T.Publication.Publication>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
+			const id = Validate.uuid.parse(r.params.id);
 
 			const publication = await this.repository.getPublicationById(id);
 
@@ -39,9 +39,9 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<I_Publication[]>) {
+	public async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<T.Publication.Publication[]>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
+			const id = Validate.uuid.parse(r.params.id);
 
 			const publications = await this.repository.getPublicationsByUserId(id);
 
@@ -51,9 +51,9 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async getPublicationsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+	public async getPublicationsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
+			const id = Validate.uuid.parse(r.params.id);
 
 			const count = await this.repository.getPublicationsCountByUserId(id);
 
@@ -63,9 +63,9 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async getRecommendations(r: Request, w: Response<I_Publication[]>) {
+	public async getRecommendations(r: Request, w: Response<T.Publication.Publication[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const recommendations = await this.repository.getRecommendations(userId);
 
@@ -75,7 +75,7 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async createPublication(
+	public async createPublication(
 		r: Request<{}, { id: string }, {
 			description: string,
 			images: string,
@@ -83,8 +83,8 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}, {}>,
 		w: Response<{ id: string }>) {
 		try {
-			const data = create_publication_schema.parse({
-				publisher_id: uuid_schema.parse(r.user.id),
+			const data = Validate.create_publication.parse({
+				publisher_id: Validate.uuid.parse(r.user.id),
 				description: r.body.description,
 				images: r.body.images,
 				publication_status: r.body.publication_status,
@@ -98,10 +98,10 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async updatePublication(r: Request<{ id: string }>, w: Response<{ id: string }>) {
+	public async updatePublication(r: Request<{ id: string }>, w: Response<{ id: string }>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
-			const publicationData = update_publication_schema.parse(r.body);
+			const id = Validate.uuid.parse(r.params.id);
+			const publicationData = Validate.update_publication.parse(r.body);
 
 			const updatedPublicationId = await this.repository.updatePublication(id, publicationData);
 
@@ -111,10 +111,10 @@ export default class PublicationController extends ControllerBase<PublicationsRe
 		}
 	}
 
-	async likePublication(r: Request<{ id: string }>, w: Response<void>) {
+	public async likePublication(r: Request<{ id: string }>, w: Response<void>) {
 		try {
-			const publicationId = uuid_schema.parse(r.params.id);
-			const userId = uuid_schema.parse(r.user.id);
+			const publicationId = Validate.uuid.parse(r.params.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.likePublication(publicationId, userId);
 

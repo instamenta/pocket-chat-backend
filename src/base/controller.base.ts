@@ -1,15 +1,15 @@
 import {ZodError} from "zod";
-import status_codes from "@instamenta/http-status-codes";
 import {Response} from "express";
+import status_codes from "@instamenta/http-status-codes";
 
-export default class ControllerBase<T> {
-	protected readonly repository: T
+export default class BaseController<T> {
 
-	constructor(repository: T) {
-		this.repository = repository;
+	constructor(
+		protected readonly repository: T,
+	) {
 	}
 
-	errorHandler(error: ZodError | unknown, w: Response) {
+	protected errorHandler(error: ZodError | unknown, w: Response) {
 		if (error instanceof ZodError) {
 			console.error(error.errors.map((err) => ({
 				path: err.path.join('.'),

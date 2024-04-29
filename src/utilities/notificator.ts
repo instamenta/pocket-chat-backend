@@ -1,12 +1,12 @@
 import NotificationRepository from "../repositories/notification";
 import {notification_types} from "./enumerations";
-import {I_Notifications} from "../types";
 import PublicationsRepository from "../repositories/publication";
 import CommentRepository from "../repositories/comment";
 import ShortRepository from "../repositories/short";
 import StoryRepository from "../repositories/story";
+import {NotImplementedError} from '@instamenta/vanilla-utility-pack';
+import * as T from '../types'
 
-type T_NotificationData = Omit<I_Notifications, 'created_at' | 'id'>;
 
 export default class Notificator {
 	constructor(
@@ -18,7 +18,7 @@ export default class Notificator {
 	) {
 	}
 
-	public async handleNotification(data: T_NotificationData) {
+	public async handleNotification(data: T.Notification.Data) {
 		console.log(`${this.constructor.name}.handleNotification(): Creating notification of type`, data.type);
 
 		switch (data.type) {
@@ -55,18 +55,18 @@ export default class Notificator {
 				await this.#handleLikeStoryCommentNotification(data);
 				break;
 			case notification_types.CALL:
-				throw new Error(`TODO: Notification handler for type ${data.type} is not implemented`)
+				throw new NotImplementedError(`TODO: Notification handler for type ${data.type} is not implemented`)
 			case notification_types.LIVE:
-				throw new Error(`TODO: Notification handler for type ${data.type} is not implemented`)
+				throw new NotImplementedError(`TODO: Notification handler for type ${data.type} is not implemented`)
 			default:
-				throw new Error(`Unknown notification type ${data.type}`);
+				throw new NotImplementedError(`Unknown notification type ${data.type}`);
 		}
 	}
 
 	/**
 	 ** Like Publication
 	 */
-	async #handleLikeNotification(data: T_NotificationData) {
+	async #handleLikeNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for like notification', data);
 
 		// @ts-ignore
@@ -91,7 +91,7 @@ export default class Notificator {
 	/**
 	 ** Chat Message
 	 */
-	async #handleMessageNotification(data: T_NotificationData) {
+	async #handleMessageNotification(data: T.Notification.Data) {
 		const notification = await this.repository.getNotificationBySenderAndRecipient(
 			data.sender_id,
 			data.recipient_id,
@@ -108,7 +108,7 @@ export default class Notificator {
 	/**
 	 ** Comment Publication
 	 */
-	async #handleCommentNotification(data: T_NotificationData) {
+	async #handleCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for comment notification', data);
 
 		// @ts-ignore
@@ -133,7 +133,7 @@ export default class Notificator {
 	/**
 	 ** Like Comment Publication
 	 */
-	async #handleLikeCommentNotification(data: T_NotificationData) {
+	async #handleLikeCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for comment notification', data);
 
 		// @ts-ignore
@@ -159,7 +159,7 @@ export default class Notificator {
 	/**
 	 ** Like Short
 	 */
-	async #handleLikeShortNotification(data: T_NotificationData) {
+	async #handleLikeShortNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for like short', data);
 
 		// @ts-ignore
@@ -185,7 +185,7 @@ export default class Notificator {
 	/**
 	 ** Comment Short
 	 */
-	async #handleCommentShortNotification(data: T_NotificationData) {
+	async #handleCommentShortNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for comment notification', data);
 
 		// @ts-ignore
@@ -210,7 +210,7 @@ export default class Notificator {
 	/**
 	 ** Like Comment Short
 	 */
-	async #handleLikeShortCommentNotification(data: T_NotificationData) {
+	async #handleLikeShortCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for comment notification', data);
 
 		// @ts-ignore
@@ -236,7 +236,7 @@ export default class Notificator {
 	/**
 	 ** Like Story
 	 */
-	async #handleLikeStoryNotification(data: T_NotificationData) {
+	async #handleLikeStoryNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for like story', data);
 
 		// @ts-ignore
@@ -262,7 +262,7 @@ export default class Notificator {
 	/**
 	 ** Comment Story
 	 */
-	async #handleCommentStoryNotification(data: T_NotificationData) {
+	async #handleCommentStoryNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for comment notification', data);
 
 		// @ts-ignore
@@ -287,7 +287,7 @@ export default class Notificator {
 	/**
 	 ** Like Comment Story
 	 */
-	async #handleLikeStoryCommentNotification(data: T_NotificationData) {
+	async #handleLikeStoryCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) return console.error('No reference id for comment notification', data);
 
 		// @ts-ignore

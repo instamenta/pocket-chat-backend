@@ -1,9 +1,9 @@
 import {isAuthorized} from "../middlewares";
 import MessageController from "../controllers/message";
-import RouterBase from "../base/router.base";
+import BaseRouter from "../base/router.base";
 
-export default class MessageRouter extends RouterBase<MessageController> {
-	initializeRoutes(c: MessageController) {
+export default class MessageRouter extends BaseRouter<MessageController> {
+	initialize(c: MessageController) {
 		this.router.post('/', isAuthorized, c.sendMessage.bind(c));
 		this.router.put('/:id', isAuthorized, c.updateMessageStatus.bind(c));
 

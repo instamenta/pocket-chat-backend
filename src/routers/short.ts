@@ -1,9 +1,9 @@
 import {isAuthorized} from '../middlewares';
 import ShortController from "../controllers/short";
-import RouterBase from "../base/router.base";
+import BaseRouter from "../base/router.base";
 
-export default class ShortRouter extends RouterBase<ShortController> {
-	initializeRoutes(c: ShortController) {
+export default class ShortRouter extends BaseRouter<ShortController> {
+	initialize(c: ShortController) {
 		this.router.post('/', isAuthorized, c.createShort.bind(c));
 		this.router.get('/', isAuthorized, c.listShorts.bind(c));
 		this.router.get('/:id', isAuthorized, c.listShortsByUsername.bind(c));

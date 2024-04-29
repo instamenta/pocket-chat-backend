@@ -1,9 +1,9 @@
 import PublicationController from '../controllers/publication';
 import {isAuthorized} from '../middlewares';
-import RouterBase from "../base/router.base";
+import BaseRouter from "../base/router.base";
 
-export default class PublicationRouter extends RouterBase<PublicationController> {
-	initializeRoutes(c: PublicationController) {
+export default class PublicationRouter extends BaseRouter<PublicationController> {
+	initialize(c: PublicationController) {
 		this.router.get('/', isAuthorized, c.listPublications.bind(c));
 		this.router.get('/recommendations', isAuthorized, c.getRecommendations.bind(c));
 		this.router.get('/:id', isAuthorized, c.getPublicationById.bind(c));

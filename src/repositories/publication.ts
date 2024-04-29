@@ -1,23 +1,24 @@
 import {QueryResult} from 'pg';
-import {I_Publication, I_Recommendation} from '../types/publication';
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class PublicationsRepository extends RepositoryBase {
-	async listPublications(): Promise<I_Publication[]> {
+export default class PublicationsRepository extends BaseRepository {
+
+	async listPublications() {
 		try {
 			const query = 'SELECT * FROM publications ORDER BY created_at DESC';
-			const result: QueryResult<I_Publication> = await this.database.query(query);
+			const result: QueryResult<T.Publication.Publication> = await this.database.query(query);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listPublications');
 		}
 	}
 
-	async getPublicationById(id: string): Promise<I_Publication | undefined> {
+	async getPublicationById(id: string) {
 		try {
 			const query = 'SELECT * FROM publications WHERE id = $1';
-			const result: QueryResult<I_Publication> = await this.database.query(query, [id]);
-			return result.rows[0];
+			const result: QueryResult<T.Publication.Publication> = await this.database.query(query, [id]);
+			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getPublicationById');
 		}
@@ -44,7 +45,7 @@ export default class PublicationsRepository extends RepositoryBase {
                               LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
                      WHERE publisher_id = $1
                      ORDER BY created_at DESC`;
-			const result = await this.database.query<I_Recommendation>(query, [userId]);
+			const result = await this.database.query<T.Publication.Recommendation>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'getPublicationsByUserId');
@@ -63,7 +64,7 @@ export default class PublicationsRepository extends RepositoryBase {
 		}
 	}
 
-	async getRecommendations(userId: string): Promise<I_Publication[]> {
+	async getRecommendations(userId: string): Promise<T.Publication.Publication[]> {
 		try {
 			const query = `
           SELECT p.*,
@@ -88,7 +89,7 @@ export default class PublicationsRepository extends RepositoryBase {
             AND p.publication_status = 'published'
           ORDER BY p.created_at
           LIMIT 20`;
-			const result: QueryResult<I_Publication & {
+			const result: QueryResult<T.Publication.Publication & {
 				liked_by_user: boolean
 			}> = await this.database.query(query, [userId]);
 			const recommendations = result.rows;
@@ -117,7 +118,7 @@ export default class PublicationsRepository extends RepositoryBase {
                OR f.recipient_id = $1
             ORDER BY p.created_at
             LIMIT $2`;
-				const additionalResult: QueryResult<I_Publication & {
+				const additionalResult: QueryResult<T.Publication.Publication & {
 					liked_by_user: boolean
 				}> = await this.database.query(additionalQuery, [userId, remainingLimit]);
 				const additionalPublications = additionalResult.rows;
@@ -174,7 +175,7 @@ export default class PublicationsRepository extends RepositoryBase {
           SET ${fields}
           WHERE id = $1
           RETURNING id`;
-			const result: QueryResult<{ id: string }> = await this.database.query(query, [id, ...values]);
+			const result = await this.database.query<{ id: string }>(query, [id, ...values]);
 			return result.rows[0].id;
 		} catch (error) {
 			this.errorHandler(error, 'updatePublication');

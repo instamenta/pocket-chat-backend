@@ -1,20 +1,20 @@
-import {create_user_schema} from "../validators";
-import {I_UserSchema} from "../types/user";
-import BCrypt from "../utilities/bcrypt";
-import {infer} from 'zod';
-import RepositoryBase from "../base/repository.base";
+import {I_HashingHandler} from "../utilities/bcrypt";
+import z from 'zod';
+import BaseRepository from "../base/repository.base";
+import {Client} from "pg";
+import * as T from '../types'
+import Validate from "../validators";
 
-type T_getByUsername = {
-	id: string
-	username: string
-	password: string
-	email: string
-	picture: string
-}
+export default class UserRepository extends BaseRepository {
+	constructor(
+		client: Client,
+		private readonly hashingHandler: I_HashingHandler
+	) {
+		super(client);
+	}
 
-export default class UserRepository extends RepositoryBase {
-	listUsers(skip: number = 0, limit: number = 0) {
-		return this.database.query<Omit<I_UserSchema, 'updated_at'>>(`
+	public listUsers(skip: number = 0, limit: number = 0) {
+		return this.database.query<Omit<T.User.Schema, 'updated_at'>>(`
 
                 SELECT id,
                        username,
@@ -34,8 +34,8 @@ export default class UserRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'listUsers'));
 	}
 
-	getByUsername(username: string): Promise<T_getByUsername | null> {
-		return this.database.query<T_getByUsername>(`
+	public getByUsername(username: string): Promise<T.User.GetByUsername | null> {
+		return this.database.query<T.User.GetByUsername>(`
 
                 SELECT id, username, password, email, username
                 FROM users u
@@ -48,9 +48,8 @@ export default class UserRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'getByUsername'));
 	}
 
-	updateLastActiveAtById(id: string) {
+	public updateLastActiveAtById(id: string) {
 		return this.database.query(`
-
                 UPDATE users
                 SET last_active_at = NOW()
                 WHERE id = $1;
@@ -61,11 +60,10 @@ export default class UserRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'updateLastActiveAtById'));
 	}
 
-	async createUser({username, email, password, firstName, lastName}: infer<typeof create_user_schema>) {
-		const hashedPassword = await BCrypt.hashPassword(password);
+	public async createUser({username, email, password, firstName, lastName}: z.infer<typeof Validate.create_user>) {
+		const hashedPassword = await this.hashingHandler.hashPassword(password);
 
 		return this.database.query<{ id: string }>(`
-
                 INSERT INTO users ("username", "email", "password", "first_name", "last_name")
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING id;`
@@ -76,9 +74,8 @@ export default class UserRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'createUser'));
 	}
 
-	getUserById(id: string) {
-		return this.database.query<I_UserSchema>(`
-
+	public getUserById(id: string) {
+		return this.database.query<T.User.Schema>(`
                 SELECT *
                 FROM users
                 WHERE id = $1
@@ -89,9 +86,8 @@ export default class UserRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'getUserById'));
 	}
 
-	getUserByUsername(username: string) {
-		return this.database.query<I_UserSchema>(`
-
+	public getUserByUsername(username: string) {
+		return this.database.query<T.User.Schema>(`
                 SELECT *
                 FROM users
                 WHERE username = $1
@@ -103,9 +99,8 @@ export default class UserRepository extends RepositoryBase {
 	}
 
 
-	updateProfilePicture(id: string, pictureUrl: string) {
-		return this.database.query<I_UserSchema>(`
-
+	public updateProfilePicture(id: string, pictureUrl: string) {
+		return this.database.query<T.User.Schema>(`
                 UPDATE "users"
                 SET picture = $2
                 WHERE id = $1
@@ -117,9 +112,8 @@ export default class UserRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
 	}
 
-	updateBio(id: string, bio: string) {
-		return this.database.query<I_UserSchema>(`
-
+	public updateBio(id: string, bio: string) {
+		return this.database.query<T.User.Schema>(`
                 UPDATE "users"
                 SET bio = $2
                 WHERE id = $1
@@ -127,11 +121,10 @@ export default class UserRepository extends RepositoryBase {
 			`,
 			[id, bio]
 		).then(data => data.rows.length ? data.rows[0] : null)
-
 			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
 	}
 
-	updateProfilePublicInformation(
+	public updateProfilePublicInformation(
 		id: string,
 		{username, email, firstName, lastName}: { username?: string; email?: string; firstName?: string; lastName?: string }
 	) {
@@ -155,7 +148,7 @@ export default class UserRepository extends RepositoryBase {
 			values.push(lastName);
 		}
 
-		return this.database.query<I_UserSchema>(`
+		return this.database.query<T.User.Schema>(`
                 UPDATE "users"
                 SET ${fields.join(', ')}
                 WHERE id = $1

@@ -1,9 +1,10 @@
-import {I_Message, T_Conversations, T_CreateMessage} from "../types/message";
 import {QueryResult} from "pg";
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class MessageRepository extends RepositoryBase {
-	createMessage({sender, recipient, content, friendship, images = [], files = []}: T_CreateMessage) {
+export default class MessageRepository extends BaseRepository {
+
+	public createMessage({sender, recipient, content, friendship, images = [], files = []}: T.Message.Create) {
 		return this.database.query<{ id: string }>(`
                 INSERT INTO "messages" (sender_id,
                                         recipient_id,
@@ -20,9 +21,8 @@ export default class MessageRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'createMessage'));
 	}
 
-	getMessagesByFriendshipId(friendship_id: string, skip: number = 0, limit: number = 20) {
-		return this.database.query<I_Message>(`
-
+	public getMessagesByFriendshipId(friendship_id: string, skip: number = 0, limit: number = 20) {
+		return this.database.query<T.Message.Message>(`
                 SELECT *
                 FROM messages
                 WHERE friendship_id = $1
@@ -35,9 +35,8 @@ export default class MessageRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'getMessagesByFriendshipId'));
 	}
 
-	getMessagesByUsers(user1: string, user2: string, skip: number = 0, limit: number = 20) {
-		return this.database.query<I_Message>(`
-
+	public getMessagesByUsers(user1: string, user2: string, skip: number = 0, limit: number = 20) {
+		return this.database.query<T.Message.Message>(`
                 SELECT *
                 FROM messages
                 WHERE sender_id = $1 AND recipient_id = $2
@@ -51,9 +50,8 @@ export default class MessageRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'getMessagesByUsers'));
 	}
 
-	updateMessageStatus(id: string, status: string) {
+	public updateMessageStatus(id: string, status: string) {
 		return this.database.query(`
-
                 UPDATE messages
                 SET message_status = $2,
                     updated_at     = NOW()
@@ -65,7 +63,7 @@ export default class MessageRepository extends RepositoryBase {
 			.catch(e => this.errorHandler(e, 'updateMessageStatus'));
 	}
 
-	async listConversations(userId: string) {
+	public async listConversations(userId: string) {
 		const query = `
         WITH DistinctConversations AS (SELECT CASE
                                                   WHEN sender_id = $1 THEN recipient_id
@@ -94,7 +92,7 @@ export default class MessageRepository extends RepositoryBase {
         ORDER BY created_at DESC;
 		`;
 		try {
-			const result: QueryResult<T_Conversations> = await this.database.query(query, [userId]);
+			const result: QueryResult<T.Message.Conversations> = await this.database.query(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listConversations');

@@ -1,9 +1,10 @@
 import {group_roles} from "../utilities/enumerations";
-import {I_Group, I_GroupMemberPopulated} from "../types/group";
-import {I_Recommendation} from "../types/publication";
-import RepositoryBase from "../base/repository.base";
+import BaseRepository from "../base/repository.base";
+import {NotFoundError, UnauthorizedError} from "@instamenta/vanilla-utility-pack";
+import * as T from '../types';
 
-export default class GroupRepository extends RepositoryBase {
+export default class GroupRepository extends BaseRepository {
+
 	async createGroup(userId: string, name: string, description: string, imageUrl: string): Promise<string> {
 		return this.database.query<{ id: string }>(`
 
@@ -27,7 +28,7 @@ export default class GroupRepository extends RepositoryBase {
 			`;
 			const userRole = await this.database.query(getRoleQuery, [groupId, userId]);
 			if (!userRole.rows.length || userRole.rows[0].role !== group_roles.OWNER) {
-				throw new Error('Unauthorized: Only the owner can remove group.');
+				throw new UnauthorizedError(' Only the owner can remove group.');
 			}
 		} catch (error) {
 			this.errorHandler(error, 'removeGroup');
@@ -74,7 +75,7 @@ export default class GroupRepository extends RepositoryBase {
         ORDER BY g.members_count DESC;
 		`;
 		try {
-			const result = await this.database.query<I_Group>(query, [userId]);
+			const result = await this.database.query<T.Group.Group>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listGroups');
@@ -90,7 +91,7 @@ export default class GroupRepository extends RepositoryBase {
         ORDER BY g.members_count DESC
 		`;
 		try {
-			const result = await this.database.query<I_Group>(query, [userId]);
+			const result = await this.database.query<T.Group.Group>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listGroupsByUser');
@@ -132,7 +133,7 @@ export default class GroupRepository extends RepositoryBase {
 		try {
 			const deleteResult = await this.database.query(deleteQuery, [groupId, userId]);
 			if (!deleteResult.rowCount) {
-				throw new Error('User not found in group');
+				throw new NotFoundError('User not found in group');
 			}
 
 			await this.database.query(updateQuery, [groupId]);
@@ -230,14 +231,14 @@ export default class GroupRepository extends RepositoryBase {
         WHERE g.id = $1;
 		`;
 		try {
-			const result = await this.database.query<I_Group>(query, [groupId]);
+			const result = await this.database.query<T.Group.Group>(query, [groupId]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getGroupById');
 		}
 	}
 
-	async getMembersByGroupId(groupId: string) {
+	public async getMembersByGroupId(groupId: string) {
 		const query = `
         SELECT gm.user_id, u.username, u.first_name, u.last_name, u.picture, gm.role, gm.member_since
         FROM "group_members" gm
@@ -245,7 +246,7 @@ export default class GroupRepository extends RepositoryBase {
         WHERE gm.group_id = $1;
 		`;
 		try {
-			const result = await this.database.query<I_GroupMemberPopulated>(query, [groupId]);
+			const result = await this.database.query<T.Group.MemberPopulated>(query, [groupId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'getMembersByGroupId');
@@ -269,7 +270,7 @@ export default class GroupRepository extends RepositoryBase {
                      WHERE p.publication_status = 'published'
                        AND p.group_id = $1
                      ORDER BY p.created_at DESC`;
-			const result = await this.database.query<I_Recommendation>(query, [groupId]);
+			const result = await this.database.query<T.Publication.Recommendation>(query, [groupId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listPublications');

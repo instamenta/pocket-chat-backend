@@ -1,26 +1,26 @@
 import UserRepository from "../repositories/user";
 import {Request, Response} from "express";
-import {
-	create_user_schema,
-	login_user_schema,
-	name_schema,
-	update_profile_public_information_schema,
-	url_schema,
-	uuid_schema
-} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import JWT from "../utilities/jwt";
 import {SECURITY} from "../utilities/config";
-import BCrypt from "../utilities/bcrypt";
+import {I_HashingHandler} from "../utilities/bcrypt";
 import {z} from 'zod';
-import {I_UserSchema} from "../types/user";
-import ControllerBase from "../base/controller.base";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class UserController extends ControllerBase<UserRepository> {
+export default class UserController extends BaseController<UserRepository> {
 
-	async listUsers(
+	constructor(
+		repository: UserRepository,
+		private readonly hashingHandler: I_HashingHandler
+	) {
+		super(repository);
+	}
+
+	public async listUsers(
 		r: Request<{}, {}, {}, { skip?: string, number?: string }>,
-		w: Response<Omit<I_UserSchema, "updated_at">[]>
+		w: Response<Omit<T.User.Schema, "updated_at">[]>
 	) {
 		try {
 			const {skip, limit} = {skip: 0, limit: 10};
@@ -38,9 +38,12 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async signUp(r: Request<{}, z.infer<typeof create_user_schema>>, w: Response<{ token: string, id: string }>) {
+	public async signUp(r: Request<{}, z.infer<typeof Validate.create_user>>, w: Response<{
+		token: string,
+		id: string
+	}>) {
 		try {
-			const userData = create_user_schema.parse(r.body);
+			const userData = Validate.create_user.parse(r.body);
 
 			const userId = await this.repository.createUser(userData);
 
@@ -62,9 +65,9 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async signIn(r: Request<{ username: string, password: string }>, w: Response<{ token: string, id: string }>) {
+	public async signIn(r: Request<{ username: string, password: string }>, w: Response<{ token: string, id: string }>) {
 		try {
-			const {username, password} = login_user_schema.parse(r.body);
+			const {username, password} = Validate.login_user.parse(r.body);
 
 			const userData = await this.repository.getByUsername(username);
 
@@ -73,7 +76,10 @@ export default class UserController extends ControllerBase<UserRepository> {
 				return w.status(status_codes.UNAUTHORIZED).end();
 			}
 
-			const isMatch = await BCrypt.comparePasswords(password, userData.password);
+			const isMatch = await this.hashingHandler.comparePasswords(
+				password,
+				userData.password
+			);
 
 			if (!isMatch) {
 				console.log(`${this.constructor.name}.loginUser(): Invalid password`);
@@ -90,9 +96,9 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async authUser(r: Request, w: Response<I_UserSchema>) {
+	public async authUser(r: Request, w: Response<T.User.Schema>) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
+			const id = Validate.uuid.parse(r.user.id);
 
 			const user = await this.repository.getUserById(id);
 
@@ -107,9 +113,9 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async getUserById(r: Request<{ id: string }>, w: Response<I_UserSchema>) {
+	public async getUserById(r: Request<{ id: string }>, w: Response<T.User.Schema>) {
 		try {
-			const id = uuid_schema.parse(r.params.id);
+			const id = Validate.uuid.parse(r.params.id);
 
 			const user = await this.repository.getUserById(id);
 
@@ -124,9 +130,9 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async getUserByUsername(r: Request<{ username: string }>, w: Response<I_UserSchema>) {
+	public async getUserByUsername(r: Request<{ username: string }>, w: Response<T.User.Schema>) {
 		try {
-			const username = name_schema.parse(r.params.username);
+			const username = Validate.name.parse(r.params.username);
 
 			const user = await this.repository.getUserByUsername(username);
 
@@ -141,16 +147,16 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async updateBio(
+	public async updateBio(
 		r: Request<{}, { bio: string }>,
 		w: Response<{
 			token: string,
 			id: string,
-			userData: I_UserSchema,
+			userData: T.User.Schema,
 		}>
 	) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
+			const id = Validate.uuid.parse(r.user.id);
 			const bio = z.string().parse(r.body.bio);
 
 			const userData = await this.repository.updateBio(id, bio);
@@ -173,17 +179,17 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async updateProfilePicture(
+	public async updateProfilePicture(
 		r: Request<{}, { picture_url: string }>,
 		w: Response<{
 			token: string,
 			id: string,
-			userData: I_UserSchema,
+			userData: T.User.Schema,
 		}>
 	) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
-			const picture_url = url_schema.parse(r.body.picture_url);
+			const id = Validate.uuid.parse(r.user.id);
+			const picture_url = Validate.url.parse(r.body.picture_url);
 
 			const userData = await this.repository.updateProfilePicture(id, picture_url);
 
@@ -205,17 +211,17 @@ export default class UserController extends ControllerBase<UserRepository> {
 		}
 	}
 
-	async updateProfilePublicInformation(
+	public async updateProfilePublicInformation(
 		r: Request,
 		w: Response<{
 			token: string,
 			id: string,
-			userData: I_UserSchema,
+			userData: T.User.Schema,
 		}>
 	) {
 		try {
-			const id = uuid_schema.parse(r.user.id);
-			const data = update_profile_public_information_schema.parse({
+			const id = Validate.uuid.parse(r.user.id);
+			const data = Validate.update_profile_public_information.parse({
 				firstName: r.body.firstName,
 				lastName: r.body.lastName,
 				username: r.body.username,

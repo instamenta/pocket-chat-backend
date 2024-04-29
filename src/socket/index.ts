@@ -1,77 +1,65 @@
-import {live_message_schema, message_schema, uuid_schema, video_call_invitation_request_schema} from "../validators";
-import {
-	I_JoinLiveRequest,
-	I_LeaveLiveRequest,
-	I_LiveMessageRequest,
-	I_MessageRequest,
-	T_JoinLiveResponse,
-	T_VideoCallRequest
-} from "../types/message";
 import MessageRepository from "../repositories/message";
 import {RawData, WebSocket, WebSocketServer} from "ws";
 import FriendRepository from "../repositories/friend";
-import {env, SECURITY} from "../utilities/config";
 import UserRepository from "../repositories/user";
-import {I_UserSchema} from "../types/user";
-import JWT from "../utilities/jwt";
-import * as Cookies from 'cookie';
 import {Server} from 'node:http'
 import Redis from "ioredis";
 import {notification_types, socket_events} from "../utilities/enumerations";
 import LiveRepository from "../repositories/live";
-import {T_LiveMessageResponse} from "../types/live";
 import Notificator from "../utilities/notificator";
+import BaseSocket from "../base/socket.base";
+import Validate from "../validators";
+import * as T from '../types';
 
-export default class SocketController {
-
-	connections: Map<string, WebSocket>;
-	liveRoomsConnections: Map<string, Array<{ connection: WebSocket, userId: string }>>;
+export default class SocketController extends BaseSocket {
 
 	constructor(
-		private readonly wss: WebSocketServer,
-		private readonly server: Server,
-		private readonly cache: Redis,
-		private readonly userRepository: UserRepository,
+		wss: WebSocketServer,
+		server: Server,
+		cache: Redis,
+		userRepository: UserRepository,
 		private readonly liveRepository: LiveRepository,
 		private readonly friendRepository: FriendRepository,
 		private readonly messageRepository: MessageRepository,
 		private readonly notificator: Notificator,
 	) {
-		this.connections = new Map();
-		this.liveRoomsConnections = new Map();
-		this.start();
+		super(wss, server, cache, userRepository)
 	}
 
-	private async onData(bytes: RawData, host: WebSocket, user: I_UserSchema,) {
+	async onData(bytes: RawData, host: WebSocket, user: T.User.Schema) {
 		try {
-			const request: I_MessageRequest | T_VideoCallRequest | I_LiveMessageRequest | I_JoinLiveRequest
+			const request
+				: T.Message.MessageRequest
+				| T.Message.VideoCallRequest
+				| T.Message.LiveMessageRequest
+				| T.Message.JoinLiveRequest
 				= JSON.parse(bytes.toString());
 
 			console.log(`Websocket received message request with type:`, request.type);
 
 			switch (request.type) {
 				case socket_events.MESSAGE: {
-					await this.onMessage(request as I_MessageRequest, host, user);
+					await this.onMessage(request as T.Message.MessageRequest, host, user);
 					break;
 				}
 				case socket_events.JOIN_LIVE: {
-					await this.onJoinLive(request as I_JoinLiveRequest, host, user);
+					await this.onJoinLive(request as T.Message.JoinLiveRequest, host, user);
 					break;
 				}
 				case socket_events.LEAVE_LIVE: {
-					await this.onLeaveLive(request as I_JoinLiveRequest, host, user);
+					await this.onLeaveLive(request as T.Message.LeaveLiveRequest, host, user);
 					break;
 				}
 				case socket_events.LIVE_MESSAGE: {
-					await this.onLiveMessage(request as I_LiveMessageRequest, host, user);
+					await this.onLiveMessage(request as T.Message.LiveMessageRequest, host, user);
 					break;
 				}
 				case socket_events.VIDEO_CALL_INVITE: {
-					await this.onVideoCallInvite(request as T_VideoCallRequest, host, user);
+					await this.onVideoCallInvite(request as T.Message.VideoCallRequest, host, user);
 					break;
 				}
 				case socket_events.VOICE_CALL_INVITE: {
-					await this.onVideoCallInvite(request as T_VideoCallRequest, host, user)
+					await this.onVideoCallInvite(request as T.Message.VideoCallRequest, host, user)
 					break
 				}
 				default:
@@ -82,8 +70,8 @@ export default class SocketController {
 		}
 	}
 
-	private async onMessage(request: I_MessageRequest, host: WebSocket, user: I_UserSchema) {
-		const r = message_schema.parse(request);
+	private async onMessage(request: T.Message.MessageRequest, host: WebSocket, user: T.User.Schema) {
+		const r = Validate.message.parse(request);
 
 		if (!r.images?.length && !r.content.length && !r.files.length) return console.log('Empty');
 
@@ -145,8 +133,8 @@ export default class SocketController {
 		}
 	}
 
-	private async onLiveMessage(request: I_LiveMessageRequest, host: WebSocket, user: I_UserSchema) {
-		const r = live_message_schema.parse(request);
+	private async onLiveMessage(request: T.Message.LiveMessageRequest, host: WebSocket, user: T.User.Schema) {
+		const r = Validate.live_message.parse(request);
 
 		const exists = await this.liveRepository.getLiveById(r.liveId);
 		if (!exists) {
@@ -169,7 +157,7 @@ export default class SocketController {
 			content: r.content,
 			type: r.type,
 			message_id: messageId,
-		} as T_LiveMessageResponse));
+		}));
 
 		host.send(response);
 
@@ -183,8 +171,8 @@ export default class SocketController {
 		console.log(`Sent all messages to connections: ${liveConnections.length}`);
 	}
 
-	private async onLeaveLive(request: I_LeaveLiveRequest, host: WebSocket, user: I_UserSchema) {
-		const liveId = uuid_schema.parse(request.liveId);
+	private async onLeaveLive(request: T.Message.LeaveLiveRequest, host: WebSocket, user: T.User.Schema) {
+		const liveId = Validate.uuid.parse(request.liveId);
 
 		const connection = this.connections.get(user.id);
 		if (!connection) {
@@ -199,8 +187,8 @@ export default class SocketController {
 		console.log(`User ${user.id} joined live event ${liveId}`);
 	}
 
-	private async onVideoCallInvite(request: T_VideoCallRequest, host: WebSocket, user: I_UserSchema) {
-		const r = video_call_invitation_request_schema.parse(request);
+	private async onVideoCallInvite(request: T.Message.VideoCallRequest, host: WebSocket, user: T.User.Schema) {
+		const r = Validate.video_call_invitation_request.parse(request);
 
 		const connection = this.connections.get(r.recipient);
 		if (!connection) {
@@ -218,15 +206,15 @@ export default class SocketController {
 		connection.send(response);
 	}
 
-	private async onJoinLive(request: I_JoinLiveRequest, host: WebSocket, user: I_UserSchema) {
-		const liveId = uuid_schema.parse(request.liveId);
+	private async onJoinLive(request: T.Message.JoinLiveRequest, host: WebSocket, user: T.User.Schema) {
+		const liveId = Validate.uuid.parse(request.liveId);
 
 		const live = await this.liveRepository.getLiveById(liveId);
 		if (!live) {
 			return console.error(`No Active host for live: ${liveId}`);
 		}
 
-		const response: T_JoinLiveResponse = {
+		const response: T.Message.JoinLiveResponse = {
 			type: socket_events.JOIN_LIVE,
 			hostPeerId: live.user_id,
 		};
@@ -238,35 +226,5 @@ export default class SocketController {
 		this.liveRoomsConnections.set(liveId, liveConnections);
 
 		console.log(`User ${user.id} joined live event ${liveId} with host peer ID ${live.user_id}`);
-	}
-
-	private start() {
-		this.server.listen(env.SOCKET_PORT, () => {
-			console.log(`WebSocket is running on ws://${env.SERVER_HOST}:${env.SOCKET_PORT}`);
-		});
-		this.wss.on('connection', this.onConnection);
-	}
-
-	private onConnection = async (ws: WebSocket, r: any) => {
-		const user = JWT.getUser(Cookies.parse(r.headers.cookie ?? '')[SECURITY.JWT_TOKEN_NAME] ?? '');
-		if (!user) {
-			return ws.close(1);
-		}
-		const userData = await this.userRepository.getUserById(user.id)
-		if (!userData) {
-			return ws.close(1)
-		}
-		this.connections.set(userData.id, ws);
-		this.cache.set(`user=${user.id}`, JSON.stringify(userData));
-
-		ws.on('message', (data) => this.onData(data, ws, userData));
-		ws.on('close', (code, reason) => this.onClose(code, reason, userData));
-		ws.on('error', console.error);
-	}
-
-	private onClose(code: number, reason: Buffer, user: I_UserSchema) {
-		console.error(`Exiting with number (${code}) for reason`, reason.toString() + '.')
-		this.connections.delete(user.id);
-		this.cache.del(`user=${user.id}`);
 	}
 }

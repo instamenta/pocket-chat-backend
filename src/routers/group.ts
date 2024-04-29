@@ -1,9 +1,9 @@
 import {isAuthorized} from '../middlewares';
 import GroupController from "../controllers/group";
-import RouterBase from "../base/router.base";
+import BaseRouter from "../base/router.base";
 
-export default class GroupRouter extends RouterBase<GroupController> {
-	initializeRoutes(c: GroupController) {
+export default class GroupRouter extends BaseRouter<GroupController> {
+	initialize(c: GroupController) {
 		this.router.get('/', isAuthorized, c.listGroups.bind(c));
 		this.router.get('/:id', isAuthorized, c.getGroupById.bind(c));
 		this.router.get('/list/:userId', c.listGroupsByUser.bind(c));

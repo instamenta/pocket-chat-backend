@@ -1,9 +1,9 @@
 import CommentController from '../controllers/comment';
 import {isAuthorized} from '../middlewares';
-import RouterBase from "../base/router.base";
+import BaseRouter from "../base/router.base";
 
-export default class CommentRouter extends RouterBase<CommentController> {
-	initializeRoutes(c: CommentController) {
+export default class CommentRouter extends BaseRouter<CommentController> {
+	initialize(c: CommentController) {
 		this.router.get('/:publicationId', isAuthorized, c.listByPublication.bind(c));
 		this.router.get('/:commentId/details', c.getCommentById.bind(c));
 		this.router.post('/:publicationId', isAuthorized, c.create.bind(c));

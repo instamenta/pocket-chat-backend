@@ -1,14 +1,14 @@
 import {Request, Response} from 'express';
 import CommentRepository from '../repositories/comment';
 import statusCodes from '@instamenta/http-status-codes';
-import {uuid_schema} from "../validators";
-import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
-import ControllerBase from "../base/controller.base";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class CommentController extends ControllerBase<CommentRepository>{
+export default class CommentController extends BaseController<CommentRepository> {
 	constructor(
 		repository: CommentRepository,
 		private readonly notificator: Notificator,
@@ -16,10 +16,10 @@ export default class CommentController extends ControllerBase<CommentRepository>
 		super(repository);
 	}
 
-	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T_PopulatedComment[]>) {
+	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T.Comment.Populated[]>) {
 		try {
-			const publicationId = uuid_schema.parse(r.params.publicationId);
-			const userId = uuid_schema.parse(r.user.id);
+			const publicationId = Validate.uuid.parse(r.params.publicationId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const comments = await this.repository.listCommentsByPublication(publicationId, userId);
 
@@ -29,10 +29,10 @@ export default class CommentController extends ControllerBase<CommentRepository>
 		}
 	}
 
-	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T_Comment>) {
+	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T.Comment.Comment>) {
 		try {
-			const publicationId = uuid_schema.parse(r.params.publicationId);
-			const userId = uuid_schema.parse(r.user.id);
+			const publicationId = Validate.uuid.parse(r.params.publicationId);
+			const userId = Validate.uuid.parse(r.user.id);
 			const content = z.string().min(1).parse(r.body.content);
 
 			const comment = await this.repository.createComment(publicationId, userId, content);
@@ -55,8 +55,8 @@ export default class CommentController extends ControllerBase<CommentRepository>
 
 	public async delete(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.deleteComment(commentId, userId);
 
@@ -68,8 +68,8 @@ export default class CommentController extends ControllerBase<CommentRepository>
 
 	public async like(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.likeComment(commentId, userId);
 
@@ -88,9 +88,9 @@ export default class CommentController extends ControllerBase<CommentRepository>
 		}
 	}
 
-	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T_Comment & { likes_count: number }>) {
+	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T.Comment.Comment & { likes_count: number }>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
+			const commentId = Validate.uuid.parse(r.params.commentId);
 
 			const comment = await this.repository.getCommentById(commentId);
 
