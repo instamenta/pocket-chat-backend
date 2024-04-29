@@ -37,13 +37,16 @@ import LiveController from "./controllers/live";
 import LiveRouter from "./routers/live";
 import Notificator from "./utilities/notificator";
 import MediaController from "./socket/media";
+import BCrypt from './utilities/bcrypt';
 
 void async function start_service() {
 
 	const {server, api, database, cache, socket} = await initialize_all();
 	await graceful_shutdown(database, cache);
 
-	const userRepository = new UserRepository(database);
+	const hashingHandler = new BCrypt();
+
+	const userRepository = new UserRepository(database, hashingHandler);
 	const liveRepository = new LiveRepository(database);
 	const storyRepository = new StoryRepository(database);
 	const shortRepository = new ShortRepository(database);
@@ -62,7 +65,7 @@ void async function start_service() {
 		storyRepository
 	);
 
-	const userController = new UserController(userRepository);
+	const userController = new UserController(userRepository, hashingHandler);
 	const userRouter = new UserRouter(userController).getRouter();
 
 	const liveController = new LiveController(liveRepository);

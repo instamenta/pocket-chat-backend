@@ -1,20 +1,18 @@
 import {Request, Response} from "express";
-import {create_message_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import MessageRepository from "../repositories/message";
-import {I_Message, T_Conversations} from "../types/message";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class MessageController {
-	constructor(private readonly repository: MessageRepository) {
-	}
+export default class MessageController extends BaseController<MessageRepository> {
 
 	public async sendMessage(
 		r: Request<{}, {}, { recipient: string, content: string, friendship: string, images?: string[], files?: string[] }>,
 		w: Response<{ id: string }>
 	) {
 		try {
-			const message = create_message_schema.parse({
+			const message = Validate.create_message.parse({
 				sender: r.user.id,
 				recipient: r.body.recipient,
 				content: r.body.content,
@@ -32,17 +30,17 @@ export default class MessageController {
 
 			w.status(status_codes.CREATED).json({id: messageId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async listMessagesByFriendship(
 		r: Request<{ friendshipId: string }, {}, {}, { skip?: string; limit?: string }>,
-		w: Response<I_Message[]>
+		w: Response<T.Message.Message[]>
 	) {
 		try {
 			const messages = await this.repository.getMessagesByFriendshipId(
-				uuid_schema.parse(r.params.friendshipId),
+				Validate.uuid.parse(r.params.friendshipId),
 				Number.parseInt(r.query.skip || '0', 10),
 				Number.parseInt(r.query.limit || '20', 10)
 			);
@@ -54,19 +52,19 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 
 	public async listMessagesByUsers(
 		r: Request<{ user1: string, user2: string }, {}, {}, { skip?: string; limit?: string }>,
-		w: Response<I_Message[]>
+		w: Response<T.Message.Message[]>
 	) {
 		try {
 			const messages = await this.repository.getMessagesByUsers(
-				uuid_schema.parse(r.params.user1),
-				uuid_schema.parse(r.params.user2),
+				Validate.uuid.parse(r.params.user1),
+				Validate.uuid.parse(r.params.user2),
 				Number.parseInt(r.query.skip || '0', 10),
 				Number.parseInt(r.query.limit || '20', 10)
 			);
@@ -78,7 +76,7 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
@@ -88,7 +86,7 @@ export default class MessageController {
 	) {
 		try {
 			const result = await this.repository.updateMessageStatus(
-				uuid_schema.parse(r.params.id),
+				Validate.uuid.parse(r.params.id),
 				r.body.status
 			);
 
@@ -99,16 +97,16 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json({success: true});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async listConversations(
 		r: Request,
-		w: Response<T_Conversations[]>
+		w: Response<T.Message.Conversations[]>
 	) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const conversations = await this.repository.listConversations(userId);
 
@@ -119,7 +117,7 @@ export default class MessageController {
 
 			w.status(status_codes.OK).json(conversations);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

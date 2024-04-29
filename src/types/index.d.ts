@@ -1,89 +1,24 @@
-import {notification_types} from "../utilities/enumerations";
+import * as U from './unions'
+import * as User from './user'
+import * as Story from './story';
+import * as Short from './short';
+import * as Publication from './publication'
+import * as Message from './message';
+import * as Live from './live'
+import * as Group from './group';
+import * as Comment from './comment';
+import * as Notification from './notification'
+import * as Friend from './friend'
 
-export interface UserPayload {
-	id: string
-	email: string
-	picture: string
-	username: string
-}
+export {U, User, Live, Group, Story, Short, Friend, Message, Comment, Publication, Notification};
 
 declare global {
 	namespace Express {
 		interface Request {
-			user: UserPayload
+			user: User.Payload
 			cookies: {
 				[key: string]: string
 			}
 		}
 	}
-}
-
-export interface I_Friendship {
-	id: string
-	sender_id: string
-	created_at: string
-	recipient_id: string
-	friendship_status: 'accepted' | 'pending'
-}
-
-export interface I_Notifications {
-	id: string
-	type: notification_types
-	seen: boolean
-	content: string
-	sender_id: string
-	created_at: string
-	recipient_id: string
-	reference_id?: string
-}
-
-export interface I_PopulatedNotification {
-	id: string
-	type: string
-	boolean: string
-	content: string
-	sender_id: string
-	created_at: string
-	recipient_id: string
-	picture: string
-	first_name: string
-	seen: boolean
-	last_name: string
-	reference_id: string
-}
-
-type E_StoryVisibility = 'public' | 'private' | 'archive'
-
-interface I_Story {
-	id: string
-	user_id: string
-	image_url: string
-	created_at: string // Timestamp with time zone
-	visibility: E_StoryVisibility
-	likes_count: number
-	comments_count: number
-}
-
-export type T_FeedStory = {
-	id: string
-	username: string
-	first_name: string
-	last_name: string
-	user_picture: string
-	image_url: string
-
-	comments_count: number
-	likes_count: number
-}
-
-export type T_StoryFull = I_Story | {
-	user_picture: string
-	user_username: string
-}
-
-export type T_MutualFriend = {
-	user_id: string
-	first_name: string
-	last_name: string
-	username: string
 }

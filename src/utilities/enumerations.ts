@@ -7,6 +7,11 @@ export enum socket_events {
 	VOICE_CALL_INVITE = 'voice-call-invite',
 }
 
+export enum publication_status {
+	Draft = 'draft',
+	Published = 'published'
+}
+
 export enum group_roles {
 	OWNER = 'owner',
 	MODERATOR = 'moderator',

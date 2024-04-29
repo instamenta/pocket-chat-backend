@@ -1,17 +1,11 @@
-import {I_Message, T_Conversations, T_CreateMessage} from "../types/message";
-import {Client, QueryResult} from "pg";
+import {QueryResult} from "pg";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class MessageRepository {
-	constructor(private readonly database: Client) {
-	}
+export default class MessageRepository extends BaseRepository {
 
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
-
-	public createMessage({sender, recipient, content, friendship, images = [], files = []}: T_CreateMessage) {
+	public createMessage({sender, recipient, content, friendship, images = [], files = []}: T.Message.Create) {
 		return this.database.query<{ id: string }>(`
-
                 INSERT INTO "messages" (sender_id,
                                         recipient_id,
                                         friendship_id,
@@ -28,8 +22,7 @@ export default class MessageRepository {
 	}
 
 	public getMessagesByFriendshipId(friendship_id: string, skip: number = 0, limit: number = 20) {
-		return this.database.query<I_Message>(`
-
+		return this.database.query<T.Message.Message>(`
                 SELECT *
                 FROM messages
                 WHERE friendship_id = $1
@@ -43,8 +36,7 @@ export default class MessageRepository {
 	}
 
 	public getMessagesByUsers(user1: string, user2: string, skip: number = 0, limit: number = 20) {
-		return this.database.query<I_Message>(`
-
+		return this.database.query<T.Message.Message>(`
                 SELECT *
                 FROM messages
                 WHERE sender_id = $1 AND recipient_id = $2
@@ -60,7 +52,6 @@ export default class MessageRepository {
 
 	public updateMessageStatus(id: string, status: string) {
 		return this.database.query(`
-
                 UPDATE messages
                 SET message_status = $2,
                     updated_at     = NOW()
@@ -74,46 +65,34 @@ export default class MessageRepository {
 
 	public async listConversations(userId: string) {
 		const query = `
-        WITH DistinctConversations AS (
-            SELECT
-                CASE
-                    WHEN sender_id = $1 THEN recipient_id
-                    ELSE sender_id
-                    END AS other_user_id,
-                MAX(created_at) as latest_message_time
-            FROM
-                messages
-            WHERE
-                sender_id = $1 OR recipient_id = $1
-            GROUP BY
-                other_user_id
-        ), LatestMessages AS (
-            SELECT
-                m.id AS message_id,
-                m.content AS last_message,
-                m.created_at,
-                u.id AS user_id,
-                u.username,
-                u.first_name,
-                u.last_name,
-                u.picture
-            FROM
-                messages m
-                    JOIN DistinctConversations dc ON m.created_at = dc.latest_message_time
-                    JOIN users u ON u.id = dc.other_user_id
-            WHERE
-                (m.sender_id = $1 AND m.recipient_id = dc.other_user_id) OR
-                (m.recipient_id = $1 AND m.sender_id = dc.other_user_id)
-        )
-        SELECT
-            *
-        FROM
-            LatestMessages
-        ORDER BY
-            created_at DESC;
+        WITH DistinctConversations AS (SELECT CASE
+                                                  WHEN sender_id = $1 THEN recipient_id
+                                                  ELSE sender_id
+                                                  END         AS other_user_id,
+                                              MAX(created_at) as latest_message_time
+                                       FROM messages
+                                       WHERE sender_id = $1
+                                          OR recipient_id = $1
+                                       GROUP BY other_user_id),
+             LatestMessages AS (SELECT m.id      AS message_id,
+                                       m.content AS last_message,
+                                       m.created_at,
+                                       u.id      AS user_id,
+                                       u.username,
+                                       u.first_name,
+                                       u.last_name,
+                                       u.picture
+                                FROM messages m
+                                         JOIN DistinctConversations dc ON m.created_at = dc.latest_message_time
+                                         JOIN users u ON u.id = dc.other_user_id
+                                WHERE (m.sender_id = $1 AND m.recipient_id = dc.other_user_id)
+                                   OR (m.recipient_id = $1 AND m.sender_id = dc.other_user_id))
+        SELECT *
+        FROM LatestMessages
+        ORDER BY created_at DESC;
 		`;
 		try {
-			const result: QueryResult<T_Conversations> = await this.database.query(query, [userId]);
+			const result: QueryResult<T.Message.Conversations> = await this.database.query(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listConversations');

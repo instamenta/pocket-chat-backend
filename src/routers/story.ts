@@ -1,15 +1,9 @@
-import {Router} from 'express';
 import {isAuthorized} from '../middlewares';
 import StoryController from "../controllers/story";
+import BaseRouter from "../base/router.base";
 
-export default class StoryRouter {
-	private router: Router = Router();
-
-	constructor(controller: StoryController) {
-		this.initializeRoutes(controller);
-	}
-
-	private initializeRoutes(c: StoryController) {
+export default class StoryRouter extends BaseRouter<StoryController> {
+	initialize(c: StoryController) {
 		this.router.get('/', isAuthorized, c.listStories.bind(c));
 		this.router.post('/', isAuthorized, c.createStory.bind(c));
 		this.router.get('/feed', isAuthorized, c.listFeedStories.bind(c));
@@ -23,10 +17,5 @@ export default class StoryRouter {
 		this.router.post('/comments/:shortId', isAuthorized, c.createStoryComment.bind(c));
 		this.router.delete('/comments/:commentId', isAuthorized, c.deleteStoryComment.bind(c));
 		this.router.put('/comments/:commentId', isAuthorized, c.likeStoryComment.bind(c));
-
-	}
-
-	public getRouter(): Router {
-		return this.router;
 	}
 }

@@ -1,23 +1,13 @@
-import { Router } from 'express';
 import CommentController from '../controllers/comment';
-import { isAuthorized } from '../middlewares';
+import {isAuthorized} from '../middlewares';
+import BaseRouter from "../base/router.base";
 
-export default class CommentRouter {
-	private router: Router = Router();
-
-	constructor(controller: CommentController) {
-		this.initializeRoutes(controller);
-	}
-
-	private initializeRoutes(c: CommentController) {
+export default class CommentRouter extends BaseRouter<CommentController> {
+	initialize(c: CommentController) {
 		this.router.get('/:publicationId', isAuthorized, c.listByPublication.bind(c));
 		this.router.get('/:commentId/details', c.getCommentById.bind(c));
 		this.router.post('/:publicationId', isAuthorized, c.create.bind(c));
 		this.router.delete('/:commentId', isAuthorized, c.delete.bind(c));
 		this.router.put('/:commentId', isAuthorized, c.like.bind(c));
-	}
-
-	public getRouter(): Router {
-		return this.router;
 	}
 }

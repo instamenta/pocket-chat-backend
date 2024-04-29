@@ -1,14 +1,14 @@
-export interface I_Short {
+export type Short = {
 	id: string
 	user_id: string
 	video_url: string
 	description: string
-	created_at: string // Timestamp in ISO
+	created_at: string
 	likes_count: number
 	comments_count: number
 }
 
-export interface I_ShortPopulated {
+export type Populated = {
 	id: string
 	user_id: string
 	user_picture: string

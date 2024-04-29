@@ -1,6 +1,6 @@
 import {group_roles} from "../utilities/enumerations";
 
-export interface I_Group {
+export type Group = {
 	id: string,
 	owner_id: string,
 	name: string,
@@ -10,7 +10,7 @@ export interface I_Group {
 	image_url: string,
 }
 
-export interface I_GroupMember {
+export type Member = {
 	id: string,
 	group_id: string,
 	user_id: string,
@@ -18,7 +18,7 @@ export interface I_GroupMember {
 	role: group_roles,
 }
 
-export interface I_GroupMemberPopulated {
+export type MemberPopulated = {
 	user_id: string
 	username: string
 	first_name: string

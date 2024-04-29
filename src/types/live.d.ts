@@ -1,19 +1,18 @@
 import {socket_events} from "../utilities/enumerations";
+import * as U from './unions';
 
-export type E_LiveStates = 'active' | 'paused' | 'ended';
-
-export type T_LivePopulated = {
+export type Populated = {
 	user_id: string,
 	user_picture: string,
 	username: string,
 	first_name: string,
 	last_name: string,
-	state: E_LiveStates,
+	state: U.LiveStates,
 	created_at: string,
 	id: string,
 }
 
-export type T_LiveMessagePopulated = {
+export type MessagePopulated = {
 	message_id: string,
 	user_id: string,
 	user_picture: string,
@@ -25,4 +24,4 @@ export type T_LiveMessagePopulated = {
 	created_at: string,
 }
 
-export type T_LiveMessageResponse = T_LiveMessagePopulated & { type: socket_events };
+export type MessageResponse = MessagePopulated & { type: socket_events };

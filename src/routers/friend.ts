@@ -1,18 +1,11 @@
-import {Router} from 'express';
 import {isAuthorized} from "../middlewares";
 import FriendController from "../controllers/friend";
+import BaseRouter from "../base/router.base";
 
-export default class FriendRouter {
+export default class FriendRouter extends BaseRouter<FriendController> {
+	initialize(c: FriendController) {
+		this.router.get('/maikati/:id', isAuthorized, c.getFriendsByUserIdAndSender.bind(c))
 
-	private readonly router: Router = Router();
-	private readonly controller: FriendController;
-
-	constructor(controller: FriendController) {
-		this.controller = controller;
-		this.initialize(this.controller);
-	}
-
-	private initialize(c: FriendController) {
 		this.router.get('/', isAuthorized, c.listFriendRequests.bind(c));
 		this.router.get('/one/:id', isAuthorized, c.getById.bind(c));
 		this.router.get('/requests', isAuthorized, c.listFriendRequestsOnly.bind(c));
@@ -31,8 +24,5 @@ export default class FriendRouter {
 		this.router.get('/:sender/:recipient', isAuthorized, c.getBySenderAndRecipient.bind(c))
 	}
 
-	public getRouter(): Router {
-		return this.router;
-	}
 }
 

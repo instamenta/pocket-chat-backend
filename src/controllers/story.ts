@@ -1,20 +1,20 @@
 import {Request, Response} from "express";
-import {name_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import StoryRepository from "../repositories/story";
 import {z} from "zod";
-import {T_FeedStory, T_StoryFull} from "../types";
-import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class StoryController {
+export default class StoryController extends BaseController<StoryRepository> {
 	constructor(
-		private readonly repository: StoryRepository,
+		repository: StoryRepository,
 		private readonly notificator: Notificator
 	) {
+		super(repository);
 	}
 
 	public async createStory(
@@ -24,7 +24,7 @@ export default class StoryController {
 		w: Response<{ id: string }>
 	) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 			const imageUrl = z.string().url().parse(r.body.imageUrl);
 
 			const storyId = await this.repository.createStory({userId, imageUrl});
@@ -36,13 +36,13 @@ export default class StoryController {
 
 			w.status(status_codes.CREATED).json({id: storyId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listStories(r: Request, w: Response<T_FeedStory[]>) {
+	public async listStories(r: Request, w: Response<T.Story.Feed[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const stories = await this.repository.listStories(userId);
 
@@ -53,13 +53,13 @@ export default class StoryController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listFeedStories(r: Request, w: Response<T_FeedStory[]>) {
+	public async listFeedStories(r: Request, w: Response<T.Story.Feed[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const stories = await this.repository.listFeedStories(userId);
 
@@ -70,13 +70,13 @@ export default class StoryController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listFriendStoriesByUsername(r: Request<{ username: string }>, w: Response<T_StoryFull[]>) {
+	public async listFriendStoriesByUsername(r: Request<{ username: string }>, w: Response<T.Story.Full[]>) {
 		try {
-			const userId = name_schema.parse(r.params.username);
+			const userId = Validate.name.parse(r.params.username);
 
 			const stories = await this.repository.listFriendStoriesByUsername(userId);
 
@@ -87,15 +87,15 @@ export default class StoryController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 
 	public async likeStory(r: Request<{ id: string }>, w: Response<void>) {
 		try {
-			const storyId = uuid_schema.parse(r.params.id);
-			const userId = uuid_schema.parse(r.user.id);
+			const storyId = Validate.uuid.parse(r.params.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.likeStory(storyId, userId);
 
@@ -111,28 +111,28 @@ export default class StoryController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 
-	public async listCommentsByStory(r: Request<{ storyId: string }>, w: Response<T_PopulatedComment[]>) {
+	public async listCommentsByStory(r: Request<{ storyId: string }>, w: Response<T.Comment.Populated[]>) {
 		try {
-			const storyId = uuid_schema.parse(r.params.storyId);
-			const userId = uuid_schema.parse(r.user.id);
+			const storyId = Validate.uuid.parse(r.params.storyId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const comments = await this.repository.listCommentsByStoryId(storyId, userId);
 
 			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async createStoryComment(r: Request<{ storyId: string }, {}, { content: string }>, w: Response<T_Comment>) {
+	public async createStoryComment(r: Request<{ storyId: string }, {}, { content: string }>, w: Response<T.Comment.Comment>) {
 		try {
-			const storyId = uuid_schema.parse(r.params.storyId);
-			const userId = uuid_schema.parse(r.user.id);
+			const storyId = Validate.uuid.parse(r.params.storyId);
+			const userId = Validate.uuid.parse(r.user.id);
 			const content = z.string().min(1).parse(r.body.content);
 
 			const comment = await this.repository.createStoryComment(storyId, userId, content);
@@ -149,27 +149,27 @@ export default class StoryController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async deleteStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.deleteStoryComment(commentId, userId);
 
 			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async likeStoryComment(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.likeStoryComment(commentId, userId);
 
@@ -184,9 +184,8 @@ export default class StoryController {
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
-
 
 }

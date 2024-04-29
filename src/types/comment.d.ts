@@ -1,4 +1,4 @@
-export interface T_Comment {
+export type Comment = {
 	id: string
 	content: string
 	created_at: string
@@ -6,7 +6,7 @@ export interface T_Comment {
 	user_id: string
 }
 
-export interface T_PopulatedComment {
+export type Populated = {
 	id: string
 	content: string
 	created_at: string

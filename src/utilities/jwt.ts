@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from 'express';
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import {SECURITY} from "./config";
-import {UserPayload} from "../types";
+import * as T from '../types';
 
 class JWT {
 	private static secret = SECURITY.JWT_SECRET;
 
-	static signToken(userData: UserPayload): string {
+	static signToken(userData: T.User.Payload): string {
 		return jwt.sign(
 			userData,
 			this.secret,
@@ -14,10 +14,10 @@ class JWT {
 		);
 	}
 
-	static verifyToken(token: string): UserPayload | null {
+	static verifyToken(token: string): T.User.Payload | null {
 		try {
 			const decoded = jwt.verify(token, this.secret) as JwtPayload;
-			return decoded as UserPayload;
+			return decoded as T.User.Payload;
 		} catch (error) {
 			return null;
 		}

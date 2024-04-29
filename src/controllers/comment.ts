@@ -1,37 +1,38 @@
 import {Request, Response} from 'express';
 import CommentRepository from '../repositories/comment';
 import statusCodes from '@instamenta/http-status-codes';
-import {controllerErrorHandler} from '../utilities';
-import {uuid_schema} from "../validators";
-import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class CommentController {
+export default class CommentController extends BaseController<CommentRepository> {
 	constructor(
-		private readonly repository: CommentRepository,
+		repository: CommentRepository,
 		private readonly notificator: Notificator,
 	) {
+		super(repository);
 	}
 
-	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T_PopulatedComment[]>) {
+	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T.Comment.Populated[]>) {
 		try {
-			const publicationId = uuid_schema.parse(r.params.publicationId);
-			const userId = uuid_schema.parse(r.user.id);
+			const publicationId = Validate.uuid.parse(r.params.publicationId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const comments = await this.repository.listCommentsByPublication(publicationId, userId);
 
 			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T_Comment>) {
+	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T.Comment.Comment>) {
 		try {
-			const publicationId = uuid_schema.parse(r.params.publicationId);
-			const userId = uuid_schema.parse(r.user.id);
+			const publicationId = Validate.uuid.parse(r.params.publicationId);
+			const userId = Validate.uuid.parse(r.user.id);
 			const content = z.string().min(1).parse(r.body.content);
 
 			const comment = await this.repository.createComment(publicationId, userId, content);
@@ -48,27 +49,27 @@ export default class CommentController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async delete(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.deleteComment(commentId, userId);
 
 			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async like(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.likeComment(commentId, userId);
 
@@ -83,13 +84,13 @@ export default class CommentController {
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T_Comment & { likes_count: number }>) {
+	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T.Comment.Comment & { likes_count: number }>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
+			const commentId = Validate.uuid.parse(r.params.commentId);
 
 			const comment = await this.repository.getCommentById(commentId);
 
@@ -100,7 +101,7 @@ export default class CommentController {
 
 			w.status(statusCodes.OK).json(comment);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 }

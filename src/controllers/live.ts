@@ -1,20 +1,18 @@
 import {Request, Response} from "express";
-import {uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import LiveRepository from "../repositories/live";
-import {E_LiveStates, T_LiveMessagePopulated, T_LivePopulated} from "../types/live";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class LiveController {
-	constructor(private readonly repository: LiveRepository) {
-	}
+export default class LiveController extends BaseController<LiveRepository> {
 
 	public async createLive(
 		r: Request<{}, {}>,
 		w: Response<{ id: string }>
 	) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const shortId = await this.repository.createLive(userId);
 
@@ -25,13 +23,13 @@ export default class LiveController {
 
 			w.status(status_codes.CREATED).json({id: shortId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listLives(r: Request, w: Response<T_LivePopulated[]>) {
+	public async listLives(r: Request, w: Response<T.Live.Populated[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const lives = await this.repository.listLives(userId);
 
@@ -42,13 +40,13 @@ export default class LiveController {
 
 			w.status(status_codes.OK).json(lives);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listLiveMessages(r: Request<{liveId: string}>, w: Response<T_LiveMessagePopulated[]>) {
+	public async listLiveMessages(r: Request<{ liveId: string }>, w: Response<T.Live.MessagePopulated[]>) {
 		try {
-			const liveId = uuid_schema.parse(r.params.liveId);
+			const liveId = Validate.uuid.parse(r.params.liveId);
 
 			const messages = await this.repository.listLiveMessages(liveId);
 
@@ -59,14 +57,14 @@ export default class LiveController {
 
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 
-	public async updateLiveState(r: Request<{state: E_LiveStates}>, w: Response) {
+	public async updateLiveState(r: Request<{ state: T.U.LiveStates }>, w: Response) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			if (!['active', 'paused', 'ended'].includes(r.params.state)) {
 				console.error(`${this.constructor.name}.lives(): Invalid State`, r.params);
@@ -82,7 +80,7 @@ export default class LiveController {
 
 			w.status(status_codes.OK).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 

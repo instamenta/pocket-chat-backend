@@ -1,13 +1,7 @@
-import {Client} from 'pg';
-import {T_Comment, T_PopulatedComment} from "../types/comment";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class CommentRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
+export default class CommentRepository extends BaseRepository {
 
 	async listCommentsByPublication(publicationId: string, userId: string) {
 		const query = `
@@ -21,27 +15,25 @@ export default class CommentRepository {
                u.first_name,
                u.last_name,
                CASE WHEN cl.comment_id IS NOT NULL THEN TRUE ELSE FALSE END AS liked_by_user,
-               COALESCE(l.likes_count, 0) AS likes_count
+               COALESCE(l.likes_count, 0)                                   AS likes_count
         FROM comments c
                  JOIN users u ON c.user_id = u.id
                  LEFT JOIN comment_likes cl ON c.id = cl.comment_id AND cl.user_id = $2
-                 LEFT JOIN (
-            SELECT comment_id, COUNT(*) AS likes_count
-            FROM comment_likes
-            GROUP BY comment_id
-        ) l ON c.id = l.comment_id
+                 LEFT JOIN (SELECT comment_id, COUNT(*) AS likes_count
+                            FROM comment_likes
+                            GROUP BY comment_id) l ON c.id = l.comment_id
         WHERE c.publication_id = $1
         ORDER BY c.created_at DESC;
 		`;
 		try {
-			const result = await this.database.query<T_PopulatedComment>(query, [publicationId, userId]);
+			const result = await this.database.query<T.Comment.Populated>(query, [publicationId, userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listCommentsByPublication');
 		}
 	}
 
-	async createComment(publicationId: string, userId: string, content: string): Promise<T_Comment> {
+	async createComment(publicationId: string, userId: string, content: string): Promise<T.Comment.Comment> {
 		const insertQuery = `
         INSERT INTO comments (content, publication_id, user_id)
         VALUES ($1, $2, $3)
@@ -53,7 +45,7 @@ export default class CommentRepository {
         WHERE id = $1`;
 
 		try {
-			const insertResult = await this.database.query<T_Comment>(insertQuery, [content, publicationId, userId]);
+			const insertResult = await this.database.query<T.Comment.Comment>(insertQuery, [content, publicationId, userId]);
 			if (insertResult.rows.length === 0) {
 				throw new Error('Failed to insert comment');
 			}
@@ -89,7 +81,7 @@ export default class CommentRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<T_Comment & { likes_count: number}>(query, [id]);
+			const result = await this.database.query<T.Comment.Comment & { likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById ');

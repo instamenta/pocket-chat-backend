@@ -1,20 +1,20 @@
 import {Request, Response} from "express";
-import {create_story_schema, uuid_schema} from "../validators";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import {controllerErrorHandler} from "../utilities";
 import ShortRepository from "../repositories/short";
-import {I_ShortPopulated} from "../types/short";
-import {T_Comment, T_PopulatedComment} from "../types/comment";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
+import BaseController from "../base/controller.base";
+import Validate from "../validators";
+import * as T from '../types'
 
-export default class ShortController {
+export default class ShortController extends BaseController<ShortRepository> {
 	constructor(
-		private readonly repository: ShortRepository,
+		repository: ShortRepository,
 		private readonly notificator: Notificator,
 	) {
+		super(repository);
 	}
 
 	public async createShort(
@@ -22,7 +22,7 @@ export default class ShortController {
 		w: Response<{ id: string }>
 	) {
 		try {
-			const {userId, videoUrl, description} = create_story_schema.parse({
+			const {userId, videoUrl, description} = Validate.create_story.parse({
 				userId: r.user.id,
 				videoUrl: r.body.videoUrl,
 				description: r.body.description
@@ -37,13 +37,13 @@ export default class ShortController {
 
 			w.status(status_codes.CREATED).json({id: shortId});
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listShorts(r: Request, w: Response<I_ShortPopulated[]>) {
+	public async listShorts(r: Request, w: Response<T.Short.Populated[]>) {
 		try {
-			const userId = uuid_schema.parse(r.user.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const shorts = await this.repository.listShorts(userId);
 
@@ -54,13 +54,13 @@ export default class ShortController {
 
 			w.status(status_codes.OK).json(shorts);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listShortsByUsername(r: Request<{ id: string }>, w: Response<I_ShortPopulated[]>) {
+	public async listShortsByUsername(r: Request<{ id: string }>, w: Response<T.Short.Populated[]>) {
 		try {
-			const userId = uuid_schema.parse(r.params.id);
+			const userId = Validate.uuid.parse(r.params.id);
 
 			const stories = await this.repository.listShortsById(userId);
 
@@ -71,13 +71,13 @@ export default class ShortController {
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getShortById(r: Request<{ shortId: string }>, w: Response<I_ShortPopulated>) {
+	public async getShortById(r: Request<{ shortId: string }>, w: Response<T.Short.Populated>) {
 		try {
-			const shortId = uuid_schema.parse(r.params.shortId);
+			const shortId = Validate.uuid.parse(r.params.shortId);
 
 			const short = await this.repository.getShortById(shortId);
 
@@ -89,14 +89,14 @@ export default class ShortController {
 			w.status(statusCodes.OK).json(short);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async likeShort(r: Request<{ id: string }>, w: Response<void>) {
 		try {
-			const shortId = uuid_schema.parse(r.params.id);
-			const userId = uuid_schema.parse(r.user.id);
+			const shortId = Validate.uuid.parse(r.params.id);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const isLiked = await this.repository.likeShort(shortId, userId);
 
@@ -114,27 +114,29 @@ export default class ShortController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async listCommentsByShort(r: Request<{ shortId: string }>, w: Response<T_PopulatedComment[]>) {
+	public async listCommentsByShort(r: Request<{ shortId: string }>, w: Response<T.Comment.Populated[]>) {
 		try {
-			const shortId = uuid_schema.parse(r.params.shortId);
-			const userId = uuid_schema.parse(r.user.id);
+			const shortId = Validate.uuid.parse(r.params.shortId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			const comments = await this.repository.listCommentsByShortId(shortId, userId);
 
 			w.status(statusCodes.OK).json(comments);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async createShortComment(r: Request<{ shortId: string }, {}, { content: string }>, w: Response<T_Comment>) {
+	public async createShortComment(r: Request<{ shortId: string }, {}, {
+		content: string
+	}>, w: Response<T.Comment.Comment>) {
 		try {
-			const shortId = uuid_schema.parse(r.params.shortId);
-			const userId = uuid_schema.parse(r.user.id);
+			const shortId = Validate.uuid.parse(r.params.shortId);
+			const userId = Validate.uuid.parse(r.user.id);
 			const content = z.string().min(1).parse(r.body.content);
 
 			const comment = await this.repository.createShortComment(shortId, userId, content);
@@ -151,27 +153,27 @@ export default class ShortController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async deleteShortComment(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.deleteShortComment(commentId, userId);
 
 			w.status(statusCodes.NO_CONTENT).end();
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
 	public async likeShortComment(r: Request<{ commentId: string }>, w: Response<void>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
-			const userId = uuid_schema.parse(r.user.id);
+			const commentId = Validate.uuid.parse(r.params.commentId);
+			const userId = Validate.uuid.parse(r.user.id);
 
 			await this.repository.likeShortComment(commentId, userId);
 
@@ -187,13 +189,15 @@ export default class ShortController {
 			}).catch(console.error);
 
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 
-	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T_Comment & { likes_count: number }>) {
+	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T.Comment.Comment & {
+		likes_count: number
+	}>) {
 		try {
-			const commentId = uuid_schema.parse(r.params.commentId);
+			const commentId = Validate.uuid.parse(r.params.commentId);
 
 			const comment = await this.repository.getCommentById(commentId);
 
@@ -204,7 +208,7 @@ export default class ShortController {
 
 			w.status(statusCodes.OK).json(comment);
 		} catch (error) {
-			controllerErrorHandler(error, w);
+			this.errorHandler(error, w);
 		}
 	}
 }

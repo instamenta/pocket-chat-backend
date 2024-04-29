@@ -1,14 +1,7 @@
-import {Client} from "pg";
-import {I_ShortPopulated} from "../types/short";
-import {T_Comment, T_PopulatedComment} from "../types/comment";
+import BaseRepository from "../base/repository.base";
+import * as T from '../types';
 
-export default class ShortRepository {
-	constructor(private readonly database: Client) {
-	}
-
-	private errorHandler(error: unknown | Error, method: string): never {
-		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
-	}
+export default class ShortRepository extends BaseRepository {
 
 	async createShort(userId: string, videoUrl: string, description: string) {
 		const query = `INSERT INTO "shorts" (user_id, video_url, description)
@@ -42,7 +35,7 @@ export default class ShortRepository {
                    ORDER BY s.created_at DESC`;
 		// --                    WHERE s.user_id != $1
 		try {
-			const result = await this.database.query<I_ShortPopulated>(query, [userId]);
+			const result = await this.database.query<T.Short.Populated>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listShorts');
@@ -69,7 +62,7 @@ export default class ShortRepository {
                    WHERE s.user_id = $1
                    ORDER BY s.created_at DESC`;
 		try {
-			const result = await this.database.query<I_ShortPopulated>(query, [userId]);
+			const result = await this.database.query<T.Short.Populated>(query, [userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listShortsById');
@@ -93,7 +86,7 @@ export default class ShortRepository {
                    WHERE s.id = $1
                    LIMIT 1`;
 		try {
-			const result = await this.database.query<I_ShortPopulated>(query, [id]);
+			const result = await this.database.query<T.Short.Populated>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'listShortsById');
@@ -157,14 +150,14 @@ export default class ShortRepository {
         ORDER BY c.created_at DESC;
 		`;
 		try {
-			const result = await this.database.query<T_PopulatedComment>(query, [shortId, userId]);
+			const result = await this.database.query<T.Comment.Populated>(query, [shortId, userId]);
 			return result.rows;
 		} catch (error) {
 			this.errorHandler(error, 'listCommentsByShortId');
 		}
 	}
 
-	async createShortComment(shortId: string, userId: string, content: string): Promise<T_Comment> {
+	async createShortComment(shortId: string, userId: string, content: string): Promise<T.Comment.Comment> {
 		const insertQuery = `
         INSERT INTO short_comments (content, short_id, user_id)
         VALUES ($1, $2, $3)
@@ -176,7 +169,7 @@ export default class ShortRepository {
         WHERE id = $1`;
 
 		try {
-			const insertResult = await this.database.query<T_Comment>(insertQuery, [content, shortId, userId]);
+			const insertResult = await this.database.query<T.Comment.Comment>(insertQuery, [content, shortId, userId]);
 			if (insertResult.rows.length === 0) {
 				throw new Error('Failed to insert comment');
 			}
@@ -243,7 +236,7 @@ export default class ShortRepository {
         GROUP BY c.id;
 		`;
 		try {
-			const result = await this.database.query<T_Comment & { likes_count: number}>(query, [id]);
+			const result = await this.database.query<T.Comment.Comment & { likes_count: number }>(query, [id]);
 			return result.rowCount ? result.rows[0] : null;
 		} catch (error) {
 			this.errorHandler(error, 'getCommentById');
