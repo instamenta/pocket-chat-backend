@@ -1,43 +1,16 @@
 import "dotenv/config";
-import {env} from './utilities/config'
-import initialize_all, {initialize_media_server} from "./utilities/intialize";
-import UserRouter from "./routers/user";
-import UserController from "./controllers/user";
-import UserRepository from "./repositories/user";
-import Middlewares from "./middlewares";
 import {Client} from "pg";
 import Redis from "ioredis";
-import FriendRepository from "./repositories/friend";
-import FriendController from "./controllers/friend";
-import FriendRouter from "./routers/friend";
-import SocketController from "./socket";
-import MessageRepository from "./repositories/message";
-import MessageController from "./controllers/message";
-import MessageRouter from "./routers/message";
-import NotificationRepository from "./repositories/notification";
-import NotificationController from "./controllers/notification";
-import NotificationRouter from "./routers/notification";
-import PublicationRepository from "./repositories/publication";
-import PublicationController from "./controllers/publication";
-import PublicationRouter from "./routers/publication";
-import CommentController from "./controllers/comment";
-import CommentRepository from "./repositories/comment";
-import CommentRouter from "./routers/comment";
-import StoryRepository from "./repositories/story";
-import StoryController from "./controllers/story";
-import StoryRouter from "./routers/story";
-import ShortRepository from "./repositories/short";
-import ShortRouter from "./routers/short";
-import ShortController from "./controllers/short";
-import GroupRouter from "./routers/group";
-import GroupRepository from "./repositories/group";
-import GroupController from "./controllers/group";
-import LiveRepository from "./repositories/live";
-import LiveController from "./controllers/live";
-import LiveRouter from "./routers/live";
-import Notificator from "./utilities/notificator";
-import MediaController from "./socket/media";
+import Router from './routers';
+import {env} from './utilities/config'
+import Controller from './controllers';
+import Repository from "./repositories";
+import Middlewares from "./middlewares";
 import BCrypt from './utilities/bcrypt';
+import SocketController from "./socket";
+import MediaController from "./socket/media";
+import Notificator from "./utilities/notificator";
+import initialize_all, {initialize_media_server} from "./utilities/intialize";
 
 void async function start_service() {
 
@@ -46,16 +19,16 @@ void async function start_service() {
 
 	const hashingHandler = new BCrypt();
 
-	const userRepository = new UserRepository(database, hashingHandler);
-	const liveRepository = new LiveRepository(database);
-	const storyRepository = new StoryRepository(database);
-	const shortRepository = new ShortRepository(database);
-	const groupRepository = new GroupRepository(database);
-	const friendRepository = new FriendRepository(database);
-	const commentRepository = new CommentRepository(database);
-	const messageRepository = new MessageRepository(database);
-	const publicationsRepository = new PublicationRepository(database);
-	const notificationRepository = new NotificationRepository(database);
+	const userRepository = new Repository.User(database, hashingHandler);
+	const liveRepository = new Repository.Live(database);
+	const storyRepository = new Repository.Story(database);
+	const shortRepository = new Repository.Short(database);
+	const groupRepository = new Repository.Group(database);
+	const friendRepository = new Repository.Friend(database);
+	const commentRepository = new Repository.Comment(database);
+	const messageRepository = new Repository.Message(database);
+	const publicationsRepository = new Repository.Publication(database);
+	const notificationRepository = new Repository.Notification(database);
 
 	const notificator = new Notificator(
 		notificationRepository,
@@ -65,35 +38,35 @@ void async function start_service() {
 		storyRepository
 	);
 
-	const userController = new UserController(userRepository, hashingHandler);
-	const userRouter = new UserRouter(userController).getRouter();
+	const userController = new Controller.User(userRepository, hashingHandler);
+	const userRouter = new Router.User(userController).getRouter();
 
-	const liveController = new LiveController(liveRepository);
-	const liveRouter = new LiveRouter(liveController).getRouter();
+	const liveController = new Controller.Live(liveRepository);
+	const liveRouter = new Router.Live(liveController).getRouter();
 
-	const notificationController = new NotificationController(notificationRepository);
-	const notificationRouter = new NotificationRouter(notificationController).getRouter();
+	const notificationController = new Controller.Notification(notificationRepository);
+	const notificationRouter = new Router.Notification(notificationController).getRouter();
 
-	const publicationController = new PublicationController(publicationsRepository, notificator);
-	const publicationRouter = new PublicationRouter(publicationController).getRouter();
+	const publicationController = new Controller.Publication(publicationsRepository, notificator);
+	const publicationRouter = new Router.Publication(publicationController).getRouter();
 
-	const storyController = new StoryController(storyRepository, notificator);
-	const storyRouter = new StoryRouter(storyController).getRouter();
+	const storyController = new Controller.Story(storyRepository, notificator);
+	const storyRouter = new Router.Story(storyController).getRouter();
 
-	const shortController = new ShortController(shortRepository, notificator);
-	const shortRouter = new ShortRouter(shortController).getRouter();
+	const shortController = new Controller.Short(shortRepository, notificator);
+	const shortRouter = new Router.Short(shortController).getRouter();
 
-	const groupController = new GroupController(groupRepository);
-	const groupRouter = new GroupRouter(groupController).getRouter();
+	const groupController = new Controller.Group(groupRepository);
+	const groupRouter = new Router.Group(groupController).getRouter();
 
-	const friendController = new FriendController(friendRepository, notificationRepository);
-	const friendRouter = new FriendRouter(friendController).getRouter();
+	const friendController = new Controller.Friend(friendRepository, notificationRepository);
+	const friendRouter = new Router.Friend(friendController).getRouter();
 
-	const commentController = new CommentController(commentRepository, notificator);
-	const commentRouter = new CommentRouter(commentController).getRouter();
+	const commentController = new Controller.Comment(commentRepository, notificator);
+	const commentRouter = new Router.Comment(commentController).getRouter();
 
-	const messageController = new MessageController(messageRepository);
-	const messageRouter = new MessageRouter(messageController).getRouter();
+	const messageController = new Controller.Message(messageRepository);
+	const messageRouter = new Router.Message(messageController).getRouter();
 
 	api.use('/api/user', userRouter);
 	api.use('/api/live', liveRouter);

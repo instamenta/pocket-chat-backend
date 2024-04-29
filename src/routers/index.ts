@@ -7,6 +7,7 @@ import Story from "./story";
 import Short from "./short";
 import Group from "./group";
 import Live from "./live";
+import User from './user'
 
 export default {
 	Notification,
@@ -18,4 +19,5 @@ export default {
 	Short,
 	Group,
 	Live,
+	User,
 }
