@@ -4,13 +4,15 @@ import BaseRepository from "../base/repository.base";
 import {Client} from "pg";
 import * as T from '../types'
 import Validate from "../validators";
+import VLogger from "@instamenta/vlogger";
 
 export default class UserRepository extends BaseRepository {
 	constructor(
 		client: Client,
+		logger: VLogger,
 		private readonly hashingHandler: I_HashingHandler
 	) {
-		super(client);
+		super(client, logger);
 	}
 
 	public listUsers(skip: number = 0, limit: number = 0) {

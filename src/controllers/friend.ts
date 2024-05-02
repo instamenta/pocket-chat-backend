@@ -5,23 +5,28 @@ import NotificationRepository from "../repositories/notification";
 import BaseController from "../base/controller.base";
 import Validate from "../validators";
 import * as T from '../types'
+import VLogger from "@instamenta/vlogger";
+
+// TODO: Notifications for Friend Related Events
 
 export default class FriendController extends BaseController<FriendRepository> {
 	constructor(
 		repository: FriendRepository,
+		logger: VLogger,
 		private readonly notification: NotificationRepository
 	) {
-		super(repository);
+		super(repository, logger);
 	}
 
-	public async sendFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: string }>) {
+	async sendFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: string }>) {
+		this.log.log('sendFriendRequest');
 		try {
 			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.sendFriendRequest(sender, recipient);
 
 			if (!status) {
-				console.log(`${this.constructor.name}.sendFriendRequest(): Failed to send friend request`);
+				this.log.error({e: `Failed to send friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -31,13 +36,14 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async listFriendRequestsOnly(r: Request, w: Response<T.Friend.RequestData[]>) {
+	async listFriendRequestsOnly(r: Request, w: Response<T.Friend.RequestData[]>) {
+		this.log.log('listFriendRequestsOnly');
 		try {
 			const id = Validate.uuid.parse(r.user.id);
 
 			const list = await this.repository.listFriendRequestsOnly(id);
 			if (!list) {
-				console.log(`${this.constructor.name}.listFriendRequestsOnly(): Failed to get friend request`);
+				this.log.error({e: `Failed to get friend request`, m: id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -47,14 +53,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async listFriendSentOnly(r: Request, w: Response<T.Friend.RequestData[]>) {
+	async listFriendSentOnly(r: Request, w: Response<T.Friend.RequestData[]>) {
+		this.log.log('listFriendSentOnly');
 		try {
 			const id = Validate.uuid.parse(r.user.id);
 
 			const list = await this.repository.listFriendSentOnly(id);
 
 			if (!list) {
-				console.log(`${this.constructor.name}.listFriendSentOnly(): Failed to get friend request`);
+				this.log.error({e: `Failed to get friend request`, m: id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -64,14 +71,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async listFriendRequests(r: Request, w: Response<T.Friend.RequestData[]>) {
+	async listFriendRequests(r: Request, w: Response<T.Friend.RequestData[]>) {
+		this.log.log('listFriendRequests');
 		try {
 			const id = Validate.uuid.parse(r.user.id);
 
 			const friendRequests = await this.repository.listFriendRequests(id);
 
 			if (!friendRequests) {
-				console.log(`${this.constructor.name}.listFriendRequests(): Failed to get friend request`);
+				this.log.error({e: `Failed to get friend request`, m: id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -81,19 +89,20 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async listFriendRecommendations(r: Request, w: Response<{
+	async listFriendRecommendations(r: Request, w: Response<{
 		id: string,
 		first_name: string,
 		picture: string,
 		username: string
 	}[]>) {
+		this.log.log('listFriendRecommendations');
 		try {
 			const id = Validate.uuid.parse(r.user.id);
 
 			const recommendations = await this.repository.listFriendRecommendations(id);
 
 			if (!recommendations) {
-				console.log(`${this.constructor.name}.listFriendRecommendations(): Failed to get friend request`);
+				this.log.error({e: `Failed to get friend request`, m: id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -103,14 +112,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async acceptFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
+	async acceptFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
+		this.log.log('acceptFriendRequest');
 		try {
 			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.acceptFriendRequest(sender, recipient);
 
 			if (!status) {
-				console.log(`${this.constructor.name}.acceptFriendRequest(): Failed to accept friend request`);
+				this.log.error({e: `Failed to accept friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -120,14 +130,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async deleteFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: boolean }>) {
+	async deleteFriendRequest(r: Request<{ id: string }>, w: Response<{ friendship_id: boolean }>) {
+		this.log.log('deleteFriendRequest');
 		try {
 			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.deleteFriendRequest(sender, recipient);
 
 			if (!status) {
-				console.log(`${this.constructor.name}.deleteFriendRequest(): Failed to delete friend request`);
+				this.log.error({e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -137,14 +148,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async declineFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
+	async declineFriendRequest(r: Request<{ id: string }>, w: Response<void>) {
+		this.log.log('declineFriendRequest');
 		try {
 			const {sender, recipient} = Validate.sender_recipient.parse({sender: r.user.id, recipient: r.params.id})
 
 			const status = await this.repository.declineFriendRequest(sender, recipient);
 
 			if (!status) {
-				console.log(`${this.constructor.name}.declineFriendRequest(): Failed to delete friend request`);
+				this.log.error({e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -154,13 +166,14 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async getFriendsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+	async getFriendsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+		this.log.log('getFriendsCountByUserId');
 		try {
 			const id = Validate.uuid.parse(r.params.id);
 
 			const count = await this.repository.getFriendsCountByUserId(id);
 			if (!count) {
-				console.log(`${this.constructor.name}.listFriendsByUserId(): Failed to get friends count`);
+				this.log.error({e: `Failed to get friends count`, m: id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -172,15 +185,16 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async getFriendsByUserIdAndSender(r: Request<{ id: string }>, w: Response) {
+	async getFriendsByUserIdAndSender(r: Request<{ id: string }>, w: Response) {
+		this.log.log('getFriendsByUserIdAndSender');
 		try {
-			const recipientId = Validate.uuid.parse(r.params.id);
-			const senderId = Validate.uuid.parse(r.user.id);
+			const sender = Validate.uuid.parse(r.user.id);
+			const recipient = Validate.uuid.parse(r.params.id);
 
-			const friends = await this.repository.getFriendsByUserIdAndSender(senderId, recipientId);
+			const friends = await this.repository.getFriendsByUserIdAndSender(sender, recipient);
 			// @ts-ignore
 			if (!friends) {
-				console.log(`${this.constructor.name}.getFriendsByUserIdAndSender(): Failed to list friends`);
+				this.log.error({e: `Failed to list friends`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -192,15 +206,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-
-	public async listMutualFriendsByUsers(r: Request<{ id: string }>, w: Response<T.Friend.Mutual[]>) {
+	async listMutualFriendsByUsers(r: Request<{ id: string }>, w: Response<T.Friend.Mutual[]>) {
+		this.log.log('listMutualFriendsByUsers');
 		try {
-			const recipientId = Validate.uuid.parse(r.params.id);
-			const senderId = Validate.uuid.parse(r.user.id);
+			const sender = Validate.uuid.parse(r.user.id);
+			const recipient = Validate.uuid.parse(r.params.id);
 
-			const friends = await this.repository.listMutualFriendsByUsers(senderId, recipientId);
+			const friends = await this.repository.listMutualFriendsByUsers(sender, recipient);
 			if (!friends) {
-				console.log(`${this.constructor.name}.listFriendsByUserId(): Failed to list friends`);
+				this.log.error({e: `Failed to list friends`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -212,13 +226,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async listFriendsByUserId(r: Request<{ id: string }>, w: Response<T.User.Schema[]>) {
+	async listFriendsByUserId(r: Request<{ id: string }>, w: Response<T.User.Schema[]>) {
+		this.log.log('listFriendsByUserId');
 		try {
 			const id = Validate.uuid.parse(r.params.id);
 
 			const friends = await this.repository.listFriendsByUserId(id);
+
 			if (!friends) {
-				console.log(`${this.constructor.name}.listFriendsByUserId(): Failed to list friends`);
+				this.log.error({e: `Failed to list friends`, m: id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -228,13 +244,14 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async listFriendsByUsername(r: Request<{ username: string }>, w: Response<T.User.Schema[]>) {
+	async listFriendsByUsername(r: Request<{ username: string }>, w: Response<T.User.Schema[]>) {
+		this.log.log('listFriendsByUsername');
 		try {
 			const username = Validate.name.parse(r.params.username);
 
 			const friends = await this.repository.listFriendsByUsername(username);
 			if (!friends) {
-				console.log(`${this.constructor.name}.listFriendsByUsername(): Failed to list friends`);
+				this.log.error({e: `Failed to list friends`, m: username});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -244,10 +261,11 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async getBySenderAndRecipient(r: Request<{
+	async getBySenderAndRecipient(r: Request<{
 		sender: string,
 		recipient: string
 	}>, w: Response<T.Friend.Friendship>) {
+		this.log.log('getBySenderAndRecipient');
 		try {
 			const sender = Validate.uuid.parse(r.params.sender);
 			const recipient = Validate.uuid.parse(r.params.recipient);
@@ -255,7 +273,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 			const friendship = await this.repository.getBySenderAndRecipient(sender, recipient);
 
 			if (!friendship) {
-				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to get friendship`);
+				this.log.error({e: `Failed to get friendship`, m: `sender: ${sender}, recipient: ${recipient}`});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 
@@ -265,15 +283,15 @@ export default class FriendController extends BaseController<FriendRepository> {
 		}
 	}
 
-	public async getById(r: Request<{ id: string }>, w: Response<T.Friend.Friendship>) {
+	async getById(r: Request<{ id: string }>, w: Response<T.Friend.Friendship>) {
+		this.log.log('getById');
 		try {
 			const friendship_id = Validate.uuid.parse(r.params.id);
 
-			// @ts-ignore
 			const friendship = await this.repository.getById(friendship_id);
 
 			if (!friendship) {
-				console.log(`${this.constructor.name}.getBySenderAndRecipient(): Failed to get friendship`);
+				this.log.error({e: `Failed to get friendship`, m: friendship_id});
 				return w.status(status_codes.BAD_GATEWAY).end();
 			}
 

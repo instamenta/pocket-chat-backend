@@ -7,16 +7,19 @@ import Notificator from "../utilities/notificator";
 import BaseController from "../base/controller.base";
 import Validate from "../validators";
 import * as T from '../types'
+import VLogger from "@instamenta/vlogger";
 
 export default class CommentController extends BaseController<CommentRepository> {
 	constructor(
 		repository: CommentRepository,
+		logger: VLogger,
 		private readonly notificator: Notificator,
 	) {
-		super(repository);
+		super(repository, logger);
 	}
 
 	public async listByPublication(r: Request<{ publicationId: string }>, w: Response<T.Comment.Populated[]>) {
+		this.log.log('listByPublication');
 		try {
 			const publicationId = Validate.uuid.parse(r.params.publicationId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -30,6 +33,7 @@ export default class CommentController extends BaseController<CommentRepository>
 	}
 
 	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T.Comment.Comment>) {
+		this.log.log('create');
 		try {
 			const publicationId = Validate.uuid.parse(r.params.publicationId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -46,7 +50,8 @@ export default class CommentController extends BaseController<CommentRepository>
 				sender_id: userId,
 				content: content,
 				seen: false,
-			}).catch(console.error);
+			})
+				.catch(e => this.log.error({e}));
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -54,6 +59,7 @@ export default class CommentController extends BaseController<CommentRepository>
 	}
 
 	public async delete(r: Request<{ commentId: string }>, w: Response<void>) {
+		this.log.log('delete');
 		try {
 			const commentId = Validate.uuid.parse(r.params.commentId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -67,6 +73,7 @@ export default class CommentController extends BaseController<CommentRepository>
 	}
 
 	public async like(r: Request<{ commentId: string }>, w: Response<void>) {
+		this.log.log('like');
 		try {
 			const commentId = Validate.uuid.parse(r.params.commentId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -80,7 +87,8 @@ export default class CommentController extends BaseController<CommentRepository>
 				sender_id: userId,
 				content: '',
 				seen: false,
-			}).catch(console.error);
+			})
+				.catch(e => this.log.error({e}));
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {
@@ -88,14 +96,17 @@ export default class CommentController extends BaseController<CommentRepository>
 		}
 	}
 
-	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T.Comment.Comment & { likes_count: number }>) {
+	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T.Comment.Comment & {
+		likes_count: number
+	}>) {
+		this.log.log('getCommentById');
 		try {
 			const commentId = Validate.uuid.parse(r.params.commentId);
 
 			const comment = await this.repository.getCommentById(commentId);
 
 			if (!comment) {
-				console.error(`${this.constructor.name}.getCommentById(): Not found`, commentId);
+				this.log.error({e: `Not found`, m: commentId});
 				return w.status(statusCodes.NOT_FOUND).end();
 			}
 

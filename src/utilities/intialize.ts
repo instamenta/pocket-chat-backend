@@ -10,7 +10,7 @@ import COOKIE_PARSER from 'cookie-parser';
 import {WebSocketServer} from 'ws';
 import {ExpressPeerServer} from "peer";
 import {Server as SocketIoServer} from 'socket.io'
-import SimplePeer from 'simple-peer';
+import VLogger from '@instamenta/vlogger'
 
 const corsOptions: CORS.CorsOptions = {
 	origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173', 'http://192.168.1.8:3001'],
@@ -22,6 +22,10 @@ const corsOptions: CORS.CorsOptions = {
 
 export default async function initialize_all() {
 	// initialize_certificates()
+	const logger = VLogger.getInstance();
+
+	const log = logger.getVlogger('App');
+
 	const api = express();
 
 	const peer_server = http.createServer(api);
@@ -30,9 +34,9 @@ export default async function initialize_all() {
 
 	api.use('/peerjs', peer);
 
-	peer_server.listen(env.PEER_PORT, () =>
-		console.log(`Peer is running on http://${env.SERVER_HOST}:${env.PEER_PORT}/peerjs`)
-	);
+	peer_server.listen(env.PEER_PORT, () => {
+		log.info({m: `Peer is running on http://${env.SERVER_HOST}:${env.PEER_PORT}/peerjs`});
+	});
 
 	api.use(CORS(corsOptions));
 	api.use(COOKIE_PARSER());
@@ -44,19 +48,23 @@ export default async function initialize_all() {
 
 	const socket = new WebSocketServer({server});
 
-	server.on("error", console.error);
+	server.on("error", (e) => log.error({e, m: 'Websocket server Error'}));
 
-	api.on('error', console.error);
+	api.on('error', (e) => log.error({e, m: 'Express server error'}));
 
 	const database = new Client({connectionString: env.DATABASE_URL});
 	await database.connect();
 
 	const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
 
-	return {server, api, database, cache, socket};
+	return {server, api, database, cache, socket, logger};
 }
 
 export function initialize_media_server() {
+	const logger = VLogger.getInstance();
+
+	const log = logger.getVlogger('App');
+
 	const app = express();
 	const server = http.createServer(app);
 	const io = new SocketIoServer(
@@ -65,7 +73,7 @@ export function initialize_media_server() {
 	);
 
 	server.listen(env.MEDIA_SOCKET_PORT, () => {
-		console.log(`Server listening on http://localhost:${env.MEDIA_SOCKET_PORT}`);
+		log.info({m: `Server listening on http://localhost:${env.MEDIA_SOCKET_PORT}`});
 	});
 
 	return {io};

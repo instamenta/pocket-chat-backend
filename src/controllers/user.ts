@@ -8,14 +8,16 @@ import {z} from 'zod';
 import BaseController from "../base/controller.base";
 import Validate from "../validators";
 import * as T from '../types'
+import VLogger from "@instamenta/vlogger";
 
 export default class UserController extends BaseController<UserRepository> {
 
 	constructor(
 		repository: UserRepository,
+		logger: VLogger,
 		private readonly hashingHandler: I_HashingHandler
 	) {
-		super(repository);
+		super(repository, logger);
 	}
 
 	public async listUsers(

@@ -8,19 +8,22 @@ import Notificator from "../utilities/notificator";
 import BaseController from "../base/controller.base";
 import Validate from "../validators";
 import * as T from '../types'
+import VLogger from "@instamenta/vlogger";
 
 export default class ShortController extends BaseController<ShortRepository> {
 	constructor(
 		repository: ShortRepository,
+		logger: VLogger,
 		private readonly notificator: Notificator,
 	) {
-		super(repository);
+		super(repository, logger);
 	}
 
 	public async createShort(
 		r: Request<{}, { videoUrl: string, description: string }>,
 		w: Response<{ id: string }>
 	) {
+		this.log.log('createShort');
 		try {
 			const {userId, videoUrl, description} = Validate.create_story.parse({
 				userId: r.user.id,
@@ -31,7 +34,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 			const shortId = await this.repository.createShort(userId, videoUrl, description);
 
 			if (!shortId) {
-				console.error(`${this.constructor.name}.createShort(): Failed to send message`);
+				this.log.error({e: `Failed to send message`});
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
@@ -42,13 +45,14 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async listShorts(r: Request, w: Response<T.Short.Populated[]>) {
+		this.log.log('listShorts');
 		try {
 			const userId = Validate.uuid.parse(r.user.id);
 
 			const shorts = await this.repository.listShorts(userId);
 
 			if (!shorts) {
-				console.error(`${this.constructor.name}.listShorts(): Failed to get stories`);
+				this.log.error({e: `Failed to get stories`, m: userId});
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
@@ -59,13 +63,14 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async listShortsByUsername(r: Request<{ id: string }>, w: Response<T.Short.Populated[]>) {
+		this.log.log('listShortsByUsername');
 		try {
 			const userId = Validate.uuid.parse(r.params.id);
 
 			const stories = await this.repository.listShortsById(userId);
 
 			if (!stories) {
-				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
+				this.log.error({e: 'Failed to get stories', m: userId})
 				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
@@ -76,13 +81,14 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async getShortById(r: Request<{ shortId: string }>, w: Response<T.Short.Populated>) {
+		this.log.log('getShortById');
 		try {
 			const shortId = Validate.uuid.parse(r.params.shortId);
 
 			const short = await this.repository.getShortById(shortId);
 
 			if (!short) {
-				console.error(`${this.constructor.name}.getShortById(): Not found`, shortId);
+				this.log.error({e: `Not found`, m: shortId});
 				return w.status(statusCodes.NOT_FOUND).end();
 			}
 
@@ -94,6 +100,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async likeShort(r: Request<{ id: string }>, w: Response<void>) {
+		this.log.log('likeShort');
 		try {
 			const shortId = Validate.uuid.parse(r.params.id);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -102,8 +109,12 @@ export default class ShortController extends BaseController<ShortRepository> {
 
 			w.status(statusCodes.OK).end();
 
-			if (!isLiked) return console.log('Unliking short')
-			console.log('Liking short')
+			if (!isLiked) {
+				return this.log.info({m: 'Unliking short'});
+			} else {
+				this.log.info({m: 'Liking short'});
+			}
+
 			await this.notificator.handleNotification({
 				type: notification_types.LIKE_SHORT,
 				reference_id: shortId,
@@ -111,7 +122,8 @@ export default class ShortController extends BaseController<ShortRepository> {
 				sender_id: userId,
 				content: '',
 				seen: false,
-			}).catch(console.error);
+			})
+				.catch(e => this.log.error({e}));
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -119,6 +131,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async listCommentsByShort(r: Request<{ shortId: string }>, w: Response<T.Comment.Populated[]>) {
+		this.log.log('listCommentsByShort');
 		try {
 			const shortId = Validate.uuid.parse(r.params.shortId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -134,6 +147,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 	public async createShortComment(r: Request<{ shortId: string }, {}, {
 		content: string
 	}>, w: Response<T.Comment.Comment>) {
+		this.log.log('createShortComment');
 		try {
 			const shortId = Validate.uuid.parse(r.params.shortId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -150,7 +164,8 @@ export default class ShortController extends BaseController<ShortRepository> {
 				sender_id: userId,
 				content: content,
 				seen: false,
-			}).catch(console.error);
+			})
+				.catch(e => this.log.error({e}));
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -158,6 +173,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async deleteShortComment(r: Request<{ commentId: string }>, w: Response<void>) {
+		this.log.log('deleteShortComment');
 		try {
 			const commentId = Validate.uuid.parse(r.params.commentId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -171,6 +187,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async likeShortComment(r: Request<{ commentId: string }>, w: Response<void>) {
+		this.log.log('likeShortComment');
 		try {
 			const commentId = Validate.uuid.parse(r.params.commentId);
 			const userId = Validate.uuid.parse(r.user.id);
@@ -186,7 +203,8 @@ export default class ShortController extends BaseController<ShortRepository> {
 				sender_id: userId,
 				content: '',
 				seen: false,
-			}).catch(console.error);
+			})
+				.catch((e) => this.log.error({e}));
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -196,13 +214,14 @@ export default class ShortController extends BaseController<ShortRepository> {
 	public async getCommentById(r: Request<{ commentId: string }>, w: Response<T.Comment.Comment & {
 		likes_count: number
 	}>) {
+		this.log.log('getCommentById');
 		try {
 			const commentId = Validate.uuid.parse(r.params.commentId);
 
 			const comment = await this.repository.getCommentById(commentId);
 
 			if (!comment) {
-				console.error(`${this.constructor.name}.getCommentById(): Not found`, commentId);
+				this.log.error({m: `Not found ${commentId}`, e: ''});
 				return w.status(statusCodes.NOT_FOUND).end();
 			}
 

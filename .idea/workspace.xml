@@ -6,8 +6,21 @@
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base/controller.base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/controller.base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base/repository.base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/repository.base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base/socket.base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/socket.base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/comment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/comment.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/short.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/story.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/story.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/user.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/socket/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/socket/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/intialize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/intialize.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,27 +64,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/user/Desktop/myProjects/chat-app/sender-chat-api",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/home/user/Desktop/myProjects/chat-app/sender-chat-api/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/user/Desktop/myProjects/chat-app/sender-chat-api&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/user/Desktop/myProjects/chat-app/sender-chat-api/node_modules/typescript/lib&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
       </set>
     </attachedChunks>
   </component>
@@ -98,6 +111,8 @@
       <workItem from="1712859698331" duration="5867000" />
       <workItem from="1713127843114" duration="2959000" />
       <workItem from="1714417633216" duration="7769000" />
+      <workItem from="1714453631265" duration="15000" />
+      <workItem from="1714663883098" duration="5283000" />
     </task>
     <servers />
   </component>

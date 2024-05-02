@@ -10,6 +10,7 @@ import Notificator from "../utilities/notificator";
 import BaseSocket from "../base/socket.base";
 import Validate from "../validators";
 import * as T from '../types';
+import VLogger from "@instamenta/vlogger";
 
 export default class SocketController extends BaseSocket {
 
@@ -17,13 +18,14 @@ export default class SocketController extends BaseSocket {
 		wss: WebSocketServer,
 		server: Server,
 		cache: Redis,
+		logger: VLogger,
 		userRepository: UserRepository,
 		private readonly liveRepository: LiveRepository,
 		private readonly friendRepository: FriendRepository,
 		private readonly messageRepository: MessageRepository,
 		private readonly notificator: Notificator,
 	) {
-		super(wss, server, cache, userRepository)
+		super(wss, server, cache, logger,userRepository)
 	}
 
 	async onData(bytes: RawData, host: WebSocket, user: T.User.Schema) {

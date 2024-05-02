@@ -6,13 +6,15 @@ import Notificator from "../utilities/notificator";
 import BaseController from "../base/controller.base";
 import Validate from "../validators";
 import * as T from '../types'
+import VLogger from "@instamenta/vlogger";
 
 export default class PublicationController extends BaseController<PublicationsRepository> {
 	constructor(
 		repository: PublicationsRepository,
+		logger: VLogger,
 		private readonly notificator: Notificator,
 	) {
-		super(repository);
+		super(repository, logger);
 	}
 
 	public async listPublications(r: Request, w: Response<T.Publication.Publication[]>) {

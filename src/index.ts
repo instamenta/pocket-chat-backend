@@ -14,87 +14,86 @@ import initialize_all, {initialize_media_server} from "./utilities/intialize";
 
 void async function start_service() {
 
-	const {server, api, database, cache, socket} = await initialize_all();
-	await graceful_shutdown(database, cache);
+	const {server, api, database, cache, socket, logger} = await initialize_all();
+
+	graceful_shutdown(database, cache);
 
 	const hashingHandler = new BCrypt();
 
-	const userRepository = new Repository.User(database, hashingHandler);
-	const liveRepository = new Repository.Live(database);
-	const storyRepository = new Repository.Story(database);
-	const shortRepository = new Repository.Short(database);
-	const groupRepository = new Repository.Group(database);
-	const friendRepository = new Repository.Friend(database);
-	const commentRepository = new Repository.Comment(database);
-	const messageRepository = new Repository.Message(database);
-	const publicationsRepository = new Repository.Publication(database);
-	const notificationRepository = new Repository.Notification(database);
+	const repository = {
+		user: new Repository.User(database, logger, hashingHandler),
+		live: new Repository.Live(database, logger),
+		story: new Repository.Story(database, logger),
+		short: new Repository.Short(database, logger),
+		group: new Repository.Group(database, logger),
+		friend: new Repository.Friend(database, logger),
+		comment: new Repository.Comment(database, logger),
+		message: new Repository.Message(database, logger),
+		publications: new Repository.Publication(database, logger),
+		notification: new Repository.Notification(database, logger),
+	};
 
 	const notificator = new Notificator(
-		notificationRepository,
-		publicationsRepository,
-		commentRepository,
-		shortRepository,
-		storyRepository
+		repository.notification,
+		repository.publications,
+		repository.comment,
+		repository.short,
+		repository.story
 	);
 
-	const userController = new Controller.User(userRepository, hashingHandler);
-	const userRouter = new Router.User(userController).getRouter();
+	const controller = {
+		user: new Controller.User(repository.user, logger, hashingHandler),
+		live: new Controller.Live(repository.live, logger),
+		story: new Controller.Story(repository.story, logger, notificator),
+		short: new Controller.Short(repository.short, logger, notificator),
+		group: new Controller.Group(repository.group, logger),
+		friend: new Controller.Friend(repository.friend, logger, repository.notification),
+		message: new Controller.Message(repository.message, logger),
+		comment: new Controller.Comment(repository.comment, logger, notificator),
+		publication: new Controller.Publication(repository.publications, logger, notificator),
+		notification: new Controller.Notification(repository.notification, logger),
+	};
 
-	const liveController = new Controller.Live(liveRepository);
-	const liveRouter = new Router.Live(liveController).getRouter();
+	const router = {
+		user: new Router.User(controller.user).getRouter(),
+		live: new Router.Live(controller.live).getRouter(),
+		story: new Router.Story(controller.story).getRouter(),
+		short: new Router.Short(controller.short).getRouter(),
+		group: new Router.Group(controller.group).getRouter(),
+		friend: new Router.Friend(controller.friend).getRouter(),
+		comment: new Router.Comment(controller.comment).getRouter(),
+		message: new Router.Message(controller.message).getRouter(),
+		publication: new Router.Publication(controller.publication).getRouter(),
+		notification: new Router.Notification(controller.notification).getRouter(),
+	};
 
-	const notificationController = new Controller.Notification(notificationRepository);
-	const notificationRouter = new Router.Notification(notificationController).getRouter();
+	api.use('/api/user', router.user);
+	api.use('/api/live', router.live);
+	api.use('/api/story', router.story);
+	api.use('/api/short', router.short);
+	api.use('/api/group', router.group);
+	api.use('/api/friend', router.friend);
+	api.use('/api/comment', router.comment);
+	api.use('/api/message', router.message);
+	api.use('/api/publication', router.publication);
+	api.use('/api/notification', router.notification);
 
-	const publicationController = new Controller.Publication(publicationsRepository, notificator);
-	const publicationRouter = new Router.Publication(publicationController).getRouter();
-
-	const storyController = new Controller.Story(storyRepository, notificator);
-	const storyRouter = new Router.Story(storyController).getRouter();
-
-	const shortController = new Controller.Short(shortRepository, notificator);
-	const shortRouter = new Router.Short(shortController).getRouter();
-
-	const groupController = new Controller.Group(groupRepository);
-	const groupRouter = new Router.Group(groupController).getRouter();
-
-	const friendController = new Controller.Friend(friendRepository, notificationRepository);
-	const friendRouter = new Router.Friend(friendController).getRouter();
-
-	const commentController = new Controller.Comment(commentRepository, notificator);
-	const commentRouter = new Router.Comment(commentController).getRouter();
-
-	const messageController = new Controller.Message(messageRepository);
-	const messageRouter = new Router.Message(messageController).getRouter();
-
-	api.use('/api/user', userRouter);
-	api.use('/api/live', liveRouter);
-	api.use('/api/story', storyRouter);
-	api.use('/api/short', shortRouter);
-	api.use('/api/group', groupRouter);
-	api.use('/api/friend', friendRouter);
-	api.use('/api/comment', commentRouter);
-	api.use('/api/message', messageRouter);
-	api.use('/api/publication', publicationRouter);
-	api.use('/api/notification', notificationRouter);
 	api.use(Middlewares.errorHandler);
 
-	api.listen(+env.SERVER_PORT, env.SERVER_HOST, () =>
-		console.log(`Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`)
-	);
-
-	//* Websocket Handlers
+	api.listen(+env.SERVER_PORT, env.SERVER_HOST, () => {
+		logger.info('App', '', `Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`)
+	});
 
 	//* WS Module
 	new SocketController(
 		socket,
 		server,
 		cache,
-		userRepository,
-		liveRepository,
-		friendRepository,
-		messageRepository,
+		logger,
+		repository.user,
+		repository.live,
+		repository.friend,
+		repository.message,
 		notificator,
 	);
 
@@ -104,8 +103,8 @@ void async function start_service() {
 	new MediaController(io);
 }();
 
-async function graceful_shutdown(database: Client, cache: Redis) {
-	['uncaughtException', 'unhandledRejection'].map(type => {
+function graceful_shutdown(database: Client, cache: Redis) {
+	['uncaughtException', 'unhandledRejection'].map((type) => {
 		process.on(type, async (...args) => {
 			try {
 				console.error(`process.on ${type} with ${args}`, args);
