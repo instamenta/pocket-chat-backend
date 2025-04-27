@@ -5,18 +5,50 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eslint.config.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/base/socket.base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/socket.base.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/socket/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/socket/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middlewares/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/middlewares/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middlewares/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/middlewares/index.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middlewares/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/middlewares/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/comment.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/comment.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/comment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/friend.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/friend.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/friend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/group.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/group.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/group.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/group.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/live.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/live.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/live.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/live.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/message.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/message.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/message.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/notification.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/notification.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/notification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/publication.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/publication.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/publication.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/publication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/short.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/short.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/short.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/short.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/story.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/story.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/story.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/story.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/user.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/user.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utilities/intialize.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/utilities/intialize.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/middlewares/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/middlewares/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/comment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/comment.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/group.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/live.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/live.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/message.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/message.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/notification.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/notification.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/short.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/story.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/story.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/socket/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/socket/media.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utilities/intialize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/intialize.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/jwt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/jwt.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/notificator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/notificator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

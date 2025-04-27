@@ -1,20 +1,29 @@
 import UserController from '../controllers/user';
-import {isAuthorized, isGuest} from "../middlewares";
+import {Middlewares} from "../middlewares";
 import BaseRouter from "../base/router.base";
 
 export default class UserRouter extends BaseRouter<UserController> {
 	initialize(c: UserController) {
-		this.router.post('/sign-up', isGuest, c.signUp.bind(c));
-		this.router.post('/sign-in', isGuest, c.signIn.bind(c));
+		// @ts-expect-error - to assign handlers
+		this.router.post('/sign-up', Middlewares.isGuest, c.signUp.bind(c));
+		// @ts-expect-error - to assign handlers
+		this.router.post('/sign-in', Middlewares.isGuest, c.signIn.bind(c));
 
+		// @ts-expect-error - to assign handlers
 		this.router.get('/', c.listUsers.bind(c));
-		this.router.get('/auth', isAuthorized, c.authUser.bind(c));
+		// @ts-expect-error - to assign handlers
+		this.router.get('/auth', Middlewares.isAuthorized, c.authUser.bind(c));
+		// @ts-expect-error - to assign handlers
 		this.router.get('/:id', c.getUserById.bind(c));
+		// @ts-expect-error - to assign handlers
 		this.router.get('/username/:username', c.getUserByUsername.bind(c));
 
-		this.router.put('/', isAuthorized, c.updateProfilePublicInformation.bind(c));
-		this.router.put('/picture', isAuthorized, c.updateProfilePicture.bind(c));
-		this.router.put('/bio', isAuthorized, c.updateBio.bind(c))
+		// @ts-expect-error - to assign handlers
+		this.router.put('/', Middlewares.isAuthorized, c.updateProfilePublicInformation.bind(c));
+		// @ts-expect-error - to assign handlers
+		this.router.put('/picture', Middlewares.isAuthorized, c.updateProfilePicture.bind(c));
+		// @ts-expect-error - to assign handlers
+		this.router.put('/bio', Middlewares.isAuthorized, c.updateBio.bind(c))
 	}
 }
 

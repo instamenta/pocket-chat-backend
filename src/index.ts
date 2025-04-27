@@ -5,12 +5,10 @@ import Router from './routers';
 import {env} from './utilities/config'
 import Controller from './controllers';
 import Repository from "./repositories";
-import Middlewares from "./middlewares";
+import {Middlewares} from "./middlewares";
 import BCrypt from './utilities/bcrypt';
-import SocketController from "./socket";
-import MediaController from "./socket/media";
 import Notificator from "./utilities/notificator";
-import initialize_all, {initialize_media_server} from "./utilities/intialize";
+import initialize_all from "./utilities/intialize";
 
 void async function start_service() {
 
@@ -83,24 +81,6 @@ void async function start_service() {
 	api.listen(+env.SERVER_PORT, env.SERVER_HOST, () => {
 		logger.info('App', '', `Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`)
 	});
-
-	//* WS Module
-	new SocketController(
-		socket,
-		server,
-		cache,
-		logger,
-		repository.user,
-		repository.live,
-		repository.friend,
-		repository.message,
-		notificator,
-	);
-
-	//* Socket IO Module
-	const {io} = initialize_media_server();
-
-	new MediaController(io);
 }();
 
 function graceful_shutdown(database: Client, cache: Redis) {

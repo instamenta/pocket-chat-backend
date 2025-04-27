@@ -8,7 +8,6 @@ import CORS from 'cors';
 import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
 import {WebSocketServer} from 'ws';
-import {Server as SocketIoServer} from 'socket.io'
 import VLogger from '@instamenta/vlogger'
 
 const corsOptions: CORS.CorsOptions = {
@@ -20,7 +19,6 @@ const corsOptions: CORS.CorsOptions = {
 }
 
 export default async function initialize_all() {
-	// initialize_certificates()
 	const logger = VLogger.getInstance();
 
 	const log = logger.getVlogger('App');
@@ -48,38 +46,3 @@ export default async function initialize_all() {
 
 	return {server, api, database, cache, socket, logger};
 }
-
-export function initialize_media_server() {
-	const logger = VLogger.getInstance();
-
-	const log = logger.getVlogger('App');
-
-	const app = express();
-	const server = http.createServer(app);
-	const io = new SocketIoServer(
-		server,
-		{cors: corsOptions}
-	);
-
-	server.listen(env.MEDIA_SOCKET_PORT, () => {
-		log.info({m: `Server listening on http://localhost:${env.MEDIA_SOCKET_PORT}`});
-	});
-
-	return {io};
-}
-
-// function initialize_certificates(): void {
-// 	if (!fs.existsSync(SECURITY.FOLDER)) fs.mkdirSync(SECURITY.FOLDER);
-// 	if (!fs.existsSync(SECURITY.SERVER_KEY_PATH)
-// 		|| !fs.existsSync(SECURITY.SERVER_CERT_PATH)
-// 		|| !fs.existsSync(SECURITY.SERVER_CERT_PATH)
-// 	) {
-// 		const generated_result = Certificate.generate(
-// 			[{name: SECURITY.NAME, value: env.SERVER_HOST}],
-// 			{days: parseInt(SECURITY.AGE)}
-// 		);
-// 		fs.writeFileSync(SECURITY.SERVER_KEY_PATH, generated_result.private);
-// 		fs.writeFileSync(SECURITY.SERVER_CERT_PATH, generated_result.cert);
-// 		fs.writeFileSync(SECURITY.CLIENT_CERT_PATH, generated_result.public);
-// 	}
-// }

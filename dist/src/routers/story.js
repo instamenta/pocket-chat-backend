@@ -7,17 +7,26 @@ const middlewares_1 = require("../middlewares");
 const router_base_1 = __importDefault(require("../base/router.base"));
 class StoryRouter extends router_base_1.default {
     initialize(c) {
-        this.router.get('/', middlewares_1.isAuthorized, c.listStories.bind(c));
-        this.router.post('/', middlewares_1.isAuthorized, c.createStory.bind(c));
-        this.router.get('/feed', middlewares_1.isAuthorized, c.listFeedStories.bind(c));
-        this.router.get('/:username', middlewares_1.isAuthorized, c.listFriendStoriesByUsername.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.get('/', middlewares_1.Middlewares.isAuthorized, c.listStories.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.post('/', middlewares_1.Middlewares.isAuthorized, c.createStory.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.get('/feed', middlewares_1.Middlewares.isAuthorized, c.listFeedStories.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.get('/:username', middlewares_1.Middlewares.isAuthorized, c.listFriendStoriesByUsername.bind(c));
         //* Likes
-        this.router.put('/:id/like', middlewares_1.isAuthorized, c.likeStory.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.put('/:id/like', middlewares_1.Middlewares.isAuthorized, c.likeStory.bind(c));
         //* Comments
-        this.router.get('/comments/:shortId', middlewares_1.isAuthorized, c.listCommentsByStory.bind(c));
-        this.router.post('/comments/:shortId', middlewares_1.isAuthorized, c.createStoryComment.bind(c));
-        this.router.delete('/comments/:commentId', middlewares_1.isAuthorized, c.deleteStoryComment.bind(c));
-        this.router.put('/comments/:commentId', middlewares_1.isAuthorized, c.likeStoryComment.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.get('/comments/:shortId', middlewares_1.Middlewares.isAuthorized, c.listCommentsByStory.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.post('/comments/:shortId', middlewares_1.Middlewares.isAuthorized, c.createStoryComment.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.delete('/comments/:commentId', middlewares_1.Middlewares.isAuthorized, c.deleteStoryComment.bind(c));
+        // @ts-expect-error - to assign handlers
+        this.router.put('/comments/:commentId', middlewares_1.Middlewares.isAuthorized, c.likeStoryComment.bind(c));
     }
 }
 exports.default = StoryRouter;

@@ -1,11 +1,7 @@
-import { NextFunction as Next, Request, Response } from 'express';
-export declare function isGuest(r: Request, w: Response, next: Next): Response<any, Record<string, any>> | undefined;
-export declare function isAuthorized(r: Request, w: Response, next: Next): Response<any, Record<string, any>> | undefined;
-export declare function errorHandler(err: Error, r: Request, w: Response, next: Next): void;
-declare const Middlewares: {
-    isGuest: typeof isGuest;
-    isAuthorized: typeof isAuthorized;
-    errorHandler: typeof errorHandler;
-};
-export default Middlewares;
+import { NextFunction, Request, Response } from 'express';
+export declare class Middlewares {
+    static isGuest(request: Request, response: Response, next: NextFunction): Response<any, Record<string, any>> | undefined;
+    static isAuthorized(request: Request, response: Response, next: NextFunction): Response<any, Record<string, any>> | undefined;
+    static errorHandler(error: Error, _request: Request, response: Response, _next: NextFunction): void;
+}
 //# sourceMappingURL=index.d.ts.map

@@ -1,37 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -41,12 +8,10 @@ const routers_1 = __importDefault(require("./routers"));
 const config_1 = require("./utilities/config");
 const controllers_1 = __importDefault(require("./controllers"));
 const repositories_1 = __importDefault(require("./repositories"));
-const middlewares_1 = __importDefault(require("./middlewares"));
+const middlewares_1 = require("./middlewares");
 const bcrypt_1 = __importDefault(require("./utilities/bcrypt"));
-const socket_1 = __importDefault(require("./socket"));
-const media_1 = __importDefault(require("./socket/media"));
 const notificator_1 = __importDefault(require("./utilities/notificator"));
-const intialize_1 = __importStar(require("./utilities/intialize"));
+const intialize_1 = __importDefault(require("./utilities/intialize"));
 void async function start_service() {
     const { server, api, database, cache, socket, logger } = await (0, intialize_1.default)();
     graceful_shutdown(database, cache);
@@ -98,15 +63,10 @@ void async function start_service() {
     api.use('/api/message', router.message);
     api.use('/api/publication', router.publication);
     api.use('/api/notification', router.notification);
-    api.use(middlewares_1.default.errorHandler);
+    api.use(middlewares_1.Middlewares.errorHandler);
     api.listen(+config_1.env.SERVER_PORT, config_1.env.SERVER_HOST, () => {
         logger.info('App', '', `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
     });
-    //* WS Module
-    new socket_1.default(socket, server, cache, logger, repository.user, repository.live, repository.friend, repository.message, notificator);
-    //* Socket IO Module
-    const { io } = (0, intialize_1.initialize_media_server)();
-    new media_1.default(io);
 }();
 function graceful_shutdown(database, cache) {
     ['uncaughtException', 'unhandledRejection'].map((type) => {
