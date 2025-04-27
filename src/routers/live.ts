@@ -1,8 +1,8 @@
 import {Middlewares} from '../middlewares';
-import LiveController from "../controllers/live";
-import BaseRouter from "../base/router.base";
+import {LiveController} from "../controllers/live";
+import {BaseRouter} from "../base/router.base";
 
-export default class LiveRouter extends BaseRouter<LiveController> {
+export class LiveRouter extends BaseRouter<LiveController> {
 	initialize(c: LiveController) {
 		// @ts-expect-error - to assign handlers
 		this.router.post('/', Middlewares.isAuthorized, c.createLive.bind(c));

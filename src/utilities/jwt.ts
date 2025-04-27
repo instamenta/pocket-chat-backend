@@ -3,7 +3,7 @@ import jwt, {JwtPayload, Secret, SignOptions} from 'jsonwebtoken';
 import {SECURITY} from "./config";
 import * as T from '../types';
 
-class JWT {
+export class JWT {
 	private static secret: Secret = SECURITY.JWT_SECRET;
 	private static signOptions: SignOptions = {expiresIn: SECURITY.JWT_EXPIRATION_TIME}
 
@@ -58,5 +58,3 @@ class JWT {
 		);
 	}
 }
-
-export default JWT;

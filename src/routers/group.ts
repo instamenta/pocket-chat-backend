@@ -1,8 +1,8 @@
 import {Middlewares} from '../middlewares';
-import GroupController from "../controllers/group";
-import BaseRouter from "../base/router.base";
+import {GroupController} from "../controllers/group";
+import {BaseRouter} from "../base/router.base";
 
-export default class GroupRouter extends BaseRouter<GroupController> {
+export class GroupRouter extends BaseRouter<GroupController> {
 	initialize(c: GroupController) {
 		// @ts-expect-error - to assign handlers
 		this.router.get('/', Middlewares.isAuthorized, c.listGroups.bind(c));

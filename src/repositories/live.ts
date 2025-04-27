@@ -1,7 +1,7 @@
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class LiveRepository extends BaseRepository {
+export class LiveRepository extends BaseRepository {
 
 	async createLive(userId: string) {
 		return this.database.query<{ id: string }>(`

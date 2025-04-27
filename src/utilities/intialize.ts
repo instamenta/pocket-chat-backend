@@ -16,7 +16,7 @@ const corsOptions: CORS.CorsOptions = {
 	allowedHeaders: ['Content-Type', SECURITY.JWT_TOKEN_NAME],
 }
 
-export default async function initialize_all() {
+export async function initialize_all() {
 	const logger = VLogger.getInstance();
 
 	const log = logger.getVlogger('App');

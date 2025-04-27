@@ -1,13 +1,13 @@
 import bcrypt from 'bcrypt';
 import {SECURITY} from './config';
 
-export interface I_HashingHandler {
+export interface HashingHandler {
 	hashPassword(password: string): Promise<string>;
 
 	comparePasswords(plainPassword: string, hashedPassword: string): Promise<boolean>;
 }
 
-export default class BCrypt implements I_HashingHandler {
+export class BCryptHashingHandler implements HashingHandler {
 	async hashPassword(password: string) {
 		try {
 			const salt = await bcrypt.genSalt(SECURITY.SALT_ROUNDS);

@@ -1,8 +1,8 @@
 import UserController from '../controllers/user';
 import {Middlewares} from "../middlewares";
-import BaseRouter from "../base/router.base";
+import {BaseRouter} from "../base/router.base";
 
-export default class UserRouter extends BaseRouter<UserController> {
+export class UserRouter extends BaseRouter<UserController> {
 	initialize(c: UserController) {
 		// @ts-expect-error - to assign handlers
 		this.router.post('/sign-up', Middlewares.isGuest, c.signUp.bind(c));

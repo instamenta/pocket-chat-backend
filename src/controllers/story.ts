@@ -1,16 +1,15 @@
 import {Request, Response} from "express";
-import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import StoryRepository from "../repositories/story";
+import {StoryRepository} from "../repositories/story";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
-import Notificator from "../utilities/notificator";
+import {Notificator} from "../utilities/notificator";
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
-export default class StoryController extends BaseController<StoryRepository> {
+export class StoryController extends BaseController<StoryRepository> {
 	constructor(
 		repository: StoryRepository,
 		logger: VLogger,
@@ -33,10 +32,10 @@ export default class StoryController extends BaseController<StoryRepository> {
 
 			if (!storyId) {
 				console.error(`${this.constructor.name}.createStory(): Failed to send message`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.CREATED).json({id: storyId});
+			response.status(statusCodes.CREATED).json({id: storyId});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -48,7 +47,7 @@ export default class StoryController extends BaseController<StoryRepository> {
 
 			const stories = await this.repository.listStories(userId);
 
-			response.status(status_codes.OK).json(stories);
+			response.status(statusCodes.OK).json(stories);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -60,7 +59,7 @@ export default class StoryController extends BaseController<StoryRepository> {
 
 			const stories = await this.repository.listFeedStories(userId);
 
-			response.status(status_codes.OK).json(stories);
+			response.status(statusCodes.OK).json(stories);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -72,7 +71,7 @@ export default class StoryController extends BaseController<StoryRepository> {
 
 			const stories = await this.repository.listFriendStoriesByUsername(userId);
 
-			response.status(status_codes.OK).json(stories);
+			response.status(statusCodes.OK).json(stories);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}

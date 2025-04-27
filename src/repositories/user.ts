@@ -1,4 +1,4 @@
-import {I_HashingHandler} from "../utilities/bcrypt";
+import {HashingHandler} from "../utilities/bcrypt";
 import z from 'zod';
 import {BaseRepository} from "../base/repository.base";
 import {Client} from "pg";
@@ -6,11 +6,11 @@ import * as T from '../types'
 import {Validate} from "../validators";
 import VLogger from "@instamenta/vlogger";
 
-export default class UserRepository extends BaseRepository {
+export class UserRepository extends BaseRepository {
 	constructor(
 		client: Client,
 		logger: VLogger,
-		private readonly hashingHandler: I_HashingHandler
+		private readonly hashingHandler: HashingHandler
 	) {
 		super(client, logger);
 	}

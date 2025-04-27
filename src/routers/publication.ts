@@ -1,8 +1,8 @@
-import PublicationController from '../controllers/publication';
+import {PublicationController} from '../controllers/publication';
 import {Middlewares} from '../middlewares';
-import BaseRouter from "../base/router.base";
+import {BaseRouter} from "../base/router.base";
 
-export default class PublicationRouter extends BaseRouter<PublicationController> {
+export class PublicationRouter extends BaseRouter<PublicationController> {
 	initialize(c: PublicationController) {
 		// @ts-expect-error - to assign handlers
 		this.router.get('/', Middlewares.isAuthorized, c.listPublications.bind(c));

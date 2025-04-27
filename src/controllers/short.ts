@@ -1,16 +1,15 @@
 import {Request, Response} from "express";
-import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import ShortRepository from "../repositories/short";
+import {ShortRepository} from "../repositories/short";
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
-import Notificator from "../utilities/notificator";
+import {Notificator} from "../utilities/notificator";
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
-export default class ShortController extends BaseController<ShortRepository> {
+export class ShortController extends BaseController<ShortRepository> {
 	constructor(
 		repository: ShortRepository,
 		logger: VLogger,
@@ -35,10 +34,10 @@ export default class ShortController extends BaseController<ShortRepository> {
 
 			if (!shortId) {
 				this.log.error({e: `Failed to send message`});
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.CREATED).json({id: shortId});
+			response.status(statusCodes.CREATED).json({id: shortId});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -51,7 +50,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 
 			const shorts = await this.repository.listShorts(userId);
 
-			response.status(status_codes.OK).json(shorts);
+			response.status(statusCodes.OK).json(shorts);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -64,7 +63,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 
 			const stories = await this.repository.listShortsById(userId);
 
-			response.status(status_codes.OK).json(stories);
+			response.status(statusCodes.OK).json(stories);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}

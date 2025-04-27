@@ -1,7 +1,7 @@
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class CommentRepository extends BaseRepository {
+export class CommentRepository extends BaseRepository {
 
 	async listCommentsByPublication(publicationId: string, userId: string) {
 		const query = `

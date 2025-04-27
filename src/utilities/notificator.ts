@@ -1,14 +1,13 @@
-import NotificationRepository from "../repositories/notification";
+import {NotificationRepository} from "../repositories/notification";
 import {notification_types} from "./enumerations";
-import PublicationsRepository from "../repositories/publication";
-import CommentRepository from "../repositories/comment";
-import ShortRepository from "../repositories/short";
-import StoryRepository from "../repositories/story";
+import {PublicationsRepository} from "../repositories/publication";
+import {CommentRepository} from "../repositories/comment";
+import {ShortRepository} from "../repositories/short";
+import {StoryRepository} from "../repositories/story";
 import {NotImplementedError} from '@instamenta/vanilla-utility-pack';
 import * as T from '../types'
 
-
-export default class Notificator {
+export class Notificator {
 	constructor(
 		private readonly repository: NotificationRepository,
 		private readonly publication: PublicationsRepository,

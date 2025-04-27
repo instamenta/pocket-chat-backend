@@ -1,8 +1,8 @@
-import CommentController from '../controllers/comment';
+import {CommentController} from '../controllers';
 import {Middlewares} from '../middlewares';
-import BaseRouter from "../base/router.base";
+import {BaseRouter} from "../base/router.base";
 
-export default class CommentRouter extends BaseRouter<CommentController> {
+export class CommentRouter extends BaseRouter<CommentController> {
 	initialize(c: CommentController) {
 		// @ts-expect-error - to assign handlers
 		this.router.get('/:publicationId', Middlewares.isAuthorized, c.listByPublication.bind(c));

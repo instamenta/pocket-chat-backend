@@ -1,8 +1,8 @@
 import {Middlewares} from "../middlewares";
-import MessageController from "../controllers/message";
-import BaseRouter from "../base/router.base";
+import {MessageController} from "../controllers/message";
+import {BaseRouter} from "../base/router.base";
 
-export default class MessageRouter extends BaseRouter<MessageController> {
+export class MessageRouter extends BaseRouter<MessageController> {
 	initialize(c: MessageController) {
 		// @ts-expect-error - to assign handlers
 		this.router.post('/', Middlewares.isAuthorized, c.sendMessage.bind(c));

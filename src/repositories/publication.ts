@@ -2,7 +2,7 @@ import {QueryResult} from 'pg';
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class PublicationsRepository extends BaseRepository {
+export class PublicationsRepository extends BaseRepository {
 
 	async listPublications() {
 		try {

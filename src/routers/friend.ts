@@ -1,8 +1,8 @@
 import {Middlewares} from "../middlewares";
-import FriendController from "../controllers/friend";
-import BaseRouter from "../base/router.base";
+import {FriendController} from "../controllers/friend";
+import {BaseRouter} from "../base/router.base";
 
-export default class FriendRouter extends BaseRouter<FriendController> {
+export class FriendRouter extends BaseRouter<FriendController> {
 	initialize(c: FriendController) {
 		// @ts-expect-error - to assign handlers
 		this.router.get('/', Middlewares.isAuthorized, c.listFriendRequests.bind(c));

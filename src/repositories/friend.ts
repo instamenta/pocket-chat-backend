@@ -1,7 +1,7 @@
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class FriendRepository extends BaseRepository {
+export class FriendRepository extends BaseRepository {
 
 	public sendFriendRequest(sender: string, recipient: string) {
 		return this.database.query<{ id: string }>(`

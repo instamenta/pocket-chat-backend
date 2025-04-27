@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
-import status_codes from '@instamenta/http-status-codes'
-import MessageRepository from "../repositories/message";
+import statusCodes from '@instamenta/http-status-codes'
+import {MessageRepository} from "../repositories/message";
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 
-export default class MessageController extends BaseController<MessageRepository> {
+export class MessageController extends BaseController<MessageRepository> {
 
 	public async sendMessage(
 		request: Request<object, object, { recipient: string, content: string, friendship: string, images?: string[], files?: string[] }>,
@@ -25,10 +25,10 @@ export default class MessageController extends BaseController<MessageRepository>
 
 			if (!messageId) {
 				console.error(`${this.constructor.name}.sendMessage(): Failed to send message`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.CREATED).json({id: messageId});
+			response.status(statusCodes.CREATED).json({id: messageId});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -45,7 +45,7 @@ export default class MessageController extends BaseController<MessageRepository>
 				Number.parseInt(request.query.limit ?? '20', 10)
 			);
 
-			response.status(status_codes.OK).json(messages);
+			response.status(statusCodes.OK).json(messages);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -64,7 +64,7 @@ export default class MessageController extends BaseController<MessageRepository>
 				Number.parseInt(request.query.limit ?? '20', 10)
 			);
 
-			response.status(status_codes.OK).json(messages);
+			response.status(statusCodes.OK).json(messages);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -82,10 +82,10 @@ export default class MessageController extends BaseController<MessageRepository>
 
 			if (!result) {
 				console.error(`${this.constructor.name}.updateMessageStatus(): Failed to update message status`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.OK).json({success: true});
+			response.status(statusCodes.OK).json({success: true});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -100,7 +100,7 @@ export default class MessageController extends BaseController<MessageRepository>
 
 			const conversations = await this.repository.listConversations(userId);
 
-			response.status(status_codes.OK).json(conversations);
+			response.status(statusCodes.OK).json(conversations);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}

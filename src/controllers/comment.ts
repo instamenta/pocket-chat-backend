@@ -3,13 +3,13 @@ import CommentRepository from '../repositories/comment';
 import statusCodes from '@instamenta/http-status-codes';
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
-import Notificator from "../utilities/notificator";
+import {Notificator} from "../utilities/notificator";
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
-export default class CommentController extends BaseController<CommentRepository> {
+export class CommentController extends BaseController<CommentRepository> {
 	constructor(
 		repository: CommentRepository,
 		logger: VLogger,

@@ -2,7 +2,7 @@ import "dotenv/config";
 import z from "zod";
 import ms from "ms";
 
-const env = z.object({
+export const env = z.object({
 	FOLDER: z.string(),
 	CERTIFICATE_AGE: z.string(),
 	CERTIFICATE_NAME: z.string(),
@@ -24,7 +24,7 @@ const env = z.object({
 	MEDIA_SOCKET_PORT: z.string(),
 }).parse(process.env);
 
-const SECURITY = {
+export const SECURITY = {
 	FOLDER: env.FOLDER,
 	AGE: env.CERTIFICATE_AGE,
 	NAME: env.CERTIFICATE_NAME,
@@ -36,5 +36,3 @@ const SECURITY = {
 	JWT_TOKEN_NAME: env.JWT_TOKEN_NAME,
 	JWT_EXPIRATION_TIME: env.JWT_EXPIRATION_TIME as ms.StringValue
 };
-
-export {env, SECURITY}

@@ -1,7 +1,7 @@
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class StoryRepository extends BaseRepository {
+export class StoryRepository extends BaseRepository {
 
 	async createStory({userId, imageUrl}: { userId: string, imageUrl: string }) {
 		return this.database.query<{ id: string }>(`

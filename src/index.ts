@@ -1,33 +1,33 @@
 import "dotenv/config";
 import {Client} from "pg";
 import Redis from "ioredis";
-import Router from './routers';
+import * as Routers from './routers';
 import {env} from './utilities/config'
-import Controller from './controllers';
-import Repository from "./repositories";
+import * as Controllers from './controllers';
+import * as Repositories from "./repositories";
 import {Middlewares} from "./middlewares";
-import BCrypt from './utilities/bcrypt';
-import Notificator from "./utilities/notificator";
-import initialize_all from "./utilities/intialize";
+import {BCryptHashingHandler} from './utilities/bcrypt';
+import {Notificator} from "./utilities/notificator";
+import {initialize_all} from "./utilities/intialize";
 
 void async function start_service() {
 	const {api, database, cache, logger} = await initialize_all();
 
 	graceful_shutdown(database, cache);
 
-	const hashingHandler = new BCrypt();
+	const hashingHandler = new BCryptHashingHandler();
 
 	const repository = {
-		user: new Repository.User(database, logger, hashingHandler),
-		live: new Repository.Live(database, logger),
-		story: new Repository.Story(database, logger),
-		short: new Repository.Short(database, logger),
-		group: new Repository.Group(database, logger),
-		friend: new Repository.Friend(database, logger),
-		comment: new Repository.Comment(database, logger),
-		message: new Repository.Message(database, logger),
-		publications: new Repository.Publication(database, logger),
-		notification: new Repository.Notification(database, logger),
+		user: new Repositories.User(database, logger, hashingHandler),
+		live: new Repositories.Live(database, logger),
+		story: new Repositories.Story(database, logger),
+		short: new Repositories.Short(database, logger),
+		group: new Repositories.Group(database, logger),
+		friend: new Repositories.Friend(database, logger),
+		comment: new Repositories.Comment(database, logger),
+		message: new Repositories.Message(database, logger),
+		publications: new Repositories.Publication(database, logger),
+		notification: new Repositories.Notification(database, logger),
 	};
 
 	const notificator = new Notificator(
@@ -39,29 +39,29 @@ void async function start_service() {
 	);
 
 	const controller = {
-		user: new Controller.User(repository.user, logger, hashingHandler),
-		live: new Controller.Live(repository.live, logger),
-		story: new Controller.Story(repository.story, logger, notificator),
-		short: new Controller.Short(repository.short, logger, notificator),
-		group: new Controller.Group(repository.group, logger),
-		friend: new Controller.Friend(repository.friend, logger),
-		message: new Controller.Message(repository.message, logger),
-		comment: new Controller.Comment(repository.comment, logger, notificator),
-		publication: new Controller.Publication(repository.publications, logger, notificator),
-		notification: new Controller.Notification(repository.notification, logger),
+		user: new Controllers.User(repository.user, logger, hashingHandler),
+		live: new Controllers.Live(repository.live, logger),
+		story: new Controllers.Story(repository.story, logger, notificator),
+		short: new Controllers.Short(repository.short, logger, notificator),
+		group: new Controllers.Group(repository.group, logger),
+		friend: new Controllers.Friend(repository.friend, logger),
+		message: new Controllers.Message(repository.message, logger),
+		comment: new Controllers.Comment(repository.comment, logger, notificator),
+		publication: new Controllers.Publication(repository.publications, logger, notificator),
+		notification: new Controllers.Notification(repository.notification, logger),
 	};
 
 	const router = {
-		user: new Router.User(controller.user).router,
-		live: new Router.Live(controller.live).router,
-		story: new Router.Story(controller.story).router,
-		short: new Router.Short(controller.short).router,
-		group: new Router.Group(controller.group).router,
-		friend: new Router.Friend(controller.friend).router,
-		comment: new Router.Comment(controller.comment).router,
-		message: new Router.Message(controller.message).router,
-		publication: new Router.Publication(controller.publication).router,
-		notification: new Router.Notification(controller.notification).router,
+		user: new Routers.User(controller.user).router,
+		live: new Routers.Live(controller.live).router,
+		story: new Routers.Story(controller.story).router,
+		short: new Routers.Short(controller.short).router,
+		group: new Routers.Group(controller.group).router,
+		friend: new Routers.Friend(controller.friend).router,
+		comment: new Routers.Comment(controller.comment).router,
+		message: new Routers.Message(controller.message).router,
+		publication: new Routers.Publication(controller.publication).router,
+		notification: new Routers.Notification(controller.notification).router,
 	};
 
 	api.use('/api/user', router.user);

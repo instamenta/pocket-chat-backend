@@ -1,21 +1,21 @@
-import UserRepository from "../repositories/user";
 import {Request, Response} from "express";
-import status_codes from '@instamenta/http-status-codes'
-import JWT from "../utilities/jwt";
+import statusCodes from '@instamenta/http-status-codes'
+import {UserRepository} from "../repositories/user";
+import {JWT} from "../utilities/jwt";
 import {SECURITY} from "../utilities/config";
-import {I_HashingHandler} from "../utilities/bcrypt";
+import {HashingHandler} from "../utilities/bcrypt";
 import {z} from 'zod';
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
-export default class UserController extends BaseController<UserRepository> {
+export class UserController extends BaseController<UserRepository> {
 
 	constructor(
 		repository: UserRepository,
 		logger: VLogger,
-		private readonly hashingHandler: I_HashingHandler
+		private readonly hashingHandler: HashingHandler
 	) {
 		super(repository, logger);
 	}
@@ -29,7 +29,7 @@ export default class UserController extends BaseController<UserRepository> {
 
 			const userList = await this.repository.listUsers(skip, limit);
 
-			response.status(status_codes.OK).json(userList);
+			response.status(statusCodes.OK).json(userList);
 		} catch (error) {
 			this.errorHandler(error, response)
 		}
@@ -46,7 +46,7 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!userId) {
 				console.error(`${this.constructor.name}.createUser(): failed to create User`);
-				return response.status(status_codes.I_AM_A_TEAPOT).end();
+				return response.status(statusCodes.I_AM_A_TEAPOT).end();
 			}
 
 			const token = JWT.signToken({
@@ -56,7 +56,7 @@ export default class UserController extends BaseController<UserRepository> {
 				id: userId
 			});
 
-			response.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userId});
+			response.status(statusCodes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userId});
 		} catch (error) {
 			this.errorHandler(error, response)
 		}
@@ -70,7 +70,7 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!userData) {
 				console.log(`${this.constructor.name}.loginUser(): failed to login user`);
-				return response.status(status_codes.UNAUTHORIZED).end();
+				return response.status(statusCodes.UNAUTHORIZED).end();
 			}
 
 			const isMatch = await this.hashingHandler.comparePasswords(
@@ -80,12 +80,12 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!isMatch) {
 				console.log(`${this.constructor.name}.loginUser(): Invalid password`);
-				return response.status(status_codes.UNAUTHORIZED).end();
+				return response.status(statusCodes.UNAUTHORIZED).end();
 			}
 
 			const token = JWT.signToken({id: userData.id, email: userData.email, username, picture: userData.picture});
 
-			response.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userData.id});
+			response.status(statusCodes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id: userData.id});
 
 			await this.repository.updateLastActiveAtById(userData.id).catch(console.error);
 		} catch (error) {
@@ -101,10 +101,10 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!user) {
 				console.log(`${this.constructor.name}.authUser(): User not found`);
-				return response.status(status_codes.NOT_FOUND).end();
+				return response.status(statusCodes.NOT_FOUND).end();
 			}
 
-			response.status(status_codes.OK).json(user);
+			response.status(statusCodes.OK).json(user);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -118,10 +118,10 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!user) {
 				console.log(`${this.constructor.name}.getUserById(): User not found`);
-				return response.status(status_codes.NOT_FOUND).end();
+				return response.status(statusCodes.NOT_FOUND).end();
 			}
 
-			response.status(status_codes.OK).json(user);
+			response.status(statusCodes.OK).json(user);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -135,10 +135,10 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!user) {
 				console.log(`${this.constructor.name}.getUserByUsername(): User not found`);
-				return response.status(status_codes.NOT_FOUND).end();
+				return response.status(statusCodes.NOT_FOUND).end();
 			}
 
-			response.status(status_codes.OK).json(user);
+			response.status(statusCodes.OK).json(user);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -160,7 +160,7 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateBio(): Failed to update`);
-				return response.status(status_codes.NOT_FOUND).end();
+				return response.status(statusCodes.NOT_FOUND).end();
 			}
 
 			const token = JWT.signToken({
@@ -170,7 +170,7 @@ export default class UserController extends BaseController<UserRepository> {
 				picture: userData.picture
 			});
 
-			response.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
+			response.status(statusCodes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -192,7 +192,7 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateProfilePicture(): Failed to update`);
-				return response.status(status_codes.NOT_FOUND).end();
+				return response.status(statusCodes.NOT_FOUND).end();
 			}
 
 			const token = JWT.signToken({
@@ -202,7 +202,7 @@ export default class UserController extends BaseController<UserRepository> {
 				picture: userData.picture
 			});
 
-			response.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
+			response.status(statusCodes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -229,7 +229,7 @@ export default class UserController extends BaseController<UserRepository> {
 
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateProfilePublicInformation(): Failed to update`, request.body);
-				return response.status(status_codes.NOT_FOUND).end();
+				return response.status(statusCodes.NOT_FOUND).end();
 			}
 
 			const token = JWT.signToken({
@@ -239,7 +239,7 @@ export default class UserController extends BaseController<UserRepository> {
 				picture: userData.picture,
 			});
 
-			response.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
+			response.status(statusCodes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}

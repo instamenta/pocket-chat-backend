@@ -2,7 +2,7 @@ import {QueryResult} from "pg";
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class MessageRepository extends BaseRepository {
+export class MessageRepository extends BaseRepository {
 
 	public createMessage({sender, recipient, content, friendship, images = [], files = []}: T.Message.Create) {
 		return this.database.query<{ id: string }>(`

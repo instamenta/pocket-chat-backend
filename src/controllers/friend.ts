@@ -1,13 +1,13 @@
 import {Request, Response} from "express";
-import status_codes from '@instamenta/http-status-codes'
-import FriendRepository from "../repositories/friend";
+import statusCodes from '@instamenta/http-status-codes'
+import {FriendRepository} from "../repositories/friend";
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 
 // TODO: Notifications for Friend Related Events
 
-export default class FriendController extends BaseController<FriendRepository> {
+export class FriendController extends BaseController<FriendRepository> {
 
 	async sendFriendRequest(request: Request<{ id: string }>, response: Response<{ friendship_id: string }>) {
 		this.log.log('sendFriendRequest');
@@ -18,10 +18,10 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			if (!status) {
 				this.log.error({e: `Failed to send friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
-				return response.status(status_codes.BAD_GATEWAY).end();
+				return response.status(statusCodes.BAD_GATEWAY).end();
 			}
 
-			response.status(status_codes.OK).json({friendship_id: status});
+			response.status(statusCodes.OK).json({friendship_id: status});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -34,7 +34,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const list = await this.repository.listFriendRequestsOnly(id);
 
-			response.status(status_codes.OK).json(list);
+			response.status(statusCodes.OK).json(list);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -47,7 +47,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const list = await this.repository.listFriendSentOnly(id);
 
-			response.status(status_codes.OK).json(list);
+			response.status(statusCodes.OK).json(list);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -60,7 +60,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const friendRequests = await this.repository.listFriendRequests(id);
 
-			response.status(status_codes.OK).json(friendRequests);
+			response.status(statusCodes.OK).json(friendRequests);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -78,7 +78,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const recommendations = await this.repository.listFriendRecommendations(id);
 
-			response.status(status_codes.OK).json(recommendations);
+			response.status(statusCodes.OK).json(recommendations);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -93,10 +93,10 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			if (!status) {
 				this.log.error({e: `Failed to accept friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
-				return response.status(status_codes.BAD_GATEWAY).end();
+				return response.status(statusCodes.BAD_GATEWAY).end();
 			}
 
-			response.status(status_codes.OK).end();
+			response.status(statusCodes.OK).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -111,10 +111,10 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			if (!status) {
 				this.log.error({e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
-				return response.status(status_codes.BAD_GATEWAY).end();
+				return response.status(statusCodes.BAD_GATEWAY).end();
 			}
 
-			response.status(status_codes.OK).json({friendship_id: status});
+			response.status(statusCodes.OK).json({friendship_id: status});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -129,10 +129,10 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			if (!status) {
 				this.log.error({e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}`});
-				return response.status(status_codes.BAD_GATEWAY).end();
+				return response.status(statusCodes.BAD_GATEWAY).end();
 			}
 
-			response.status(status_codes.OK).end();
+			response.status(statusCodes.OK).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -146,12 +146,12 @@ export default class FriendController extends BaseController<FriendRepository> {
 			const count = await this.repository.getFriendsCountByUserId(id);
 			if (!count) {
 				this.log.error({e: `Failed to get friends count`, m: id});
-				return response.status(status_codes.BAD_GATEWAY).end();
+				return response.status(statusCodes.BAD_GATEWAY).end();
 			}
 
 			console.log(count)
 
-			response.status(status_codes.OK).json({count});
+			response.status(statusCodes.OK).json({count});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -165,7 +165,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const friends = await this.repository.listMutualFriendsByUsers(sender, recipient);
 
-			response.status(status_codes.OK).json(friends);
+			response.status(statusCodes.OK).json(friends);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -178,7 +178,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const friends = await this.repository.listFriendsByUserId(id);
 
-			response.status(status_codes.OK).json(friends);
+			response.status(statusCodes.OK).json(friends);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -191,7 +191,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const friends = await this.repository.listFriendsByUsername(username);
 
-			response.status(status_codes.OK).json(friends);
+			response.status(statusCodes.OK).json(friends);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -208,7 +208,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const friendship = await this.repository.getBySenderAndRecipient(sender, recipient);
 
-			response.status(status_codes.OK).json(friendship);
+			response.status(statusCodes.OK).json(friendship);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -221,7 +221,7 @@ export default class FriendController extends BaseController<FriendRepository> {
 
 			const friendship = await this.repository.getById(friendship_id);
 
-			response.status(status_codes.OK).json(friendship);
+			response.status(statusCodes.OK).json(friendship);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}

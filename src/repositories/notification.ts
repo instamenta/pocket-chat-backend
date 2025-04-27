@@ -2,7 +2,7 @@ import {notification_types} from "../utilities/enumerations";
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class NotificationRepository extends BaseRepository {
+export class NotificationRepository extends BaseRepository {
 
 	async createNotification({
 		                         sender_id,

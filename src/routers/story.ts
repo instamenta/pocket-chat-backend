@@ -1,8 +1,8 @@
 import {Middlewares} from '../middlewares';
-import StoryController from "../controllers/story";
-import BaseRouter from "../base/router.base";
+import {StoryController} from "../controllers/story";
+import {BaseRouter} from "../base/router.base";
 
-export default class StoryRouter extends BaseRouter<StoryController> {
+export class StoryRouter extends BaseRouter<StoryController> {
 	initialize(c: StoryController) {
 		// @ts-expect-error - to assign handlers
 		this.router.get('/', Middlewares.isAuthorized, c.listStories.bind(c));

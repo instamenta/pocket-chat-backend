@@ -1,23 +1,10 @@
-import Notification from "./notification";
-import Publication from "./publication";
-import Comment from "./comment";
-import Message from "./message";
-import Friend from "./friend";
-import Story from "./story";
-import Short from "./short";
-import Group from "./group";
-import User from "./user";
-import Live from "./live";
-
-export default {
-	Notification,
-	Publication,
-	Message,
-	Comment,
-	Friend,
-	Story,
-	Short,
-	Group,
-	User,
-	Live,
-};
+export {NotificationController} from "./notification";
+export {PublicationController} from "./publication";
+export {CommentController} from "./comment";
+export {MessageController} from "./message";
+export {FriendController} from "./friend";
+export {StoryController} from "./story";
+export {ShortController} from "./short";
+export {GroupController} from "./group";
+export {UserController} from "./user";
+export {LiveController} from "./live";

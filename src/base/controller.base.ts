@@ -1,6 +1,6 @@
 import {ZodError} from "zod";
 import {Response} from "express";
-import status_codes from "@instamenta/http-status-codes";
+import statusCodes from "@instamenta/http-status-codes";
 import VLogger, {IVlog} from "@instamenta/vlogger";
 
 export abstract class BaseController<T> {
@@ -23,10 +23,10 @@ export abstract class BaseController<T> {
 			});
 
 			console.error(formattedError);
-			response.status(status_codes.BAD_REQUEST).end();
+			response.status(statusCodes.BAD_REQUEST).end();
 		} else {
 			console.error(error);
-			response.status(status_codes.INTERNAL_SERVER_ERROR).end()
+			response.status(statusCodes.INTERNAL_SERVER_ERROR).end()
 		}
 	}
 }

@@ -1,8 +1,8 @@
 import {Middlewares} from '../middlewares';
-import ShortController from "../controllers/short";
-import BaseRouter from "../base/router.base";
+import {ShortController} from "../controllers/short";
+import {BaseRouter} from "../base/router.base";
 
-export default class ShortRouter extends BaseRouter<ShortController> {
+export class ShortRouter extends BaseRouter<ShortController> {
 	initialize(c: ShortController) {
 		// @ts-expect-error - to assign handlers
 		this.router.post('/', Middlewares.isAuthorized, c.createShort.bind(c));

@@ -1,8 +1,8 @@
 import {Middlewares} from "../middlewares";
-import NotificationController from "../controllers/notification";
-import BaseRouter from "../base/router.base";
+import {NotificationController} from "../controllers/notification";
+import {BaseRouter} from "../base/router.base";
 
-export default class NotificationRouter extends BaseRouter<NotificationController> {
+export class NotificationRouter extends BaseRouter<NotificationController> {
 	initialize(c: NotificationController) {
 		// @ts-expect-error - to assign handlers
 		this.router.get('/', Middlewares.isAuthorized, c.listNotifications.bind(c))

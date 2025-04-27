@@ -3,7 +3,7 @@ import {BaseRepository} from "../base/repository.base";
 import {NotFoundError, UnauthorizedError} from "@instamenta/vanilla-utility-pack";
 import * as T from '../types';
 
-export default class GroupRepository extends BaseRepository {
+export class GroupRepository extends BaseRepository {
 
 	async createGroup(userId: string, name: string, description: string, imageUrl: string): Promise<string> {
 		return this.database.query<{ id: string }>(`

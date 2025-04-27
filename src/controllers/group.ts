@@ -1,14 +1,14 @@
 import {Request, Response} from "express";
-import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
-import GroupRepository from "../repositories/group";
+import statusCodes from '@instamenta/http-status-codes'
+import {GroupRepository} from "../repositories/group";
 import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 
 // TODO: Make post with percents based on all users engagement with post
 
-export default class GroupController extends BaseController<GroupRepository> {
+export class GroupController extends BaseController<GroupRepository> {
 
 	public async createGroup(
 		request: Request<object, { id: string }, { name: string, description: string, imageUrl: string }>,
@@ -26,10 +26,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!groupId) {
 				console.error(`${this.constructor.name}.createGroup(): Failed to create group`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.CREATED).json({id: groupId});
+			response.status(statusCodes.CREATED).json({id: groupId});
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -47,10 +47,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!success) {
 				console.error(`${this.constructor.name}.removeGroup(): Failed to remove group`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.CREATED).end();
+			response.status(statusCodes.CREATED).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -62,7 +62,7 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			const groups = await this.repository.listGroups(userId);
 
-			response.status(status_codes.OK).json(groups);
+			response.status(statusCodes.OK).json(groups);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -74,7 +74,7 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			const groups = await this.repository.listGroupsByUser(userId);
 
-			response.status(status_codes.OK).json(groups);
+			response.status(statusCodes.OK).json(groups);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -88,10 +88,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!group) {
 				console.error(`${this.constructor.name}.getGroupById(): Error`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.OK).json(group);
+			response.status(statusCodes.OK).json(group);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -106,10 +106,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!success) {
 				console.error(`${this.constructor.name}.joinGroup(): Error`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.OK).end();
+			response.status(statusCodes.OK).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -124,10 +124,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!success) {
 				console.error(`${this.constructor.name}.leaveGroup(): Error`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.OK).end();
+			response.status(statusCodes.OK).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -147,10 +147,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!success) {
 				console.error(`${this.constructor.name}.changeRole(): Error`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.OK).end();
+			response.status(statusCodes.OK).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -166,10 +166,10 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			if (!success) {
 				console.error(`${this.constructor.name}.removeMember(): Error`);
-				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			response.status(status_codes.OK).end();
+			response.status(statusCodes.OK).end();
 		} catch (error) {
 			this.errorHandler(error, response);
 		}
@@ -182,7 +182,7 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			const members = await this.repository.getMembersByGroupId(groupId);
 
-			response.status(status_codes.OK).json(members);
+			response.status(statusCodes.OK).json(members);
 		} catch (error) {
 			this.errorHandler(error, response);
 		}

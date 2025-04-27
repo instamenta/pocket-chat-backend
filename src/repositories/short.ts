@@ -1,7 +1,7 @@
 import {BaseRepository} from "../base/repository.base";
 import * as T from '../types';
 
-export default class ShortRepository extends BaseRepository {
+export class ShortRepository extends BaseRepository {
 
 	async createShort(userId: string, videoUrl: string, description: string) {
 		const query = `INSERT INTO "shorts" (user_id, video_url, description)
