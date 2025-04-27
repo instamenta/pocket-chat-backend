@@ -1,6 +1,6 @@
 import * as U from './unions';
 
-export type Story = {
+export interface Story {
 	id: string
 	user_id: string
 	image_url: string
@@ -10,7 +10,7 @@ export type Story = {
 	comments_count: number
 }
 
-export type Feed = {
+export interface Feed {
 	id: string
 	username: string
 	first_name: string

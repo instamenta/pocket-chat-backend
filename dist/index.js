@@ -3,41 +3,82 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = __importDefault(require("fs"));
-const https_1 = __importDefault(require("https"));
-const socket_io_1 = require("socket.io");
-const selfsigned_1 = __importDefault(require("selfsigned"));
-void function start_service() {
-    const CERTIFICATE_PATH = "../security/cert.pem";
-    const KEY_PATH = "../security/key.pem";
-    const SECURITY_FOLDER = "../security";
-    const SERVER_PORT = 3002;
-    const SERVER_HOST = 'localhost';
-    const SERVER_BACKLOG = 504;
-    const CERTIFICATE_AGE = 365;
-    const CERTIFICATE_NAME = 'commonName';
-    if (!fs_1.default.existsSync(SECURITY_FOLDER))
-        fs_1.default.mkdirSync(SECURITY_FOLDER);
-    console.log(!fs_1.default.existsSync(SECURITY_FOLDER));
-    console.log(!fs_1.default.existsSync(CERTIFICATE_PATH));
-    console.log(!fs_1.default.existsSync(KEY_PATH));
-    if (!fs_1.default.existsSync(CERTIFICATE_PATH) || !fs_1.default.existsSync(KEY_PATH)) {
-        const generated_result = selfsigned_1.default.generate([{ name: CERTIFICATE_NAME, value: SERVER_HOST }], { days: CERTIFICATE_AGE });
-        console.log(generated_result);
-        fs_1.default.writeFileSync(KEY_PATH, generated_result.private);
-        fs_1.default.writeFileSync(CERTIFICATE_PATH, generated_result.cert);
-    }
-    const server = https_1.default.createServer({
-        key: fs_1.default.readFileSync(KEY_PATH),
-        cert: fs_1.default.readFileSync(CERTIFICATE_PATH)
+require("dotenv/config");
+const routers_1 = __importDefault(require("./routers"));
+const config_1 = require("./utilities/config");
+const controllers_1 = __importDefault(require("./controllers"));
+const repositories_1 = __importDefault(require("./repositories"));
+const middlewares_1 = require("./middlewares");
+const bcrypt_1 = __importDefault(require("./utilities/bcrypt"));
+const notificator_1 = __importDefault(require("./utilities/notificator"));
+const intialize_1 = __importDefault(require("./utilities/intialize"));
+void async function start_service() {
+    const { api, database, cache, logger } = await (0, intialize_1.default)();
+    graceful_shutdown(database, cache);
+    const hashingHandler = new bcrypt_1.default();
+    const repository = {
+        user: new repositories_1.default.User(database, logger, hashingHandler),
+        live: new repositories_1.default.Live(database, logger),
+        story: new repositories_1.default.Story(database, logger),
+        short: new repositories_1.default.Short(database, logger),
+        group: new repositories_1.default.Group(database, logger),
+        friend: new repositories_1.default.Friend(database, logger),
+        comment: new repositories_1.default.Comment(database, logger),
+        message: new repositories_1.default.Message(database, logger),
+        publications: new repositories_1.default.Publication(database, logger),
+        notification: new repositories_1.default.Notification(database, logger),
+    };
+    const notificator = new notificator_1.default(repository.notification, repository.publications, repository.comment, repository.short, repository.story);
+    const controller = {
+        user: new controllers_1.default.User(repository.user, logger, hashingHandler),
+        live: new controllers_1.default.Live(repository.live, logger),
+        story: new controllers_1.default.Story(repository.story, logger, notificator),
+        short: new controllers_1.default.Short(repository.short, logger, notificator),
+        group: new controllers_1.default.Group(repository.group, logger),
+        friend: new controllers_1.default.Friend(repository.friend, logger),
+        message: new controllers_1.default.Message(repository.message, logger),
+        comment: new controllers_1.default.Comment(repository.comment, logger, notificator),
+        publication: new controllers_1.default.Publication(repository.publications, logger, notificator),
+        notification: new controllers_1.default.Notification(repository.notification, logger),
+    };
+    const router = {
+        user: new routers_1.default.User(controller.user).router,
+        live: new routers_1.default.Live(controller.live).router,
+        story: new routers_1.default.Story(controller.story).router,
+        short: new routers_1.default.Short(controller.short).router,
+        group: new routers_1.default.Group(controller.group).router,
+        friend: new routers_1.default.Friend(controller.friend).router,
+        comment: new routers_1.default.Comment(controller.comment).router,
+        message: new routers_1.default.Message(controller.message).router,
+        publication: new routers_1.default.Publication(controller.publication).router,
+        notification: new routers_1.default.Notification(controller.notification).router,
+    };
+    api.use('/api/user', router.user);
+    api.use('/api/live', router.live);
+    api.use('/api/story', router.story);
+    api.use('/api/short', router.short);
+    api.use('/api/group', router.group);
+    api.use('/api/friend', router.friend);
+    api.use('/api/comment', router.comment);
+    api.use('/api/message', router.message);
+    api.use('/api/publication', router.publication);
+    api.use('/api/notification', router.notification);
+    api.use(middlewares_1.Middlewares.errorHandler);
+    api.listen(+config_1.env.SERVER_PORT, config_1.env.SERVER_HOST, () => {
+        logger.info('App', '', `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
     });
-    const io = new socket_io_1.Server(server, { /* options */});
-    io.on("connection", (socket) => {
-        // Handle socket connections
-        console.log("Socket connected:", socket.id);
-    });
-    server.listen(SERVER_PORT, SERVER_HOST, SERVER_BACKLOG, () => {
-        console.log(`Server is running on https://${SERVER_HOST}:${SERVER_PORT}`);
-    });
-    server.on("error", (error) => console.error(`Server emitted error event`, error));
 }();
+function graceful_shutdown(database, cache) {
+    ['uncaughtException', 'unhandledRejection'].map((type) => {
+        process.on(type, (...args) => {
+            console.error(`process.on ${type} with ${args}`, args);
+            database.end().then(() => {
+                cache.disconnect();
+            }).catch((error) => {
+                console.error(error);
+            }).finally(() => {
+                process.exit(1);
+            });
+        });
+    });
+}

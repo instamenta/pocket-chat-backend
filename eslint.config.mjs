@@ -1,26 +1,24 @@
-import js from "@eslint/js";
-import globals from "globals";
+import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import { defineConfig } from "eslint/config";
 
-
-export default defineConfig([
-  { files: ["**/*.ts"], ignores: ['dist/**'], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.ts"], ignores: ['dist/**'], languageOptions: { globals: globals.browser } },
-    // @ts-expect-error - to assign config
-  tseslint.configs.strictTypeChecked,
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+export default tseslint.config({
+      files: ["**/*.ts"], ignores: ['dist/**'], extends: [
+        eslint.configs.recommended,
+        tseslint.configs.strictTypeChecked,
+        tseslint.configs.stylisticTypeChecked,
+      ]
+    },
+    {
+      languageOptions: {
+        parserOptions: {
+          projectService: true,
+          tsconfigRootDir: import.meta.dirname,
+        },
       },
     },
-  },
-  {
-    files: ["**/*.ts"], ignores: ['dist/**'],
-    rules: {
-      '@typescript-eslint/no-extraneous-class': 'off'
-    }
-  }
-]);
+    {
+      files: ["**/*.ts"], ignores: ['dist/**'],
+      rules: {
+        '@typescript-eslint/no-extraneous-class': 'off'
+      }
+    });

@@ -21,7 +21,7 @@ export default class MessageRepository extends BaseRepository {
 			.catch((error: unknown) => this.errorHandler(error, 'createMessage'));
 	}
 
-	public getMessagesByFriendshipId(friendship_id: string, skip: number = 0, limit: number = 20) {
+	public getMessagesByFriendshipId(friendship_id: string, skip = 0, limit = 20) {
 		return this.database.query<T.Message.Message>(`
                 SELECT *
                 FROM messages
@@ -35,7 +35,7 @@ export default class MessageRepository extends BaseRepository {
 			.catch((error: unknown) => this.errorHandler(error, 'getMessagesByFriendshipId'));
 	}
 
-	public getMessagesByUsers(user1: string, user2: string, skip: number = 0, limit: number = 20) {
+	public getMessagesByUsers(user1: string, user2: string, skip = 0, limit = 20) {
 		return this.database.query<T.Message.Message>(`
                 SELECT *
                 FROM messages

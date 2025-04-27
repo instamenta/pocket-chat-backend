@@ -5,7 +5,7 @@ import {MessageStatus} from "./unions";
 
 export type Create = z.infer<typeof Validate.create_message>;
 
-export type Message = {
+export interface Message {
 	id: string,
 	edited: boolean,
 	content: string,
@@ -19,7 +19,7 @@ export type Message = {
 	message_status: MessageStatus,
 }
 
-export type MessageRequest = {
+export interface MessageRequest {
 	date?: string,
 	sender: string,
 	content: string,
@@ -29,31 +29,31 @@ export type MessageRequest = {
 	type: socket_events,
 }
 
-export type JoinLiveRequest = {
+export interface JoinLiveRequest {
 	type: socket_events,
 	liveId: string,
 }
 
-export type LeaveLiveRequest = {
+export interface LeaveLiveRequest {
 	type: socket_events,
 	liveId: string,
 }
 
-export type LiveMessageRequest = {
+export interface LiveMessageRequest {
 	sender: string,
 	content: string,
 	liveId: string,
 	type: socket_events,
 }
 
-export type VideoCallRequest = {
+export interface VideoCallRequest {
 	room: string,
 	sender: string,
 	recipient: string,
 	type: socket_events,
 }
 
-export type MessageResponse = {
+export interface MessageResponse {
 	type: string,
 	date: string,
 	sender: string,
@@ -65,12 +65,12 @@ export type MessageResponse = {
 	files?: string[],
 }
 
-export type JoinLiveResponse = {
+export interface JoinLiveResponse {
 	type: socket_events,
 	hostPeerId: string,
 }
 
-export type Conversations = {
+export interface Conversations {
 	created_at: string
 	first_name: string
 	last_message: string

@@ -1,4 +1,4 @@
-export type Short = {
+export interface Short {
 	id: string
 	user_id: string
 	video_url: string
@@ -8,7 +8,7 @@ export type Short = {
 	comments_count: number
 }
 
-export type Populated = {
+export interface Populated {
 	id: string
 	user_id: string
 	user_picture: string

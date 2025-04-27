@@ -41,8 +41,8 @@ export default class MessageController extends BaseController<MessageRepository>
 		try {
 			const messages = await this.repository.getMessagesByFriendshipId(
 				Validate.uuid.parse(r.params.friendshipId),
-				Number.parseInt(r.query.skip || '0', 10),
-				Number.parseInt(r.query.limit || '20', 10)
+				Number.parseInt(r.query.skip ?? '0', 10),
+				Number.parseInt(r.query.limit ?? '20', 10)
 			);
 
 			w.status(status_codes.OK).json(messages);
@@ -60,8 +60,8 @@ export default class MessageController extends BaseController<MessageRepository>
 			const messages = await this.repository.getMessagesByUsers(
 				Validate.uuid.parse(r.params.user1),
 				Validate.uuid.parse(r.params.user2),
-				Number.parseInt(r.query.skip || '0', 10),
-				Number.parseInt(r.query.limit || '20', 10)
+				Number.parseInt(r.query.skip ?? '0', 10),
+				Number.parseInt(r.query.limit ?? '20', 10)
 			);
 
 			w.status(status_codes.OK).json(messages);

@@ -15,7 +15,7 @@ export default class UserRepository extends BaseRepository {
 		super(client, logger);
 	}
 
-	public listUsers(skip: number = 0, limit: number = 0): Promise<Array<Omit<T.User.Schema, 'updated_at'>>> {
+	public listUsers(skip = 0, limit = 0): Promise<Omit<T.User.Schema, 'updated_at'>[]> {
 		return this.database.query<Omit<T.User.Schema, 'updated_at'>>(`
 
                 SELECT id,

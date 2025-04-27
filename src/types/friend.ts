@@ -1,6 +1,6 @@
 import * as U from "./unions";
 
-export type Friendship = {
+export interface Friendship {
 	id: string
 	sender_id: string
 	created_at: string
@@ -8,14 +8,14 @@ export type Friendship = {
 	friendship_status: U.FriendshipStatus
 }
 
-export type Mutual = {
+export interface Mutual {
 	user_id: string
 	first_name: string
 	last_name: string
 	username: string
 }
 
-export type RequestData = {
+export interface RequestData {
 	id: string,
 	first_name: string,
 	last_name: string,

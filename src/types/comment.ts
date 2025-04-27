@@ -1,4 +1,4 @@
-export type Comment = {
+export interface Comment {
 	id: string
 	content: string
 	created_at: string
@@ -6,7 +6,7 @@ export type Comment = {
 	user_id: string
 }
 
-export type Populated = {
+export interface Populated {
 	id: string
 	content: string
 	created_at: string

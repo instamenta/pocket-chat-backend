@@ -1,7 +1,7 @@
 import {notification_types} from "../utilities/enumerations";
 import * as T from "./index";
 
-export type Notification = {
+export interface Notification {
 	id: string
 	type: notification_types
 	seen: boolean
@@ -12,7 +12,7 @@ export type Notification = {
 	reference_id?: string
 }
 
-export type Populated = {
+export interface Populated {
 	id: string
 	type: string
 	boolean: string

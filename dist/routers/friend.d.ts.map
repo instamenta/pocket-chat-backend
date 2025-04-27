@@ -1,0 +1,1 @@
+{"version":3,"file":"friend.d.ts","sourceRoot":"","sources":["../../src/routers/friend.ts"],"names":[],"mappings":"AACA,OAAO,gBAAgB,MAAM,uBAAuB,CAAC;AACrD,OAAO,UAAU,MAAM,qBAAqB,CAAC;AAE7C,MAAM,CAAC,OAAO,OAAO,YAAa,SAAQ,UAAU,CAAC,gBAAgB,CAAC;IACrE,UAAU,CAAC,CAAC,EAAE,gBAAgB;CAiC9B"}

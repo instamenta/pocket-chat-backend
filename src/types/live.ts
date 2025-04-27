@@ -1,7 +1,7 @@
 import {socket_events} from "../utilities/enumerations";
 import * as U from './unions';
 
-export type Populated = {
+export interface Populated {
 	user_id: string,
 	user_picture: string,
 	username: string,
@@ -12,7 +12,7 @@ export type Populated = {
 	id: string,
 }
 
-export type MessagePopulated = {
+export interface MessagePopulated {
 	message_id: string,
 	user_id: string,
 	user_picture: string,

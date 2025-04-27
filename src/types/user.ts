@@ -1,4 +1,4 @@
-export type Schema = {
+export interface Schema {
 	id: string
 	email: string
 	picture: string
@@ -12,14 +12,14 @@ export type Schema = {
 	last_active_at: string
 }
 
-export type Payload = {
+export interface Payload {
 	id: string
 	email: string
 	picture: string
 	username: string
 }
 
-export type GetByUsername = {
+export interface GetByUsername {
 	id: string,
 	username: string,
 	password: string,

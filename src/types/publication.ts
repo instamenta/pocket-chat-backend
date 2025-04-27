@@ -1,6 +1,6 @@
 import {publication_status} from "../utilities/enumerations"
 
-export type Publication = {
+export interface Publication {
 	id: string
 	created_at: string
 	updated_at: string
@@ -14,7 +14,7 @@ export type Publication = {
 	group_id?: string
 }
 
-export type Recommendation = {
+export interface Recommendation {
 	id: string
 	created_at: string
 	updated_at: string
