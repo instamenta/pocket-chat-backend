@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class MessageRepository extends repository_base_1.BaseRepository {
     createMessage({ sender, recipient, content, friendship, images = [], files = [] }) {
@@ -82,4 +83,4 @@ class MessageRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = MessageRepository;
+exports.MessageRepository = MessageRepository;

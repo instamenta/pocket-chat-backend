@@ -1,6 +1,6 @@
 import "dotenv/config";
 import ms from "ms";
-declare const env: {
+export declare const env: {
     FOLDER: string;
     CERTIFICATE_AGE: string;
     CERTIFICATE_NAME: string;
@@ -21,7 +21,7 @@ declare const env: {
     PEER_PORT: string;
     MEDIA_SOCKET_PORT: string;
 };
-declare const SECURITY: {
+export declare const SECURITY: {
     FOLDER: string;
     AGE: string;
     NAME: string;
@@ -33,5 +33,4 @@ declare const SECURITY: {
     JWT_TOKEN_NAME: string;
     JWT_EXPIRATION_TIME: ms.StringValue;
 };
-export { env, SECURITY };
 //# sourceMappingURL=config.d.ts.map

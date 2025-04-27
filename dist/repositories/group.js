@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GroupRepository = void 0;
 const enumerations_1 = require("../utilities/enumerations");
 const repository_base_1 = require("../base/repository.base");
 const vanilla_utility_pack_1 = require("@instamenta/vanilla-utility-pack");
@@ -279,4 +280,4 @@ class GroupRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = GroupRepository;
+exports.GroupRepository = GroupRepository;

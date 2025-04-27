@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StoryController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const http_status_codes_2 = __importDefault(require("@instamenta/http-status-codes"));
 const zod_1 = require("zod");
 const enumerations_1 = require("../utilities/enumerations");
 const controller_base_1 = require("../base/controller.base");
@@ -65,7 +65,7 @@ class StoryController extends controller_base_1.BaseController {
             const storyId = validators_1.Validate.uuid.parse(request.params.id);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likeStory(storyId, userId);
-            response.status(http_status_codes_2.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE_STORY,
                 reference_id: '',
@@ -84,7 +84,7 @@ class StoryController extends controller_base_1.BaseController {
             const storyId = validators_1.Validate.uuid.parse(request.params.storyId);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             const comments = await this.repository.listCommentsByStoryId(storyId, userId);
-            response.status(http_status_codes_2.default.OK).json(comments);
+            response.status(http_status_codes_1.default.OK).json(comments);
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -96,7 +96,7 @@ class StoryController extends controller_base_1.BaseController {
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createStoryComment(storyId, userId, content);
-            response.status(http_status_codes_2.default.CREATED).json(comment);
+            response.status(http_status_codes_1.default.CREATED).json(comment);
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.COMMENT_STORY,
                 reference_id: storyId,
@@ -115,7 +115,7 @@ class StoryController extends controller_base_1.BaseController {
             const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.deleteStoryComment(commentId, userId);
-            response.status(http_status_codes_2.default.NO_CONTENT).end();
+            response.status(http_status_codes_1.default.NO_CONTENT).end();
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -134,11 +134,11 @@ class StoryController extends controller_base_1.BaseController {
                 content: '',
                 seen: false,
             }).catch(console.error);
-            response.status(http_status_codes_2.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
 }
-exports.default = StoryController;
+exports.StoryController = StoryController;

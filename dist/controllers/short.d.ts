@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import ShortRepository from "../repositories/short";
-import Notificator from "../utilities/notificator";
+import { ShortRepository } from "../repositories/short";
+import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
-export default class ShortController extends BaseController<ShortRepository> {
+export declare class ShortController extends BaseController<ShortRepository> {
     private readonly notificator;
     constructor(repository: ShortRepository, logger: VLogger, notificator: Notificator);
     createShort(request: Request<object, object, {

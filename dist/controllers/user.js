@@ -3,8 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const jwt_1 = __importDefault(require("../utilities/jwt"));
+const jwt_1 = require("../utilities/jwt");
 const config_1 = require("../utilities/config");
 const zod_1 = require("zod");
 const controller_base_1 = require("../base/controller.base");
@@ -33,7 +34,7 @@ class UserController extends controller_base_1.BaseController {
                 console.error(`${this.constructor.name}.createUser(): failed to create User`);
                 return response.status(http_status_codes_1.default.I_AM_A_TEAPOT).end();
             }
-            const token = jwt_1.default.signToken({
+            const token = jwt_1.JWT.signToken({
                 username: userData.username,
                 email: userData.email,
                 picture: 'https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png',
@@ -58,7 +59,7 @@ class UserController extends controller_base_1.BaseController {
                 console.log(`${this.constructor.name}.loginUser(): Invalid password`);
                 return response.status(http_status_codes_1.default.UNAUTHORIZED).end();
             }
-            const token = jwt_1.default.signToken({ id: userData.id, email: userData.email, username, picture: userData.picture });
+            const token = jwt_1.JWT.signToken({ id: userData.id, email: userData.email, username, picture: userData.picture });
             response.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id: userData.id });
             await this.repository.updateLastActiveAtById(userData.id).catch(console.error);
         }
@@ -117,7 +118,7 @@ class UserController extends controller_base_1.BaseController {
                 console.log(`${this.constructor.name}.updateBio(): Failed to update`);
                 return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            const token = jwt_1.default.signToken({
+            const token = jwt_1.JWT.signToken({
                 id: userData.id,
                 email: userData.email,
                 username: userData.username,
@@ -138,7 +139,7 @@ class UserController extends controller_base_1.BaseController {
                 console.log(`${this.constructor.name}.updateProfilePicture(): Failed to update`);
                 return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            const token = jwt_1.default.signToken({
+            const token = jwt_1.JWT.signToken({
                 id: userData.id,
                 email: userData.email,
                 username: userData.username,
@@ -164,7 +165,7 @@ class UserController extends controller_base_1.BaseController {
                 console.log(`${this.constructor.name}.updateProfilePublicInformation(): Failed to update`, request.body);
                 return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            const token = jwt_1.default.signToken({
+            const token = jwt_1.JWT.signToken({
                 id: userData.id,
                 email: userData.email,
                 username: userData.username,
@@ -177,4 +178,4 @@ class UserController extends controller_base_1.BaseController {
         }
     }
 }
-exports.default = UserController;
+exports.UserController = UserController;

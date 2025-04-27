@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as T from '../types';
-declare class JWT {
+export declare class JWT {
     private static secret;
     private static signOptions;
     static signToken(userData: T.User.Payload): string;
@@ -11,5 +11,4 @@ declare class JWT {
     static getUser(token: string): T.User.Payload | null;
     static removeTokenFromCookie(response: Response): void;
 }
-export default JWT;
 //# sourceMappingURL=jwt.d.ts.map

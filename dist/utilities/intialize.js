@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = initialize_all;
+exports.initialize_all = initialize_all;
 const config_1 = require("./config");
 const pg_1 = require("pg");
 const ioredis_1 = __importDefault(require("ioredis"));

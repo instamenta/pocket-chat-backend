@@ -1,27 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const notification_1 = __importDefault(require("./notification"));
-const publication_1 = __importDefault(require("./publication"));
-const comment_1 = __importDefault(require("./comment"));
-const message_1 = __importDefault(require("./message"));
-const friend_1 = __importDefault(require("./friend"));
-const story_1 = __importDefault(require("./story"));
-const short_1 = __importDefault(require("./short"));
-const group_1 = __importDefault(require("./group"));
-const user_1 = __importDefault(require("./user"));
-const live_1 = __importDefault(require("./live"));
-exports.default = {
-    Notification: notification_1.default,
-    Publication: publication_1.default,
-    Message: message_1.default,
-    Comment: comment_1.default,
-    Friend: friend_1.default,
-    Story: story_1.default,
-    Short: short_1.default,
-    Group: group_1.default,
-    User: user_1.default,
-    Live: live_1.default,
-};
+exports.LiveController = exports.UserController = exports.GroupController = exports.ShortController = exports.StoryController = exports.FriendController = exports.MessageController = exports.CommentController = exports.PublicationController = exports.NotificationController = void 0;
+var notification_1 = require("./notification");
+Object.defineProperty(exports, "NotificationController", { enumerable: true, get: function () { return notification_1.NotificationController; } });
+var publication_1 = require("./publication");
+Object.defineProperty(exports, "PublicationController", { enumerable: true, get: function () { return publication_1.PublicationController; } });
+var comment_1 = require("./comment");
+Object.defineProperty(exports, "CommentController", { enumerable: true, get: function () { return comment_1.CommentController; } });
+var message_1 = require("./message");
+Object.defineProperty(exports, "MessageController", { enumerable: true, get: function () { return message_1.MessageController; } });
+var friend_1 = require("./friend");
+Object.defineProperty(exports, "FriendController", { enumerable: true, get: function () { return friend_1.FriendController; } });
+var story_1 = require("./story");
+Object.defineProperty(exports, "StoryController", { enumerable: true, get: function () { return story_1.StoryController; } });
+var short_1 = require("./short");
+Object.defineProperty(exports, "ShortController", { enumerable: true, get: function () { return short_1.ShortController; } });
+var group_1 = require("./group");
+Object.defineProperty(exports, "GroupController", { enumerable: true, get: function () { return group_1.GroupController; } });
+var user_1 = require("./user");
+Object.defineProperty(exports, "UserController", { enumerable: true, get: function () { return user_1.UserController; } });
+var live_1 = require("./live");
+Object.defineProperty(exports, "LiveController", { enumerable: true, get: function () { return live_1.LiveController; } });

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ShortRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class ShortRepository extends repository_base_1.BaseRepository {
     async createShort(userId, videoUrl, description) {
@@ -230,4 +231,4 @@ class ShortRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = ShortRepository;
+exports.ShortRepository = ShortRepository;

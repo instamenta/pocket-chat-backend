@@ -1,1 +1,1 @@
-{"version":3,"file":"comment.d.ts","sourceRoot":"","sources":["../../src/routers/comment.ts"],"names":[],"mappings":"AAAA,OAAO,iBAAiB,MAAM,wBAAwB,CAAC;AAEvD,OAAO,UAAU,MAAM,qBAAqB,CAAC;AAE7C,MAAM,CAAC,OAAO,OAAO,aAAc,SAAQ,UAAU,CAAC,iBAAiB,CAAC;IACvE,UAAU,CAAC,CAAC,EAAE,iBAAiB;CAY/B"}
+{"version":3,"file":"comment.d.ts","sourceRoot":"","sources":["../../src/routers/comment.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,iBAAiB,EAAC,MAAM,gBAAgB,CAAC;AAEjD,OAAO,EAAC,UAAU,EAAC,MAAM,qBAAqB,CAAC;AAE/C,qBAAa,aAAc,SAAQ,UAAU,CAAC,iBAAiB,CAAC;IAC/D,UAAU,CAAC,CAAC,EAAE,iBAAiB;CAY/B"}

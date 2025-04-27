@@ -1,6 +1,6 @@
 import {NotificationRepository} from "../repositories/notification";
 import {notification_types} from "./enumerations";
-import {PublicationsRepository} from "../repositories/publication";
+import {PublicationRepository} from "../repositories/publication";
 import {CommentRepository} from "../repositories/comment";
 import {ShortRepository} from "../repositories/short";
 import {StoryRepository} from "../repositories/story";
@@ -10,7 +10,7 @@ import * as T from '../types'
 export class Notificator {
 	constructor(
 		private readonly repository: NotificationRepository,
-		private readonly publication: PublicationsRepository,
+		private readonly publication: PublicationRepository,
 		private readonly comment: CommentRepository,
 		private readonly short: ShortRepository,
 		private readonly story: StoryRepository,

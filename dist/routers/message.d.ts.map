@@ -1,1 +1,1 @@
-{"version":3,"file":"message.d.ts","sourceRoot":"","sources":["../../src/routers/message.ts"],"names":[],"mappings":"AACA,OAAO,iBAAiB,MAAM,wBAAwB,CAAC;AACvD,OAAO,UAAU,MAAM,qBAAqB,CAAC;AAE7C,MAAM,CAAC,OAAO,OAAO,aAAc,SAAQ,UAAU,CAAC,iBAAiB,CAAC;IACvE,UAAU,CAAC,CAAC,EAAE,iBAAiB;CAa/B"}
+{"version":3,"file":"message.d.ts","sourceRoot":"","sources":["../../src/routers/message.ts"],"names":[],"mappings":"AACA,OAAO,EAAC,iBAAiB,EAAC,MAAM,wBAAwB,CAAC;AACzD,OAAO,EAAC,UAAU,EAAC,MAAM,qBAAqB,CAAC;AAE/C,qBAAa,aAAc,SAAQ,UAAU,CAAC,iBAAiB,CAAC;IAC/D,UAAU,CAAC,CAAC,EAAE,iBAAiB;CAa/B"}

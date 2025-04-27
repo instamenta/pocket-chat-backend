@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import StoryRepository from "../repositories/story";
-import Notificator from "../utilities/notificator";
+import { StoryRepository } from "../repositories/story";
+import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
-export default class StoryController extends BaseController<StoryRepository> {
+export declare class StoryController extends BaseController<StoryRepository> {
     private readonly notificator;
     constructor(repository: StoryRepository, logger: VLogger, notificator: Notificator);
     createStory(request: Request<object, object, {

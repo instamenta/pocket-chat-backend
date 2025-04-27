@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseRouter = void 0;
 const express_1 = require("express");
 class BaseRouter {
     router = (0, express_1.Router)();
@@ -7,4 +8,4 @@ class BaseRouter {
         this.initialize(controller);
     }
 }
-exports.default = BaseRouter;
+exports.BaseRouter = BaseRouter;

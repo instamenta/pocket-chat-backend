@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PublicationController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const enumerations_1 = require("../utilities/enumerations");
 const controller_base_1 = require("../base/controller.base");
@@ -113,4 +114,4 @@ class PublicationController extends controller_base_1.BaseController {
         }
     }
 }
-exports.default = PublicationController;
+exports.PublicationController = PublicationController;

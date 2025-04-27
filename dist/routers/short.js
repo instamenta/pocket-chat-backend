@@ -1,11 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ShortRouter = void 0;
 const middlewares_1 = require("../middlewares");
-const router_base_1 = __importDefault(require("../base/router.base"));
-class ShortRouter extends router_base_1.default {
+const router_base_1 = require("../base/router.base");
+class ShortRouter extends router_base_1.BaseRouter {
     initialize(c) {
         this.router.post('/', middlewares_1.Middlewares.isAuthorized, c.createShort.bind(c));
         this.router.get('/', middlewares_1.Middlewares.isAuthorized, c.listShorts.bind(c));
@@ -19,4 +17,4 @@ class ShortRouter extends router_base_1.default {
         this.router.put('/comments/:commentId', middlewares_1.Middlewares.isAuthorized, c.likeShortComment.bind(c));
     }
 }
-exports.default = ShortRouter;
+exports.ShortRouter = ShortRouter;

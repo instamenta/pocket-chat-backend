@@ -1,6 +1,6 @@
 import { BaseRepository } from "../base/repository.base";
 import * as T from '../types';
-export default class PublicationsRepository extends BaseRepository {
+export declare class PublicationRepository extends BaseRepository {
     listPublications(): Promise<T.Publication.Publication[]>;
     getPublicationById(id: string): Promise<T.Publication.Publication | null>;
     getPublicationsByUserId(userId: string): Promise<T.Publication.Recommendation[]>;

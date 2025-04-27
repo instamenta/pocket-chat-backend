@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {PublicationsRepository} from '../repositories/publication';
+import {PublicationRepository} from '../repositories/publication';
 import statusCodes from '@instamenta/http-status-codes';
 import {notification_types} from "../utilities/enumerations";
 import {Notificator} from "../utilities/notificator";
@@ -8,9 +8,9 @@ import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
-export class PublicationController extends BaseController<PublicationsRepository> {
+export class PublicationController extends BaseController<PublicationRepository> {
 	constructor(
-		repository: PublicationsRepository,
+		repository: PublicationRepository,
 		logger: VLogger,
 		private readonly notificator: Notificator,
 	) {

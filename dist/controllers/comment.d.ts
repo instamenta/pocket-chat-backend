@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import CommentRepository from '../repositories/comment';
-import Notificator from "../utilities/notificator";
+import { CommentRepository } from '../repositories/comment';
+import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
-export default class CommentController extends BaseController<CommentRepository> {
+export declare class CommentController extends BaseController<CommentRepository> {
     private readonly notificator;
     constructor(repository: CommentRepository, logger: VLogger, notificator: Notificator);
     listByPublication(request: Request<{

@@ -1,14 +1,14 @@
-import UserRepository from "../repositories/user";
 import { Request, Response } from "express";
-import { I_HashingHandler } from "../utilities/bcrypt";
+import { UserRepository } from "../repositories/user";
+import { HashingHandler } from "../utilities/bcrypt";
 import { z } from 'zod';
 import { BaseController } from "../base/controller.base";
 import { Validate } from "../validators";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
-export default class UserController extends BaseController<UserRepository> {
+export declare class UserController extends BaseController<UserRepository> {
     private readonly hashingHandler;
-    constructor(repository: UserRepository, logger: VLogger, hashingHandler: I_HashingHandler);
+    constructor(repository: UserRepository, logger: VLogger, hashingHandler: HashingHandler);
     listUsers(request: Request<object, object, object, {
         skip?: string;
         number?: string;

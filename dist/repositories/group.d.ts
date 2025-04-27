@@ -1,6 +1,6 @@
 import { BaseRepository } from "../base/repository.base";
 import * as T from '../types';
-export default class GroupRepository extends BaseRepository {
+export declare class GroupRepository extends BaseRepository {
     createGroup(userId: string, name: string, description: string, imageUrl: string): Promise<string>;
     removeGroup(userId: string, groupId: string): Promise<boolean>;
     listGroups(userId: string): Promise<T.Group.Group[]>;

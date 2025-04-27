@@ -7,15 +7,15 @@ exports.Middlewares = void 0;
 exports.isGuest = isGuest;
 exports.isAuthorized = isAuthorized;
 exports.errorHandler = errorHandler;
-const jwt_1 = __importDefault(require("../utilities/jwt"));
+const jwt_1 = require("../utilities/jwt");
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const jsonwebtoken_1 = require("jsonwebtoken");
 exports.Middlewares = { isAuthorized, isGuest, errorHandler };
 function isGuest(request, response, next) {
-    const token = jwt_1.default.getTokenFromCookie(request);
+    const token = jwt_1.JWT.getTokenFromCookie(request);
     if (token) {
         try {
-            const user = jwt_1.default.verifyToken(token);
+            const user = jwt_1.JWT.verifyToken(token);
             if (user) {
                 console.log('Middleware.isGuest(): FORBIDDEN', user);
                 return response.status(http_status_codes_1.default.FORBIDDEN).json({ message: 'User is already authenticated' });
@@ -24,7 +24,7 @@ function isGuest(request, response, next) {
         catch (error) {
             if (error instanceof jsonwebtoken_1.TokenExpiredError) {
                 console.log('Middleware.isGuest(): Token expired');
-                jwt_1.default.removeTokenFromCookie(response);
+                jwt_1.JWT.removeTokenFromCookie(response);
             }
             return response.status(http_status_codes_1.default.EXPECTATION_FAILED).end();
         }
@@ -32,12 +32,12 @@ function isGuest(request, response, next) {
     next();
 }
 function isAuthorized(request, response, next) {
-    const token = jwt_1.default.getTokenFromCookie(request);
+    const token = jwt_1.JWT.getTokenFromCookie(request);
     if (!token) {
         console.log('Middleware.isAuthorized(): UNAUTHORIZED');
         return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'User is not authenticated' });
     }
-    const user = jwt_1.default.verifyToken(token);
+    const user = jwt_1.JWT.verifyToken(token);
     if (!user) {
         console.log('Middleware.isAuthorized(): UNAUTHORIZED');
         return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'Invalid token' });

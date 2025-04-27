@@ -1,57 +1,87 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
-const routers_1 = __importDefault(require("./routers"));
+const Routers = __importStar(require("./routers"));
 const config_1 = require("./utilities/config");
-const controllers_1 = __importDefault(require("./controllers"));
-const repositories_1 = __importDefault(require("./repositories"));
+const Controllers = __importStar(require("./controllers"));
+const Repositories = __importStar(require("./repositories"));
 const middlewares_1 = require("./middlewares");
-const bcrypt_1 = __importDefault(require("./utilities/bcrypt"));
-const notificator_1 = __importDefault(require("./utilities/notificator"));
-const intialize_1 = __importDefault(require("./utilities/intialize"));
+const bcrypt_1 = require("./utilities/bcrypt");
+const notificator_1 = require("./utilities/notificator");
+const intialize_1 = require("./utilities/intialize");
 void async function start_service() {
-    const { api, database, cache, logger } = await (0, intialize_1.default)();
+    const { api, database, cache, logger } = await (0, intialize_1.initialize_all)();
     graceful_shutdown(database, cache);
-    const hashingHandler = new bcrypt_1.default();
+    const hashingHandler = new bcrypt_1.BCryptHashingHandler();
     const repository = {
-        user: new repositories_1.default.User(database, logger, hashingHandler),
-        live: new repositories_1.default.Live(database, logger),
-        story: new repositories_1.default.Story(database, logger),
-        short: new repositories_1.default.Short(database, logger),
-        group: new repositories_1.default.Group(database, logger),
-        friend: new repositories_1.default.Friend(database, logger),
-        comment: new repositories_1.default.Comment(database, logger),
-        message: new repositories_1.default.Message(database, logger),
-        publications: new repositories_1.default.Publication(database, logger),
-        notification: new repositories_1.default.Notification(database, logger),
+        user: new Repositories.UserRepository(database, logger, hashingHandler),
+        live: new Repositories.LiveRepository(database, logger),
+        story: new Repositories.StoryRepository(database, logger),
+        short: new Repositories.ShortRepository(database, logger),
+        group: new Repositories.GroupRepository(database, logger),
+        friend: new Repositories.FriendRepository(database, logger),
+        comment: new Repositories.CommentRepository(database, logger),
+        message: new Repositories.MessageRepository(database, logger),
+        publication: new Repositories.PublicationRepository(database, logger),
+        notification: new Repositories.NotificationRepository(database, logger),
     };
-    const notificator = new notificator_1.default(repository.notification, repository.publications, repository.comment, repository.short, repository.story);
+    const notificator = new notificator_1.Notificator(repository.notification, repository.publication, repository.comment, repository.short, repository.story);
     const controller = {
-        user: new controllers_1.default.User(repository.user, logger, hashingHandler),
-        live: new controllers_1.default.Live(repository.live, logger),
-        story: new controllers_1.default.Story(repository.story, logger, notificator),
-        short: new controllers_1.default.Short(repository.short, logger, notificator),
-        group: new controllers_1.default.Group(repository.group, logger),
-        friend: new controllers_1.default.Friend(repository.friend, logger),
-        message: new controllers_1.default.Message(repository.message, logger),
-        comment: new controllers_1.default.Comment(repository.comment, logger, notificator),
-        publication: new controllers_1.default.Publication(repository.publications, logger, notificator),
-        notification: new controllers_1.default.Notification(repository.notification, logger),
+        user: new Controllers.UserController(repository.user, logger, hashingHandler),
+        live: new Controllers.LiveController(repository.live, logger),
+        story: new Controllers.StoryController(repository.story, logger, notificator),
+        short: new Controllers.ShortController(repository.short, logger, notificator),
+        group: new Controllers.GroupController(repository.group, logger),
+        friend: new Controllers.FriendController(repository.friend, logger),
+        message: new Controllers.MessageController(repository.message, logger),
+        comment: new Controllers.CommentController(repository.comment, logger, notificator),
+        publication: new Controllers.PublicationController(repository.publication, logger, notificator),
+        notification: new Controllers.NotificationController(repository.notification, logger),
     };
     const router = {
-        user: new routers_1.default.User(controller.user).router,
-        live: new routers_1.default.Live(controller.live).router,
-        story: new routers_1.default.Story(controller.story).router,
-        short: new routers_1.default.Short(controller.short).router,
-        group: new routers_1.default.Group(controller.group).router,
-        friend: new routers_1.default.Friend(controller.friend).router,
-        comment: new routers_1.default.Comment(controller.comment).router,
-        message: new routers_1.default.Message(controller.message).router,
-        publication: new routers_1.default.Publication(controller.publication).router,
-        notification: new routers_1.default.Notification(controller.notification).router,
+        user: new Routers.UserRouter(controller.user).router,
+        live: new Routers.LiveRouter(controller.live).router,
+        story: new Routers.StoryRouter(controller.story).router,
+        short: new Routers.ShortRouter(controller.short).router,
+        group: new Routers.GroupRouter(controller.group).router,
+        friend: new Routers.FriendRouter(controller.friend).router,
+        comment: new Routers.CommentRouter(controller.comment).router,
+        message: new Routers.MessageRouter(controller.message).router,
+        publication: new Routers.PublicationRouter(controller.publication).router,
+        notification: new Routers.NotificationRouter(controller.notification).router,
     };
     api.use('/api/user', router.user);
     api.use('/api/live', router.live);

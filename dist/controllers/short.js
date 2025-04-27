@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ShortController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const http_status_codes_2 = __importDefault(require("@instamenta/http-status-codes"));
 const zod_1 = require("zod");
 const enumerations_1 = require("../utilities/enumerations");
 const controller_base_1 = require("../base/controller.base");
@@ -63,9 +63,9 @@ class ShortController extends controller_base_1.BaseController {
             const short = await this.repository.getShortById(shortId);
             if (!short) {
                 this.log.error({ e: `Not found`, m: shortId });
-                return response.status(http_status_codes_2.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            response.status(http_status_codes_2.default.OK).json(short);
+            response.status(http_status_codes_1.default.OK).json(short);
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -77,7 +77,7 @@ class ShortController extends controller_base_1.BaseController {
             const shortId = validators_1.Validate.uuid.parse(request.params.id);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             const isLiked = await this.repository.likeShort(shortId, userId);
-            response.status(http_status_codes_2.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
             if (!isLiked) {
                 this.log.info({ m: 'Unliking short' });
                 return;
@@ -105,7 +105,7 @@ class ShortController extends controller_base_1.BaseController {
             const shortId = validators_1.Validate.uuid.parse(request.params.shortId);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             const comments = await this.repository.listCommentsByShortId(shortId, userId);
-            response.status(http_status_codes_2.default.OK).json(comments);
+            response.status(http_status_codes_1.default.OK).json(comments);
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -118,7 +118,7 @@ class ShortController extends controller_base_1.BaseController {
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createShortComment(shortId, userId, content);
-            response.status(http_status_codes_2.default.CREATED).json(comment);
+            response.status(http_status_codes_1.default.CREATED).json(comment);
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.COMMENT_SHORT,
                 reference_id: shortId,
@@ -139,7 +139,7 @@ class ShortController extends controller_base_1.BaseController {
             const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.deleteShortComment(commentId, userId);
-            response.status(http_status_codes_2.default.NO_CONTENT).end();
+            response.status(http_status_codes_1.default.NO_CONTENT).end();
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -151,7 +151,7 @@ class ShortController extends controller_base_1.BaseController {
             const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likeShortComment(commentId, userId);
-            response.status(http_status_codes_2.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE_SHORT_COMMENT,
                 reference_id: commentId,
@@ -173,13 +173,13 @@ class ShortController extends controller_base_1.BaseController {
             const comment = await this.repository.getCommentById(commentId);
             if (!comment) {
                 this.log.error({ m: `Not found ${commentId}`, e: '' });
-                return response.status(http_status_codes_2.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            response.status(http_status_codes_2.default.OK).json(comment);
+            response.status(http_status_codes_1.default.OK).json(comment);
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
 }
-exports.default = ShortController;
+exports.ShortController = ShortController;

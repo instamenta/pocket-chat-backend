@@ -18,50 +18,50 @@ void async function start_service() {
 	const hashingHandler = new BCryptHashingHandler();
 
 	const repository = {
-		user: new Repositories.User(database, logger, hashingHandler),
-		live: new Repositories.Live(database, logger),
-		story: new Repositories.Story(database, logger),
-		short: new Repositories.Short(database, logger),
-		group: new Repositories.Group(database, logger),
-		friend: new Repositories.Friend(database, logger),
-		comment: new Repositories.Comment(database, logger),
-		message: new Repositories.Message(database, logger),
-		publications: new Repositories.Publication(database, logger),
-		notification: new Repositories.Notification(database, logger),
+		user: new Repositories.UserRepository(database, logger, hashingHandler),
+		live: new Repositories.LiveRepository(database, logger),
+		story: new Repositories.StoryRepository(database, logger),
+		short: new Repositories.ShortRepository(database, logger),
+		group: new Repositories.GroupRepository(database, logger),
+		friend: new Repositories.FriendRepository(database, logger),
+		comment: new Repositories.CommentRepository(database, logger),
+		message: new Repositories.MessageRepository(database, logger),
+		publication: new Repositories.PublicationRepository(database, logger),
+		notification: new Repositories.NotificationRepository(database, logger),
 	};
 
 	const notificator = new Notificator(
 		repository.notification,
-		repository.publications,
+		repository.publication,
 		repository.comment,
 		repository.short,
 		repository.story
 	);
 
 	const controller = {
-		user: new Controllers.User(repository.user, logger, hashingHandler),
-		live: new Controllers.Live(repository.live, logger),
-		story: new Controllers.Story(repository.story, logger, notificator),
-		short: new Controllers.Short(repository.short, logger, notificator),
-		group: new Controllers.Group(repository.group, logger),
-		friend: new Controllers.Friend(repository.friend, logger),
-		message: new Controllers.Message(repository.message, logger),
-		comment: new Controllers.Comment(repository.comment, logger, notificator),
-		publication: new Controllers.Publication(repository.publications, logger, notificator),
-		notification: new Controllers.Notification(repository.notification, logger),
+		user: new Controllers.UserController(repository.user, logger, hashingHandler),
+		live: new Controllers.LiveController(repository.live, logger),
+		story: new Controllers.StoryController(repository.story, logger, notificator),
+		short: new Controllers.ShortController(repository.short, logger, notificator),
+		group: new Controllers.GroupController(repository.group, logger),
+		friend: new Controllers.FriendController(repository.friend, logger),
+		message: new Controllers.MessageController(repository.message, logger),
+		comment: new Controllers.CommentController(repository.comment, logger, notificator),
+		publication: new Controllers.PublicationController(repository.publication, logger, notificator),
+		notification: new Controllers.NotificationController(repository.notification, logger),
 	};
 
 	const router = {
-		user: new Routers.User(controller.user).router,
-		live: new Routers.Live(controller.live).router,
-		story: new Routers.Story(controller.story).router,
-		short: new Routers.Short(controller.short).router,
-		group: new Routers.Group(controller.group).router,
-		friend: new Routers.Friend(controller.friend).router,
-		comment: new Routers.Comment(controller.comment).router,
-		message: new Routers.Message(controller.message).router,
-		publication: new Routers.Publication(controller.publication).router,
-		notification: new Routers.Notification(controller.notification).router,
+		user: new Routers.UserRouter(controller.user).router,
+		live: new Routers.LiveRouter(controller.live).router,
+		story: new Routers.StoryRouter(controller.story).router,
+		short: new Routers.ShortRouter(controller.short).router,
+		group: new Routers.GroupRouter(controller.group).router,
+		friend: new Routers.FriendRouter(controller.friend).router,
+		comment: new Routers.CommentRouter(controller.comment).router,
+		message: new Routers.MessageRouter(controller.message).router,
+		publication: new Routers.PublicationRouter(controller.publication).router,
+		notification: new Routers.NotificationRouter(controller.notification).router,
 	};
 
 	api.use('/api/user', router.user);

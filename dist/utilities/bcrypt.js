@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BCryptHashingHandler = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = require("./config");
-class BCrypt {
+class BCryptHashingHandler {
     async hashPassword(password) {
         try {
             const salt = await bcrypt_1.default.genSalt(config_1.SECURITY.SALT_ROUNDS);
@@ -24,4 +25,4 @@ class BCrypt {
         });
     }
 }
-exports.default = BCrypt;
+exports.BCryptHashingHandler = BCryptHashingHandler;

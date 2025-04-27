@@ -1,6 +1,6 @@
 import { BaseRepository } from "../base/repository.base";
 import * as T from '../types';
-export default class StoryRepository extends BaseRepository {
+export declare class StoryRepository extends BaseRepository {
     createStory({ userId, imageUrl }: {
         userId: string;
         imageUrl: string;

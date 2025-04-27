@@ -1,5 +1,5 @@
 export {NotificationRepository} from "./notification";
-export {PublicationsRepository} from "./publication";
+export {PublicationRepository} from "./publication";
 export {CommentRepository} from "./comment";
 export {MessageRepository} from "./message";
 export {FriendRepository} from "./friend";

@@ -1,27 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const notification_1 = __importDefault(require("./notification"));
-const publication_1 = __importDefault(require("./publication"));
-const message_1 = __importDefault(require("./message"));
-const comment_1 = __importDefault(require("./comment"));
-const friend_1 = __importDefault(require("./friend"));
-const story_1 = __importDefault(require("./story"));
-const short_1 = __importDefault(require("./short"));
-const group_1 = __importDefault(require("./group"));
-const live_1 = __importDefault(require("./live"));
-const user_1 = __importDefault(require("./user"));
-exports.default = {
-    Notification: notification_1.default,
-    Publication: publication_1.default,
-    Message: message_1.default,
-    Comment: comment_1.default,
-    Friend: friend_1.default,
-    Story: story_1.default,
-    Short: short_1.default,
-    Group: group_1.default,
-    Live: live_1.default,
-    User: user_1.default,
-};
+exports.UserRouter = exports.LiveRouter = exports.GroupRouter = exports.ShortRouter = exports.StoryRouter = exports.FriendRouter = exports.CommentRouter = exports.MessageRouter = exports.PublicationRouter = exports.NotificationRouter = void 0;
+var notification_1 = require("./notification");
+Object.defineProperty(exports, "NotificationRouter", { enumerable: true, get: function () { return notification_1.NotificationRouter; } });
+var publication_1 = require("./publication");
+Object.defineProperty(exports, "PublicationRouter", { enumerable: true, get: function () { return publication_1.PublicationRouter; } });
+var message_1 = require("./message");
+Object.defineProperty(exports, "MessageRouter", { enumerable: true, get: function () { return message_1.MessageRouter; } });
+var comment_1 = require("./comment");
+Object.defineProperty(exports, "CommentRouter", { enumerable: true, get: function () { return comment_1.CommentRouter; } });
+var friend_1 = require("./friend");
+Object.defineProperty(exports, "FriendRouter", { enumerable: true, get: function () { return friend_1.FriendRouter; } });
+var story_1 = require("./story");
+Object.defineProperty(exports, "StoryRouter", { enumerable: true, get: function () { return story_1.StoryRouter; } });
+var short_1 = require("./short");
+Object.defineProperty(exports, "ShortRouter", { enumerable: true, get: function () { return short_1.ShortRouter; } });
+var group_1 = require("./group");
+Object.defineProperty(exports, "GroupRouter", { enumerable: true, get: function () { return group_1.GroupRouter; } });
+var live_1 = require("./live");
+Object.defineProperty(exports, "LiveRouter", { enumerable: true, get: function () { return live_1.LiveRouter; } });
+var user_1 = require("./user");
+Object.defineProperty(exports, "UserRouter", { enumerable: true, get: function () { return user_1.UserRouter; } });

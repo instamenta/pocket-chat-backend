@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import NotificationRepository from "../repositories/notification";
+import { NotificationRepository } from "../repositories/notification";
 import { notification_types } from "../utilities/enumerations";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';
-export default class NotificationController extends BaseController<NotificationRepository> {
+export declare class NotificationController extends BaseController<NotificationRepository> {
     createNotification(_request: Request<object, object, {
         recipient: string;
         type: notification_types;

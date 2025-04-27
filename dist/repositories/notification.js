@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotificationRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class NotificationRepository extends repository_base_1.BaseRepository {
     async createNotification({ sender_id, recipient_id, type, seen, content, reference_id = '' }) {
@@ -129,4 +130,4 @@ class NotificationRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = NotificationRepository;
+exports.NotificationRepository = NotificationRepository;

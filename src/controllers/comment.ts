@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import CommentRepository from '../repositories/comment';
+import {CommentRepository} from '../repositories/comment';
 import statusCodes from '@instamenta/http-status-codes';
 import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";

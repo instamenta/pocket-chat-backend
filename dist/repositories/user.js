@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class UserRepository extends repository_base_1.BaseRepository {
     hashingHandler;
@@ -112,4 +113,4 @@ class UserRepository extends repository_base_1.BaseRepository {
             .catch((error) => this.errorHandler(error, 'updateProfilePublicInformation'));
     }
 }
-exports.default = UserRepository;
+exports.UserRepository = UserRepository;

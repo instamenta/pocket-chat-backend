@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommentController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const zod_1 = require("zod");
 const enumerations_1 = require("../utilities/enumerations");
@@ -97,4 +98,4 @@ class CommentController extends controller_base_1.BaseController {
         }
     }
 }
-exports.default = CommentController;
+exports.CommentController = CommentController;

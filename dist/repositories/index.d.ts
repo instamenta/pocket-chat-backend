@@ -1,24 +1,11 @@
-import Notification from "./notification";
-import Publication from "./publication";
-import Comment from "./comment";
-import Message from "./message";
-import Friend from "./friend";
-import Story from "./story";
-import Short from "./short";
-import Group from "./group";
-import Live from "./live";
-import User from "./user";
-declare const _default: {
-    Notification: typeof Notification;
-    Publication: typeof Publication;
-    Comment: typeof Comment;
-    Message: typeof Message;
-    Friend: typeof Friend;
-    Story: typeof Story;
-    Short: typeof Short;
-    Group: typeof Group;
-    User: typeof User;
-    Live: typeof Live;
-};
-export default _default;
+export { NotificationRepository } from "./notification";
+export { PublicationRepository } from "./publication";
+export { CommentRepository } from "./comment";
+export { MessageRepository } from "./message";
+export { FriendRepository } from "./friend";
+export { StoryRepository } from "./story";
+export { ShortRepository } from "./short";
+export { GroupRepository } from "./group";
+export { LiveRepository } from "./live";
+export { UserRepository } from "./user";
 //# sourceMappingURL=index.d.ts.map

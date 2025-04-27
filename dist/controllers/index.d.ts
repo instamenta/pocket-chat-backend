@@ -1,24 +1,11 @@
-import Notification from "./notification";
-import Publication from "./publication";
-import Comment from "./comment";
-import Message from "./message";
-import Friend from "./friend";
-import Story from "./story";
-import Short from "./short";
-import Group from "./group";
-import User from "./user";
-import Live from "./live";
-declare const _default: {
-    Notification: typeof Notification;
-    Publication: typeof Publication;
-    Message: typeof Message;
-    Comment: typeof Comment;
-    Friend: typeof Friend;
-    Story: typeof Story;
-    Short: typeof Short;
-    Group: typeof Group;
-    User: typeof User;
-    Live: typeof Live;
-};
-export default _default;
+export { NotificationController } from "./notification";
+export { PublicationController } from "./publication";
+export { CommentController } from "./comment";
+export { MessageController } from "./message";
+export { FriendController } from "./friend";
+export { StoryController } from "./story";
+export { ShortController } from "./short";
+export { GroupController } from "./group";
+export { UserController } from "./user";
+export { LiveController } from "./live";
 //# sourceMappingURL=index.d.ts.map

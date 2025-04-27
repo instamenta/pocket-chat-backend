@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import PublicationsRepository from '../repositories/publication';
-import Notificator from "../utilities/notificator";
+import { PublicationRepository } from '../repositories/publication';
+import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
-export default class PublicationController extends BaseController<PublicationsRepository> {
+export declare class PublicationController extends BaseController<PublicationRepository> {
     private readonly notificator;
-    constructor(repository: PublicationsRepository, logger: VLogger, notificator: Notificator);
+    constructor(repository: PublicationRepository, logger: VLogger, notificator: Notificator);
     listPublications(request: Request, response: Response<T.Publication.Publication[]>): Promise<void>;
     getPublicationById(request: Request<{
         id: string;

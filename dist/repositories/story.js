@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StoryRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class StoryRepository extends repository_base_1.BaseRepository {
     async createStory({ userId, imageUrl }) {
@@ -245,4 +246,4 @@ class StoryRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = StoryRepository;
+exports.StoryRepository = StoryRepository;

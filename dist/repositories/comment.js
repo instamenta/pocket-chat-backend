@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommentRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class CommentRepository extends repository_base_1.BaseRepository {
     async listCommentsByPublication(publicationId, userId) {
@@ -102,4 +103,4 @@ class CommentRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = CommentRepository;
+exports.CommentRepository = CommentRepository;

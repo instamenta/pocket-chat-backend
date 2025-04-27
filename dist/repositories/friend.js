@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FriendRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class FriendRepository extends repository_base_1.BaseRepository {
     sendFriendRequest(sender, recipient) {
@@ -199,4 +200,4 @@ class FriendRepository extends repository_base_1.BaseRepository {
             .catch((error) => this.errorHandler(error, 'getBySenderAndRecipient'));
     }
 }
-exports.default = FriendRepository;
+exports.FriendRepository = FriendRepository;

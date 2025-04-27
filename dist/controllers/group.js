@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GroupController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const http_status_codes_2 = __importDefault(require("@instamenta/http-status-codes"));
 const controller_base_1 = require("../base/controller.base");
 const validators_1 = require("../validators");
 class GroupController extends controller_base_1.BaseController {
@@ -161,7 +161,7 @@ class GroupController extends controller_base_1.BaseController {
             });
             const groupId = validators_1.Validate.uuid.parse(request.body.groupId);
             const publicationId = await this.repository.createPublication({ ...data, groupId });
-            response.status(http_status_codes_2.default.CREATED).json({ id: publicationId });
+            response.status(http_status_codes_1.default.CREATED).json({ id: publicationId });
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -171,11 +171,11 @@ class GroupController extends controller_base_1.BaseController {
         try {
             const groupId = validators_1.Validate.uuid.parse(request.params.groupId);
             const publications = await this.repository.listPublications(groupId);
-            response.status(http_status_codes_2.default.OK).json(publications);
+            response.status(http_status_codes_1.default.OK).json(publications);
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
 }
-exports.default = GroupController;
+exports.GroupController = GroupController;

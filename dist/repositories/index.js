@@ -1,27 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const notification_1 = __importDefault(require("./notification"));
-const publication_1 = __importDefault(require("./publication"));
-const comment_1 = __importDefault(require("./comment"));
-const message_1 = __importDefault(require("./message"));
-const friend_1 = __importDefault(require("./friend"));
-const story_1 = __importDefault(require("./story"));
-const short_1 = __importDefault(require("./short"));
-const group_1 = __importDefault(require("./group"));
-const live_1 = __importDefault(require("./live"));
-const user_1 = __importDefault(require("./user"));
-exports.default = {
-    Notification: notification_1.default,
-    Publication: publication_1.default,
-    Comment: comment_1.default,
-    Message: message_1.default,
-    Friend: friend_1.default,
-    Story: story_1.default,
-    Short: short_1.default,
-    Group: group_1.default,
-    User: user_1.default,
-    Live: live_1.default,
-};
+exports.UserRepository = exports.LiveRepository = exports.GroupRepository = exports.ShortRepository = exports.StoryRepository = exports.FriendRepository = exports.MessageRepository = exports.CommentRepository = exports.PublicationRepository = exports.NotificationRepository = void 0;
+var notification_1 = require("./notification");
+Object.defineProperty(exports, "NotificationRepository", { enumerable: true, get: function () { return notification_1.NotificationRepository; } });
+var publication_1 = require("./publication");
+Object.defineProperty(exports, "PublicationRepository", { enumerable: true, get: function () { return publication_1.PublicationRepository; } });
+var comment_1 = require("./comment");
+Object.defineProperty(exports, "CommentRepository", { enumerable: true, get: function () { return comment_1.CommentRepository; } });
+var message_1 = require("./message");
+Object.defineProperty(exports, "MessageRepository", { enumerable: true, get: function () { return message_1.MessageRepository; } });
+var friend_1 = require("./friend");
+Object.defineProperty(exports, "FriendRepository", { enumerable: true, get: function () { return friend_1.FriendRepository; } });
+var story_1 = require("./story");
+Object.defineProperty(exports, "StoryRepository", { enumerable: true, get: function () { return story_1.StoryRepository; } });
+var short_1 = require("./short");
+Object.defineProperty(exports, "ShortRepository", { enumerable: true, get: function () { return short_1.ShortRepository; } });
+var group_1 = require("./group");
+Object.defineProperty(exports, "GroupRepository", { enumerable: true, get: function () { return group_1.GroupRepository; } });
+var live_1 = require("./live");
+Object.defineProperty(exports, "LiveRepository", { enumerable: true, get: function () { return live_1.LiveRepository; } });
+var user_1 = require("./user");
+Object.defineProperty(exports, "UserRepository", { enumerable: true, get: function () { return user_1.UserRepository; } });

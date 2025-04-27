@@ -1,8 +1,8 @@
-export interface I_HashingHandler {
+export interface HashingHandler {
     hashPassword(password: string): Promise<string>;
     comparePasswords(plainPassword: string, hashedPassword: string): Promise<boolean>;
 }
-export default class BCrypt implements I_HashingHandler {
+export declare class BCryptHashingHandler implements HashingHandler {
     hashPassword(password: string): Promise<string>;
     comparePasswords(plainPassword: string, hashedPassword: string): Promise<boolean>;
 }

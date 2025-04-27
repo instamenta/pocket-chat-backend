@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PublicationRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
-class PublicationsRepository extends repository_base_1.BaseRepository {
+class PublicationRepository extends repository_base_1.BaseRepository {
     async listPublications() {
         try {
             const query = 'SELECT * FROM publications ORDER BY created_at DESC';
@@ -188,4 +189,4 @@ class PublicationsRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = PublicationsRepository;
+exports.PublicationRepository = PublicationRepository;

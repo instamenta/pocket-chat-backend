@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LiveRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class LiveRepository extends repository_base_1.BaseRepository {
     async createLive(userId) {
@@ -94,4 +95,4 @@ class LiveRepository extends repository_base_1.BaseRepository {
         }
     }
 }
-exports.default = LiveRepository;
+exports.LiveRepository = LiveRepository;

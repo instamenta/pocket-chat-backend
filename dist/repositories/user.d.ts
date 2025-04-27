@@ -1,13 +1,13 @@
-import { I_HashingHandler } from "../utilities/bcrypt";
+import { HashingHandler } from "../utilities/bcrypt";
 import z from 'zod';
 import { BaseRepository } from "../base/repository.base";
 import { Client } from "pg";
 import * as T from '../types';
 import { Validate } from "../validators";
 import VLogger from "@instamenta/vlogger";
-export default class UserRepository extends BaseRepository {
+export declare class UserRepository extends BaseRepository {
     private readonly hashingHandler;
-    constructor(client: Client, logger: VLogger, hashingHandler: I_HashingHandler);
+    constructor(client: Client, logger: VLogger, hashingHandler: HashingHandler);
     listUsers(skip?: number, limit?: number): Promise<Omit<T.User.Schema, 'updated_at'>[]>;
     getByUsername(username: string): Promise<T.User.GetByUsername | null>;
     updateLastActiveAtById(id: string): Promise<number | null>;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Notificator = void 0;
 const enumerations_1 = require("./enumerations");
 const vanilla_utility_pack_1 = require("@instamenta/vanilla-utility-pack");
 class Notificator {
@@ -259,4 +260,4 @@ class Notificator {
         }
     }
 }
-exports.default = Notificator;
+exports.Notificator = Notificator;

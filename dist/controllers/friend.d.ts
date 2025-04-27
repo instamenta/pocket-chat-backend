@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import FriendRepository from "../repositories/friend";
+import { FriendRepository } from "../repositories/friend";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';
-export default class FriendController extends BaseController<FriendRepository> {
+export declare class FriendController extends BaseController<FriendRepository> {
     sendFriendRequest(request: Request<{
         id: string;
     }>, response: Response<{

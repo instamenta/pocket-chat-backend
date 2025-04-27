@@ -1,4 +1,4 @@
-import UserController from '../controllers/user';
+import {UserController} from '../controllers/user';
 import {Middlewares} from "../middlewares";
 import {BaseRouter} from "../base/router.base";
 
