@@ -11,7 +11,7 @@ import * as T from '../types'
 export default class GroupController extends BaseController<GroupRepository> {
 
 	public async createGroup(
-		r: Request<{}, { id: string }, { name: string, description: string, imageUrl: string }>,
+		r: Request<object, { id: string }, { name: string, description: string, imageUrl: string }>,
 		w: Response<{ id: string }>
 	) {
 		try {
@@ -62,11 +62,6 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			const groups = await this.repository.listGroups(userId);
 
-			if (!groups) {
-				console.error(`${this.constructor.name}.listGroups(): Failed to get groups`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(groups);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -78,11 +73,6 @@ export default class GroupController extends BaseController<GroupRepository> {
 			const userId = Validate.uuid.parse(r.params.userId);
 
 			const groups = await this.repository.listGroupsByUser(userId);
-
-			if (!groups) {
-				console.error(`${this.constructor.name}.listUsersGroups(): Failed to get groups`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
 
 			w.status(status_codes.OK).json(groups);
 		} catch (error) {
@@ -143,13 +133,13 @@ export default class GroupController extends BaseController<GroupRepository> {
 		}
 	}
 
-	public async changeRole(r: Request<{ groupId: string, recipientId: string }, { newRole: string }>, w: Response) {
+	public async changeRole(r: Request<{ groupId: string, recipientId: string }, object, { newRole: string }>, w: Response) {
 		try {
 			const groupId = Validate.uuid.parse(r.params.groupId);
 			const senderId = Validate.uuid.parse(r.user.id);
 			const recipientId = Validate.uuid.parse(r.params.recipientId);
 
-			if (r.body.newRole !== 'member' || r.body.newRole !== 'moderator') {
+			if (r.body.newRole !== 'member' && r.body.newRole !== 'moderator') {
 				throw new Error('Invalid Role');
 			}
 
@@ -192,11 +182,6 @@ export default class GroupController extends BaseController<GroupRepository> {
 
 			const members = await this.repository.getMembersByGroupId(groupId);
 
-			if (!members) {
-				console.error(`${this.constructor.name}.changeRole(): Error`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(members);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -204,7 +189,7 @@ export default class GroupController extends BaseController<GroupRepository> {
 	}
 
 	public async createPublication(
-		r: Request<{}, { id: string }, {
+		r: Request<object, { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string,

@@ -5,9 +5,6 @@ import BaseRouter from "../base/router.base";
 export default class FriendRouter extends BaseRouter<FriendController> {
 	initialize(c: FriendController) {
 		// @ts-expect-error - to assign handlers
-		this.router.get('/maikati/:id', Middlewares.isAuthorized, c.getFriendsByUserIdAndSender.bind(c))
-
-		// @ts-expect-error - to assign handlers
 		this.router.get('/', Middlewares.isAuthorized, c.listFriendRequests.bind(c));
 		// @ts-expect-error - to assign handlers
 		this.router.get('/one/:id', Middlewares.isAuthorized, c.getById.bind(c));

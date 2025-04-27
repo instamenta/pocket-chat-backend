@@ -6,26 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/base/repository.base.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/repository.base.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/base/repository.base.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/repository.base.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/friend.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/group.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/group.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/live.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/live.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/message.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/notification.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/notification.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/notification.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/publication.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/publication.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/story.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/story.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/src/repositories/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/comment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/comment.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controllers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/middlewares/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/middlewares/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/group.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/publication.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utilities/intialize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/intialize.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/group.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/friend.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
