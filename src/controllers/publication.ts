@@ -33,9 +33,11 @@ export default class PublicationController extends BaseController<PublicationsRe
 
 			const publication = await this.repository.getPublicationById(id);
 
-			!publication
-				? w.status(statusCodes.NOT_FOUND).end()
-				: w.status(statusCodes.OK).json(publication);
+			if (publication) {
+				w.status(statusCodes.OK).json(publication);
+			} else {
+				w.status(statusCodes.NOT_FOUND).end();
+			}
 		} catch (error) {
 			this.errorHandler(error, w);
 		}
@@ -78,11 +80,11 @@ export default class PublicationController extends BaseController<PublicationsRe
 	}
 
 	public async createPublication(
-		r: Request<{}, { id: string }, {
+		r: Request<object, { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string
-		}, {}>,
+		}>,
 		w: Response<{ id: string }>) {
 		try {
 			const data = Validate.create_publication.parse({

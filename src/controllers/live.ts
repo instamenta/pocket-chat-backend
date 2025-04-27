@@ -8,7 +8,7 @@ import * as T from '../types'
 export default class LiveController extends BaseController<LiveRepository> {
 
 	public async createLive(
-		r: Request<{}, {}>,
+		r: Request<object, object>,
 		w: Response<{ id: string }>
 	) {
 		try {
@@ -33,11 +33,6 @@ export default class LiveController extends BaseController<LiveRepository> {
 
 			const lives = await this.repository.listLives(userId);
 
-			if (!lives) {
-				console.error(`${this.constructor.name}.listLives(): Failed to list lives`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(lives);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -49,11 +44,6 @@ export default class LiveController extends BaseController<LiveRepository> {
 			const liveId = Validate.uuid.parse(r.params.liveId);
 
 			const messages = await this.repository.listLiveMessages(liveId);
-
-			if (!messages) {
-				console.error(`${this.constructor.name}.listLiveMessages(): Failed to list live messages`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
 
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {

@@ -6,10 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/group.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/live.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/live.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/message.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/message.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/notification.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/notification.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/short.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/story.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/story.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -8,7 +8,7 @@ import * as T from '../types'
 export default class MessageController extends BaseController<MessageRepository> {
 
 	public async sendMessage(
-		r: Request<{}, {}, { recipient: string, content: string, friendship: string, images?: string[], files?: string[] }>,
+		r: Request<object, object, { recipient: string, content: string, friendship: string, images?: string[], files?: string[] }>,
 		w: Response<{ id: string }>
 	) {
 		try {
@@ -35,7 +35,7 @@ export default class MessageController extends BaseController<MessageRepository>
 	}
 
 	public async listMessagesByFriendship(
-		r: Request<{ friendshipId: string }, {}, {}, { skip?: string; limit?: string }>,
+		r: Request<{ friendshipId: string }, object, object, { skip?: string; limit?: string }>,
 		w: Response<T.Message.Message[]>
 	) {
 		try {
@@ -45,11 +45,6 @@ export default class MessageController extends BaseController<MessageRepository>
 				Number.parseInt(r.query.limit || '20', 10)
 			);
 
-			if (!messages) {
-				console.error(`${this.constructor.name}.listMessagesByFriendship(): Failed to get messages`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -58,7 +53,7 @@ export default class MessageController extends BaseController<MessageRepository>
 
 
 	public async listMessagesByUsers(
-		r: Request<{ user1: string, user2: string }, {}, {}, { skip?: string; limit?: string }>,
+		r: Request<{ user1: string, user2: string }, object, object, { skip?: string; limit?: string }>,
 		w: Response<T.Message.Message[]>
 	) {
 		try {
@@ -69,11 +64,6 @@ export default class MessageController extends BaseController<MessageRepository>
 				Number.parseInt(r.query.limit || '20', 10)
 			);
 
-			if (!messages) {
-				console.error(`${this.constructor.name}.listMessagesByUsers(): Failed to get messages`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(messages);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -81,7 +71,7 @@ export default class MessageController extends BaseController<MessageRepository>
 	}
 
 	public async updateMessageStatus(
-		r: Request<{ id: string }, {}, { status: string }>,
+		r: Request<{ id: string }, object, { status: string }>,
 		w: Response<{ success: boolean }>
 	) {
 		try {
@@ -109,11 +99,6 @@ export default class MessageController extends BaseController<MessageRepository>
 			const userId = Validate.uuid.parse(r.user.id);
 
 			const conversations = await this.repository.listConversations(userId);
-
-			if (!conversations) {
-				console.error(`${this.constructor.name}.listConversations(): Failed to list conversations`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
 
 			w.status(status_codes.OK).json(conversations);
 		} catch (error) {

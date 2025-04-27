@@ -20,7 +20,7 @@ export default class StoryController extends BaseController<StoryRepository> {
 	}
 
 	public async createStory(
-		r: Request<{}, {}, {
+		r: Request<object, object, {
 			imageUrl: string,
 		}>,
 		w: Response<{ id: string }>
@@ -48,11 +48,6 @@ export default class StoryController extends BaseController<StoryRepository> {
 
 			const stories = await this.repository.listStories(userId);
 
-			if (!stories) {
-				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -65,11 +60,6 @@ export default class StoryController extends BaseController<StoryRepository> {
 
 			const stories = await this.repository.listFeedStories(userId);
 
-			if (!stories) {
-				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -81,11 +71,6 @@ export default class StoryController extends BaseController<StoryRepository> {
 			const userId = Validate.name.parse(r.params.username);
 
 			const stories = await this.repository.listFriendStoriesByUsername(userId);
-
-			if (!stories) {
-				console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
@@ -131,7 +116,7 @@ export default class StoryController extends BaseController<StoryRepository> {
 		}
 	}
 
-	public async createStoryComment(r: Request<{ storyId: string }, {}, { content: string }>, w: Response<T.Comment.Comment>) {
+	public async createStoryComment(r: Request<{ storyId: string }, object, { content: string }>, w: Response<T.Comment.Comment>) {
 		try {
 			const storyId = Validate.uuid.parse(r.params.storyId);
 			const userId = Validate.uuid.parse(r.user.id);

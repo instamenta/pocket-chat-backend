@@ -20,7 +20,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 	}
 
 	public async createShort(
-		r: Request<{}, { videoUrl: string, description: string }>,
+		r: Request<object, object, { videoUrl: string, description: string }>,
 		w: Response<{ id: string }>
 	) {
 		this.log.log('createShort');
@@ -51,11 +51,6 @@ export default class ShortController extends BaseController<ShortRepository> {
 
 			const shorts = await this.repository.listShorts(userId);
 
-			if (!shorts) {
-				this.log.error({e: `Failed to get stories`, m: userId});
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(shorts);
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -68,11 +63,6 @@ export default class ShortController extends BaseController<ShortRepository> {
 			const userId = Validate.uuid.parse(r.params.id);
 
 			const stories = await this.repository.listShortsById(userId);
-
-			if (!stories) {
-				this.log.error({e: 'Failed to get stories', m: userId})
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
 
 			w.status(status_codes.OK).json(stories);
 		} catch (error) {
@@ -123,7 +113,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 				content: '',
 				seen: false,
 			})
-				.catch(e => { this.log.error({e}); });
+				.catch((error: unknown) => { this.log.error({e: error}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -144,9 +134,10 @@ export default class ShortController extends BaseController<ShortRepository> {
 		}
 	}
 
-	public async createShortComment(r: Request<{ shortId: string }, {}, {
-		content: string
-	}>, w: Response<T.Comment.Comment>) {
+	public async createShortComment(
+		r: Request<{ shortId: string }, object, { content: string }>,
+		w: Response<T.Comment.Comment>,
+	) {
 		this.log.log('createShortComment');
 		try {
 			const shortId = Validate.uuid.parse(r.params.shortId);
@@ -165,7 +156,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 				content: content,
 				seen: false,
 			})
-				.catch(e => { this.log.error({e}); });
+				.catch((error: unknown) => { this.log.error({e: error}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -204,7 +195,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 				content: '',
 				seen: false,
 			})
-				.catch((e) => { this.log.error({e}); });
+				.catch((error: unknown) => { this.log.error({e: error}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);

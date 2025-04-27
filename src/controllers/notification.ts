@@ -8,24 +8,24 @@ import * as T from '../types';
 
 export default class NotificationController extends BaseController<NotificationRepository> {
 
-	public async createNotification(
-		r: Request<{}, {}, {
+	public createNotification(
+		_request: Request<object, object, {
 			recipient: string,
 			type: notification_types,
 			seen: boolean,
 			content: string
 		}>,
-		w: Response
+		response: Response
 	) {
 		try {
-			w.status(status_codes.NOT_IMPLEMENTED).end();
+			response.status(status_codes.NOT_IMPLEMENTED).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async listNotifications(
-		r: Request<{}, {}, {}, { filter?: 'all' | 'seen' | 'unseen' }>,
+		r: Request<object, object, object, { filter?: 'all' | 'seen' | 'unseen' }>,
 		w: Response<T.Notification.Populated[]>
 	) {
 		try {
@@ -33,11 +33,6 @@ export default class NotificationController extends BaseController<NotificationR
 				Validate.uuid.parse(r.user.id),
 				r.query.filter
 			);
-
-			if (!notifications) {
-				console.error(`${this.constructor.name}.listNotifications(): Failed to get messages`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
 
 			w.status(status_codes.OK).json(notifications);
 		} catch (error) {
