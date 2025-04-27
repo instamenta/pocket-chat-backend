@@ -30,25 +30,25 @@ class MessageController extends controller_base_1.BaseController {
     }
     async listMessagesByFriendship(request, response) {
         try {
-            const messages = await this.repository.getMessagesByFriendshipId(validators_1.Validate.uuid.parse(r.params.friendshipId), Number.parseInt(r.query.skip ?? '0', 10), Number.parseInt(r.query.limit ?? '20', 10));
+            const messages = await this.repository.getMessagesByFriendshipId(validators_1.Validate.uuid.parse(request.params.friendshipId), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
             response.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
-    async listMessagesByUsers(r, response) {
+    async listMessagesByUsers(request, response) {
         try {
-            const messages = await this.repository.getMessagesByUsers(validators_1.Validate.uuid.parse(r.params.user1), validators_1.Validate.uuid.parse(r.params.user2), Number.parseInt(r.query.skip ?? '0', 10), Number.parseInt(r.query.limit ?? '20', 10));
+            const messages = await this.repository.getMessagesByUsers(validators_1.Validate.uuid.parse(request.params.user1), validators_1.Validate.uuid.parse(request.params.user2), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
             response.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
-    async updateMessageStatus(r, response) {
+    async updateMessageStatus(request, response) {
         try {
-            const result = await this.repository.updateMessageStatus(validators_1.Validate.uuid.parse(r.params.id), r.body.status);
+            const result = await this.repository.updateMessageStatus(validators_1.Validate.uuid.parse(request.params.id), request.body.status);
             if (!result) {
                 console.error(`${this.constructor.name}.updateMessageStatus(): Failed to update message status`);
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
@@ -59,9 +59,9 @@ class MessageController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async listConversations(r, response) {
+    async listConversations(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const conversations = await this.repository.listConversations(userId);
             response.status(http_status_codes_1.default.OK).json(conversations);
         }

@@ -19,41 +19,41 @@ export default class FriendController extends BaseController<FriendRepository> {
         picture: string;
         username: string;
     }[]>): Promise<void>;
-    acceptFriendRequest(r: Request<{
+    acceptFriendRequest(request: Request<{
         id: string;
     }>, response: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;
-    deleteFriendRequest(r: Request<{
+    deleteFriendRequest(request: Request<{
         id: string;
     }>, response: Response<{
         friendship_id: boolean;
     }>): Promise<Response<{
         friendship_id: boolean;
     }, Record<string, any>> | undefined>;
-    declineFriendRequest(r: Request<{
+    declineFriendRequest(request: Request<{
         id: string;
-    }>, response: Response<void>): Promise<any>;
-    getFriendsCountByUserId(r: Request<{
+    }>, response: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;
+    getFriendsCountByUserId(request: Request<{
         id: string;
-    }>, w: Response<{
+    }>, response: Response<{
         count: number;
     }>): Promise<Response<{
         count: number;
     }, Record<string, any>> | undefined>;
-    listMutualFriendsByUsers(r: Request<{
+    listMutualFriendsByUsers(request: Request<{
         id: string;
-    }>, w: Response<T.Friend.Mutual[]>): Promise<void>;
-    listFriendsByUserId(r: Request<{
+    }>, response: Response<T.Friend.Mutual[]>): Promise<void>;
+    listFriendsByUserId(request: Request<{
         id: string;
-    }>, w: Response<T.User.Schema[]>): Promise<void>;
-    listFriendsByUsername(r: Request<{
+    }>, response: Response<T.User.Schema[]>): Promise<void>;
+    listFriendsByUsername(request: Request<{
         username: string;
-    }>, w: Response<T.User.Schema[]>): Promise<void>;
-    getBySenderAndRecipient(r: Request<{
+    }>, response: Response<T.User.Schema[]>): Promise<void>;
+    getBySenderAndRecipient(request: Request<{
         sender: string;
         recipient: string;
-    }>, w: Response<T.Friend.Friendship>): Promise<void>;
-    getById(r: Request<{
+    }>, response: Response<T.Friend.Friendship>): Promise<void>;
+    getById(request: Request<{
         id: string;
-    }>, w: Response<T.Friend.Friendship>): Promise<void>;
+    }>, response: Response<T.Friend.Friendship>): Promise<void>;
 }
 //# sourceMappingURL=friend.d.ts.map

@@ -29,32 +29,32 @@ export default class GroupController extends BaseController<GroupRepository> {
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
     leaveGroup(request: Request<{
         id: string;
-    }>, response: Response): Promise<any>;
+    }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
     changeRole(request: Request<{
         groupId: string;
         recipientId: string;
     }, object, {
         newRole: string;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    removeMember(r: Request<{
+    }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    removeMember(request: Request<{
         groupId: string;
         recipientId: string;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    getMembersByGroupId(r: Request<{
+    }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    getMembersByGroupId(request: Request<{
         id: string;
-    }>, w: Response<T.Group.MemberPopulated[]>): Promise<void>;
-    createPublication(r: Request<object, {
+    }>, response: Response<T.Group.MemberPopulated[]>): Promise<void>;
+    createPublication(request: Request<object, {
         id: string;
     }, {
         description: string;
         images: string;
         publication_status: string;
         groupId: string;
-    }>, w: Response<{
+    }>, response: Response<{
         id: string;
     }>): Promise<void>;
-    listPublications(r: Request<{
+    listPublications(request: Request<{
         groupId: string;
-    }>, w: Response<T.Publication.Publication[]>): Promise<void>;
+    }>, response: Response<T.Publication.Publication[]>): Promise<void>;
 }
 //# sourceMappingURL=group.d.ts.map

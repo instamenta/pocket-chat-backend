@@ -20,14 +20,14 @@ export default class MessageController extends BaseController<MessageRepository>
         skip?: string;
         limit?: string;
     }>, response: Response<T.Message.Message[]>): Promise<void>;
-    listMessagesByUsers(r: Request<{
+    listMessagesByUsers(request: Request<{
         user1: string;
         user2: string;
     }, object, object, {
         skip?: string;
         limit?: string;
     }>, response: Response<T.Message.Message[]>): Promise<void>;
-    updateMessageStatus(r: Request<{
+    updateMessageStatus(request: Request<{
         id: string;
     }, object, {
         status: string;
@@ -36,6 +36,6 @@ export default class MessageController extends BaseController<MessageRepository>
     }>): Promise<Response<{
         success: boolean;
     }, Record<string, any>> | undefined>;
-    listConversations(r: Request, response: Response<T.Message.Conversations[]>): Promise<void>;
+    listConversations(request: Request, response: Response<T.Message.Conversations[]>): Promise<void>;
 }
 //# sourceMappingURL=message.d.ts.map

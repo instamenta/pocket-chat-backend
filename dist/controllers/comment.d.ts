@@ -10,18 +10,18 @@ export default class CommentController extends BaseController<CommentRepository>
     listByPublication(request: Request<{
         publicationId: string;
     }>, response: Response<T.Comment.Populated[]>): Promise<void>;
-    create(r: Request<{
+    create(request: Request<{
         publicationId: string;
     }, object, {
         content: string;
     }>, response: Response<T.Comment.Comment>): Promise<void>;
-    delete(r: Request<{
+    delete(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
-    like(r: Request<{
+    like(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
-    getCommentById(r: Request<{
+    getCommentById(request: Request<{
         commentId: string;
     }>, response: Response<T.Comment.Comment & {
         likes_count: number;

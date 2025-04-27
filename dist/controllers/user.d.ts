@@ -31,12 +31,12 @@ export default class UserController extends BaseController<UserRepository> {
         id: string;
     }, Record<string, any>> | undefined>;
     authUser(request: Request, response: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
-    getUserById(r: Request<{
+    getUserById(request: Request<{
         id: string;
     }>, response: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
-    getUserByUsername(r: Request<{
+    getUserByUsername(request: Request<{
         username: string;
-    }>, response: Response<T.User.Schema>): Promise<any>;
+    }>, response: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
     updateBio(request: Request<object, object, {
         bio: string;
     }>, response: Response<{
@@ -48,9 +48,9 @@ export default class UserController extends BaseController<UserRepository> {
         id: string;
         userData: T.User.Schema;
     }, Record<string, any>> | undefined>;
-    updateProfilePicture(r: Request<object, object, {
+    updateProfilePicture(request: Request<object, object, {
         picture_url: string;
-    }>, w: Response<{
+    }>, response: Response<{
         token: string;
         id: string;
         userData: T.User.Schema;
@@ -59,12 +59,12 @@ export default class UserController extends BaseController<UserRepository> {
         id: string;
         userData: T.User.Schema;
     }, Record<string, any>> | undefined>;
-    updateProfilePublicInformation(r: Request<object, object, {
+    updateProfilePublicInformation(request: Request<object, object, {
         firstName: string;
         lastName: string;
         username: string;
         email: string;
-    }>, w: Response<{
+    }>, response: Response<{
         token: string;
         id: string;
         userData: T.User.Schema;

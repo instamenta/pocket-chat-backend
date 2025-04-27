@@ -98,83 +98,83 @@ class GroupController extends controller_base_1.BaseController {
             const success = await this.repository.leaveGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.leaveGroup(): Error`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async changeRole(request, w) {
+    async changeRole(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
-            const senderId = validators_1.Validate.uuid.parse(r.user.id);
-            const recipientId = validators_1.Validate.uuid.parse(r.params.recipientId);
-            if (r.body.newRole !== 'member' && r.body.newRole !== 'moderator') {
+            const groupId = validators_1.Validate.uuid.parse(request.params.groupId);
+            const senderId = validators_1.Validate.uuid.parse(request.user.id);
+            const recipientId = validators_1.Validate.uuid.parse(request.params.recipientId);
+            if (request.body.newRole !== 'member' && request.body.newRole !== 'moderator') {
                 throw new Error('Invalid Role');
             }
-            const success = await this.repository.changeRole(groupId, senderId, recipientId, r.body.newRole);
+            const success = await this.repository.changeRole(groupId, senderId, recipientId, request.body.newRole);
             if (!success) {
                 console.error(`${this.constructor.name}.changeRole(): Error`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async removeMember(r, w) {
+    async removeMember(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
-            const senderId = validators_1.Validate.uuid.parse(r.user.id);
-            const recipientId = validators_1.Validate.uuid.parse(r.params.recipientId);
+            const groupId = validators_1.Validate.uuid.parse(request.params.groupId);
+            const senderId = validators_1.Validate.uuid.parse(request.user.id);
+            const recipientId = validators_1.Validate.uuid.parse(request.params.recipientId);
             const success = await this.repository.removeMember(groupId, senderId, recipientId);
             if (!success) {
                 console.error(`${this.constructor.name}.removeMember(): Error`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async getMembersByGroupId(r, w) {
+    async getMembersByGroupId(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.id);
+            const groupId = validators_1.Validate.uuid.parse(request.params.id);
             const members = await this.repository.getMembersByGroupId(groupId);
-            w.status(http_status_codes_1.default.OK).json(members);
+            response.status(http_status_codes_1.default.OK).json(members);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async createPublication(r, w) {
+    async createPublication(request, response) {
         try {
             const data = validators_1.Validate.create_publication.parse({
-                publisher_id: validators_1.Validate.uuid.parse(r.user.id),
-                description: r.body.description,
-                images: r.body.images,
-                publication_status: r.body.publication_status,
+                publisher_id: validators_1.Validate.uuid.parse(request.user.id),
+                description: request.body.description,
+                images: request.body.images,
+                publication_status: request.body.publication_status,
             });
-            const groupId = validators_1.Validate.uuid.parse(r.body.groupId);
+            const groupId = validators_1.Validate.uuid.parse(request.body.groupId);
             const publicationId = await this.repository.createPublication({ ...data, groupId });
-            w.status(http_status_codes_2.default.CREATED).json({ id: publicationId });
+            response.status(http_status_codes_2.default.CREATED).json({ id: publicationId });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async listPublications(r, w) {
+    async listPublications(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
+            const groupId = validators_1.Validate.uuid.parse(request.params.groupId);
             const publications = await this.repository.listPublications(groupId);
-            w.status(http_status_codes_2.default.OK).json(publications);
+            response.status(http_status_codes_2.default.OK).json(publications);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
 }

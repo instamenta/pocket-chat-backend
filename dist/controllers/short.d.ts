@@ -28,20 +28,20 @@ export default class ShortController extends BaseController<ShortRepository> {
     listCommentsByShort(request: Request<{
         shortId: string;
     }>, response: Response<T.Comment.Populated[]>): Promise<void>;
-    createShortComment(r: Request<{
+    createShortComment(request: Request<{
         shortId: string;
     }, object, {
         content: string;
     }>, response: Response<T.Comment.Comment>): Promise<void>;
-    deleteShortComment(r: Request<{
+    deleteShortComment(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
-    likeShortComment(r: Request<{
+    likeShortComment(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
-    getCommentById(r: Request<{
+    getCommentById(request: Request<{
         commentId: string;
-    }>, w: Response<T.Comment.Comment & {
+    }>, response: Response<T.Comment.Comment & {
         likes_count: number;
     }>): Promise<Response<T.Comment.Comment & {
         likes_count: number;

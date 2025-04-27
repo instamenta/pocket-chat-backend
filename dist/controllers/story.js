@@ -42,7 +42,7 @@ class StoryController extends controller_base_1.BaseController {
     }
     async listFeedStories(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const stories = await this.repository.listFeedStories(userId);
             response.status(http_status_codes_1.default.OK).json(stories);
         }
@@ -50,9 +50,9 @@ class StoryController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async listFriendStoriesByUsername(r, response) {
+    async listFriendStoriesByUsername(request, response) {
         try {
-            const userId = validators_1.Validate.name.parse(r.params.username);
+            const userId = validators_1.Validate.name.parse(request.params.username);
             const stories = await this.repository.listFriendStoriesByUsername(userId);
             response.status(http_status_codes_1.default.OK).json(stories);
         }
@@ -60,10 +60,10 @@ class StoryController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async likeStory(r, response) {
+    async likeStory(request, response) {
         try {
-            const storyId = validators_1.Validate.uuid.parse(r.params.id);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const storyId = validators_1.Validate.uuid.parse(request.params.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likeStory(storyId, userId);
             response.status(http_status_codes_2.default.OK).end();
             await this.notificator.handleNotification({
@@ -79,10 +79,10 @@ class StoryController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async listCommentsByStory(r, response) {
+    async listCommentsByStory(request, response) {
         try {
-            const storyId = validators_1.Validate.uuid.parse(r.params.storyId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const storyId = validators_1.Validate.uuid.parse(request.params.storyId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const comments = await this.repository.listCommentsByStoryId(storyId, userId);
             response.status(http_status_codes_2.default.OK).json(comments);
         }
@@ -90,11 +90,11 @@ class StoryController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async createStoryComment(r, response) {
+    async createStoryComment(request, response) {
         try {
-            const storyId = validators_1.Validate.uuid.parse(r.params.storyId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
-            const content = zod_1.z.string().min(1).parse(r.body.content);
+            const storyId = validators_1.Validate.uuid.parse(request.params.storyId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createStoryComment(storyId, userId, content);
             response.status(http_status_codes_2.default.CREATED).json(comment);
             await this.notificator.handleNotification({
@@ -110,21 +110,21 @@ class StoryController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async deleteStoryComment(r, w) {
+    async deleteStoryComment(request, response) {
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.deleteStoryComment(commentId, userId);
-            w.status(http_status_codes_2.default.NO_CONTENT).end();
+            response.status(http_status_codes_2.default.NO_CONTENT).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async likeStoryComment(r, w) {
+    async likeStoryComment(request, response) {
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likeStoryComment(commentId, userId);
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE_STORY_COMMENT,
@@ -134,10 +134,10 @@ class StoryController extends controller_base_1.BaseController {
                 content: '',
                 seen: false,
             }).catch(console.error);
-            w.status(http_status_codes_2.default.OK).end();
+            response.status(http_status_codes_2.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
 }

@@ -98,7 +98,7 @@ class PublicationController extends controller_base_1.BaseController {
             const publicationId = validators_1.Validate.uuid.parse(request.params.id);
             const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likePublication(publicationId, userId);
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE,
                 reference_id: publicationId,
@@ -109,7 +109,7 @@ class PublicationController extends controller_base_1.BaseController {
             }).catch(console.error);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
 }

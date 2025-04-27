@@ -80,9 +80,9 @@ class UserController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async getUserById(r, response) {
+    async getUserById(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(r.params.id);
+            const id = validators_1.Validate.uuid.parse(request.params.id);
             const user = await this.repository.getUserById(id);
             if (!user) {
                 console.log(`${this.constructor.name}.getUserById(): User not found`);
@@ -94,18 +94,18 @@ class UserController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async getUserByUsername(r, response) {
+    async getUserByUsername(request, response) {
         try {
-            const username = validators_1.Validate.name.parse(r.params.username);
+            const username = validators_1.Validate.name.parse(request.params.username);
             const user = await this.repository.getUserByUsername(username);
             if (!user) {
                 console.log(`${this.constructor.name}.getUserByUsername(): User not found`);
-                return w.status(http_status_codes_1.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            w.status(http_status_codes_1.default.OK).json(user);
+            response.status(http_status_codes_1.default.OK).json(user);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
     async updateBio(request, response) {
@@ -129,14 +129,14 @@ class UserController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async updateProfilePicture(r, w) {
+    async updateProfilePicture(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
-            const picture_url = validators_1.Validate.url.parse(r.body.picture_url);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
+            const picture_url = validators_1.Validate.url.parse(request.body.picture_url);
             const userData = await this.repository.updateProfilePicture(id, picture_url);
             if (!userData) {
                 console.log(`${this.constructor.name}.updateProfilePicture(): Failed to update`);
-                return w.status(http_status_codes_1.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
             const token = jwt_1.default.signToken({
                 id: userData.id,
@@ -144,25 +144,25 @@ class UserController extends controller_base_1.BaseController {
                 username: userData.username,
                 picture: userData.picture
             });
-            w.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id, userData });
+            response.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id, userData });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async updateProfilePublicInformation(r, w) {
+    async updateProfilePublicInformation(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
             const data = validators_1.Validate.update_profile_public_information.parse({
-                firstName: r.body.firstName,
-                lastName: r.body.lastName,
-                username: r.body.username,
-                email: r.body.email,
+                firstName: request.body.firstName,
+                lastName: request.body.lastName,
+                username: request.body.username,
+                email: request.body.email,
             });
             const userData = await this.repository.updateProfilePublicInformation(id, data);
             if (!userData) {
-                console.log(`${this.constructor.name}.updateProfilePublicInformation(): Failed to update`, r.body);
-                return w.status(http_status_codes_1.default.NOT_FOUND).end();
+                console.log(`${this.constructor.name}.updateProfilePublicInformation(): Failed to update`, request.body);
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
             const token = jwt_1.default.signToken({
                 id: userData.id,
@@ -170,10 +170,10 @@ class UserController extends controller_base_1.BaseController {
                 username: userData.username,
                 picture: userData.picture,
             });
-            w.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id, userData });
+            response.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id, userData });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
 }

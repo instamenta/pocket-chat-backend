@@ -17,8 +17,8 @@ class CommentController extends controller_base_1.BaseController {
     async listByPublication(request, response) {
         this.log.log('listByPublication');
         try {
-            const publicationId = validators_1.Validate.uuid.parse(r.params.publicationId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const publicationId = validators_1.Validate.uuid.parse(request.params.publicationId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const comments = await this.repository.listCommentsByPublication(publicationId, userId);
             response.status(http_status_codes_1.default.OK).json(comments);
         }
@@ -26,12 +26,12 @@ class CommentController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async create(r, response) {
+    async create(request, response) {
         this.log.log('create');
         try {
-            const publicationId = validators_1.Validate.uuid.parse(r.params.publicationId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
-            const content = zod_1.z.string().min(1).parse(r.body.content);
+            const publicationId = validators_1.Validate.uuid.parse(request.params.publicationId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createComment(publicationId, userId, content);
             response.status(http_status_codes_1.default.CREATED).json(comment);
             await this.notificator.handleNotification({
@@ -48,11 +48,11 @@ class CommentController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async delete(r, response) {
+    async delete(request, response) {
         this.log.log('delete');
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.deleteComment(commentId, userId);
             response.status(http_status_codes_1.default.NO_CONTENT).end();
         }
@@ -60,11 +60,11 @@ class CommentController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async like(r, response) {
+    async like(request, response) {
         this.log.log('like');
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likeComment(commentId, userId);
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE_COMMENT,
@@ -81,10 +81,10 @@ class CommentController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async getCommentById(r, response) {
+    async getCommentById(request, response) {
         this.log.log('getCommentById');
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
             const comment = await this.repository.getCommentById(commentId);
             if (!comment) {
                 this.log.error({ e: `Not found`, m: commentId });

@@ -43,12 +43,12 @@ class LiveController extends controller_base_1.BaseController {
     }
     async updateLiveState(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
-            if (!['active', 'paused', 'ended'].includes(r.params.state)) {
-                console.error(`${this.constructor.name}.lives(): Invalid State`, r.params);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            if (!['active', 'paused', 'ended'].includes(request.params.state)) {
+                console.error(`${this.constructor.name}.lives(): Invalid State`, request.params);
                 return response.status(http_status_codes_1.default.BAD_REQUEST).end();
             }
-            const lives = await this.repository.updateLiveState(userId, r.params.state);
+            const lives = await this.repository.updateLiveState(userId, request.params.state);
             if (!lives) {
                 console.error(`${this.constructor.name}.updateLiveState(): Failed to update live state`);
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();

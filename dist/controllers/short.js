@@ -103,7 +103,7 @@ class ShortController extends controller_base_1.BaseController {
         this.log.log('listCommentsByShort');
         try {
             const shortId = validators_1.Validate.uuid.parse(request.params.shortId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const comments = await this.repository.listCommentsByShortId(shortId, userId);
             response.status(http_status_codes_2.default.OK).json(comments);
         }
@@ -111,12 +111,12 @@ class ShortController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async createShortComment(r, response) {
+    async createShortComment(request, response) {
         this.log.log('createShortComment');
         try {
-            const shortId = validators_1.Validate.uuid.parse(r.params.shortId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
-            const content = zod_1.z.string().min(1).parse(r.body.content);
+            const shortId = validators_1.Validate.uuid.parse(request.params.shortId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createShortComment(shortId, userId, content);
             response.status(http_status_codes_2.default.CREATED).json(comment);
             await this.notificator.handleNotification({
@@ -133,11 +133,11 @@ class ShortController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async deleteShortComment(r, response) {
+    async deleteShortComment(request, response) {
         this.log.log('deleteShortComment');
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.deleteShortComment(commentId, userId);
             response.status(http_status_codes_2.default.NO_CONTENT).end();
         }
@@ -145,13 +145,13 @@ class ShortController extends controller_base_1.BaseController {
             this.errorHandler(error, response);
         }
     }
-    async likeShortComment(r, response) {
+    async likeShortComment(request, response) {
         this.log.log('likeShortComment');
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             await this.repository.likeShortComment(commentId, userId);
-            w.status(http_status_codes_2.default.OK).end();
+            response.status(http_status_codes_2.default.OK).end();
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE_SHORT_COMMENT,
                 reference_id: commentId,
@@ -163,22 +163,22 @@ class ShortController extends controller_base_1.BaseController {
                 .catch((error) => { this.log.error({ e: error }); });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async getCommentById(r, w) {
+    async getCommentById(request, response) {
         this.log.log('getCommentById');
         try {
-            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
+            const commentId = validators_1.Validate.uuid.parse(request.params.commentId);
             const comment = await this.repository.getCommentById(commentId);
             if (!comment) {
                 this.log.error({ m: `Not found ${commentId}`, e: '' });
-                return w.status(http_status_codes_2.default.NOT_FOUND).end();
+                return response.status(http_status_codes_2.default.NOT_FOUND).end();
             }
-            w.status(http_status_codes_2.default.OK).json(comment);
+            response.status(http_status_codes_2.default.OK).json(comment);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
 }

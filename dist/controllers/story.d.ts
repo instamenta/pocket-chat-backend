@@ -16,25 +16,25 @@ export default class StoryController extends BaseController<StoryRepository> {
     }, Record<string, any>> | undefined>;
     listStories(request: Request, response: Response<T.Story.Feed[]>): Promise<void>;
     listFeedStories(request: Request, response: Response<T.Story.Feed[]>): Promise<void>;
-    listFriendStoriesByUsername(r: Request<{
+    listFriendStoriesByUsername(request: Request<{
         username: string;
     }>, response: Response<T.Story.Full[]>): Promise<void>;
-    likeStory(r: Request<{
+    likeStory(request: Request<{
         id: string;
     }>, response: Response<void>): Promise<void>;
-    listCommentsByStory(r: Request<{
+    listCommentsByStory(request: Request<{
         storyId: string;
     }>, response: Response<T.Comment.Populated[]>): Promise<void>;
-    createStoryComment(r: Request<{
+    createStoryComment(request: Request<{
         storyId: string;
     }, object, {
         content: string;
     }>, response: Response<T.Comment.Comment>): Promise<void>;
-    deleteStoryComment(r: Request<{
+    deleteStoryComment(request: Request<{
         commentId: string;
-    }>, w: Response<void>): Promise<void>;
-    likeStoryComment(r: Request<{
+    }>, response: Response<void>): Promise<void>;
+    likeStoryComment(request: Request<{
         commentId: string;
-    }>, w: Response<void>): Promise<void>;
+    }>, response: Response<void>): Promise<void>;
 }
 //# sourceMappingURL=story.d.ts.map
