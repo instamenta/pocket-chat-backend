@@ -44,17 +44,17 @@ export default class BaseSocket {
 	protected onConnection = async (ws: WebSocket, r: any) => {
 		const user = JWT.getUser(Cookies.parse(r.headers.cookie ?? '')[SECURITY.JWT_TOKEN_NAME] ?? '');
 		if (!user) {
-			return ws.close(1);
+			ws.close(1); return;
 		}
 		const userData = await this.userRepository.getUserById(user.id)
 		if (!userData) {
-			return ws.close(1)
+			ws.close(1); return;
 		}
 		this.connections.set(userData.id, ws);
 		this.cache.set(`user=${user.id}`, JSON.stringify(userData));
 
 		ws.on('message', (data) => this.onData(data, ws, userData));
-		ws.on('close', (code, reason) => this.onClose(code, reason, userData));
+		ws.on('close', (code, reason) => { this.onClose(code, reason, userData); });
 		ws.on('error', (e) => this.log.error({e, m: 'Websocket ran into Error'}));
 	}
 

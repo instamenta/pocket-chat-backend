@@ -8,7 +8,6 @@ import CORS from 'cors';
 import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
 import {WebSocketServer} from 'ws';
-import {ExpressPeerServer} from "peer";
 import {Server as SocketIoServer} from 'socket.io'
 import VLogger from '@instamenta/vlogger'
 
@@ -27,16 +26,6 @@ export default async function initialize_all() {
 	const log = logger.getVlogger('App');
 
 	const api = express();
-
-	const peer_server = http.createServer(api);
-
-	const peer = ExpressPeerServer(peer_server, {path: '/'})
-
-	api.use('/peerjs', peer);
-
-	peer_server.listen(env.PEER_PORT, () => {
-		log.info({m: `Peer is running on http://${env.SERVER_HOST}:${env.PEER_PORT}/peerjs`});
-	});
 
 	api.use(CORS(corsOptions));
 	api.use(COOKIE_PARSER());

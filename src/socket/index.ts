@@ -75,11 +75,11 @@ export default class SocketController extends BaseSocket {
 	private async onMessage(request: T.Message.MessageRequest, host: WebSocket, user: T.User.Schema) {
 		const r = Validate.message.parse(request);
 
-		if (!r.images?.length && !r.content.length && !r.files.length) return console.log('Empty');
+		if (!r.images?.length && !r.content.length && !r.files.length) { console.log('Empty'); return; }
 
 		const friendship = await this.friendRepository.getBySenderAndRecipient(user.id, r.recipient);
 		if (!friendship) {
-			return console.error('No friendship found between users', {data: r, sender: user.id});
+			console.error('No friendship found between users', {data: r, sender: user.id}); return;
 		}
 
 		const messageId = await this.messageRepository.createMessage({
@@ -91,7 +91,7 @@ export default class SocketController extends BaseSocket {
 			files: r.files,
 		});
 		if (!messageId) {
-			return console.error("Failed to save message to the database");
+			console.error("Failed to save message to the database"); return;
 		}
 
 		const response = Buffer.from(JSON.stringify({
@@ -140,12 +140,12 @@ export default class SocketController extends BaseSocket {
 
 		const exists = await this.liveRepository.getLiveById(r.liveId);
 		if (!exists) {
-			return console.error('No friendship found between users', r);
+			console.error('No friendship found between users', r); return;
 		}
 
 		const messageId = await this.liveRepository.createLiveMessage(r.liveId, r.sender, r.content);
 		if (!messageId) {
-			return console.error("Failed to save live message to the database");
+			console.error("Failed to save live message to the database"); return;
 		}
 
 		const response = Buffer.from(JSON.stringify({
@@ -165,10 +165,10 @@ export default class SocketController extends BaseSocket {
 
 		const liveConnections = this.liveRoomsConnections.get(r.liveId);
 		if (!liveConnections) {
-			return console.log(`WebSocket connection for live ${r.liveId} not found`);
+			console.log(`WebSocket connection for live ${r.liveId} not found`); return;
 		}
 
-		liveConnections.forEach(c => c.connection.send(response));
+		liveConnections.forEach(c => { c.connection.send(response); });
 
 		console.log(`Sent all messages to connections: ${liveConnections.length}`);
 	}
@@ -178,7 +178,7 @@ export default class SocketController extends BaseSocket {
 
 		const connection = this.connections.get(user.id);
 		if (!connection) {
-			return console.error(`No WebSocket connection for recipient: ${user}`);
+			console.error(`No WebSocket connection for recipient: ${user}`); return;
 		}
 
 		let liveConnections = this.liveRoomsConnections.get(liveId) || [];
@@ -194,7 +194,7 @@ export default class SocketController extends BaseSocket {
 
 		const connection = this.connections.get(r.recipient);
 		if (!connection) {
-			return console.error(`No WebSocket connection for recipient: ${r.recipient}`);
+			console.error(`No WebSocket connection for recipient: ${r.recipient}`); return;
 		}
 
 		const response = Buffer.from(JSON.stringify({
@@ -213,7 +213,7 @@ export default class SocketController extends BaseSocket {
 
 		const live = await this.liveRepository.getLiveById(liveId);
 		if (!live) {
-			return console.error(`No Active host for live: ${liveId}`);
+			console.error(`No Active host for live: ${liveId}`); return;
 		}
 
 		const response: T.Message.JoinLiveResponse = {
@@ -223,7 +223,7 @@ export default class SocketController extends BaseSocket {
 
 		host.send(Buffer.from(JSON.stringify(response)));
 
-		let liveConnections = this.liveRoomsConnections.get(liveId) || [];
+		const liveConnections = this.liveRoomsConnections.get(liveId) || [];
 		liveConnections.push({connection: host, userId: user.id});
 		this.liveRoomsConnections.set(liveId, liveConnections);
 

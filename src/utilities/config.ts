@@ -1,5 +1,6 @@
 import "dotenv/config";
 import z from "zod";
+import ms from "ms";
 
 const env = z.object({
 	FOLDER: z.string(),
@@ -33,7 +34,7 @@ const SECURITY = {
 	SALT_ROUNDS: parseInt(env.SALT_ROUNDS),
 	JWT_SECRET: env.JWT_SECRET,
 	JWT_TOKEN_NAME: env.JWT_TOKEN_NAME,
-	JWT_EXPIRATION_TIME: env.JWT_EXPIRATION_TIME
+	JWT_EXPIRATION_TIME: env.JWT_EXPIRATION_TIME as ms.StringValue
 };
 
 export {env, SECURITY}

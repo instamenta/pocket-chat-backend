@@ -1,16 +1,17 @@
 import {NextFunction, Request, Response} from 'express';
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import jwt, {JwtPayload, Secret, SignOptions} from 'jsonwebtoken';
 import {SECURITY} from "./config";
 import * as T from '../types';
 
 class JWT {
-	private static secret = SECURITY.JWT_SECRET;
+	private static secret: Secret = SECURITY.JWT_SECRET;
+	private static signOptions: SignOptions = {expiresIn: SECURITY.JWT_EXPIRATION_TIME}
 
 	static signToken(userData: T.User.Payload): string {
 		return jwt.sign(
-			userData,
-			this.secret,
-			{expiresIn: SECURITY.JWT_EXPIRATION_TIME}
+			userData as object,
+			JWT.secret,
+	JWT.signOptions
 		);
 	}
 

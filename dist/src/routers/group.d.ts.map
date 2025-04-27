@@ -1,0 +1,1 @@
+{"version":3,"file":"group.d.ts","sourceRoot":"","sources":["../../../src/routers/group.ts"],"names":[],"mappings":"AACA,OAAO,eAAe,MAAM,sBAAsB,CAAC;AACnD,OAAO,UAAU,MAAM,qBAAqB,CAAC;AAE7C,MAAM,CAAC,OAAO,OAAO,WAAY,SAAQ,UAAU,CAAC,eAAe,CAAC;IACnE,UAAU,CAAC,CAAC,EAAE,eAAe;CAgB7B"}

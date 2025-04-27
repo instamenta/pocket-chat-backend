@@ -1,0 +1,156 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
+const http_status_codes_2 = __importDefault(require("@instamenta/http-status-codes"));
+const zod_1 = require("zod");
+const enumerations_1 = require("../utilities/enumerations");
+const controller_base_1 = __importDefault(require("../base/controller.base"));
+const validators_1 = __importDefault(require("../validators"));
+class StoryController extends controller_base_1.default {
+    notificator;
+    constructor(repository, logger, notificator) {
+        super(repository, logger);
+        this.notificator = notificator;
+    }
+    async createStory(r, w) {
+        try {
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            const imageUrl = zod_1.z.string().url().parse(r.body.imageUrl);
+            const storyId = await this.repository.createStory({ userId, imageUrl });
+            if (!storyId) {
+                console.error(`${this.constructor.name}.createStory(): Failed to send message`);
+                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+            }
+            w.status(http_status_codes_1.default.CREATED).json({ id: storyId });
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async listStories(r, w) {
+        try {
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            const stories = await this.repository.listStories(userId);
+            if (!stories) {
+                console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
+                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+            }
+            w.status(http_status_codes_1.default.OK).json(stories);
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async listFeedStories(r, w) {
+        try {
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            const stories = await this.repository.listFeedStories(userId);
+            if (!stories) {
+                console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
+                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+            }
+            w.status(http_status_codes_1.default.OK).json(stories);
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async listFriendStoriesByUsername(r, w) {
+        try {
+            const userId = validators_1.default.name.parse(r.params.username);
+            const stories = await this.repository.listFriendStoriesByUsername(userId);
+            if (!stories) {
+                console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
+                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+            }
+            w.status(http_status_codes_1.default.OK).json(stories);
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async likeStory(r, w) {
+        try {
+            const storyId = validators_1.default.uuid.parse(r.params.id);
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            await this.repository.likeStory(storyId, userId);
+            w.status(http_status_codes_2.default.OK).end();
+            await this.notificator.handleNotification({
+                type: enumerations_1.notification_types.LIKE_STORY,
+                reference_id: '',
+                recipient_id: '',
+                sender_id: userId,
+                content: '',
+                seen: false,
+            }).catch(console.error);
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async listCommentsByStory(r, w) {
+        try {
+            const storyId = validators_1.default.uuid.parse(r.params.storyId);
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            const comments = await this.repository.listCommentsByStoryId(storyId, userId);
+            w.status(http_status_codes_2.default.OK).json(comments);
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async createStoryComment(r, w) {
+        try {
+            const storyId = validators_1.default.uuid.parse(r.params.storyId);
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            const content = zod_1.z.string().min(1).parse(r.body.content);
+            const comment = await this.repository.createStoryComment(storyId, userId, content);
+            w.status(http_status_codes_2.default.CREATED).json(comment);
+            await this.notificator.handleNotification({
+                type: enumerations_1.notification_types.COMMENT_STORY,
+                reference_id: storyId,
+                recipient_id: '',
+                sender_id: userId,
+                content: content,
+                seen: false,
+            }).catch(console.error);
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async deleteStoryComment(r, w) {
+        try {
+            const commentId = validators_1.default.uuid.parse(r.params.commentId);
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            await this.repository.deleteStoryComment(commentId, userId);
+            w.status(http_status_codes_2.default.NO_CONTENT).end();
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+    async likeStoryComment(r, w) {
+        try {
+            const commentId = validators_1.default.uuid.parse(r.params.commentId);
+            const userId = validators_1.default.uuid.parse(r.user.id);
+            await this.repository.likeStoryComment(commentId, userId);
+            await this.notificator.handleNotification({
+                type: enumerations_1.notification_types.LIKE_STORY_COMMENT,
+                reference_id: commentId,
+                recipient_id: '',
+                sender_id: userId,
+                content: '',
+                seen: false,
+            }).catch(console.error);
+            w.status(http_status_codes_2.default.OK).end();
+        }
+        catch (error) {
+            this.errorHandler(error, w);
+        }
+    }
+}
+exports.default = StoryController;

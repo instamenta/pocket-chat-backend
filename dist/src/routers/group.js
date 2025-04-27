@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const middlewares_1 = require("../middlewares");
+const router_base_1 = __importDefault(require("../base/router.base"));
+class GroupRouter extends router_base_1.default {
+    initialize(c) {
+        this.router.get('/', middlewares_1.isAuthorized, c.listGroups.bind(c));
+        this.router.get('/:id', middlewares_1.isAuthorized, c.getGroupById.bind(c));
+        this.router.get('/list/:userId', c.listGroupsByUser.bind(c));
+        this.router.get('/member/:id', middlewares_1.isAuthorized, c.getMembersByGroupId.bind(c));
+        this.router.get('/post/:groupId', middlewares_1.isAuthorized, c.listPublications.bind(c));
+        this.router.post('/', middlewares_1.isAuthorized, c.createGroup.bind(c));
+        this.router.post('/post', middlewares_1.isAuthorized, c.createPublication.bind(c));
+        this.router.put('/join/:id', middlewares_1.isAuthorized, c.joinGroup.bind(c));
+        this.router.put('/leave/:id', middlewares_1.isAuthorized, c.leaveGroup.bind(c));
+        this.router.put('/:groupId/:recipientId', middlewares_1.isAuthorized, c.changeRole.bind(c));
+        this.router.delete('/:groupId', middlewares_1.isAuthorized, c.removeGroup.bind(c));
+        this.router.delete('/:groupId/:recipientId', middlewares_1.isAuthorized, c.removeMember.bind(c));
+    }
+}
+exports.default = GroupRouter;

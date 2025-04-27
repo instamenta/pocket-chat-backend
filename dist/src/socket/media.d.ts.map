@@ -1,0 +1,1 @@
+{"version":3,"file":"media.d.ts","sourceRoot":"","sources":["../../../src/socket/media.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,MAAM,EAAS,MAAM,WAAW,CAAC;AACzC,OAAO,EAAC,gBAAgB,EAAC,MAAM,6BAA6B,CAAC;AAK7D,MAAM,CAAC,OAAO,OAAO,eAAe;IAGlC,OAAO,CAAC,QAAQ,CAAC,EAAE;gBAAF,EAAE,EAAE,MAAM,CAAC,gBAAgB,EAAE,gBAAgB,EAAE,gBAAgB,EAAE,GAAG,CAAC;IAKjF,KAAK;CAoBX"}
