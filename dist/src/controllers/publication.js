@@ -26,9 +26,12 @@ class PublicationController extends controller_base_1.default {
         try {
             const id = validators_1.Validate.uuid.parse(r.params.id);
             const publication = await this.repository.getPublicationById(id);
-            !publication
-                ? w.status(http_status_codes_1.default.NOT_FOUND).end()
-                : w.status(http_status_codes_1.default.OK).json(publication);
+            if (publication) {
+                w.status(http_status_codes_1.default.OK).json(publication);
+            }
+            else {
+                w.status(http_status_codes_1.default.NOT_FOUND).end();
+            }
         }
         catch (error) {
             this.errorHandler(error, w);

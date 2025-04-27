@@ -13,7 +13,7 @@ const bcrypt_1 = __importDefault(require("./utilities/bcrypt"));
 const notificator_1 = __importDefault(require("./utilities/notificator"));
 const intialize_1 = __importDefault(require("./utilities/intialize"));
 void async function start_service() {
-    const { server, api, database, cache, socket, logger } = await (0, intialize_1.default)();
+    const { api, database, cache, logger } = await (0, intialize_1.default)();
     graceful_shutdown(database, cache);
     const hashingHandler = new bcrypt_1.default();
     const repository = {
@@ -35,23 +35,23 @@ void async function start_service() {
         story: new controllers_1.default.Story(repository.story, logger, notificator),
         short: new controllers_1.default.Short(repository.short, logger, notificator),
         group: new controllers_1.default.Group(repository.group, logger),
-        friend: new controllers_1.default.Friend(repository.friend, logger, repository.notification),
+        friend: new controllers_1.default.Friend(repository.friend, logger),
         message: new controllers_1.default.Message(repository.message, logger),
         comment: new controllers_1.default.Comment(repository.comment, logger, notificator),
         publication: new controllers_1.default.Publication(repository.publications, logger, notificator),
         notification: new controllers_1.default.Notification(repository.notification, logger),
     };
     const router = {
-        user: new routers_1.default.User(controller.user).getRouter(),
-        live: new routers_1.default.Live(controller.live).getRouter(),
-        story: new routers_1.default.Story(controller.story).getRouter(),
-        short: new routers_1.default.Short(controller.short).getRouter(),
-        group: new routers_1.default.Group(controller.group).getRouter(),
-        friend: new routers_1.default.Friend(controller.friend).getRouter(),
-        comment: new routers_1.default.Comment(controller.comment).getRouter(),
-        message: new routers_1.default.Message(controller.message).getRouter(),
-        publication: new routers_1.default.Publication(controller.publication).getRouter(),
-        notification: new routers_1.default.Notification(controller.notification).getRouter(),
+        user: new routers_1.default.User(controller.user).router,
+        live: new routers_1.default.Live(controller.live).router,
+        story: new routers_1.default.Story(controller.story).router,
+        short: new routers_1.default.Short(controller.short).router,
+        group: new routers_1.default.Group(controller.group).router,
+        friend: new routers_1.default.Friend(controller.friend).router,
+        comment: new routers_1.default.Comment(controller.comment).router,
+        message: new routers_1.default.Message(controller.message).router,
+        publication: new routers_1.default.Publication(controller.publication).router,
+        notification: new routers_1.default.Notification(controller.notification).router,
     };
     api.use('/api/user', router.user);
     api.use('/api/live', router.live);
@@ -63,6 +63,7 @@ void async function start_service() {
     api.use('/api/message', router.message);
     api.use('/api/publication', router.publication);
     api.use('/api/notification', router.notification);
+    // @ts-expect-error - to assign handler
     api.use(middlewares_1.Middlewares.errorHandler);
     api.listen(+config_1.env.SERVER_PORT, config_1.env.SERVER_HOST, () => {
         logger.info('App', '', `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
@@ -70,18 +71,16 @@ void async function start_service() {
 }();
 function graceful_shutdown(database, cache) {
     ['uncaughtException', 'unhandledRejection'].map((type) => {
-        process.on(type, async (...args) => {
-            try {
-                console.error(`process.on ${type} with ${args}`, args);
-                await database.end();
+        process.on(type, (...args) => {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            console.error(`process.on ${type} with ${args}`, args);
+            database.end().then(() => {
                 cache.disconnect();
-            }
-            catch (error) {
+            }).catch((error) => {
                 console.error(error);
-            }
-            finally {
+            }).finally(() => {
                 process.exit(1);
-            }
+            });
         });
     });
 }

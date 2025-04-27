@@ -44,7 +44,7 @@ void async function start_service() {
 		story: new Controller.Story(repository.story, logger, notificator),
 		short: new Controller.Short(repository.short, logger, notificator),
 		group: new Controller.Group(repository.group, logger),
-		friend: new Controller.Friend(repository.friend, logger, repository.notification),
+		friend: new Controller.Friend(repository.friend, logger),
 		message: new Controller.Message(repository.message, logger),
 		comment: new Controller.Comment(repository.comment, logger, notificator),
 		publication: new Controller.Publication(repository.publications, logger, notificator),
@@ -52,16 +52,16 @@ void async function start_service() {
 	};
 
 	const router = {
-		user: new Router.User(controller.user).getRouter(),
-		live: new Router.Live(controller.live).getRouter(),
-		story: new Router.Story(controller.story).getRouter(),
-		short: new Router.Short(controller.short).getRouter(),
-		group: new Router.Group(controller.group).getRouter(),
-		friend: new Router.Friend(controller.friend).getRouter(),
-		comment: new Router.Comment(controller.comment).getRouter(),
-		message: new Router.Message(controller.message).getRouter(),
-		publication: new Router.Publication(controller.publication).getRouter(),
-		notification: new Router.Notification(controller.notification).getRouter(),
+		user: new Router.User(controller.user).router,
+		live: new Router.Live(controller.live).router,
+		story: new Router.Story(controller.story).router,
+		short: new Router.Short(controller.short).router,
+		group: new Router.Group(controller.group).router,
+		friend: new Router.Friend(controller.friend).router,
+		comment: new Router.Comment(controller.comment).router,
+		message: new Router.Message(controller.message).router,
+		publication: new Router.Publication(controller.publication).router,
+		notification: new Router.Notification(controller.notification).router,
 	};
 
 	api.use('/api/user', router.user);
@@ -75,6 +75,7 @@ void async function start_service() {
 	api.use('/api/publication', router.publication);
 	api.use('/api/notification', router.notification);
 
+	// @ts-expect-error - to assign handler
 	api.use(Middlewares.errorHandler);
 
 	api.listen(+env.SERVER_PORT, env.SERVER_HOST, () => {

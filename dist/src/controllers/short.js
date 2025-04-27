@@ -39,10 +39,6 @@ class ShortController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.user.id);
             const shorts = await this.repository.listShorts(userId);
-            if (!shorts) {
-                this.log.error({ e: `Failed to get stories`, m: userId });
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(shorts);
         }
         catch (error) {
@@ -54,10 +50,6 @@ class ShortController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.params.id);
             const stories = await this.repository.listShortsById(userId);
-            if (!stories) {
-                this.log.error({ e: 'Failed to get stories', m: userId });
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(stories);
         }
         catch (error) {
@@ -101,7 +93,7 @@ class ShortController extends controller_base_1.default {
                 content: '',
                 seen: false,
             })
-                .catch(e => { this.log.error({ e }); });
+                .catch((error) => { this.log.error({ e: error }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -135,7 +127,7 @@ class ShortController extends controller_base_1.default {
                 content: content,
                 seen: false,
             })
-                .catch(e => { this.log.error({ e }); });
+                .catch((error) => { this.log.error({ e: error }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -168,7 +160,7 @@ class ShortController extends controller_base_1.default {
                 content: '',
                 seen: false,
             })
-                .catch((e) => { this.log.error({ e }); });
+                .catch((error) => { this.log.error({ e: error }); });
         }
         catch (error) {
             this.errorHandler(error, w);

@@ -1,33 +1,24 @@
 import { Request, Response } from "express";
 import FriendRepository from "../repositories/friend";
-import NotificationRepository from "../repositories/notification";
 import BaseController from "../base/controller.base";
 import * as T from '../types';
-import VLogger from "@instamenta/vlogger";
 export default class FriendController extends BaseController<FriendRepository> {
-    private readonly notification;
-    constructor(repository: FriendRepository, logger: VLogger, notification: NotificationRepository);
-    sendFriendRequest(r: Request<{
+    sendFriendRequest(request: Request<{
         id: string;
-    }>, w: Response<{
+    }>, response: Response<{
         friendship_id: string;
     }>): Promise<Response<{
         friendship_id: string;
     }, Record<string, any>> | undefined>;
-    listFriendRequestsOnly(r: Request, w: Response<T.Friend.RequestData[]>): Promise<Response<T.Friend.RequestData[], Record<string, any>> | undefined>;
-    listFriendSentOnly(r: Request, w: Response<T.Friend.RequestData[]>): Promise<Response<T.Friend.RequestData[], Record<string, any>> | undefined>;
-    listFriendRequests(r: Request, w: Response<T.Friend.RequestData[]>): Promise<Response<T.Friend.RequestData[], Record<string, any>> | undefined>;
+    listFriendRequestsOnly(r: Request, w: Response<T.Friend.RequestData[]>): Promise<void>;
+    listFriendSentOnly(r: Request, w: Response<T.Friend.RequestData[]>): Promise<void>;
+    listFriendRequests(r: Request, w: Response<T.Friend.RequestData[]>): Promise<void>;
     listFriendRecommendations(r: Request, w: Response<{
         id: string;
         first_name: string;
         picture: string;
         username: string;
-    }[]>): Promise<Response<{
-        id: string;
-        first_name: string;
-        picture: string;
-        username: string;
-    }[], Record<string, any>> | undefined>;
+    }[]>): Promise<void>;
     acceptFriendRequest(r: Request<{
         id: string;
     }>, w: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;
@@ -48,24 +39,21 @@ export default class FriendController extends BaseController<FriendRepository> {
     }>): Promise<Response<{
         count: number;
     }, Record<string, any>> | undefined>;
-    getFriendsByUserIdAndSender(r: Request<{
-        id: string;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
     listMutualFriendsByUsers(r: Request<{
         id: string;
-    }>, w: Response<T.Friend.Mutual[]>): Promise<Response<T.Friend.Mutual[], Record<string, any>> | undefined>;
+    }>, w: Response<T.Friend.Mutual[]>): Promise<void>;
     listFriendsByUserId(r: Request<{
         id: string;
-    }>, w: Response<T.User.Schema[]>): Promise<Response<T.User.Schema[], Record<string, any>> | undefined>;
+    }>, w: Response<T.User.Schema[]>): Promise<void>;
     listFriendsByUsername(r: Request<{
         username: string;
-    }>, w: Response<T.User.Schema[]>): Promise<Response<T.User.Schema[], Record<string, any>> | undefined>;
+    }>, w: Response<T.User.Schema[]>): Promise<void>;
     getBySenderAndRecipient(r: Request<{
         sender: string;
         recipient: string;
-    }>, w: Response<T.Friend.Friendship>): Promise<Response<T.Friend.Friendship, Record<string, any>> | undefined>;
+    }>, w: Response<T.Friend.Friendship>): Promise<void>;
     getById(r: Request<{
         id: string;
-    }>, w: Response<T.Friend.Friendship>): Promise<Response<T.Friend.Friendship, Record<string, any>> | undefined>;
+    }>, w: Response<T.Friend.Friendship>): Promise<void>;
 }
 //# sourceMappingURL=friend.d.ts.map

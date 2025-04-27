@@ -8,8 +8,6 @@ const router_base_1 = __importDefault(require("../base/router.base"));
 class FriendRouter extends router_base_1.default {
     initialize(c) {
         // @ts-expect-error - to assign handlers
-        this.router.get('/maikati/:id', middlewares_1.Middlewares.isAuthorized, c.getFriendsByUserIdAndSender.bind(c));
-        // @ts-expect-error - to assign handlers
         this.router.get('/', middlewares_1.Middlewares.isAuthorized, c.listFriendRequests.bind(c));
         // @ts-expect-error - to assign handlers
         this.router.get('/one/:id', middlewares_1.Middlewares.isAuthorized, c.getById.bind(c));

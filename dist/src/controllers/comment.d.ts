@@ -12,7 +12,7 @@ export default class CommentController extends BaseController<CommentRepository>
     }>, w: Response<T.Comment.Populated[]>): Promise<void>;
     create(r: Request<{
         publicationId: string;
-    }, {}, {
+    }, object, {
         content: string;
     }>, w: Response<T.Comment.Comment>): Promise<void>;
     delete(r: Request<{

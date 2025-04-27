@@ -7,18 +7,18 @@ import VLogger from "@instamenta/vlogger";
 export default class StoryController extends BaseController<StoryRepository> {
     private readonly notificator;
     constructor(repository: StoryRepository, logger: VLogger, notificator: Notificator);
-    createStory(r: Request<{}, {}, {
+    createStory(r: Request<object, object, {
         imageUrl: string;
     }>, w: Response<{
         id: string;
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listStories(r: Request, w: Response<T.Story.Feed[]>): Promise<Response<T.Story.Feed[], Record<string, any>> | undefined>;
-    listFeedStories(r: Request, w: Response<T.Story.Feed[]>): Promise<Response<T.Story.Feed[], Record<string, any>> | undefined>;
+    listStories(r: Request, w: Response<T.Story.Feed[]>): Promise<void>;
+    listFeedStories(r: Request, w: Response<T.Story.Feed[]>): Promise<void>;
     listFriendStoriesByUsername(r: Request<{
         username: string;
-    }>, w: Response<T.Story.Full[]>): Promise<Response<T.Story.Full[], Record<string, any>> | undefined>;
+    }>, w: Response<T.Story.Full[]>): Promise<void>;
     likeStory(r: Request<{
         id: string;
     }>, w: Response<void>): Promise<void>;
@@ -27,7 +27,7 @@ export default class StoryController extends BaseController<StoryRepository> {
     }>, w: Response<T.Comment.Populated[]>): Promise<void>;
     createStoryComment(r: Request<{
         storyId: string;
-    }, {}, {
+    }, object, {
         content: string;
     }>, w: Response<T.Comment.Comment>): Promise<void>;
     deleteStoryComment(r: Request<{

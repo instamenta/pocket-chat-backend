@@ -42,7 +42,7 @@ class CommentController extends controller_base_1.default {
                 content: content,
                 seen: false,
             })
-                .catch(e => { this.log.error({ e }); });
+                .catch((error) => { this.log.error({ e: error }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -74,7 +74,7 @@ class CommentController extends controller_base_1.default {
                 content: '',
                 seen: false,
             })
-                .catch(e => { this.log.error({ e }); });
+                .catch((error) => { this.log.error({ e: error }); });
             w.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {

@@ -128,10 +128,10 @@ export declare class Validate {
         type: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: string;
+        seen: boolean;
         sender: string;
         recipient: string;
         content: string;
-        seen: boolean;
     }, {
         type: string;
         sender: string;

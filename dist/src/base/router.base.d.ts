@@ -1,8 +1,7 @@
 import { Router } from "express";
-export default class BaseRouter<T> {
-    protected router: Router;
+export default abstract class BaseRouter<T> {
+    readonly router: Router;
     constructor(controller: T);
-    protected initialize(c: T): void;
-    getRouter(): Router;
+    protected abstract initialize(controller: T): void;
 }
 //# sourceMappingURL=router.base.d.ts.map

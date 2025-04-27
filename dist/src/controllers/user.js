@@ -19,10 +19,6 @@ class UserController extends controller_base_1.default {
         try {
             const { skip, limit } = { skip: 0, limit: 10 };
             const userList = await this.repository.listUsers(skip, limit);
-            if (!userList) {
-                console.error(`${this.constructor.name}.listUsers(): Failed to get user list`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(userList);
         }
         catch (error) {
@@ -112,14 +108,14 @@ class UserController extends controller_base_1.default {
             this.errorHandler(error, w);
         }
     }
-    async updateBio(r, w) {
+    async updateBio(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
-            const bio = zod_1.z.string().parse(r.body.bio);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
+            const bio = zod_1.z.string().parse(request.body.bio);
             const userData = await this.repository.updateBio(id, bio);
             if (!userData) {
                 console.log(`${this.constructor.name}.updateBio(): Failed to update`);
-                return w.status(http_status_codes_1.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
             const token = jwt_1.default.signToken({
                 id: userData.id,
@@ -127,10 +123,10 @@ class UserController extends controller_base_1.default {
                 username: userData.username,
                 picture: userData.picture
             });
-            w.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id, userData });
+            response.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id, userData });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
     async updateProfilePicture(r, w) {

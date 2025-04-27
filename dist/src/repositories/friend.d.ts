@@ -19,7 +19,6 @@ export default class FriendRepository extends BaseRepository {
     listFriendRequestsOnly(id: string): Promise<T.Friend.RequestData[]>;
     listFriendSentOnly(id: string): Promise<T.Friend.RequestData[]>;
     getBySenderAndRecipient(sender: string, recipient: string): Promise<T.Friend.Friendship>;
-    getFriendsByUserIdAndSender(user: string, sender_id: string): Promise<void>;
     getById(id: string): Promise<T.Friend.Friendship>;
 }
 //# sourceMappingURL=friend.d.ts.map

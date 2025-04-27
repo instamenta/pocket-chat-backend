@@ -7,13 +7,11 @@ exports.default = initialize_all;
 const config_1 = require("./config");
 const pg_1 = require("pg");
 const ioredis_1 = __importDefault(require("ioredis"));
-const node_http_1 = __importDefault(require("node:http"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const ws_1 = require("ws");
 const vlogger_1 = __importDefault(require("@instamenta/vlogger"));
 const corsOptions = {
     origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:3004', 'http://localhost:5173', 'http://192.168.1.8:3001'],
@@ -31,12 +29,9 @@ async function initialize_all() {
     api.use(body_parser_1.default.json());
     api.use((0, morgan_1.default)('dev'));
     api.use(body_parser_1.default.urlencoded({ extended: true }));
-    const server = node_http_1.default.createServer();
-    const socket = new ws_1.WebSocketServer({ server });
-    server.on("error", (e) => { log.error({ e, m: 'Websocket server Error' }); });
     api.on('error', (e) => { log.error({ e, m: 'Express server error' }); });
     const database = new pg_1.Client({ connectionString: config_1.env.DATABASE_URL });
     await database.connect();
     const cache = new ioredis_1.default({ host: config_1.env.REDIS_HOST, port: parseInt(config_1.env.REDIS_PORT) });
-    return { server, api, database, cache, socket, logger };
+    return { api, database, cache, logger };
 }

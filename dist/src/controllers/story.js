@@ -34,10 +34,6 @@ class StoryController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.user.id);
             const stories = await this.repository.listStories(userId);
-            if (!stories) {
-                console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(stories);
         }
         catch (error) {
@@ -48,10 +44,6 @@ class StoryController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.user.id);
             const stories = await this.repository.listFeedStories(userId);
-            if (!stories) {
-                console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(stories);
         }
         catch (error) {
@@ -62,10 +54,6 @@ class StoryController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.name.parse(r.params.username);
             const stories = await this.repository.listFriendStoriesByUsername(userId);
-            if (!stories) {
-                console.error(`${this.constructor.name}.listStories(): Failed to get stories`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(stories);
         }
         catch (error) {

@@ -7,21 +7,17 @@ const http_status_codes_1 = __importDefault(require("@instamenta/http-status-cod
 const controller_base_1 = __importDefault(require("../base/controller.base"));
 const validators_1 = require("../validators");
 class NotificationController extends controller_base_1.default {
-    async createNotification(r, w) {
+    createNotification(_request, response) {
         try {
-            w.status(http_status_codes_1.default.NOT_IMPLEMENTED).end();
+            response.status(http_status_codes_1.default.NOT_IMPLEMENTED).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
     async listNotifications(r, w) {
         try {
             const notifications = await this.repository.listNotifications(validators_1.Validate.uuid.parse(r.user.id), r.query.filter);
-            if (!notifications) {
-                console.error(`${this.constructor.name}.listNotifications(): Failed to get messages`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(notifications);
         }
         catch (error) {

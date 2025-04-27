@@ -12,11 +12,9 @@ import * as Friend from './friend'
 
 export {U, User, Live, Group, Story, Short, Friend, Message, Comment, Publication, Notification};
 
-declare global {
-	namespace Express {
-		interface Request {
-			user: User.Payload
-			cookies: Record<string, string>,
-		}
+declare module 'express' {
+	interface Request {
+		user: User.Payload;
+		cookies: Record<string, string>;
 	}
 }

@@ -45,6 +45,7 @@ function isAuthorized(request, response, next) {
     request.user = user;
     next();
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function errorHandler(error, _request, response, _next) {
     console.error(error.stack);
     response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });

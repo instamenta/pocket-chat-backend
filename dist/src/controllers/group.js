@@ -47,10 +47,6 @@ class GroupController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.user.id);
             const groups = await this.repository.listGroups(userId);
-            if (!groups) {
-                console.error(`${this.constructor.name}.listGroups(): Failed to get groups`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(groups);
         }
         catch (error) {
@@ -61,10 +57,6 @@ class GroupController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.params.userId);
             const groups = await this.repository.listGroupsByUser(userId);
-            if (!groups) {
-                console.error(`${this.constructor.name}.listUsersGroups(): Failed to get groups`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(groups);
         }
         catch (error) {
@@ -120,7 +112,7 @@ class GroupController extends controller_base_1.default {
             const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
             const senderId = validators_1.Validate.uuid.parse(r.user.id);
             const recipientId = validators_1.Validate.uuid.parse(r.params.recipientId);
-            if (r.body.newRole !== 'member' || r.body.newRole !== 'moderator') {
+            if (r.body.newRole !== 'member' && r.body.newRole !== 'moderator') {
                 throw new Error('Invalid Role');
             }
             const success = await this.repository.changeRole(groupId, senderId, recipientId, r.body.newRole);
@@ -154,10 +146,6 @@ class GroupController extends controller_base_1.default {
         try {
             const groupId = validators_1.Validate.uuid.parse(r.params.id);
             const members = await this.repository.getMembersByGroupId(groupId);
-            if (!members) {
-                console.error(`${this.constructor.name}.changeRole(): Error`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(members);
         }
         catch (error) {

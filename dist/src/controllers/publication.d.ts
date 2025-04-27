@@ -20,13 +20,13 @@ export default class PublicationController extends BaseController<PublicationsRe
         count: number;
     }>): Promise<void>;
     getRecommendations(r: Request, w: Response<T.Publication.Publication[]>): Promise<void>;
-    createPublication(r: Request<{}, {
+    createPublication(r: Request<object, {
         id: string;
     }, {
         description: string;
         images: string;
         publication_status: string;
-    }, {}>, w: Response<{
+    }>, w: Response<{
         id: string;
     }>): Promise<void>;
     updatePublication(r: Request<{

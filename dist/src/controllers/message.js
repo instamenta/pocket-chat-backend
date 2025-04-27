@@ -31,10 +31,6 @@ class MessageController extends controller_base_1.default {
     async listMessagesByFriendship(r, w) {
         try {
             const messages = await this.repository.getMessagesByFriendshipId(validators_1.Validate.uuid.parse(r.params.friendshipId), Number.parseInt(r.query.skip || '0', 10), Number.parseInt(r.query.limit || '20', 10));
-            if (!messages) {
-                console.error(`${this.constructor.name}.listMessagesByFriendship(): Failed to get messages`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
@@ -44,10 +40,6 @@ class MessageController extends controller_base_1.default {
     async listMessagesByUsers(r, w) {
         try {
             const messages = await this.repository.getMessagesByUsers(validators_1.Validate.uuid.parse(r.params.user1), validators_1.Validate.uuid.parse(r.params.user2), Number.parseInt(r.query.skip || '0', 10), Number.parseInt(r.query.limit || '20', 10));
-            if (!messages) {
-                console.error(`${this.constructor.name}.listMessagesByUsers(): Failed to get messages`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
@@ -71,10 +63,6 @@ class MessageController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.user.id);
             const conversations = await this.repository.listConversations(userId);
-            if (!conversations) {
-                console.error(`${this.constructor.name}.listConversations(): Failed to list conversations`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(conversations);
         }
         catch (error) {

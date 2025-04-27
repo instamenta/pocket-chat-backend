@@ -9,11 +9,11 @@ import VLogger from "@instamenta/vlogger";
 export default class UserController extends BaseController<UserRepository> {
     private readonly hashingHandler;
     constructor(repository: UserRepository, logger: VLogger, hashingHandler: I_HashingHandler);
-    listUsers(r: Request<{}, {}, {}, {
+    listUsers(r: Request<object, object, object, {
         skip?: string;
         number?: string;
-    }>, w: Response<Omit<T.User.Schema, "updated_at">[]>): Promise<Response<Omit<T.User.Schema, "updated_at">[], Record<string, any>> | undefined>;
-    signUp(r: Request<{}, z.infer<typeof Validate.create_user>>, w: Response<{
+    }>, w: Response<Omit<T.User.Schema, "updated_at">[]>): Promise<void>;
+    signUp(r: Request<object, z.infer<typeof Validate.create_user>>, w: Response<{
         token: string;
         id: string;
     }>): Promise<Response<{
@@ -37,9 +37,9 @@ export default class UserController extends BaseController<UserRepository> {
     getUserByUsername(r: Request<{
         username: string;
     }>, w: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
-    updateBio(r: Request<{}, {
+    updateBio(request: Request<object, object, {
         bio: string;
-    }>, w: Response<{
+    }>, response: Response<{
         token: string;
         id: string;
         userData: T.User.Schema;
@@ -48,7 +48,7 @@ export default class UserController extends BaseController<UserRepository> {
         id: string;
         userData: T.User.Schema;
     }, Record<string, any>> | undefined>;
-    updateProfilePicture(r: Request<{}, {
+    updateProfilePicture(r: Request<object, object, {
         picture_url: string;
     }>, w: Response<{
         token: string;
@@ -59,7 +59,12 @@ export default class UserController extends BaseController<UserRepository> {
         id: string;
         userData: T.User.Schema;
     }, Record<string, any>> | undefined>;
-    updateProfilePublicInformation(r: Request, w: Response<{
+    updateProfilePublicInformation(r: Request<object, object, {
+        firstName: string;
+        lastName: string;
+        username: string;
+        email: string;
+    }>, w: Response<{
         token: string;
         id: string;
         userData: T.User.Schema;

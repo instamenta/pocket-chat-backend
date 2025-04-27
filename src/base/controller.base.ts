@@ -13,7 +13,7 @@ export default class BaseController<T> {
 		this.log = logger.getVlogger(this.constructor.name);
 	}
 
-	protected errorHandler(error: ZodError | unknown, response: Response) {
+	protected errorHandler(error: unknown, response: Response) {
 		if (error instanceof ZodError) {
 			const formattedError = error.errors.map((issue) => {
 				return {

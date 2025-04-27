@@ -7,7 +7,7 @@ import VLogger from "@instamenta/vlogger";
 export default class ShortController extends BaseController<ShortRepository> {
     private readonly notificator;
     constructor(repository: ShortRepository, logger: VLogger, notificator: Notificator);
-    createShort(r: Request<{}, {
+    createShort(r: Request<object, object, {
         videoUrl: string;
         description: string;
     }>, w: Response<{
@@ -15,10 +15,10 @@ export default class ShortController extends BaseController<ShortRepository> {
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listShorts(r: Request, w: Response<T.Short.Populated[]>): Promise<Response<T.Short.Populated[], Record<string, any>> | undefined>;
+    listShorts(r: Request, w: Response<T.Short.Populated[]>): Promise<void>;
     listShortsByUsername(r: Request<{
         id: string;
-    }>, w: Response<T.Short.Populated[]>): Promise<Response<T.Short.Populated[], Record<string, any>> | undefined>;
+    }>, w: Response<T.Short.Populated[]>): Promise<void>;
     getShortById(r: Request<{
         shortId: string;
     }>, w: Response<T.Short.Populated>): Promise<Response<T.Short.Populated, Record<string, any>> | undefined>;
@@ -30,7 +30,7 @@ export default class ShortController extends BaseController<ShortRepository> {
     }>, w: Response<T.Comment.Populated[]>): Promise<void>;
     createShortComment(r: Request<{
         shortId: string;
-    }, {}, {
+    }, object, {
         content: string;
     }>, w: Response<T.Comment.Comment>): Promise<void>;
     deleteShortComment(r: Request<{

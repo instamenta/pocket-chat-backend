@@ -193,36 +193,6 @@ class FriendRepository extends repository_base_1.default {
 			`, [sender, recipient]).then(data => data.rows[0] ?? null)
             .catch((error) => this.errorHandler(error, 'getBySenderAndRecipient'));
     }
-    async getFriendsByUserIdAndSender(user, sender_id) {
-        const notMutual = await this.database.query(`
-          WITH friendsList AS (SELECT (CASE WHEN $1 = sender_id THEN recipient_id ELSE sender_id END) as user_id
-                               FROM friendships
-                               WHERE (($1 = sender_id OR $1 = recipient_id) AND friendship_status = 'accepted'))
-          SELECT u.*
-          FROM users u
-                   JOIN friendsList ON u.id = friendsList.user_id
-                   JOIN friendships f ON
-              (f.sender_id = u.id AND f.recipient_id != $2) OR
-              (f.sender_id != $2 AND f.recipient_id = u.id)
-			`, [user, sender_id]);
-        console.log(notMutual.rowCount);
-        // const mutual = await this.database.query(
-        // 	`
-        //       WITH friendsList AS (SELECT (CASE WHEN $1 = sender_id THEN recipient_id ELSE sender_id END) as user_id
-        //                            FROM friendships
-        //                            WHERE (($1 = sender_id OR $1 = recipient_id) AND friendship_status = 'accepted'))
-        //       SELECT u.*
-        //       FROM users u
-        //                JOIN friendsList ON u.id = friendsList.user_id
-        //                JOIN friendships f ON
-        //           (f.sender_id = u.id AND f.recipient_id = $2) OR
-        //           (f.sender_id = $2 AND f.recipient_id = u.id)
-        // 	`,
-        // 	[user, sender_id])
-        // ;
-        //
-        // console.log(mutual.rows);
-    }
     getById(id) {
         return this.database.query(`
                 SELECT *

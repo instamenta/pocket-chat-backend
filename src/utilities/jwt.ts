@@ -29,7 +29,7 @@ class JWT {
 	}
 
 	static getTokenFromCookie(request: Request): string | null {
-		return (request as Express.Request).cookies[SECURITY.JWT_TOKEN_NAME] || null;
+		return request.cookies[SECURITY.JWT_TOKEN_NAME] || null;
 	}
 
 	static authenticate(request: Request, response: Response, next: NextFunction) {
@@ -39,7 +39,7 @@ class JWT {
 		const user = this.verifyToken(token);
 		if (!user) return response.status(401).json({message: 'Unauthorized'});
 
-		(request as Express.Request).user = user;
+		request.user = user;
 		next();
 	}
 

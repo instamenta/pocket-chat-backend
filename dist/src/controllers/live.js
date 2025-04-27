@@ -25,10 +25,6 @@ class LiveController extends controller_base_1.default {
         try {
             const userId = validators_1.Validate.uuid.parse(r.user.id);
             const lives = await this.repository.listLives(userId);
-            if (!lives) {
-                console.error(`${this.constructor.name}.listLives(): Failed to list lives`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(lives);
         }
         catch (error) {
@@ -39,10 +35,6 @@ class LiveController extends controller_base_1.default {
         try {
             const liveId = validators_1.Validate.uuid.parse(r.params.liveId);
             const messages = await this.repository.listLiveMessages(liveId);
-            if (!messages) {
-                console.error(`${this.constructor.name}.listLiveMessages(): Failed to list live messages`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
-            }
             w.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {

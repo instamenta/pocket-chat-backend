@@ -4,15 +4,15 @@ import { notification_types } from "../utilities/enumerations";
 import BaseController from "../base/controller.base";
 import * as T from '../types';
 export default class NotificationController extends BaseController<NotificationRepository> {
-    createNotification(r: Request<{}, {}, {
+    createNotification(_request: Request<object, object, {
         recipient: string;
         type: notification_types;
         seen: boolean;
         content: string;
-    }>, w: Response): Promise<void>;
-    listNotifications(r: Request<{}, {}, {}, {
+    }>, response: Response): void;
+    listNotifications(r: Request<object, object, object, {
         filter?: 'all' | 'seen' | 'unseen';
-    }>, w: Response<T.Notification.Populated[]>): Promise<Response<T.Notification.Populated[], Record<string, any>> | undefined>;
+    }>, w: Response<T.Notification.Populated[]>): Promise<void>;
     markNotificationAsSeen(r: Request<{
         id: string;
     }>, w: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;

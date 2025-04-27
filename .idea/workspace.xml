@@ -6,12 +6,75 @@
   <component name="ChangeListManager">
     <list default="true" id="bc0168e3-c2eb-4e5a-99ef-3c4afae5190c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/live.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/live.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/message.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/message.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/notification.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/notification.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/publication.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/short.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/short.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/story.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/story.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/eslint.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/dist/eslint.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/base/controller.base.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/controller.base.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/base/controller.base.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/controller.base.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/base/router.base.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/router.base.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/base/router.base.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/router.base.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/base/router.base.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/base/router.base.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/comment.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/comment.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/comment.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/comment.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/comment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/friend.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/friend.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/friend.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/friend.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/friend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/group.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/group.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/group.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/group.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/group.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/group.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/live.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/live.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/live.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/live.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/live.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/live.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/message.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/message.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/message.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/message.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/message.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/notification.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/notification.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/notification.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/notification.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/notification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/publication.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/publication.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/publication.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/publication.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/publication.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/publication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/short.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/short.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/short.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/short.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/short.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/short.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/story.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/story.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/story.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/story.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/story.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/story.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/user.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/user.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/user.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/controllers/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/controllers/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middlewares/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/middlewares/index.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/middlewares/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/middlewares/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/repositories/friend.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/friend.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/repositories/friend.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/friend.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/repositories/friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/friend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/repositories/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/user.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/repositories/user.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/repositories/user.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/friend.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/friend.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/routers/friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/routers/friend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/utilities/intialize.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/utilities/intialize.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/utilities/intialize.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/src/validators/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/src/validators/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base/controller.base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/controller.base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base/router.base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/router.base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base/socket.base.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/publication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/comment.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/comment.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/friend.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/friend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/group.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/group.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/live.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/live.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/message.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/message.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/notification.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/notification.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/publication.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/publication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/short.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/short.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/story.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/story.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/unions.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/unions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utilities/jwt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/jwt.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

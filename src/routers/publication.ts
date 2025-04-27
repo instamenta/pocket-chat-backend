@@ -10,7 +10,9 @@ export default class PublicationRouter extends BaseRouter<PublicationController>
 		this.router.get('/recommendations', Middlewares.isAuthorized, c.getRecommendations.bind(c));
 		// @ts-expect-error - to assign handlers
 		this.router.get('/:id', Middlewares.isAuthorized, c.getPublicationById.bind(c));
+		// @ts-expect-error - to assign handlers
 		this.router.get('/user/:id', c.getPublicationsByUserId.bind(c));
+		// @ts-expect-error - to assign handlers
 		this.router.get('/user/:id/count', c.getPublicationsCountByUserId.bind(c));
 
 		// @ts-expect-error - to assign handlers
