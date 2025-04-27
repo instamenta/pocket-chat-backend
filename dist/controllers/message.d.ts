@@ -1,41 +1,41 @@
 import { Request, Response } from "express";
 import MessageRepository from "../repositories/message";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 export default class MessageController extends BaseController<MessageRepository> {
-    sendMessage(r: Request<object, object, {
+    sendMessage(request: Request<object, object, {
         recipient: string;
         content: string;
         friendship: string;
         images?: string[];
         files?: string[];
-    }>, w: Response<{
+    }>, response: Response<{
         id: string;
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listMessagesByFriendship(r: Request<{
+    listMessagesByFriendship(request: Request<{
         friendshipId: string;
     }, object, object, {
         skip?: string;
         limit?: string;
-    }>, w: Response<T.Message.Message[]>): Promise<void>;
+    }>, response: Response<T.Message.Message[]>): Promise<void>;
     listMessagesByUsers(r: Request<{
         user1: string;
         user2: string;
     }, object, object, {
         skip?: string;
         limit?: string;
-    }>, w: Response<T.Message.Message[]>): Promise<void>;
+    }>, response: Response<T.Message.Message[]>): Promise<void>;
     updateMessageStatus(r: Request<{
         id: string;
     }, object, {
         status: string;
-    }>, w: Response<{
+    }>, response: Response<{
         success: boolean;
     }>): Promise<Response<{
         success: boolean;
     }, Record<string, any>> | undefined>;
-    listConversations(r: Request, w: Response<T.Message.Conversations[]>): Promise<void>;
+    listConversations(r: Request, response: Response<T.Message.Conversations[]>): Promise<void>;
 }
 //# sourceMappingURL=message.d.ts.map

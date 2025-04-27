@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import status_codes from '@instamenta/http-status-codes'
 import statusCodes from '@instamenta/http-status-codes'
 import GroupRepository from "../repositories/group";
-import BaseController from "../base/controller.base";
+import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 
@@ -11,218 +11,218 @@ import * as T from '../types'
 export default class GroupController extends BaseController<GroupRepository> {
 
 	public async createGroup(
-		r: Request<object, { id: string }, { name: string, description: string, imageUrl: string }>,
-		w: Response<{ id: string }>
+		request: Request<object, { id: string }, { name: string, description: string, imageUrl: string }>,
+		response: Response<{ id: string }>
 	) {
 		try {
 			const {userId, name, description, imageUrl} = Validate.create_group.parse({
-				userId: r.user.id,
-				name: r.body.name,
-				description: r.body.description,
-				imageUrl: r.body.imageUrl,
+				userId: request.user.id,
+				name: request.body.name,
+				description: request.body.description,
+				imageUrl: request.body.imageUrl,
 			});
 
 			const groupId = await this.repository.createGroup(userId, name, description, imageUrl);
 
 			if (!groupId) {
 				console.error(`${this.constructor.name}.createGroup(): Failed to create group`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.CREATED).json({id: groupId});
+			response.status(status_codes.CREATED).json({id: groupId});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async removeGroup(
-		r: Request<{ groupId: string }>,
-		w: Response
+		request: Request<{ groupId: string }>,
+		response: Response
 	) {
 		try {
-			const userId = Validate.uuid.parse(r.user.id);
-			const groupId = Validate.uuid.parse(r.params.groupId);
+			const userId = Validate.uuid.parse(request.user.id);
+			const groupId = Validate.uuid.parse(request.params.groupId);
 
 			const success = await this.repository.removeGroup(userId, groupId);
 
 			if (!success) {
 				console.error(`${this.constructor.name}.removeGroup(): Failed to remove group`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.CREATED).end();
+			response.status(status_codes.CREATED).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async listGroups(r: Request, w: Response<T.Group.Group[]>) {
+	public async listGroups(request: Request, response: Response<T.Group.Group[]>) {
 		try {
-			const userId = Validate.uuid.parse(r.user.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			const groups = await this.repository.listGroups(userId);
 
-			w.status(status_codes.OK).json(groups);
+			response.status(status_codes.OK).json(groups);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async listGroupsByUser(r: Request<{ userId: string }>, w: Response<T.Group.Group[]>) {
+	public async listGroupsByUser(request: Request<{ userId: string }>, response: Response<T.Group.Group[]>) {
 		try {
-			const userId = Validate.uuid.parse(r.params.userId);
+			const userId = Validate.uuid.parse(request.params.userId);
 
 			const groups = await this.repository.listGroupsByUser(userId);
 
-			w.status(status_codes.OK).json(groups);
+			response.status(status_codes.OK).json(groups);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async getGroupById(r: Request<{ id: string }>, w: Response<T.Group.Group>) {
+	public async getGroupById(request: Request<{ id: string }>, response: Response<T.Group.Group>) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.id);
+			const groupId = Validate.uuid.parse(request.params.id);
 
 			const group = await this.repository.getGroupById(groupId);
 
 			if (!group) {
 				console.error(`${this.constructor.name}.getGroupById(): Error`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).json(group);
+			response.status(status_codes.OK).json(group);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async joinGroup(r: Request<{ id: string }>, w: Response) {
+	public async joinGroup(request: Request<{ id: string }>, response: Response) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.id);
-			const userId = Validate.uuid.parse(r.user.id);
+			const groupId = Validate.uuid.parse(request.params.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			const success = await this.repository.joinGroup(userId, groupId);
 
 			if (!success) {
 				console.error(`${this.constructor.name}.joinGroup(): Error`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async leaveGroup(r: Request<{ id: string }>, w: Response) {
+	public async leaveGroup(request: Request<{ id: string }>, response: Response) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.id);
-			const userId = Validate.uuid.parse(r.user.id);
+			const groupId = Validate.uuid.parse(request.params.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			const success = await this.repository.leaveGroup(userId, groupId);
 
 			if (!success) {
 				console.error(`${this.constructor.name}.leaveGroup(): Error`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async changeRole(r: Request<{ groupId: string, recipientId: string }, object, { newRole: string }>, w: Response) {
+	public async changeRole(request: Request<{ groupId: string, recipientId: string }, object, { newRole: string }>, response: Response) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.groupId);
-			const senderId = Validate.uuid.parse(r.user.id);
-			const recipientId = Validate.uuid.parse(r.params.recipientId);
+			const groupId = Validate.uuid.parse(request.params.groupId);
+			const senderId = Validate.uuid.parse(request.user.id);
+			const recipientId = Validate.uuid.parse(request.params.recipientId);
 
-			if (r.body.newRole !== 'member' && r.body.newRole !== 'moderator') {
+			if (request.body.newRole !== 'member' && request.body.newRole !== 'moderator') {
 				throw new Error('Invalid Role');
 			}
 
-			const success = await this.repository.changeRole(groupId, senderId, recipientId, r.body.newRole);
+			const success = await this.repository.changeRole(groupId, senderId, recipientId, request.body.newRole);
 
 			if (!success) {
 				console.error(`${this.constructor.name}.changeRole(): Error`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async removeMember(r: Request<{ groupId: string, recipientId: string }>, w: Response) {
+	public async removeMember(request: Request<{ groupId: string, recipientId: string }>, response: Response) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.groupId);
-			const senderId = Validate.uuid.parse(r.user.id);
-			const recipientId = Validate.uuid.parse(r.params.recipientId);
+			const groupId = Validate.uuid.parse(request.params.groupId);
+			const senderId = Validate.uuid.parse(request.user.id);
+			const recipientId = Validate.uuid.parse(request.params.recipientId);
 
 			const success = await this.repository.removeMember(groupId, senderId, recipientId);
 
 			if (!success) {
 				console.error(`${this.constructor.name}.removeMember(): Error`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 
-	public async getMembersByGroupId(r: Request<{ id: string }>, w: Response<T.Group.MemberPopulated[]>) {
+	public async getMembersByGroupId(request: Request<{ id: string }>, response: Response<T.Group.MemberPopulated[]>) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.id);
+			const groupId = Validate.uuid.parse(request.params.id);
 
 			const members = await this.repository.getMembersByGroupId(groupId);
 
-			w.status(status_codes.OK).json(members);
+			response.status(status_codes.OK).json(members);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async createPublication(
-		r: Request<object, { id: string }, {
+		request: Request<object, { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string,
 			groupId: string,
 		}>,
-		w: Response<{ id: string }>) {
+		response: Response<{ id: string }>) {
 		try {
 			const data = Validate.create_publication.parse({
-				publisher_id: Validate.uuid.parse(r.user.id),
-				description: r.body.description,
-				images: r.body.images,
-				publication_status: r.body.publication_status,
+				publisher_id: Validate.uuid.parse(request.user.id),
+				description: request.body.description,
+				images: request.body.images,
+				publication_status: request.body.publication_status,
 			});
 
-			const groupId = Validate.uuid.parse(r.body.groupId);
+			const groupId = Validate.uuid.parse(request.body.groupId);
 
 			const publicationId = await this.repository.createPublication({...data, groupId});
 
-			w.status(statusCodes.CREATED).json({id: publicationId});
+			response.status(statusCodes.CREATED).json({id: publicationId});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async listPublications(r: Request<{ groupId: string }>, w: Response<T.Publication.Publication[]>) {
+	public async listPublications(request: Request<{ groupId: string }>, response: Response<T.Publication.Publication[]>) {
 		try {
-			const groupId = Validate.uuid.parse(r.params.groupId);
+			const groupId = Validate.uuid.parse(request.params.groupId);
 
 			const publications = await this.repository.listPublications(groupId);
 
-			w.status(statusCodes.OK).json(publications);
+			response.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 

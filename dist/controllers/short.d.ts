@@ -1,44 +1,44 @@
 import { Request, Response } from "express";
 import ShortRepository from "../repositories/short";
 import Notificator from "../utilities/notificator";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
 export default class ShortController extends BaseController<ShortRepository> {
     private readonly notificator;
     constructor(repository: ShortRepository, logger: VLogger, notificator: Notificator);
-    createShort(r: Request<object, object, {
+    createShort(request: Request<object, object, {
         videoUrl: string;
         description: string;
-    }>, w: Response<{
+    }>, response: Response<{
         id: string;
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listShorts(r: Request, w: Response<T.Short.Populated[]>): Promise<void>;
-    listShortsByUsername(r: Request<{
+    listShorts(request: Request, response: Response<T.Short.Populated[]>): Promise<void>;
+    listShortsByUsername(request: Request<{
         id: string;
-    }>, w: Response<T.Short.Populated[]>): Promise<void>;
-    getShortById(r: Request<{
+    }>, response: Response<T.Short.Populated[]>): Promise<void>;
+    getShortById(request: Request<{
         shortId: string;
-    }>, w: Response<T.Short.Populated>): Promise<Response<T.Short.Populated, Record<string, any>> | undefined>;
-    likeShort(r: Request<{
+    }>, response: Response<T.Short.Populated>): Promise<Response<T.Short.Populated, Record<string, any>> | undefined>;
+    likeShort(request: Request<{
         id: string;
-    }>, w: Response<void>): Promise<void>;
-    listCommentsByShort(r: Request<{
+    }>, response: Response<void>): Promise<void>;
+    listCommentsByShort(request: Request<{
         shortId: string;
-    }>, w: Response<T.Comment.Populated[]>): Promise<void>;
+    }>, response: Response<T.Comment.Populated[]>): Promise<void>;
     createShortComment(r: Request<{
         shortId: string;
     }, object, {
         content: string;
-    }>, w: Response<T.Comment.Comment>): Promise<void>;
+    }>, response: Response<T.Comment.Comment>): Promise<void>;
     deleteShortComment(r: Request<{
         commentId: string;
-    }>, w: Response<void>): Promise<void>;
+    }>, response: Response<void>): Promise<void>;
     likeShortComment(r: Request<{
         commentId: string;
-    }>, w: Response<void>): Promise<void>;
+    }>, response: Response<void>): Promise<void>;
     getCommentById(r: Request<{
         commentId: string;
     }>, w: Response<T.Comment.Comment & {

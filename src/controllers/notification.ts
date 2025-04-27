@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import status_codes from '@instamenta/http-status-codes'
 import NotificationRepository from "../repositories/notification";
 import {notification_types} from "../utilities/enumerations";
-import BaseController from "../base/controller.base";
+import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types';
 
@@ -25,58 +25,58 @@ export default class NotificationController extends BaseController<NotificationR
 	}
 
 	public async listNotifications(
-		r: Request<object, object, object, { filter?: 'all' | 'seen' | 'unseen' }>,
-		w: Response<T.Notification.Populated[]>
+		request: Request<object, object, object, { filter?: 'all' | 'seen' | 'unseen' }>,
+		response: Response<T.Notification.Populated[]>
 	) {
 		try {
 			const notifications = await this.repository.listNotifications(
-				Validate.uuid.parse(r.user.id),
-				r.query.filter
+				Validate.uuid.parse(request.user.id),
+				request.query.filter
 			);
 
-			w.status(status_codes.OK).json(notifications);
+			response.status(status_codes.OK).json(notifications);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async markNotificationAsSeen(
-		r: Request<{ id: string }>,
-		w: Response<void>
+		request: Request<{ id: string }>,
+		response: Response<void>
 	) {
 		try {
 			const messages = await this.repository.markNotificationAsSeen(
-				Validate.uuid.parse(r.params.id),
+				Validate.uuid.parse(request.params.id),
 			);
 
 			if (!messages) {
 				console.error(`${this.constructor.name}.markNotificationAsSeen(): Failed to update notification`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async markAllNotificationsAsSeen(
-		r: Request,
-		w: Response<void>
+		request: Request,
+		response: Response<void>
 	) {
 		try {
 			const messages = await this.repository.markAllNotificationsAsSeen(
-				Validate.uuid.parse(r.user.id),
+				Validate.uuid.parse(request.user.id),
 			);
 
 			if (!messages) {
-				console.error(`${this.constructor.name}.markAllNotificationsAsSeen(): Failed to update notifications`, r.params);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				console.error(`${this.constructor.name}.markAllNotificationsAsSeen(): Failed to update notifications`, request.params);
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 

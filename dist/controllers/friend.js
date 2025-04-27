@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const controller_base_1 = __importDefault(require("../base/controller.base"));
+const controller_base_1 = require("../base/controller.base");
 const validators_1 = require("../validators");
-class FriendController extends controller_base_1.default {
+class FriendController extends controller_base_1.BaseController {
     async sendFriendRequest(request, response) {
         this.log.log('sendFriendRequest');
         try {
@@ -22,81 +22,81 @@ class FriendController extends controller_base_1.default {
             this.errorHandler(error, response);
         }
     }
-    async listFriendRequestsOnly(r, w) {
+    async listFriendRequestsOnly(request, response) {
         this.log.log('listFriendRequestsOnly');
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
             const list = await this.repository.listFriendRequestsOnly(id);
-            w.status(http_status_codes_1.default.OK).json(list);
+            response.status(http_status_codes_1.default.OK).json(list);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async listFriendSentOnly(r, w) {
+    async listFriendSentOnly(request, response) {
         this.log.log('listFriendSentOnly');
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
             const list = await this.repository.listFriendSentOnly(id);
-            w.status(http_status_codes_1.default.OK).json(list);
+            response.status(http_status_codes_1.default.OK).json(list);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async listFriendRequests(r, w) {
+    async listFriendRequests(request, response) {
         this.log.log('listFriendRequests');
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
             const friendRequests = await this.repository.listFriendRequests(id);
-            w.status(http_status_codes_1.default.OK).json(friendRequests);
+            response.status(http_status_codes_1.default.OK).json(friendRequests);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async listFriendRecommendations(r, w) {
+    async listFriendRecommendations(request, response) {
         this.log.log('listFriendRecommendations');
         try {
             const id = validators_1.Validate.uuid.parse(r.user.id);
             const recommendations = await this.repository.listFriendRecommendations(id);
-            w.status(http_status_codes_1.default.OK).json(recommendations);
+            response.status(http_status_codes_1.default.OK).json(recommendations);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async acceptFriendRequest(r, w) {
+    async acceptFriendRequest(r, response) {
         this.log.log('acceptFriendRequest');
         try {
             const { sender, recipient } = validators_1.Validate.sender_recipient.parse({ sender: r.user.id, recipient: r.params.id });
             const status = await this.repository.acceptFriendRequest(sender, recipient);
             if (!status) {
                 this.log.error({ e: `Failed to accept friend request`, m: `sender: ${sender}, recipient: ${recipient}` });
-                return w.status(http_status_codes_1.default.BAD_GATEWAY).end();
+                return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async deleteFriendRequest(r, w) {
+    async deleteFriendRequest(r, response) {
         this.log.log('deleteFriendRequest');
         try {
             const { sender, recipient } = validators_1.Validate.sender_recipient.parse({ sender: r.user.id, recipient: r.params.id });
             const status = await this.repository.deleteFriendRequest(sender, recipient);
             if (!status) {
                 this.log.error({ e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}` });
-                return w.status(http_status_codes_1.default.BAD_GATEWAY).end();
+                return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
-            w.status(http_status_codes_1.default.OK).json({ friendship_id: status });
+            response.status(http_status_codes_1.default.OK).json({ friendship_id: status });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async declineFriendRequest(r, w) {
+    async declineFriendRequest(r, response) {
         this.log.log('declineFriendRequest');
         try {
             const { sender, recipient } = validators_1.Validate.sender_recipient.parse({ sender: r.user.id, recipient: r.params.id });

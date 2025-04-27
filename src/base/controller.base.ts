@@ -3,7 +3,7 @@ import {Response} from "express";
 import status_codes from "@instamenta/http-status-codes";
 import VLogger, {IVlog} from "@instamenta/vlogger";
 
-export default class BaseController<T> {
+export abstract class BaseController<T> {
 	protected readonly log: IVlog;
 
 	constructor(

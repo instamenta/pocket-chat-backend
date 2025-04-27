@@ -1,29 +1,29 @@
 import { Request, Response } from 'express';
 import CommentRepository from '../repositories/comment';
 import Notificator from "../utilities/notificator";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
 export default class CommentController extends BaseController<CommentRepository> {
     private readonly notificator;
     constructor(repository: CommentRepository, logger: VLogger, notificator: Notificator);
-    listByPublication(r: Request<{
+    listByPublication(request: Request<{
         publicationId: string;
-    }>, w: Response<T.Comment.Populated[]>): Promise<void>;
+    }>, response: Response<T.Comment.Populated[]>): Promise<void>;
     create(r: Request<{
         publicationId: string;
     }, object, {
         content: string;
-    }>, w: Response<T.Comment.Comment>): Promise<void>;
+    }>, response: Response<T.Comment.Comment>): Promise<void>;
     delete(r: Request<{
         commentId: string;
-    }>, w: Response<void>): Promise<void>;
+    }>, response: Response<void>): Promise<void>;
     like(r: Request<{
         commentId: string;
-    }>, w: Response<void>): Promise<void>;
+    }>, response: Response<void>): Promise<void>;
     getCommentById(r: Request<{
         commentId: string;
-    }>, w: Response<T.Comment.Comment & {
+    }>, response: Response<T.Comment.Comment & {
         likes_count: number;
     }>): Promise<Response<T.Comment.Comment & {
         likes_count: number;

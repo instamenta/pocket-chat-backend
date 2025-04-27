@@ -7,31 +7,31 @@ const http_status_codes_1 = __importDefault(require("@instamenta/http-status-cod
 const jwt_1 = __importDefault(require("../utilities/jwt"));
 const config_1 = require("../utilities/config");
 const zod_1 = require("zod");
-const controller_base_1 = __importDefault(require("../base/controller.base"));
+const controller_base_1 = require("../base/controller.base");
 const validators_1 = require("../validators");
-class UserController extends controller_base_1.default {
+class UserController extends controller_base_1.BaseController {
     hashingHandler;
     constructor(repository, logger, hashingHandler) {
         super(repository, logger);
         this.hashingHandler = hashingHandler;
     }
-    async listUsers(r, w) {
+    async listUsers(request, response) {
         try {
             const { skip, limit } = { skip: 0, limit: 10 };
             const userList = await this.repository.listUsers(skip, limit);
-            w.status(http_status_codes_1.default.OK).json(userList);
+            response.status(http_status_codes_1.default.OK).json(userList);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async signUp(r, w) {
+    async signUp(request, response) {
         try {
-            const userData = validators_1.Validate.create_user.parse(r.body);
+            const userData = validators_1.Validate.create_user.parse(request.body);
             const userId = await this.repository.createUser(userData);
             if (!userId) {
                 console.error(`${this.constructor.name}.createUser(): failed to create User`);
-                return w.status(http_status_codes_1.default.I_AM_A_TEAPOT).end();
+                return response.status(http_status_codes_1.default.I_AM_A_TEAPOT).end();
             }
             const token = jwt_1.default.signToken({
                 username: userData.username,
@@ -39,62 +39,62 @@ class UserController extends controller_base_1.default {
                 picture: 'https://openseauserdata.com/files/3d825b936774e0ae3c8247613c91d436.png',
                 id: userId
             });
-            w.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id: userId });
+            response.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id: userId });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async signIn(r, w) {
+    async signIn(request, response) {
         try {
-            const { username, password } = validators_1.Validate.login_user.parse(r.body);
+            const { username, password } = validators_1.Validate.login_user.parse(request.body);
             const userData = await this.repository.getByUsername(username);
             if (!userData) {
                 console.log(`${this.constructor.name}.loginUser(): failed to login user`);
-                return w.status(http_status_codes_1.default.UNAUTHORIZED).end();
+                return response.status(http_status_codes_1.default.UNAUTHORIZED).end();
             }
             const isMatch = await this.hashingHandler.comparePasswords(password, userData.password);
             if (!isMatch) {
                 console.log(`${this.constructor.name}.loginUser(): Invalid password`);
-                return w.status(http_status_codes_1.default.UNAUTHORIZED).end();
+                return response.status(http_status_codes_1.default.UNAUTHORIZED).end();
             }
             const token = jwt_1.default.signToken({ id: userData.id, email: userData.email, username, picture: userData.picture });
-            w.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id: userData.id });
+            response.status(http_status_codes_1.default.OK).cookie(config_1.SECURITY.JWT_TOKEN_NAME, token).json({ token, id: userData.id });
             await this.repository.updateLastActiveAtById(userData.id).catch(console.error);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async authUser(r, w) {
+    async authUser(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(request.user.id);
             const user = await this.repository.getUserById(id);
             if (!user) {
                 console.log(`${this.constructor.name}.authUser(): User not found`);
-                return w.status(http_status_codes_1.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            w.status(http_status_codes_1.default.OK).json(user);
+            response.status(http_status_codes_1.default.OK).json(user);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async getUserById(r, w) {
+    async getUserById(r, response) {
         try {
             const id = validators_1.Validate.uuid.parse(r.params.id);
             const user = await this.repository.getUserById(id);
             if (!user) {
                 console.log(`${this.constructor.name}.getUserById(): User not found`);
-                return w.status(http_status_codes_1.default.NOT_FOUND).end();
+                return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
-            w.status(http_status_codes_1.default.OK).json(user);
+            response.status(http_status_codes_1.default.OK).json(user);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async getUserByUsername(r, w) {
+    async getUserByUsername(r, response) {
         try {
             const username = validators_1.Validate.name.parse(r.params.username);
             const user = await this.repository.getUserByUsername(username);

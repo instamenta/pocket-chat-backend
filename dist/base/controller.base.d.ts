@@ -1,6 +1,6 @@
 import { Response } from "express";
 import VLogger, { IVlog } from "@instamenta/vlogger";
-export default class BaseController<T> {
+export declare abstract class BaseController<T> {
     protected readonly repository: T;
     protected readonly log: IVlog;
     constructor(repository: T, logger: VLogger);

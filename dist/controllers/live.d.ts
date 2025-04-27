@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import LiveRepository from "../repositories/live";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 export default class LiveController extends BaseController<LiveRepository> {
-    createLive(r: Request<object, object>, w: Response<{
+    createLive(request: Request<object, object>, response: Response<{
         id: string;
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listLives(r: Request, w: Response<T.Live.Populated[]>): Promise<void>;
-    listLiveMessages(r: Request<{
+    listLives(request: Request, response: Response<T.Live.Populated[]>): Promise<void>;
+    listLiveMessages(request: Request<{
         liveId: string;
-    }>, w: Response<T.Live.MessagePopulated[]>): Promise<void>;
-    updateLiveState(r: Request<{
+    }>, response: Response<T.Live.MessagePopulated[]>): Promise<void>;
+    updateLiveState(request: Request<{
         state: T.U.LiveStates;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=live.d.ts.map

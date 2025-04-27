@@ -1,36 +1,36 @@
 import { Request, Response } from "express";
 import GroupRepository from "../repositories/group";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 export default class GroupController extends BaseController<GroupRepository> {
-    createGroup(r: Request<object, {
+    createGroup(request: Request<object, {
         id: string;
     }, {
         name: string;
         description: string;
         imageUrl: string;
-    }>, w: Response<{
+    }>, response: Response<{
         id: string;
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    removeGroup(r: Request<{
+    removeGroup(request: Request<{
         groupId: string;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    listGroups(r: Request, w: Response<T.Group.Group[]>): Promise<void>;
-    listGroupsByUser(r: Request<{
+    }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    listGroups(request: Request, response: Response<T.Group.Group[]>): Promise<void>;
+    listGroupsByUser(request: Request<{
         userId: string;
-    }>, w: Response<T.Group.Group[]>): Promise<void>;
-    getGroupById(r: Request<{
+    }>, response: Response<T.Group.Group[]>): Promise<void>;
+    getGroupById(request: Request<{
         id: string;
-    }>, w: Response<T.Group.Group>): Promise<Response<T.Group.Group, Record<string, any>> | undefined>;
-    joinGroup(r: Request<{
+    }>, response: Response<T.Group.Group>): Promise<Response<T.Group.Group, Record<string, any>> | undefined>;
+    joinGroup(request: Request<{
         id: string;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    leaveGroup(r: Request<{
+    }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    leaveGroup(request: Request<{
         id: string;
-    }>, w: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    changeRole(r: Request<{
+    }>, response: Response): Promise<any>;
+    changeRole(request: Request<{
         groupId: string;
         recipientId: string;
     }, object, {

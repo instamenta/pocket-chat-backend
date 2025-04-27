@@ -20,8 +20,8 @@ class JWT {
             return null;
         }
     }
-    static setTokenCookie(w, token) {
-        w.cookie(config_1.SECURITY.JWT_TOKEN_NAME, token, { httpOnly: true });
+    static setTokenCookie(response, token) {
+        response.cookie(config_1.SECURITY.JWT_TOKEN_NAME, token, { httpOnly: true });
     }
     static getTokenFromCookie(request) {
         return request.cookies[config_1.SECURITY.JWT_TOKEN_NAME] || null;
@@ -39,8 +39,8 @@ class JWT {
     static getUser(token) {
         return this.verifyToken(token) ?? null;
     }
-    static removeTokenFromCookie(w) {
-        w.setHeader('Set-Cookie', [
+    static removeTokenFromCookie(response) {
+        response.setHeader('Set-Cookie', [
             'X-Authorization-Token=;'
                 + 'Expires=Thu, 01 Jan 1970 00:00:00 GMT;'
                 + 'HttpOnly; Path=/;',

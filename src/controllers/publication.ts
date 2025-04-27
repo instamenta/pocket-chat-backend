@@ -3,7 +3,7 @@ import PublicationsRepository from '../repositories/publication';
 import statusCodes from '@instamenta/http-status-codes';
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
-import BaseController from "../base/controller.base";
+import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
@@ -17,112 +17,112 @@ export default class PublicationController extends BaseController<PublicationsRe
 		super(repository, logger);
 	}
 
-	public async listPublications(r: Request, w: Response<T.Publication.Publication[]>) {
+	public async listPublications(request: Request, response: Response<T.Publication.Publication[]>) {
 		try {
 			const publications = await this.repository.listPublications();
 
-			w.status(statusCodes.OK).json(publications);
+			response.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async getPublicationById(r: Request<{ id: string }>, w: Response<T.Publication.Publication>) {
+	public async getPublicationById(request: Request<{ id: string }>, response: Response<T.Publication.Publication>) {
 		try {
-			const id = Validate.uuid.parse(r.params.id);
+			const id = Validate.uuid.parse(request.params.id);
 
 			const publication = await this.repository.getPublicationById(id);
 
 			if (publication) {
-				w.status(statusCodes.OK).json(publication);
+				response.status(statusCodes.OK).json(publication);
 			} else {
-				w.status(statusCodes.NOT_FOUND).end();
+				response.status(statusCodes.NOT_FOUND).end();
 			}
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async getPublicationsByUserId(r: Request<{ id: string }>, w: Response<T.Publication.Publication[]>) {
+	public async getPublicationsByUserId(request: Request<{ id: string }>, response: Response<T.Publication.Publication[]>) {
 		try {
-			const id = Validate.uuid.parse(r.params.id);
+			const id = Validate.uuid.parse(request.params.id);
 
 			const publications = await this.repository.getPublicationsByUserId(id);
 
-			w.status(statusCodes.OK).json(publications);
+			response.status(statusCodes.OK).json(publications);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async getPublicationsCountByUserId(r: Request<{ id: string }>, w: Response<{ count: number }>) {
+	public async getPublicationsCountByUserId(request: Request<{ id: string }>, response: Response<{ count: number }>) {
 		try {
-			const id = Validate.uuid.parse(r.params.id);
+			const id = Validate.uuid.parse(request.params.id);
 
 			const count = await this.repository.getPublicationsCountByUserId(id);
 
-			w.status(statusCodes.OK).json({count});
+			response.status(statusCodes.OK).json({count});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async getRecommendations(r: Request, w: Response<T.Publication.Publication[]>) {
+	public async getRecommendations(request: Request, response: Response<T.Publication.Publication[]>) {
 		try {
-			const userId = Validate.uuid.parse(r.user.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			const recommendations = await this.repository.getRecommendations(userId);
 
-			w.status(statusCodes.OK).json(recommendations);
+			response.status(statusCodes.OK).json(recommendations);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async createPublication(
-		r: Request<object, { id: string }, {
+		request: Request<object, { id: string }, {
 			description: string,
 			images: string,
 			publication_status: string
 		}>,
-		w: Response<{ id: string }>) {
+		response: Response<{ id: string }>) {
 		try {
 			const data = Validate.create_publication.parse({
-				publisher_id: Validate.uuid.parse(r.user.id),
-				description: r.body.description,
-				images: r.body.images,
-				publication_status: r.body.publication_status,
+				publisher_id: Validate.uuid.parse(request.user.id),
+				description: request.body.description,
+				images: request.body.images,
+				publication_status: request.body.publication_status,
 			});
 
 			const publicationId = await this.repository.createPublication(data);
 
-			w.status(statusCodes.CREATED).json({id: publicationId});
+			response.status(statusCodes.CREATED).json({id: publicationId});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async updatePublication(r: Request<{ id: string }>, w: Response<{ id: string }>) {
+	public async updatePublication(request: Request<{ id: string }>, response: Response<{ id: string }>) {
 		try {
-			const id = Validate.uuid.parse(r.params.id);
-			const publicationData = Validate.update_publication.parse(r.body);
+			const id = Validate.uuid.parse(request.params.id);
+			const publicationData = Validate.update_publication.parse(request.body);
 
 			const updatedPublicationId = await this.repository.updatePublication(id, publicationData);
 
-			w.status(statusCodes.OK).json({id: updatedPublicationId});
+			response.status(statusCodes.OK).json({id: updatedPublicationId});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async likePublication(r: Request<{ id: string }>, w: Response<void>) {
+	public async likePublication(request: Request<{ id: string }>, response: Response<void>) {
 		try {
-			const publicationId = Validate.uuid.parse(r.params.id);
-			const userId = Validate.uuid.parse(r.user.id);
+			const publicationId = Validate.uuid.parse(request.params.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			await this.repository.likePublication(publicationId, userId);
 
-			w.status(statusCodes.OK).end();
+			response.status(statusCodes.OK).end();
 
 			await this.notificator.handleNotification({
 				type: notification_types.LIKE,
@@ -134,7 +134,7 @@ export default class PublicationController extends BaseController<PublicationsRe
 			}).catch(console.error);
 
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 }

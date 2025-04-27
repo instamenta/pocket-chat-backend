@@ -1,5 +1,5 @@
 import {Router} from "express";
-import BaseController from "./controller.base";
+import {BaseController} from "./controller.base";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default abstract class BaseRouter<T extends BaseController<any>> {

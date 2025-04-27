@@ -24,8 +24,8 @@ class JWT {
 		}
 	}
 
-	static setTokenCookie(w: Response, token: string): void {
-		w.cookie(SECURITY.JWT_TOKEN_NAME, token, {httpOnly: true});
+	static setTokenCookie(response: Response, token: string): void {
+		response.cookie(SECURITY.JWT_TOKEN_NAME, token, {httpOnly: true});
 	}
 
 	static getTokenFromCookie(request: Request): string | null {
@@ -47,8 +47,8 @@ class JWT {
 		return this.verifyToken(token) ?? null;
 	}
 
-	static removeTokenFromCookie(w: Response): void {
-		w.setHeader(
+	static removeTokenFromCookie(response: Response): void {
+		response.setHeader(
 			'Set-Cookie',
 			[
 				'X-Authorization-Token=;'

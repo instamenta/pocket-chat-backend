@@ -1,76 +1,76 @@
 import {Request, Response} from "express";
 import status_codes from '@instamenta/http-status-codes'
 import LiveRepository from "../repositories/live";
-import BaseController from "../base/controller.base";
+import {BaseController} from "../base/controller.base";
 import {Validate} from "../validators";
 import * as T from '../types'
 
 export default class LiveController extends BaseController<LiveRepository> {
 
 	public async createLive(
-		r: Request<object, object>,
-		w: Response<{ id: string }>
+		request: Request<object, object>,
+		response: Response<{ id: string }>
 	) {
 		try {
-			const userId = Validate.uuid.parse(r.user.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			const shortId = await this.repository.createLive(userId);
 
 			if (!shortId) {
 				console.error(`${this.constructor.name}.createLive(): Failed to create live`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.CREATED).json({id: shortId});
+			response.status(status_codes.CREATED).json({id: shortId});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async listLives(r: Request, w: Response<T.Live.Populated[]>) {
+	public async listLives(request: Request, response: Response<T.Live.Populated[]>) {
 		try {
-			const userId = Validate.uuid.parse(r.user.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
 			const lives = await this.repository.listLives(userId);
 
-			w.status(status_codes.OK).json(lives);
+			response.status(status_codes.OK).json(lives);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
-	public async listLiveMessages(r: Request<{ liveId: string }>, w: Response<T.Live.MessagePopulated[]>) {
+	public async listLiveMessages(request: Request<{ liveId: string }>, response: Response<T.Live.MessagePopulated[]>) {
 		try {
-			const liveId = Validate.uuid.parse(r.params.liveId);
+			const liveId = Validate.uuid.parse(request.params.liveId);
 
 			const messages = await this.repository.listLiveMessages(liveId);
 
-			w.status(status_codes.OK).json(messages);
+			response.status(status_codes.OK).json(messages);
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 
-	public async updateLiveState(r: Request<{ state: T.U.LiveStates }>, w: Response) {
+	public async updateLiveState(request: Request<{ state: T.U.LiveStates }>, response: Response) {
 		try {
-			const userId = Validate.uuid.parse(r.user.id);
+			const userId = Validate.uuid.parse(request.user.id);
 
-			if (!['active', 'paused', 'ended'].includes(r.params.state)) {
-				console.error(`${this.constructor.name}.lives(): Invalid State`, r.params);
-				return w.status(status_codes.BAD_REQUEST).end();
+			if (!['active', 'paused', 'ended'].includes(request.params.state)) {
+				console.error(`${this.constructor.name}.lives(): Invalid State`, request.params);
+				return response.status(status_codes.BAD_REQUEST).end();
 			}
 
-			const lives = await this.repository.updateLiveState(userId, r.params.state);
+			const lives = await this.repository.updateLiveState(userId, request.params.state);
 
 			if (!lives) {
 				console.error(`${this.constructor.name}.updateLiveState(): Failed to update live state`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
+				return response.status(status_codes.INTERNAL_SERVER_ERROR).end();
 			}
 
-			w.status(status_codes.OK).end();
+			response.status(status_codes.OK).end();
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 

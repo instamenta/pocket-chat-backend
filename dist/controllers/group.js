@@ -5,96 +5,96 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const http_status_codes_2 = __importDefault(require("@instamenta/http-status-codes"));
-const controller_base_1 = __importDefault(require("../base/controller.base"));
+const controller_base_1 = require("../base/controller.base");
 const validators_1 = require("../validators");
-class GroupController extends controller_base_1.default {
-    async createGroup(r, w) {
+class GroupController extends controller_base_1.BaseController {
+    async createGroup(request, response) {
         try {
             const { userId, name, description, imageUrl } = validators_1.Validate.create_group.parse({
-                userId: r.user.id,
-                name: r.body.name,
-                description: r.body.description,
-                imageUrl: r.body.imageUrl,
+                userId: request.user.id,
+                name: request.body.name,
+                description: request.body.description,
+                imageUrl: request.body.imageUrl,
             });
             const groupId = await this.repository.createGroup(userId, name, description, imageUrl);
             if (!groupId) {
                 console.error(`${this.constructor.name}.createGroup(): Failed to create group`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.CREATED).json({ id: groupId });
+            response.status(http_status_codes_1.default.CREATED).json({ id: groupId });
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async removeGroup(r, w) {
+    async removeGroup(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
-            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const groupId = validators_1.Validate.uuid.parse(request.params.groupId);
             const success = await this.repository.removeGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.removeGroup(): Failed to remove group`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.CREATED).end();
+            response.status(http_status_codes_1.default.CREATED).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async listGroups(r, w) {
+    async listGroups(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const groups = await this.repository.listGroups(userId);
-            w.status(http_status_codes_1.default.OK).json(groups);
+            response.status(http_status_codes_1.default.OK).json(groups);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async listGroupsByUser(r, w) {
+    async listGroupsByUser(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(r.params.userId);
+            const userId = validators_1.Validate.uuid.parse(request.params.userId);
             const groups = await this.repository.listGroupsByUser(userId);
-            w.status(http_status_codes_1.default.OK).json(groups);
+            response.status(http_status_codes_1.default.OK).json(groups);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async getGroupById(r, w) {
+    async getGroupById(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.id);
+            const groupId = validators_1.Validate.uuid.parse(request.params.id);
             const group = await this.repository.getGroupById(groupId);
             if (!group) {
                 console.error(`${this.constructor.name}.getGroupById(): Error`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).json(group);
+            response.status(http_status_codes_1.default.OK).json(group);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async joinGroup(r, w) {
+    async joinGroup(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.id);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const groupId = validators_1.Validate.uuid.parse(request.params.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const success = await this.repository.joinGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.joinGroup(): Error`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async leaveGroup(r, w) {
+    async leaveGroup(request, response) {
         try {
-            const groupId = validators_1.Validate.uuid.parse(r.params.id);
-            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const groupId = validators_1.Validate.uuid.parse(request.params.id);
+            const userId = validators_1.Validate.uuid.parse(request.user.id);
             const success = await this.repository.leaveGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.leaveGroup(): Error`);
@@ -106,7 +106,7 @@ class GroupController extends controller_base_1.default {
             this.errorHandler(error, w);
         }
     }
-    async changeRole(r, w) {
+    async changeRole(request, w) {
         try {
             const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
             const senderId = validators_1.Validate.uuid.parse(r.user.id);

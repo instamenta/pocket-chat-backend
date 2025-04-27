@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const controller_base_1 = __importDefault(require("../base/controller.base"));
+const controller_base_1 = require("../base/controller.base");
 const validators_1 = require("../validators");
-class NotificationController extends controller_base_1.default {
+class NotificationController extends controller_base_1.BaseController {
     createNotification(_request, response) {
         try {
             response.status(http_status_codes_1.default.NOT_IMPLEMENTED).end();
@@ -15,39 +15,39 @@ class NotificationController extends controller_base_1.default {
             this.errorHandler(error, response);
         }
     }
-    async listNotifications(r, w) {
+    async listNotifications(request, response) {
         try {
-            const notifications = await this.repository.listNotifications(validators_1.Validate.uuid.parse(r.user.id), r.query.filter);
-            w.status(http_status_codes_1.default.OK).json(notifications);
+            const notifications = await this.repository.listNotifications(validators_1.Validate.uuid.parse(request.user.id), request.query.filter);
+            response.status(http_status_codes_1.default.OK).json(notifications);
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async markNotificationAsSeen(r, w) {
+    async markNotificationAsSeen(request, response) {
         try {
-            const messages = await this.repository.markNotificationAsSeen(validators_1.Validate.uuid.parse(r.params.id));
+            const messages = await this.repository.markNotificationAsSeen(validators_1.Validate.uuid.parse(request.params.id));
             if (!messages) {
                 console.error(`${this.constructor.name}.markNotificationAsSeen(): Failed to update notification`);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
-    async markAllNotificationsAsSeen(r, w) {
+    async markAllNotificationsAsSeen(request, response) {
         try {
-            const messages = await this.repository.markAllNotificationsAsSeen(validators_1.Validate.uuid.parse(r.user.id));
+            const messages = await this.repository.markAllNotificationsAsSeen(validators_1.Validate.uuid.parse(request.user.id));
             if (!messages) {
-                console.error(`${this.constructor.name}.markAllNotificationsAsSeen(): Failed to update notifications`, r.params);
-                return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
+                console.error(`${this.constructor.name}.markAllNotificationsAsSeen(): Failed to update notifications`, request.params);
+                return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
-            w.status(http_status_codes_1.default.OK).end();
+            response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
-            this.errorHandler(error, w);
+            this.errorHandler(error, response);
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import FriendRepository from "../repositories/friend";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 export default class FriendController extends BaseController<FriendRepository> {
     sendFriendRequest(request: Request<{
@@ -10,10 +10,10 @@ export default class FriendController extends BaseController<FriendRepository> {
     }>): Promise<Response<{
         friendship_id: string;
     }, Record<string, any>> | undefined>;
-    listFriendRequestsOnly(r: Request, w: Response<T.Friend.RequestData[]>): Promise<void>;
-    listFriendSentOnly(r: Request, w: Response<T.Friend.RequestData[]>): Promise<void>;
-    listFriendRequests(r: Request, w: Response<T.Friend.RequestData[]>): Promise<void>;
-    listFriendRecommendations(r: Request, w: Response<{
+    listFriendRequestsOnly(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
+    listFriendSentOnly(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
+    listFriendRequests(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
+    listFriendRecommendations(request: Request, response: Response<{
         id: string;
         first_name: string;
         picture: string;
@@ -21,17 +21,17 @@ export default class FriendController extends BaseController<FriendRepository> {
     }[]>): Promise<void>;
     acceptFriendRequest(r: Request<{
         id: string;
-    }>, w: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;
+    }>, response: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;
     deleteFriendRequest(r: Request<{
         id: string;
-    }>, w: Response<{
+    }>, response: Response<{
         friendship_id: boolean;
     }>): Promise<Response<{
         friendship_id: boolean;
     }, Record<string, any>> | undefined>;
     declineFriendRequest(r: Request<{
         id: string;
-    }>, w: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;
+    }>, response: Response<void>): Promise<any>;
     getFriendsCountByUserId(r: Request<{
         id: string;
     }>, w: Response<{

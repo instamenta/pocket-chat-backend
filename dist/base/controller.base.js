@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseController = void 0;
 const zod_1 = require("zod");
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 class BaseController {
@@ -29,4 +30,4 @@ class BaseController {
         }
     }
 }
-exports.default = BaseController;
+exports.BaseController = BaseController;

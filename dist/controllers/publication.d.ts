@@ -1,41 +1,41 @@
 import { Request, Response } from 'express';
 import PublicationsRepository from '../repositories/publication';
 import Notificator from "../utilities/notificator";
-import BaseController from "../base/controller.base";
+import { BaseController } from "../base/controller.base";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
 export default class PublicationController extends BaseController<PublicationsRepository> {
     private readonly notificator;
     constructor(repository: PublicationsRepository, logger: VLogger, notificator: Notificator);
-    listPublications(r: Request, w: Response<T.Publication.Publication[]>): Promise<void>;
-    getPublicationById(r: Request<{
+    listPublications(request: Request, response: Response<T.Publication.Publication[]>): Promise<void>;
+    getPublicationById(request: Request<{
         id: string;
-    }>, w: Response<T.Publication.Publication>): Promise<void>;
-    getPublicationsByUserId(r: Request<{
+    }>, response: Response<T.Publication.Publication>): Promise<void>;
+    getPublicationsByUserId(request: Request<{
         id: string;
-    }>, w: Response<T.Publication.Publication[]>): Promise<void>;
-    getPublicationsCountByUserId(r: Request<{
+    }>, response: Response<T.Publication.Publication[]>): Promise<void>;
+    getPublicationsCountByUserId(request: Request<{
         id: string;
-    }>, w: Response<{
+    }>, response: Response<{
         count: number;
     }>): Promise<void>;
-    getRecommendations(r: Request, w: Response<T.Publication.Publication[]>): Promise<void>;
-    createPublication(r: Request<object, {
+    getRecommendations(request: Request, response: Response<T.Publication.Publication[]>): Promise<void>;
+    createPublication(request: Request<object, {
         id: string;
     }, {
         description: string;
         images: string;
         publication_status: string;
-    }>, w: Response<{
+    }>, response: Response<{
         id: string;
     }>): Promise<void>;
-    updatePublication(r: Request<{
+    updatePublication(request: Request<{
         id: string;
-    }>, w: Response<{
+    }>, response: Response<{
         id: string;
     }>): Promise<void>;
-    likePublication(r: Request<{
+    likePublication(request: Request<{
         id: string;
-    }>, w: Response<void>): Promise<void>;
+    }>, response: Response<void>): Promise<void>;
 }
 //# sourceMappingURL=publication.d.ts.map
