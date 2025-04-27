@@ -1,6 +1,6 @@
 import { Client } from "pg";
 import VLogger, { IVlog } from "@instamenta/vlogger";
-export default class BaseRepository {
+export declare abstract class BaseRepository {
     protected readonly database: Client;
     protected readonly log: IVlog;
     constructor(database: Client, logger: VLogger);

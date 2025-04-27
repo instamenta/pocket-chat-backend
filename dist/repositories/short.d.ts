@@ -1,4 +1,4 @@
-import BaseRepository from "../base/repository.base";
+import { BaseRepository } from "../base/repository.base";
 import * as T from '../types';
 export default class ShortRepository extends BaseRepository {
     createShort(userId: string, videoUrl: string, description: string): Promise<string>;

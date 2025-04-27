@@ -1,4 +1,4 @@
-import BaseRepository from "../base/repository.base";
+import { BaseRepository } from "../base/repository.base";
 import * as T from '../types';
 export default class MessageRepository extends BaseRepository {
     createMessage({ sender, recipient, content, friendship, images, files }: T.Message.Create): Promise<string>;

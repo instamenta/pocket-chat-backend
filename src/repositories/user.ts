@@ -1,6 +1,6 @@
 import {I_HashingHandler} from "../utilities/bcrypt";
 import z from 'zod';
-import BaseRepository from "../base/repository.base";
+import {BaseRepository} from "../base/repository.base";
 import {Client} from "pg";
 import * as T from '../types'
 import {Validate} from "../validators";

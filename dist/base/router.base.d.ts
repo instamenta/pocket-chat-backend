@@ -1,5 +1,6 @@
 import { Router } from "express";
-export default abstract class BaseRouter<T> {
+import BaseController from "./controller.base";
+export default abstract class BaseRouter<T extends BaseController<any>> {
     readonly router: Router;
     constructor(controller: T);
     protected abstract initialize(controller: T): void;

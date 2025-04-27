@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseRepository = void 0;
 class BaseRepository {
     database;
     log;
@@ -11,4 +12,4 @@ class BaseRepository {
         throw new Error(`${this.constructor.name}.${method}(): Error`, { cause: error });
     }
 }
-exports.default = BaseRepository;
+exports.BaseRepository = BaseRepository;

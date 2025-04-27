@@ -1,6 +1,8 @@
 import {Router} from "express";
+import BaseController from "./controller.base";
 
-export default abstract class BaseRouter<T> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default abstract class BaseRouter<T extends BaseController<any>> {
 	public readonly router: Router = Router();
 
 	constructor(controller: T) {

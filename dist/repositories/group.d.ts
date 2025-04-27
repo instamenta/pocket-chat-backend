@@ -1,4 +1,4 @@
-import BaseRepository from "../base/repository.base";
+import { BaseRepository } from "../base/repository.base";
 import * as T from '../types';
 export default class GroupRepository extends BaseRepository {
     createGroup(userId: string, name: string, description: string, imageUrl: string): Promise<string>;

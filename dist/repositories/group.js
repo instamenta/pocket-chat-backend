@@ -1,12 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const enumerations_1 = require("../utilities/enumerations");
-const repository_base_1 = __importDefault(require("../base/repository.base"));
+const repository_base_1 = require("../base/repository.base");
 const vanilla_utility_pack_1 = require("@instamenta/vanilla-utility-pack");
-class GroupRepository extends repository_base_1.default {
+class GroupRepository extends repository_base_1.BaseRepository {
     async createGroup(userId, name, description, imageUrl) {
         return this.database.query(`
 

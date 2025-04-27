@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const repository_base_1 = __importDefault(require("../base/repository.base"));
-class MessageRepository extends repository_base_1.default {
+const repository_base_1 = require("../base/repository.base");
+class MessageRepository extends repository_base_1.BaseRepository {
     createMessage({ sender, recipient, content, friendship, images = [], files = [] }) {
         return this.database.query(`
                 INSERT INTO "messages" (sender_id,

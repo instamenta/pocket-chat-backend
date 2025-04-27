@@ -1,5 +1,5 @@
 import {group_roles} from "../utilities/enumerations";
-import BaseRepository from "../base/repository.base";
+import {BaseRepository} from "../base/repository.base";
 import {NotFoundError, UnauthorizedError} from "@instamenta/vanilla-utility-pack";
 import * as T from '../types';
 

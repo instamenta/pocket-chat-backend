@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const repository_base_1 = __importDefault(require("../base/repository.base"));
-class ShortRepository extends repository_base_1.default {
+const repository_base_1 = require("../base/repository.base");
+class ShortRepository extends repository_base_1.BaseRepository {
     async createShort(userId, videoUrl, description) {
         const query = `INSERT INTO "shorts" (user_id, video_url, description)
                    VALUES ($1, $2, $3)

@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const repository_base_1 = __importDefault(require("../base/repository.base"));
-class NotificationRepository extends repository_base_1.default {
+const repository_base_1 = require("../base/repository.base");
+class NotificationRepository extends repository_base_1.BaseRepository {
     async createNotification({ sender_id, recipient_id, type, seen, content, reference_id = '' }) {
         return this.database.query(`
                 INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content, reference_id)
