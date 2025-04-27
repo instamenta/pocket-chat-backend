@@ -11,8 +11,7 @@ import Notificator from "./utilities/notificator";
 import initialize_all from "./utilities/intialize";
 
 void async function start_service() {
-
-	const {server, api, database, cache, socket, logger} = await initialize_all();
+	const {api, database, cache, logger} = await initialize_all();
 
 	graceful_shutdown(database, cache);
 
@@ -85,16 +84,17 @@ void async function start_service() {
 
 function graceful_shutdown(database: Client, cache: Redis) {
 	['uncaughtException', 'unhandledRejection'].map((type) => {
-		process.on(type, async (...args) => {
-			try {
-				console.error(`process.on ${type} with ${args}`, args);
-				await database.end();
+		process.on(type, (...args) => {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			console.error(`process.on ${type} with ${args}`, args);
+
+			database.end().then(() => {
 				cache.disconnect();
-			} catch (error: Error | unknown) {
+			}).catch((error: unknown) => {
 				console.error(error);
-			} finally {
+			}).finally(() => {
 				process.exit(1);
-			}
+			});
 		});
 	});
 }

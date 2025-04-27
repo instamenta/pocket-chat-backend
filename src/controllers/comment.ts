@@ -32,7 +32,7 @@ export default class CommentController extends BaseController<CommentRepository>
 		}
 	}
 
-	public async create(r: Request<{ publicationId: string }, {}, { content: string }>, w: Response<T.Comment.Comment>) {
+	public async create(r: Request<{ publicationId: string }, object, { content: string }>, w: Response<T.Comment.Comment>) {
 		this.log.log('create');
 		try {
 			const publicationId = Validate.uuid.parse(r.params.publicationId);
@@ -51,7 +51,7 @@ export default class CommentController extends BaseController<CommentRepository>
 				content: content,
 				seen: false,
 			})
-				.catch(e => { this.log.error({e}); });
+				.catch((error: unknown) => { this.log.error({e: error}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -88,7 +88,7 @@ export default class CommentController extends BaseController<CommentRepository>
 				content: '',
 				seen: false,
 			})
-				.catch(e => { this.log.error({e}); });
+				.catch((error: unknown) => { this.log.error({e: error}); });
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {

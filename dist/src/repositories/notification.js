@@ -11,7 +11,7 @@ class NotificationRepository extends repository_base_1.default {
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`, [sender_id, recipient_id, type, seen, content, reference_id]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createNotification'));
+            .catch((error) => this.errorHandler(error, 'createNotification'));
     }
     async listNotifications(recipientId, filter = 'all') {
         let query;
@@ -47,11 +47,9 @@ class NotificationRepository extends repository_base_1.default {
                    AND seen = true
                  ORDER BY created_at DESC `;
                 break;
-            default:
-                throw new Error(`Unknown filter type ${filter} ${recipientId}`);
         }
         return this.database.query(query, [recipientId]).then(data => data.rows)
-            .catch(e => this.errorHandler(e, 'getNotifications'));
+            .catch((error) => this.errorHandler(error, 'getNotifications'));
     }
     async markNotificationAsSeen(id) {
         return this.database.query(`
@@ -59,7 +57,7 @@ class NotificationRepository extends repository_base_1.default {
                 SET seen = true
                 WHERE id = $1
 			`, [id]).then(data => data.rowCount ?? null)
-            .catch(e => this.errorHandler(e, 'markNotificationAsSeen'));
+            .catch((error) => this.errorHandler(error, 'markNotificationAsSeen'));
     }
     async markAllNotificationsAsSeen(recipientId) {
         return this.database.query(`
@@ -67,7 +65,7 @@ class NotificationRepository extends repository_base_1.default {
                 SET seen = true
                 WHERE recipient_id = $1
 			`, [recipientId]).then(data => data.rowCount ?? null)
-            .catch(e => this.errorHandler(e, 'markNotificationAsSeen'));
+            .catch((error) => this.errorHandler(error, 'markNotificationAsSeen'));
     }
     async getNotificationByReferenceId(referenceId) {
         const query = `SELECT n.id,

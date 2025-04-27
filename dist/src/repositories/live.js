@@ -12,7 +12,7 @@ class LiveRepository extends repository_base_1.default {
                 VALUES ($1)
                 RETURNING id
 			`, [userId]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createLive'));
+            .catch((error) => this.errorHandler(error, 'createLive'));
     }
     async listLives(userId) {
         const query = `SELECT u.id      AS user_id,
@@ -71,7 +71,7 @@ class LiveRepository extends repository_base_1.default {
                 VALUES ($1, $2, $3)
                 RETURNING id
 			`, [liveId, userId, content]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createLiveMessage'));
+            .catch((error) => this.errorHandler(error, 'createLiveMessage'));
     }
     async listLiveMessages(liveId) {
         const query = `SELECT u.id      AS user_id,

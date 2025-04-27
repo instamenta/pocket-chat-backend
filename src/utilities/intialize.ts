@@ -1,13 +1,11 @@
 import {env, SECURITY} from "./config";
 import {Client} from "pg";
 import Redis from "ioredis";
-import http from "node:http";
 import express from "express";
 import BODY_PARSER from 'body-parser';
 import CORS from 'cors';
 import MORGAN from 'morgan';
 import COOKIE_PARSER from 'cookie-parser';
-import {WebSocketServer} from 'ws';
 import VLogger from '@instamenta/vlogger'
 
 const corsOptions: CORS.CorsOptions = {
@@ -31,12 +29,6 @@ export default async function initialize_all() {
 	api.use(MORGAN('dev'))
 	api.use(BODY_PARSER.urlencoded({extended: true}));
 
-	const server = http.createServer();
-
-	const socket = new WebSocketServer({server});
-
-	server.on("error", (e) => { log.error({e, m: 'Websocket server Error'}); });
-
 	api.on('error', (e) => { log.error({e, m: 'Express server error'}); });
 
 	const database = new Client({connectionString: env.DATABASE_URL});
@@ -44,5 +36,5 @@ export default async function initialize_all() {
 
 	const cache = new Redis({host: env.REDIS_HOST, port: parseInt(env.REDIS_PORT)});
 
-	return {server, api, database, cache, socket, logger};
+	return {api, database, cache, logger};
 }

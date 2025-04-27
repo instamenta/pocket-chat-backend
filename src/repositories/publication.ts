@@ -166,7 +166,7 @@ export default class PublicationsRepository extends BaseRepository {
 	}): Promise<string> {
 		try {
 			const fields = Object.keys(publicationData)
-				.map((key, idx) => `${key} = $${idx + 2}`)
+				.map((key, idx) => `${key} = $${Number(idx + 2).toString()}`)
 				.join(', ');
 			const values = Object.values(publicationData);
 

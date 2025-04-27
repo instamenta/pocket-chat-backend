@@ -21,7 +21,7 @@ export default class UserController extends BaseController<UserRepository> {
 	}
 
 	public async listUsers(
-		r: Request<{}, {}, {}, { skip?: string, number?: string }>,
+		r: Request<object, object, object, { skip?: string, number?: string }>,
 		w: Response<Omit<T.User.Schema, "updated_at">[]>
 	) {
 		try {
@@ -29,18 +29,13 @@ export default class UserController extends BaseController<UserRepository> {
 
 			const userList = await this.repository.listUsers(skip, limit);
 
-			if (!userList) {
-				console.error(`${this.constructor.name}.listUsers(): Failed to get user list`);
-				return w.status(status_codes.INTERNAL_SERVER_ERROR).end();
-			}
-
 			w.status(status_codes.OK).json(userList);
 		} catch (error) {
 			this.errorHandler(error, w)
 		}
 	}
 
-	public async signUp(r: Request<{}, z.infer<typeof Validate.create_user>>, w: Response<{
+	public async signUp(r: Request<object, z.infer<typeof Validate.create_user>>, w: Response<{
 		token: string,
 		id: string
 	}>) {
@@ -150,22 +145,22 @@ export default class UserController extends BaseController<UserRepository> {
 	}
 
 	public async updateBio(
-		r: Request<{}, { bio: string }>,
-		w: Response<{
+		request: Request<object, object, { bio: string }>,
+		response: Response<{
 			token: string,
 			id: string,
 			userData: T.User.Schema,
 		}>
 	) {
 		try {
-			const id = Validate.uuid.parse(r.user.id);
-			const bio = z.string().parse(r.body.bio);
+			const id = Validate.uuid.parse(request.user.id);
+			const bio = z.string().parse(request.body.bio);
 
 			const userData = await this.repository.updateBio(id, bio);
 
 			if (!userData) {
 				console.log(`${this.constructor.name}.updateBio(): Failed to update`);
-				return w.status(status_codes.NOT_FOUND).end();
+				return response.status(status_codes.NOT_FOUND).end();
 			}
 
 			const token = JWT.signToken({
@@ -175,14 +170,14 @@ export default class UserController extends BaseController<UserRepository> {
 				picture: userData.picture
 			});
 
-			w.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
+			response.status(status_codes.OK).cookie(SECURITY.JWT_TOKEN_NAME, token).json({token, id, userData});
 		} catch (error) {
-			this.errorHandler(error, w);
+			this.errorHandler(error, response);
 		}
 	}
 
 	public async updateProfilePicture(
-		r: Request<{}, { picture_url: string }>,
+		r: Request<object, object, { picture_url: string }>,
 		w: Response<{
 			token: string,
 			id: string,
@@ -214,7 +209,7 @@ export default class UserController extends BaseController<UserRepository> {
 	}
 
 	public async updateProfilePublicInformation(
-		r: Request,
+		r: Request<object, object, {firstName: string; lastName: string; username: string; email: string}>,
 		w: Response<{
 			token: string,
 			id: string,

@@ -26,7 +26,7 @@ export default class GroupRepository extends BaseRepository {
           WHERE group_id = $1
             AND user_id = $2;
 			`;
-			const userRole = await this.database.query(getRoleQuery, [groupId, userId]);
+			const userRole = await this.database.query<{role: group_roles}>(getRoleQuery, [groupId, userId]);
 			if (!userRole.rows.length || userRole.rows[0].role !== group_roles.OWNER) {
 				throw new UnauthorizedError(' Only the owner can remove group.');
 			}
@@ -151,7 +151,7 @@ export default class GroupRepository extends BaseRepository {
           AND user_id = $2;
 		`;
 		try {
-			const senderRole = await this.database.query(getRoleQuery, [groupId, senderId]);
+			const senderRole = await this.database.query<{role: group_roles}>(getRoleQuery, [groupId, senderId]);
 			if (!senderRole.rows.length || (
 				senderRole.rows[0].role !== group_roles.OWNER &&
 				senderRole.rows[0].role !== group_roles.MODERATOR
@@ -185,8 +185,8 @@ export default class GroupRepository extends BaseRepository {
           AND user_id = $2;`;
 		try {
 			const [senderRole, recipientRole] = await Promise.all([
-				this.database.query(getSenderRoleQuery, [groupId, senderId]),
-				this.database.query(getRecipientRoleQuery, [groupId, senderId]),
+				this.database.query<{role: group_roles}>(getSenderRoleQuery, [groupId, senderId]),
+				this.database.query<{role: group_roles}>(getRecipientRoleQuery, [groupId, senderId]),
 			]);
 
 			if (!senderRole.rows.length || (

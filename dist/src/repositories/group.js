@@ -14,7 +14,7 @@ class GroupRepository extends repository_base_1.default {
                 VALUES ($1, $2, $3, $4)
                 RETURNING id
 			`, [userId, name, description, imageUrl]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createShort'));
+            .catch((error) => this.errorHandler(error, 'createShort'));
     }
     async removeGroup(userId, groupId) {
         try {

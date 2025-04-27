@@ -12,7 +12,7 @@ class FriendRepository extends repository_base_1.default {
                 VALUES ($1, $2)
                 RETURNING id;
 			`, [sender, recipient]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'sendFriendRequest'));
+            .catch((error) => this.errorHandler(error, 'sendFriendRequest'));
     }
     deleteFriendRequest(sender, recipient) {
         return this.database.query(`
@@ -22,7 +22,7 @@ class FriendRepository extends repository_base_1.default {
                 WHERE sender_id = $1
                   AND recipient_id = $2
 			`, [sender, recipient]).then((data) => !!data.rowCount)
-            .catch(e => this.errorHandler(e, 'deleteFriendRequest'));
+            .catch((error) => this.errorHandler(error, 'deleteFriendRequest'));
     }
     declineFriendRequest(sender, recipient) {
         return this.database.query(`
@@ -32,7 +32,7 @@ class FriendRepository extends repository_base_1.default {
                 WHERE sender_id = $2
                   AND recipient_id = $1;
 			`, [sender, recipient]).then((data) => !!data.rowCount)
-            .catch(e => this.errorHandler(e, 'declineFriendRequest'));
+            .catch((error) => this.errorHandler(error, 'declineFriendRequest'));
     }
     listFriendRecommendations(id) {
         return this.database.query(`
@@ -49,7 +49,7 @@ class FriendRepository extends repository_base_1.default {
                   AND f_recipient.id IS NULL
                   AND u.id != $1;
 			`, [id]).then((data) => data.rows)
-            .catch(e => this.errorHandler(e, 'listFriendRecommendations'));
+            .catch((error) => this.errorHandler(error, 'listFriendRecommendations'));
     }
     acceptFriendRequest(sender, recipient) {
         return this.database.query(`
@@ -59,7 +59,7 @@ class FriendRepository extends repository_base_1.default {
                 WHERE sender_id = $2
                   AND recipient_id = $1;
 			`, [sender, recipient]).then((data) => !!data.rowCount)
-            .catch(e => this.errorHandler(e, 'acceptFriendRequest'));
+            .catch((error) => this.errorHandler(error, 'acceptFriendRequest'));
     }
     async listMutualFriendsByUsers(user1, sender) {
         console.log({ user1, sender });
@@ -109,7 +109,7 @@ class FriendRepository extends repository_base_1.default {
                                   OR (f.recipient_id = u.id AND f.sender_id = $1)
                 WHERE f.friendship_status = 'accepted'
                 ;`, [id]).then((data) => data.rows)
-            .catch(e => this.errorHandler(e, 'listFriendsByUserId'));
+            .catch((error) => this.errorHandler(error, 'listFriendsByUserId'));
     }
     listFriendsByUsername(username) {
         return this.database.query(`
@@ -125,7 +125,7 @@ class FriendRepository extends repository_base_1.default {
                                          WHERE username = $1)
                     );
 			`, [username]).then((data) => data.rows)
-            .catch(e => this.errorHandler(e, 'listFriendsByUsername'));
+            .catch((error) => this.errorHandler(error, 'listFriendsByUsername'));
     }
     listFriendRequests(id) {
         return this.database.query(`
@@ -149,7 +149,7 @@ class FriendRepository extends repository_base_1.default {
                          JOIN users u ON (f.sender_id = u.id AND f.recipient_id = $1)
                     OR (f.recipient_id = u.id AND f.sender_id = $1);
 			`, [id]).then((data) => data.rows)
-            .catch(e => this.errorHandler(e, 'listFriendRequests'));
+            .catch((error) => this.errorHandler(error, 'listFriendRequests'));
     }
     listFriendRequestsOnly(id) {
         return this.database.query(`
@@ -165,7 +165,7 @@ class FriendRepository extends repository_base_1.default {
                 WHERE f.recipient_id = $1
                   AND friendship_status != 'accepted';
 			`, [id]).then((data) => data.rows)
-            .catch(e => this.errorHandler(e, 'listFriendRequestsOnly'));
+            .catch((error) => this.errorHandler(error, 'listFriendRequestsOnly'));
     }
     listFriendSentOnly(id) {
         return this.database.query(`
@@ -180,7 +180,7 @@ class FriendRepository extends repository_base_1.default {
                 WHERE f.sender_id = $1
                   AND friendship_status != 'accepted';
 			`, [id]).then((data) => data.rows)
-            .catch(e => this.errorHandler(e, 'listFriendSentOnly'));
+            .catch((error) => this.errorHandler(error, 'listFriendSentOnly'));
     }
     getBySenderAndRecipient(sender, recipient) {
         return this.database.query(`
@@ -191,7 +191,7 @@ class FriendRepository extends repository_base_1.default {
                    OR (sender_id = $2 AND recipient_id = $1)
                 LIMIT 1
 			`, [sender, recipient]).then(data => data.rows[0] ?? null)
-            .catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
+            .catch((error) => this.errorHandler(error, 'getBySenderAndRecipient'));
     }
     async getFriendsByUserIdAndSender(user, sender_id) {
         const notMutual = await this.database.query(`
@@ -229,7 +229,7 @@ class FriendRepository extends repository_base_1.default {
                 FROM friendships
                 WHERE id = $1
                 LIMIT 1`, [id]).then(data => data.rows[0] ?? null)
-            .catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
+            .catch((error) => this.errorHandler(error, 'getBySenderAndRecipient'));
     }
 }
 exports.default = FriendRepository;

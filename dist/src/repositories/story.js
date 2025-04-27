@@ -12,7 +12,7 @@ class StoryRepository extends repository_base_1.default {
                 VALUES ($1, $2)
                 RETURNING id
 			`, [userId, imageUrl]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createNotification'));
+            .catch((error) => this.errorHandler(error, 'createNotification'));
     }
     async listStories(userId) {
         const query = `SELECT u.id      AS user_id,

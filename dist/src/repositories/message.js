@@ -16,7 +16,7 @@ class MessageRepository extends repository_base_1.default {
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`, [sender, recipient, friendship, content, images, files]).then((data) => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createMessage'));
+            .catch((error) => this.errorHandler(error, 'createMessage'));
     }
     getMessagesByFriendshipId(friendship_id, skip = 0, limit = 20) {
         return this.database.query(`
@@ -26,7 +26,7 @@ class MessageRepository extends repository_base_1.default {
                 ORDER BY created_at DESC
                 OFFSET $2 LIMIT $3
 			`, [friendship_id, skip, limit]).then(data => data.rows)
-            .catch(e => this.errorHandler(e, 'getMessagesByFriendshipId'));
+            .catch((error) => this.errorHandler(error, 'getMessagesByFriendshipId'));
     }
     getMessagesByUsers(user1, user2, skip = 0, limit = 20) {
         return this.database.query(`
@@ -37,7 +37,7 @@ class MessageRepository extends repository_base_1.default {
                 ORDER BY created_at DESC
                 OFFSET $3 LIMIT $4
 			`, [user1, user2, skip, limit]).then(data => data.rows)
-            .catch(e => this.errorHandler(e, 'getMessagesByUsers'));
+            .catch((error) => this.errorHandler(error, 'getMessagesByUsers'));
     }
     updateMessageStatus(id, status) {
         return this.database.query(`
@@ -46,7 +46,7 @@ class MessageRepository extends repository_base_1.default {
                     updated_at     = NOW()
                 WHERE id = $1;
 			`, [id, status]).then(data => data.rowCount ?? null)
-            .catch(e => this.errorHandler(e, 'updateMessageStatus'));
+            .catch((error) => this.errorHandler(error, 'updateMessageStatus'));
     }
     async listConversations(userId) {
         const query = `

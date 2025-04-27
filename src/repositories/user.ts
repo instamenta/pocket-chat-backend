@@ -15,7 +15,7 @@ export default class UserRepository extends BaseRepository {
 		super(client, logger);
 	}
 
-	public listUsers(skip: number = 0, limit: number = 0) {
+	public listUsers(skip: number = 0, limit: number = 0): Promise<Array<Omit<T.User.Schema, 'updated_at'>>> {
 		return this.database.query<Omit<T.User.Schema, 'updated_at'>>(`
 
                 SELECT id,
@@ -134,19 +134,19 @@ export default class UserRepository extends BaseRepository {
 		const values = [id];
 
 		if (username) {
-			fields.push(`username = $${fields.length + 2}`);
+			fields.push(`username = $${Number(fields.length + 2).toString()}`);
 			values.push(username);
 		}
 		if (email) {
-			fields.push(`email = $${fields.length + 2}`);
+			fields.push(`email = $${Number(fields.length + 2).toString()}`);
 			values.push(email);
 		}
 		if (firstName) {
-			fields.push(`first_name = $${fields.length + 2}`);
+			fields.push(`first_name = $${Number(fields.length + 2).toString()}`);
 			values.push(firstName);
 		}
 		if (lastName) {
-			fields.push(`last_name = $${fields.length + 2}`);
+			fields.push(`last_name = $${Number(fields.length + 2).toString()}`);
 			values.push(lastName);
 		}
 

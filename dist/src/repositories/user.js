@@ -25,7 +25,7 @@ class UserRepository extends repository_base_1.default {
                 FROM users
                 OFFSET $1 LIMIT $2
 			`, [skip, limit]).then(data => data.rows)
-            .catch(e => this.errorHandler(e, 'listUsers'));
+            .catch((error) => this.errorHandler(error, 'listUsers'));
     }
     getByUsername(username) {
         return this.database.query(`
@@ -35,7 +35,7 @@ class UserRepository extends repository_base_1.default {
                 WHERE u.username = $1
                 LIMIT 1;
 			`, [username]).then(data => data.rows.length ? data.rows[0] : null)
-            .catch(e => this.errorHandler(e, 'getByUsername'));
+            .catch((error) => this.errorHandler(error, 'getByUsername'));
     }
     updateLastActiveAtById(id) {
         return this.database.query(`
@@ -43,7 +43,7 @@ class UserRepository extends repository_base_1.default {
                 SET last_active_at = NOW()
                 WHERE id = $1;
 			`, [id]).then(data => data.rowCount ?? null)
-            .catch(e => this.errorHandler(e, 'updateLastActiveAtById'));
+            .catch((error) => this.errorHandler(error, 'updateLastActiveAtById'));
     }
     async createUser({ username, email, password, firstName, lastName }) {
         const hashedPassword = await this.hashingHandler.hashPassword(password);
@@ -51,7 +51,7 @@ class UserRepository extends repository_base_1.default {
                 INSERT INTO users ("username", "email", "password", "first_name", "last_name")
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING id;`, [username, email, hashedPassword, firstName, lastName]).then(data => data.rows[0].id)
-            .catch(e => this.errorHandler(e, 'createUser'));
+            .catch((error) => this.errorHandler(error, 'createUser'));
     }
     getUserById(id) {
         return this.database.query(`
@@ -59,7 +59,7 @@ class UserRepository extends repository_base_1.default {
                 FROM users
                 WHERE id = $1
 			`, [id]).then(data => data.rowCount ? data.rows[0] : null)
-            .catch(e => this.errorHandler(e, 'getUserById'));
+            .catch((error) => this.errorHandler(error, 'getUserById'));
     }
     getUserByUsername(username) {
         return this.database.query(`
@@ -67,7 +67,7 @@ class UserRepository extends repository_base_1.default {
                 FROM users
                 WHERE username = $1
 			`, [username]).then(data => data.rowCount ? data.rows[0] : null)
-            .catch(e => this.errorHandler(e, 'getUserByUsername'));
+            .catch((error) => this.errorHandler(error, 'getUserByUsername'));
     }
     updateProfilePicture(id, pictureUrl) {
         return this.database.query(`
@@ -76,7 +76,7 @@ class UserRepository extends repository_base_1.default {
                 WHERE id = $1
                 RETURNING *
 			`, [id, pictureUrl]).then(data => data.rows.length ? data.rows[0] : null)
-            .catch(e => this.errorHandler(e, 'updateProfilePicture'));
+            .catch((error) => this.errorHandler(error, 'updateProfilePicture'));
     }
     updateBio(id, bio) {
         return this.database.query(`
@@ -85,25 +85,25 @@ class UserRepository extends repository_base_1.default {
                 WHERE id = $1
                 RETURNING *
 			`, [id, bio]).then(data => data.rows.length ? data.rows[0] : null)
-            .catch(e => this.errorHandler(e, 'updateProfilePicture'));
+            .catch((error) => this.errorHandler(error, 'updateProfilePicture'));
     }
     updateProfilePublicInformation(id, { username, email, firstName, lastName }) {
         const fields = [];
         const values = [id];
         if (username) {
-            fields.push(`username = $${fields.length + 2}`);
+            fields.push(`username = $${Number(fields.length + 2).toString()}`);
             values.push(username);
         }
         if (email) {
-            fields.push(`email = $${fields.length + 2}`);
+            fields.push(`email = $${Number(fields.length + 2).toString()}`);
             values.push(email);
         }
         if (firstName) {
-            fields.push(`first_name = $${fields.length + 2}`);
+            fields.push(`first_name = $${Number(fields.length + 2).toString()}`);
             values.push(firstName);
         }
         if (lastName) {
-            fields.push(`last_name = $${fields.length + 2}`);
+            fields.push(`last_name = $${Number(fields.length + 2).toString()}`);
             values.push(lastName);
         }
         return this.database.query(`
@@ -112,7 +112,7 @@ class UserRepository extends repository_base_1.default {
                 WHERE id = $1
                 RETURNING *
 			`, values).then(data => data.rows.length ? data.rows[0] : null)
-            .catch(e => this.errorHandler(e, 'updateProfilePublicInformation'));
+            .catch((error) => this.errorHandler(error, 'updateProfilePublicInformation'));
     }
 }
 exports.default = UserRepository;
