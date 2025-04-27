@@ -8,7 +8,7 @@ const http_status_codes_2 = __importDefault(require("@instamenta/http-status-cod
 const zod_1 = require("zod");
 const enumerations_1 = require("../utilities/enumerations");
 const controller_base_1 = __importDefault(require("../base/controller.base"));
-const validators_1 = __importDefault(require("../validators"));
+const validators_1 = require("../validators");
 class ShortController extends controller_base_1.default {
     notificator;
     constructor(repository, logger, notificator) {
@@ -18,7 +18,7 @@ class ShortController extends controller_base_1.default {
     async createShort(r, w) {
         this.log.log('createShort');
         try {
-            const { userId, videoUrl, description } = validators_1.default.create_story.parse({
+            const { userId, videoUrl, description } = validators_1.Validate.create_story.parse({
                 userId: r.user.id,
                 videoUrl: r.body.videoUrl,
                 description: r.body.description
@@ -37,7 +37,7 @@ class ShortController extends controller_base_1.default {
     async listShorts(r, w) {
         this.log.log('listShorts');
         try {
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const shorts = await this.repository.listShorts(userId);
             if (!shorts) {
                 this.log.error({ e: `Failed to get stories`, m: userId });
@@ -52,7 +52,7 @@ class ShortController extends controller_base_1.default {
     async listShortsByUsername(r, w) {
         this.log.log('listShortsByUsername');
         try {
-            const userId = validators_1.default.uuid.parse(r.params.id);
+            const userId = validators_1.Validate.uuid.parse(r.params.id);
             const stories = await this.repository.listShortsById(userId);
             if (!stories) {
                 this.log.error({ e: 'Failed to get stories', m: userId });
@@ -67,7 +67,7 @@ class ShortController extends controller_base_1.default {
     async getShortById(r, w) {
         this.log.log('getShortById');
         try {
-            const shortId = validators_1.default.uuid.parse(r.params.shortId);
+            const shortId = validators_1.Validate.uuid.parse(r.params.shortId);
             const short = await this.repository.getShortById(shortId);
             if (!short) {
                 this.log.error({ e: `Not found`, m: shortId });
@@ -82,12 +82,13 @@ class ShortController extends controller_base_1.default {
     async likeShort(r, w) {
         this.log.log('likeShort');
         try {
-            const shortId = validators_1.default.uuid.parse(r.params.id);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const shortId = validators_1.Validate.uuid.parse(r.params.id);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const isLiked = await this.repository.likeShort(shortId, userId);
             w.status(http_status_codes_2.default.OK).end();
             if (!isLiked) {
-                return this.log.info({ m: 'Unliking short' });
+                this.log.info({ m: 'Unliking short' });
+                return;
             }
             else {
                 this.log.info({ m: 'Liking short' });
@@ -100,7 +101,7 @@ class ShortController extends controller_base_1.default {
                 content: '',
                 seen: false,
             })
-                .catch(e => this.log.error({ e }));
+                .catch(e => { this.log.error({ e }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -109,8 +110,8 @@ class ShortController extends controller_base_1.default {
     async listCommentsByShort(r, w) {
         this.log.log('listCommentsByShort');
         try {
-            const shortId = validators_1.default.uuid.parse(r.params.shortId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const shortId = validators_1.Validate.uuid.parse(r.params.shortId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const comments = await this.repository.listCommentsByShortId(shortId, userId);
             w.status(http_status_codes_2.default.OK).json(comments);
         }
@@ -121,8 +122,8 @@ class ShortController extends controller_base_1.default {
     async createShortComment(r, w) {
         this.log.log('createShortComment');
         try {
-            const shortId = validators_1.default.uuid.parse(r.params.shortId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const shortId = validators_1.Validate.uuid.parse(r.params.shortId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const content = zod_1.z.string().min(1).parse(r.body.content);
             const comment = await this.repository.createShortComment(shortId, userId, content);
             w.status(http_status_codes_2.default.CREATED).json(comment);
@@ -134,7 +135,7 @@ class ShortController extends controller_base_1.default {
                 content: content,
                 seen: false,
             })
-                .catch(e => this.log.error({ e }));
+                .catch(e => { this.log.error({ e }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -143,8 +144,8 @@ class ShortController extends controller_base_1.default {
     async deleteShortComment(r, w) {
         this.log.log('deleteShortComment');
         try {
-            const commentId = validators_1.default.uuid.parse(r.params.commentId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             await this.repository.deleteShortComment(commentId, userId);
             w.status(http_status_codes_2.default.NO_CONTENT).end();
         }
@@ -155,8 +156,8 @@ class ShortController extends controller_base_1.default {
     async likeShortComment(r, w) {
         this.log.log('likeShortComment');
         try {
-            const commentId = validators_1.default.uuid.parse(r.params.commentId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             await this.repository.likeShortComment(commentId, userId);
             w.status(http_status_codes_2.default.OK).end();
             await this.notificator.handleNotification({
@@ -167,7 +168,7 @@ class ShortController extends controller_base_1.default {
                 content: '',
                 seen: false,
             })
-                .catch((e) => this.log.error({ e }));
+                .catch((e) => { this.log.error({ e }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -176,7 +177,7 @@ class ShortController extends controller_base_1.default {
     async getCommentById(r, w) {
         this.log.log('getCommentById');
         try {
-            const commentId = validators_1.default.uuid.parse(r.params.commentId);
+            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
             const comment = await this.repository.getCommentById(commentId);
             if (!comment) {
                 this.log.error({ m: `Not found ${commentId}`, e: '' });

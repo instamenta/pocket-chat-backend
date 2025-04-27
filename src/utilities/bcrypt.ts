@@ -21,7 +21,7 @@ export default class BCrypt implements I_HashingHandler {
 
 	async comparePasswords(plainPassword: string, hashedPassword: string) {
 		return await bcrypt.compare(plainPassword, hashedPassword)
-			.catch((error) => {
+			.catch((error: unknown) => {
 				console.error(error)
 				return false;
 			});

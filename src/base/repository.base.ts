@@ -11,7 +11,7 @@ export default class BaseRepository {
 		this.log = logger.getVlogger(this.constructor.name);
 	}
 
-	protected errorHandler(error: unknown | Error, method: string): never {
+	protected errorHandler(error: unknown, method: string): never {
 		throw new Error(`${this.constructor.name}.${method}(): Error`, {cause: error});
 	}
 }

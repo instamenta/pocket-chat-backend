@@ -4,7 +4,7 @@ import statusCodes from '@instamenta/http-status-codes';
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
 import BaseController from "../base/controller.base";
-import Validate from "../validators";
+import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 

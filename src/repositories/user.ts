@@ -3,7 +3,7 @@ import z from 'zod';
 import BaseRepository from "../base/repository.base";
 import {Client} from "pg";
 import * as T from '../types'
-import Validate from "../validators";
+import {Validate} from "../validators";
 import VLogger from "@instamenta/vlogger";
 
 export default class UserRepository extends BaseRepository {
@@ -33,7 +33,7 @@ export default class UserRepository extends BaseRepository {
 			[skip, limit]
 		).then(data => data.rows)
 
-			.catch(e => this.errorHandler(e, 'listUsers'));
+			.catch((error: unknown) => this.errorHandler(error, 'listUsers'));
 	}
 
 	public getByUsername(username: string): Promise<T.User.GetByUsername | null> {
@@ -47,7 +47,7 @@ export default class UserRepository extends BaseRepository {
 			[username]
 		).then(data => data.rows.length ? data.rows[0] : null)
 
-			.catch(e => this.errorHandler(e, 'getByUsername'));
+			.catch((error: unknown) => this.errorHandler(error, 'getByUsername'));
 	}
 
 	public updateLastActiveAtById(id: string) {
@@ -59,7 +59,7 @@ export default class UserRepository extends BaseRepository {
 			[id]
 		).then(data => data.rowCount ?? null)
 
-			.catch(e => this.errorHandler(e, 'updateLastActiveAtById'));
+			.catch((error: unknown) => this.errorHandler(error, 'updateLastActiveAtById'));
 	}
 
 	public async createUser({username, email, password, firstName, lastName}: z.infer<typeof Validate.create_user>) {
@@ -73,7 +73,7 @@ export default class UserRepository extends BaseRepository {
 			[username, email, hashedPassword, firstName, lastName]
 		).then(data => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'createUser'));
+			.catch((error: unknown) => this.errorHandler(error, 'createUser'));
 	}
 
 	public getUserById(id: string) {
@@ -85,7 +85,7 @@ export default class UserRepository extends BaseRepository {
 			[id]
 		).then(data => data.rowCount ? data.rows[0] : null)
 
-			.catch(e => this.errorHandler(e, 'getUserById'));
+			.catch((error: unknown) => this.errorHandler(error, 'getUserById'));
 	}
 
 	public getUserByUsername(username: string) {
@@ -97,7 +97,7 @@ export default class UserRepository extends BaseRepository {
 			[username]
 		).then(data => data.rowCount ? data.rows[0] : null)
 
-			.catch(e => this.errorHandler(e, 'getUserByUsername'));
+			.catch((error: unknown) => this.errorHandler(error, 'getUserByUsername'));
 	}
 
 
@@ -111,7 +111,7 @@ export default class UserRepository extends BaseRepository {
 			[id, pictureUrl]
 		).then(data => data.rows.length ? data.rows[0] : null)
 
-			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
+			.catch((error: unknown) => this.errorHandler(error, 'updateProfilePicture'));
 	}
 
 	public updateBio(id: string, bio: string) {
@@ -123,7 +123,7 @@ export default class UserRepository extends BaseRepository {
 			`,
 			[id, bio]
 		).then(data => data.rows.length ? data.rows[0] : null)
-			.catch(e => this.errorHandler(e, 'updateProfilePicture'));
+			.catch((error: unknown) => this.errorHandler(error, 'updateProfilePicture'));
 	}
 
 	public updateProfilePublicInformation(
@@ -159,7 +159,7 @@ export default class UserRepository extends BaseRepository {
 			values
 		).then(data => data.rows.length ? data.rows[0] : null)
 
-			.catch(e => this.errorHandler(e, 'updateProfilePublicInformation'));
+			.catch((error: unknown) => this.errorHandler(error, 'updateProfilePublicInformation'));
 	}
 
 

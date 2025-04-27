@@ -1,5 +1,5 @@
 import z from 'zod';
-export default class Validate {
+export declare class Validate {
     static create_user: z.ZodObject<{
         firstName: z.ZodString;
         lastName: z.ZodString;

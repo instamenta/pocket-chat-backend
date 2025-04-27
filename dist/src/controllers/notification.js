@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const controller_base_1 = __importDefault(require("../base/controller.base"));
-const validators_1 = __importDefault(require("../validators"));
+const validators_1 = require("../validators");
 class NotificationController extends controller_base_1.default {
     async createNotification(r, w) {
         try {
@@ -17,7 +17,7 @@ class NotificationController extends controller_base_1.default {
     }
     async listNotifications(r, w) {
         try {
-            const notifications = await this.repository.listNotifications(validators_1.default.uuid.parse(r.user.id), r.query.filter);
+            const notifications = await this.repository.listNotifications(validators_1.Validate.uuid.parse(r.user.id), r.query.filter);
             if (!notifications) {
                 console.error(`${this.constructor.name}.listNotifications(): Failed to get messages`);
                 return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
@@ -30,7 +30,7 @@ class NotificationController extends controller_base_1.default {
     }
     async markNotificationAsSeen(r, w) {
         try {
-            const messages = await this.repository.markNotificationAsSeen(validators_1.default.uuid.parse(r.params.id));
+            const messages = await this.repository.markNotificationAsSeen(validators_1.Validate.uuid.parse(r.params.id));
             if (!messages) {
                 console.error(`${this.constructor.name}.markNotificationAsSeen(): Failed to update notification`);
                 return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
@@ -43,7 +43,7 @@ class NotificationController extends controller_base_1.default {
     }
     async markAllNotificationsAsSeen(r, w) {
         try {
-            const messages = await this.repository.markAllNotificationsAsSeen(validators_1.default.uuid.parse(r.user.id));
+            const messages = await this.repository.markAllNotificationsAsSeen(validators_1.Validate.uuid.parse(r.user.id));
             if (!messages) {
                 console.error(`${this.constructor.name}.markAllNotificationsAsSeen(): Failed to update notifications`, r.params);
                 return w.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();

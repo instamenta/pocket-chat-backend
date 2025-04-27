@@ -8,7 +8,7 @@ const jwt_1 = __importDefault(require("../utilities/jwt"));
 const config_1 = require("../utilities/config");
 const zod_1 = require("zod");
 const controller_base_1 = __importDefault(require("../base/controller.base"));
-const validators_1 = __importDefault(require("../validators"));
+const validators_1 = require("../validators");
 class UserController extends controller_base_1.default {
     hashingHandler;
     constructor(repository, logger, hashingHandler) {
@@ -31,7 +31,7 @@ class UserController extends controller_base_1.default {
     }
     async signUp(r, w) {
         try {
-            const userData = validators_1.default.create_user.parse(r.body);
+            const userData = validators_1.Validate.create_user.parse(r.body);
             const userId = await this.repository.createUser(userData);
             if (!userId) {
                 console.error(`${this.constructor.name}.createUser(): failed to create User`);
@@ -51,7 +51,7 @@ class UserController extends controller_base_1.default {
     }
     async signIn(r, w) {
         try {
-            const { username, password } = validators_1.default.login_user.parse(r.body);
+            const { username, password } = validators_1.Validate.login_user.parse(r.body);
             const userData = await this.repository.getByUsername(username);
             if (!userData) {
                 console.log(`${this.constructor.name}.loginUser(): failed to login user`);
@@ -72,7 +72,7 @@ class UserController extends controller_base_1.default {
     }
     async authUser(r, w) {
         try {
-            const id = validators_1.default.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(r.user.id);
             const user = await this.repository.getUserById(id);
             if (!user) {
                 console.log(`${this.constructor.name}.authUser(): User not found`);
@@ -86,7 +86,7 @@ class UserController extends controller_base_1.default {
     }
     async getUserById(r, w) {
         try {
-            const id = validators_1.default.uuid.parse(r.params.id);
+            const id = validators_1.Validate.uuid.parse(r.params.id);
             const user = await this.repository.getUserById(id);
             if (!user) {
                 console.log(`${this.constructor.name}.getUserById(): User not found`);
@@ -100,7 +100,7 @@ class UserController extends controller_base_1.default {
     }
     async getUserByUsername(r, w) {
         try {
-            const username = validators_1.default.name.parse(r.params.username);
+            const username = validators_1.Validate.name.parse(r.params.username);
             const user = await this.repository.getUserByUsername(username);
             if (!user) {
                 console.log(`${this.constructor.name}.getUserByUsername(): User not found`);
@@ -114,7 +114,7 @@ class UserController extends controller_base_1.default {
     }
     async updateBio(r, w) {
         try {
-            const id = validators_1.default.uuid.parse(r.user.id);
+            const id = validators_1.Validate.uuid.parse(r.user.id);
             const bio = zod_1.z.string().parse(r.body.bio);
             const userData = await this.repository.updateBio(id, bio);
             if (!userData) {
@@ -135,8 +135,8 @@ class UserController extends controller_base_1.default {
     }
     async updateProfilePicture(r, w) {
         try {
-            const id = validators_1.default.uuid.parse(r.user.id);
-            const picture_url = validators_1.default.url.parse(r.body.picture_url);
+            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const picture_url = validators_1.Validate.url.parse(r.body.picture_url);
             const userData = await this.repository.updateProfilePicture(id, picture_url);
             if (!userData) {
                 console.log(`${this.constructor.name}.updateProfilePicture(): Failed to update`);
@@ -156,8 +156,8 @@ class UserController extends controller_base_1.default {
     }
     async updateProfilePublicInformation(r, w) {
         try {
-            const id = validators_1.default.uuid.parse(r.user.id);
-            const data = validators_1.default.update_profile_public_information.parse({
+            const id = validators_1.Validate.uuid.parse(r.user.id);
+            const data = validators_1.Validate.update_profile_public_information.parse({
                 firstName: r.body.firstName,
                 lastName: r.body.lastName,
                 username: r.body.username,

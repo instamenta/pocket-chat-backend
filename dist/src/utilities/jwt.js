@@ -16,24 +16,24 @@ class JWT {
             const decoded = jsonwebtoken_1.default.verify(token, this.secret);
             return decoded;
         }
-        catch (error) {
+        catch {
             return null;
         }
     }
     static setTokenCookie(w, token) {
         w.cookie(config_1.SECURITY.JWT_TOKEN_NAME, token, { httpOnly: true });
     }
-    static getTokenFromCookie(r) {
-        return r.cookies[config_1.SECURITY.JWT_TOKEN_NAME] || null;
+    static getTokenFromCookie(request) {
+        return request.cookies[config_1.SECURITY.JWT_TOKEN_NAME] || null;
     }
-    static authenticate(r, w, next) {
-        const token = this.getTokenFromCookie(r);
+    static authenticate(request, response, next) {
+        const token = this.getTokenFromCookie(request);
         if (!token)
-            return w.status(401).json({ message: 'Unauthorized' });
+            return response.status(401).json({ message: 'Unauthorized' });
         const user = this.verifyToken(token);
         if (!user)
-            return w.status(401).json({ message: 'Unauthorized' });
-        r.user = user;
+            return response.status(401).json({ message: 'Unauthorized' });
+        request.user = user;
         next();
     }
     static getUser(token) {

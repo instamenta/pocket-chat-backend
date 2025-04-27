@@ -3,7 +3,7 @@ import status_codes from '@instamenta/http-status-codes'
 import FriendRepository from "../repositories/friend";
 import NotificationRepository from "../repositories/notification";
 import BaseController from "../base/controller.base";
-import Validate from "../validators";
+import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 

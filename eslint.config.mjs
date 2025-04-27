@@ -17,4 +17,9 @@ export default defineConfig([
       },
     },
   },
+  {
+    rules: {
+      '@typescript-eslint/no-extraneous-class': 'off'
+    }
+  }
 ]);

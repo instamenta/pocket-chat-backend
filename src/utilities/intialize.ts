@@ -35,9 +35,9 @@ export default async function initialize_all() {
 
 	const socket = new WebSocketServer({server});
 
-	server.on("error", (e) => log.error({e, m: 'Websocket server Error'}));
+	server.on("error", (e) => { log.error({e, m: 'Websocket server Error'}); });
 
-	api.on('error', (e) => log.error({e, m: 'Express server error'}));
+	api.on('error', (e) => { log.error({e, m: 'Express server error'}); });
 
 	const database = new Client({connectionString: env.DATABASE_URL});
 	await database.connect();

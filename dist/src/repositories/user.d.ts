@@ -3,7 +3,7 @@ import z from 'zod';
 import BaseRepository from "../base/repository.base";
 import { Client } from "pg";
 import * as T from '../types';
-import Validate from "../validators";
+import { Validate } from "../validators";
 import VLogger from "@instamenta/vlogger";
 export default class UserRepository extends BaseRepository {
     private readonly hashingHandler;

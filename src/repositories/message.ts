@@ -18,7 +18,7 @@ export default class MessageRepository extends BaseRepository {
 			[sender, recipient, friendship, content, images, files]
 		).then((data) => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'createMessage'));
+			.catch((error: unknown) => this.errorHandler(error, 'createMessage'));
 	}
 
 	public getMessagesByFriendshipId(friendship_id: string, skip: number = 0, limit: number = 20) {
@@ -32,7 +32,7 @@ export default class MessageRepository extends BaseRepository {
 			[friendship_id, skip, limit]
 		).then(data => data.rows)
 
-			.catch(e => this.errorHandler(e, 'getMessagesByFriendshipId'));
+			.catch((error: unknown) => this.errorHandler(error, 'getMessagesByFriendshipId'));
 	}
 
 	public getMessagesByUsers(user1: string, user2: string, skip: number = 0, limit: number = 20) {
@@ -47,7 +47,7 @@ export default class MessageRepository extends BaseRepository {
 			[user1, user2, skip, limit]
 		).then(data => data.rows)
 
-			.catch(e => this.errorHandler(e, 'getMessagesByUsers'));
+			.catch((error: unknown) => this.errorHandler(error, 'getMessagesByUsers'));
 	}
 
 	public updateMessageStatus(id: string, status: string) {
@@ -60,7 +60,7 @@ export default class MessageRepository extends BaseRepository {
 			[id, status]
 		).then(data => data.rowCount ?? null)
 
-			.catch(e => this.errorHandler(e, 'updateMessageStatus'));
+			.catch((error: unknown) => this.errorHandler(error, 'updateMessageStatus'));
 	}
 
 	public async listConversations(userId: string) {

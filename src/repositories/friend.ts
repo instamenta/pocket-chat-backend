@@ -13,7 +13,7 @@ export default class FriendRepository extends BaseRepository {
 			[sender, recipient]
 		).then((data) => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'sendFriendRequest'));
+			.catch((error: unknown) => this.errorHandler(error, 'sendFriendRequest'));
 
 	}
 
@@ -28,7 +28,7 @@ export default class FriendRepository extends BaseRepository {
 			[sender, recipient]
 		).then((data) => !!data.rowCount)
 
-			.catch(e => this.errorHandler(e, 'deleteFriendRequest'));
+			.catch((error: unknown) => this.errorHandler(error, 'deleteFriendRequest'));
 	}
 
 	public declineFriendRequest(sender: string, recipient: string) {
@@ -42,7 +42,7 @@ export default class FriendRepository extends BaseRepository {
 			[sender, recipient]
 		).then((data) => !!data.rowCount)
 
-			.catch(e => this.errorHandler(e, 'declineFriendRequest'));
+			.catch((error: unknown) => this.errorHandler(error, 'declineFriendRequest'));
 	}
 
 	public listFriendRecommendations(id: string) {
@@ -63,7 +63,7 @@ export default class FriendRepository extends BaseRepository {
 			[id]
 		).then((data) => data.rows)
 
-			.catch(e => this.errorHandler(e, 'listFriendRecommendations'));
+			.catch((error: unknown) => this.errorHandler(error, 'listFriendRecommendations'));
 	}
 
 	public acceptFriendRequest(sender: string, recipient: string) {
@@ -77,7 +77,7 @@ export default class FriendRepository extends BaseRepository {
 			[sender, recipient]
 		).then((data) => !!data.rowCount)
 
-			.catch(e => this.errorHandler(e, 'acceptFriendRequest'));
+			.catch((error: unknown) => this.errorHandler(error, 'acceptFriendRequest'));
 	}
 
 	public async listMutualFriendsByUsers(user1: string, sender: string) {
@@ -133,7 +133,7 @@ export default class FriendRepository extends BaseRepository {
 			[id]
 		).then((data) => data.rows)
 
-			.catch(e => this.errorHandler(e, 'listFriendsByUserId'));
+			.catch((error: unknown) => this.errorHandler(error, 'listFriendsByUserId'));
 	}
 
 	public listFriendsByUsername(username: string) {
@@ -152,7 +152,7 @@ export default class FriendRepository extends BaseRepository {
 			`,
 			[username]
 		).then((data) => data.rows)
-			.catch(e => this.errorHandler(e, 'listFriendsByUsername'));
+			.catch((error: unknown) => this.errorHandler(error, 'listFriendsByUsername'));
 	}
 
 	public listFriendRequests(id: string) {
@@ -180,7 +180,7 @@ export default class FriendRepository extends BaseRepository {
 			[id]
 		).then((data) => data.rows)
 
-			.catch(e => this.errorHandler(e, 'listFriendRequests'));
+			.catch((error: unknown) => this.errorHandler(error, 'listFriendRequests'));
 	}
 
 	public listFriendRequestsOnly(id: string) {
@@ -199,7 +199,7 @@ export default class FriendRepository extends BaseRepository {
 			`,
 			[id]
 		).then((data) => data.rows)
-			.catch(e => this.errorHandler(e, 'listFriendRequestsOnly'));
+			.catch((error: unknown) => this.errorHandler(error, 'listFriendRequestsOnly'));
 	}
 
 	public listFriendSentOnly(id: string) {
@@ -218,7 +218,7 @@ export default class FriendRepository extends BaseRepository {
 			[id]
 		).then((data) => data.rows)
 
-			.catch(e => this.errorHandler(e, 'listFriendSentOnly'));
+			.catch((error: unknown) => this.errorHandler(error, 'listFriendSentOnly'));
 	}
 
 	public getBySenderAndRecipient(sender: string, recipient: string) {
@@ -233,7 +233,7 @@ export default class FriendRepository extends BaseRepository {
 			[sender, recipient]
 		).then(data => data.rows[0] ?? null)
 
-			.catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
+			.catch((error: unknown) => this.errorHandler(error, 'getBySenderAndRecipient'));
 	}
 
 	public async getFriendsByUserIdAndSender(user: string, sender_id: string) {
@@ -282,7 +282,7 @@ export default class FriendRepository extends BaseRepository {
 			[id]
 		).then(data => data.rows[0] ?? null)
 
-			.catch(e => this.errorHandler(e, 'getBySenderAndRecipient'));
+			.catch((error: unknown) => this.errorHandler(error, 'getBySenderAndRecipient'));
 	}
 
 }

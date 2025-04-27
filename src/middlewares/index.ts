@@ -3,8 +3,9 @@ import JWT from '../utilities/jwt';
 import status_codes from "@instamenta/http-status-codes";
 import {TokenExpiredError} from "jsonwebtoken";
 
-export class Middlewares {
-	public static isGuest(request: Request, response: Response, next: NextFunction) {
+export const Middlewares = {isAuthorized, isGuest, errorHandler};
+
+export function isGuest(request: Request, response: Response, next: NextFunction) {
 		const token = JWT.getTokenFromCookie(request);
 
 		if (token) {
@@ -15,7 +16,7 @@ export class Middlewares {
 
 					return response.status(status_codes.FORBIDDEN).json({message: 'User is already authenticated'});
 				}
-			} catch (error: Error | TokenExpiredError | unknown) {
+			} catch (error: unknown) {
 				if (error instanceof TokenExpiredError) {
 					console.log('Middleware.isGuest(): Token expired');
 					JWT.removeTokenFromCookie(response);
@@ -27,7 +28,7 @@ export class Middlewares {
 		next();
 	}
 
-	public static isAuthorized(request: Request, response: Response, next: NextFunction) {
+export function  isAuthorized(request: Request, response: Response, next: NextFunction) {
 		const token = JWT.getTokenFromCookie(request);
 		if (!token) {
 			console.log('Middleware.isAuthorized(): UNAUTHORIZED');
@@ -45,9 +46,10 @@ export class Middlewares {
 		next();
 	}
 
-	public static  errorHandler(error: Error, _request: Request, response: Response, _next: NextFunction) {
+	export function errorHandler(error: Error, _request: Request, response: Response, _next: NextFunction) {
 		console.error(error.stack);
 
 		response.status(status_codes.INTERNAL_SERVER_ERROR).json({error: 'Internal Server Error'});
 	}
-}
+
+

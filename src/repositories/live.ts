@@ -13,7 +13,7 @@ export default class LiveRepository extends BaseRepository {
 			[userId]
 		).then((data) => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'createLive'));
+			.catch((error: unknown) => this.errorHandler(error, 'createLive'));
 	}
 
 	async listLives(userId: string) {
@@ -76,7 +76,7 @@ export default class LiveRepository extends BaseRepository {
 			[liveId, userId, content]
 		).then((data) => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'createLiveMessage'));
+			.catch((error: unknown) => this.errorHandler(error, 'createLiveMessage'));
 	}
 
 	async listLiveMessages(liveId: string) {

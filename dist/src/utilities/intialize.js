@@ -33,8 +33,8 @@ async function initialize_all() {
     api.use(body_parser_1.default.urlencoded({ extended: true }));
     const server = node_http_1.default.createServer();
     const socket = new ws_1.WebSocketServer({ server });
-    server.on("error", (e) => log.error({ e, m: 'Websocket server Error' }));
-    api.on('error', (e) => log.error({ e, m: 'Express server error' }));
+    server.on("error", (e) => { log.error({ e, m: 'Websocket server Error' }); });
+    api.on('error', (e) => { log.error({ e, m: 'Express server error' }); });
     const database = new pg_1.Client({ connectionString: config_1.env.DATABASE_URL });
     await database.connect();
     const cache = new ioredis_1.default({ host: config_1.env.REDIS_HOST, port: parseInt(config_1.env.REDIS_PORT) });

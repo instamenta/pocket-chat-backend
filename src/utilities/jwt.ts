@@ -19,7 +19,7 @@ class JWT {
 		try {
 			const decoded = jwt.verify(token, this.secret) as JwtPayload;
 			return decoded as T.User.Payload;
-		} catch (error) {
+		} catch {
 			return null;
 		}
 	}
@@ -28,18 +28,18 @@ class JWT {
 		w.cookie(SECURITY.JWT_TOKEN_NAME, token, {httpOnly: true});
 	}
 
-	static getTokenFromCookie(r: Request): string | null {
-		return r.cookies[SECURITY.JWT_TOKEN_NAME] || null;
+	static getTokenFromCookie(request: Request): string | null {
+		return (request as Express.Request).cookies[SECURITY.JWT_TOKEN_NAME] || null;
 	}
 
-	static authenticate(r: Request, w: Response, next: NextFunction) {
-		const token = this.getTokenFromCookie(r);
-		if (!token) return w.status(401).json({message: 'Unauthorized'});
+	static authenticate(request: Request, response: Response, next: NextFunction) {
+		const token = this.getTokenFromCookie(request);
+		if (!token) return response.status(401).json({message: 'Unauthorized'});
 
 		const user = this.verifyToken(token);
-		if (!user) return w.status(401).json({message: 'Unauthorized'});
+		if (!user) return response.status(401).json({message: 'Unauthorized'});
 
-		(r as any).user = user;
+		(request as Express.Request).user = user;
 		next();
 	}
 

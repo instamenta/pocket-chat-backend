@@ -13,7 +13,7 @@ export default class StoryRepository extends BaseRepository {
 			[userId, imageUrl]
 		).then((data) => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'createNotification'));
+			.catch((error: unknown) => this.errorHandler(error, 'createNotification'));
 	}
 
 	async listStories(userId: string) {

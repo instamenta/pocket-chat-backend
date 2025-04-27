@@ -7,7 +7,7 @@ const http_status_codes_1 = __importDefault(require("@instamenta/http-status-cod
 const zod_1 = require("zod");
 const enumerations_1 = require("../utilities/enumerations");
 const controller_base_1 = __importDefault(require("../base/controller.base"));
-const validators_1 = __importDefault(require("../validators"));
+const validators_1 = require("../validators");
 class CommentController extends controller_base_1.default {
     notificator;
     constructor(repository, logger, notificator) {
@@ -17,8 +17,8 @@ class CommentController extends controller_base_1.default {
     async listByPublication(r, w) {
         this.log.log('listByPublication');
         try {
-            const publicationId = validators_1.default.uuid.parse(r.params.publicationId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const publicationId = validators_1.Validate.uuid.parse(r.params.publicationId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const comments = await this.repository.listCommentsByPublication(publicationId, userId);
             w.status(http_status_codes_1.default.OK).json(comments);
         }
@@ -29,8 +29,8 @@ class CommentController extends controller_base_1.default {
     async create(r, w) {
         this.log.log('create');
         try {
-            const publicationId = validators_1.default.uuid.parse(r.params.publicationId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const publicationId = validators_1.Validate.uuid.parse(r.params.publicationId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const content = zod_1.z.string().min(1).parse(r.body.content);
             const comment = await this.repository.createComment(publicationId, userId, content);
             w.status(http_status_codes_1.default.CREATED).json(comment);
@@ -42,7 +42,7 @@ class CommentController extends controller_base_1.default {
                 content: content,
                 seen: false,
             })
-                .catch(e => this.log.error({ e }));
+                .catch(e => { this.log.error({ e }); });
         }
         catch (error) {
             this.errorHandler(error, w);
@@ -51,8 +51,8 @@ class CommentController extends controller_base_1.default {
     async delete(r, w) {
         this.log.log('delete');
         try {
-            const commentId = validators_1.default.uuid.parse(r.params.commentId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             await this.repository.deleteComment(commentId, userId);
             w.status(http_status_codes_1.default.NO_CONTENT).end();
         }
@@ -63,8 +63,8 @@ class CommentController extends controller_base_1.default {
     async like(r, w) {
         this.log.log('like');
         try {
-            const commentId = validators_1.default.uuid.parse(r.params.commentId);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             await this.repository.likeComment(commentId, userId);
             await this.notificator.handleNotification({
                 type: enumerations_1.notification_types.LIKE_COMMENT,
@@ -74,7 +74,7 @@ class CommentController extends controller_base_1.default {
                 content: '',
                 seen: false,
             })
-                .catch(e => this.log.error({ e }));
+                .catch(e => { this.log.error({ e }); });
             w.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
@@ -84,7 +84,7 @@ class CommentController extends controller_base_1.default {
     async getCommentById(r, w) {
         this.log.log('getCommentById');
         try {
-            const commentId = validators_1.default.uuid.parse(r.params.commentId);
+            const commentId = validators_1.Validate.uuid.parse(r.params.commentId);
             const comment = await this.repository.getCommentById(commentId);
             if (!comment) {
                 this.log.error({ e: `Not found`, m: commentId });

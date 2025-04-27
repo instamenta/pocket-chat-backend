@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import status_codes from '@instamenta/http-status-codes'
 import LiveRepository from "../repositories/live";
 import BaseController from "../base/controller.base";
-import Validate from "../validators";
+import {Validate} from "../validators";
 import * as T from '../types'
 
 export default class LiveController extends BaseController<LiveRepository> {

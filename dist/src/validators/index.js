@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Validate = void 0;
 const zod_1 = __importDefault(require("zod"));
 class Validate {
     static create_user = zod_1.default.object({
@@ -48,7 +49,7 @@ class Validate {
         sender: zod_1.default.string().uuid({ message: 'Sender must be a valid UUID' }),
         recipient: zod_1.default.string().uuid({ message: 'Recipient must be a valid UUID' }),
         content: zod_1.default.string(),
-        date: zod_1.default.string().default(new Date().toISOString),
+        date: zod_1.default.string().default(new Date().toISOString()),
         images: zod_1.default.string().array().default([]),
         files: zod_1.default.string().array().default([]),
     });
@@ -112,4 +113,4 @@ class Validate {
         imageUrl: zod_1.default.string(),
     });
 }
-exports.default = Validate;
+exports.Validate = Validate;

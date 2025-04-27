@@ -6,7 +6,7 @@ import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
 import BaseController from "../base/controller.base";
-import Validate from "../validators";
+import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
@@ -110,7 +110,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 			w.status(statusCodes.OK).end();
 
 			if (!isLiked) {
-				return this.log.info({m: 'Unliking short'});
+				this.log.info({m: 'Unliking short'}); return;
 			} else {
 				this.log.info({m: 'Liking short'});
 			}
@@ -123,7 +123,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 				content: '',
 				seen: false,
 			})
-				.catch(e => this.log.error({e}));
+				.catch(e => { this.log.error({e}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -165,7 +165,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 				content: content,
 				seen: false,
 			})
-				.catch(e => this.log.error({e}));
+				.catch(e => { this.log.error({e}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -204,7 +204,7 @@ export default class ShortController extends BaseController<ShortRepository> {
 				content: '',
 				seen: false,
 			})
-				.catch((e) => this.log.error({e}));
+				.catch((e) => { this.log.error({e}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);

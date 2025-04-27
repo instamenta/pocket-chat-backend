@@ -5,7 +5,7 @@ import {z} from "zod";
 import {notification_types} from "../utilities/enumerations";
 import Notificator from "../utilities/notificator";
 import BaseController from "../base/controller.base";
-import Validate from "../validators";
+import {Validate} from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 
@@ -51,7 +51,7 @@ export default class CommentController extends BaseController<CommentRepository>
 				content: content,
 				seen: false,
 			})
-				.catch(e => this.log.error({e}));
+				.catch(e => { this.log.error({e}); });
 
 		} catch (error) {
 			this.errorHandler(error, w);
@@ -88,7 +88,7 @@ export default class CommentController extends BaseController<CommentRepository>
 				content: '',
 				seen: false,
 			})
-				.catch(e => this.log.error({e}));
+				.catch(e => { this.log.error({e}); });
 
 			w.status(statusCodes.OK).end();
 		} catch (error) {

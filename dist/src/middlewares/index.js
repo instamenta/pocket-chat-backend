@@ -4,47 +4,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Middlewares = void 0;
+exports.isGuest = isGuest;
+exports.isAuthorized = isAuthorized;
+exports.errorHandler = errorHandler;
 const jwt_1 = __importDefault(require("../utilities/jwt"));
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const jsonwebtoken_1 = require("jsonwebtoken");
-class Middlewares {
-    static isGuest(request, response, next) {
-        const token = jwt_1.default.getTokenFromCookie(request);
-        if (token) {
-            try {
-                const user = jwt_1.default.verifyToken(token);
-                if (user) {
-                    console.log('Middleware.isGuest(): FORBIDDEN', user);
-                    return response.status(http_status_codes_1.default.FORBIDDEN).json({ message: 'User is already authenticated' });
-                }
-            }
-            catch (error) {
-                if (error instanceof jsonwebtoken_1.TokenExpiredError) {
-                    console.log('Middleware.isGuest(): Token expired');
-                    jwt_1.default.removeTokenFromCookie(response);
-                }
-                return response.status(http_status_codes_1.default.EXPECTATION_FAILED).end();
+exports.Middlewares = { isAuthorized, isGuest, errorHandler };
+function isGuest(request, response, next) {
+    const token = jwt_1.default.getTokenFromCookie(request);
+    if (token) {
+        try {
+            const user = jwt_1.default.verifyToken(token);
+            if (user) {
+                console.log('Middleware.isGuest(): FORBIDDEN', user);
+                return response.status(http_status_codes_1.default.FORBIDDEN).json({ message: 'User is already authenticated' });
             }
         }
-        next();
-    }
-    static isAuthorized(request, response, next) {
-        const token = jwt_1.default.getTokenFromCookie(request);
-        if (!token) {
-            console.log('Middleware.isAuthorized(): UNAUTHORIZED');
-            return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'User is not authenticated' });
+        catch (error) {
+            if (error instanceof jsonwebtoken_1.TokenExpiredError) {
+                console.log('Middleware.isGuest(): Token expired');
+                jwt_1.default.removeTokenFromCookie(response);
+            }
+            return response.status(http_status_codes_1.default.EXPECTATION_FAILED).end();
         }
-        const user = jwt_1.default.verifyToken(token);
-        if (!user) {
-            console.log('Middleware.isAuthorized(): UNAUTHORIZED');
-            return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'Invalid token' });
-        }
-        request.user = user;
-        next();
     }
-    static errorHandler(error, _request, response, _next) {
-        console.error(error.stack);
-        response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
-    }
+    next();
 }
-exports.Middlewares = Middlewares;
+function isAuthorized(request, response, next) {
+    const token = jwt_1.default.getTokenFromCookie(request);
+    if (!token) {
+        console.log('Middleware.isAuthorized(): UNAUTHORIZED');
+        return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'User is not authenticated' });
+    }
+    const user = jwt_1.default.verifyToken(token);
+    if (!user) {
+        console.log('Middleware.isAuthorized(): UNAUTHORIZED');
+        return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'Invalid token' });
+    }
+    request.user = user;
+    next();
+}
+function errorHandler(error, _request, response, _next) {
+    console.error(error.stack);
+    response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+}

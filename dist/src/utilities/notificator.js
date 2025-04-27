@@ -54,8 +54,6 @@ class Notificator {
                 throw new vanilla_utility_pack_1.NotImplementedError(`TODO: Notification handler for type ${data.type} is not implemented`);
             case enumerations_1.notification_types.LIVE:
                 throw new vanilla_utility_pack_1.NotImplementedError(`TODO: Notification handler for type ${data.type} is not implemented`);
-            default:
-                throw new vanilla_utility_pack_1.NotImplementedError(`Unknown notification type ${data.type}`);
         }
     }
     /**
@@ -66,7 +64,6 @@ class Notificator {
             console.error('No reference id for like notification', data);
             return;
         }
-        // @ts-ignore
         const [publication, notification] = await Promise.all([
             this.publication.getPublicationById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -104,7 +101,6 @@ class Notificator {
             console.error('No reference id for comment notification', data);
             return;
         }
-        // @ts-ignore
         const [publication, notification] = await Promise.all([
             this.publication.getPublicationById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -129,7 +125,6 @@ class Notificator {
             console.error('No reference id for comment notification', data);
             return;
         }
-        // @ts-ignore
         const [comment, notification] = await Promise.all([
             this.comment.getCommentById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -155,7 +150,6 @@ class Notificator {
             console.error('No reference id for like short', data);
             return;
         }
-        // @ts-ignore
         const [short, notification] = await Promise.all([
             this.short.getShortById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -181,7 +175,6 @@ class Notificator {
             console.error('No reference id for comment notification', data);
             return;
         }
-        // @ts-ignore
         const [short, notification] = await Promise.all([
             this.short.getShortById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -206,7 +199,6 @@ class Notificator {
             console.error('No reference id for comment notification', data);
             return;
         }
-        // @ts-ignore
         const [comment, notification] = await Promise.all([
             this.short.getCommentById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -232,7 +224,6 @@ class Notificator {
             console.error('No reference id for like story', data);
             return;
         }
-        // @ts-ignore
         const [story, notification] = await Promise.all([
             this.story.getStoryById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -258,7 +249,6 @@ class Notificator {
             console.error('No reference id for comment notification', data);
             return;
         }
-        // @ts-ignore
         const [publication, notification] = await Promise.all([
             this.publication.getPublicationById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),
@@ -283,7 +273,6 @@ class Notificator {
             console.error('No reference id for comment notification', data);
             return;
         }
-        // @ts-ignore
         const [comment, notification] = await Promise.all([
             this.story.getCommentById(data.reference_id),
             this.repository.getNotificationByReferenceId(data.reference_id),

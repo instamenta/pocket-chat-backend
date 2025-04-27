@@ -6,12 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const http_status_codes_2 = __importDefault(require("@instamenta/http-status-codes"));
 const controller_base_1 = __importDefault(require("../base/controller.base"));
-const validators_1 = __importDefault(require("../validators"));
+const validators_1 = require("../validators");
 // TODO: Make post with percents based on all users engagement with post
 class GroupController extends controller_base_1.default {
     async createGroup(r, w) {
         try {
-            const { userId, name, description, imageUrl } = validators_1.default.create_group.parse({
+            const { userId, name, description, imageUrl } = validators_1.Validate.create_group.parse({
                 userId: r.user.id,
                 name: r.body.name,
                 description: r.body.description,
@@ -30,8 +30,8 @@ class GroupController extends controller_base_1.default {
     }
     async removeGroup(r, w) {
         try {
-            const userId = validators_1.default.uuid.parse(r.user.id);
-            const groupId = validators_1.default.uuid.parse(r.params.groupId);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
+            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
             const success = await this.repository.removeGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.removeGroup(): Failed to remove group`);
@@ -45,7 +45,7 @@ class GroupController extends controller_base_1.default {
     }
     async listGroups(r, w) {
         try {
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const groups = await this.repository.listGroups(userId);
             if (!groups) {
                 console.error(`${this.constructor.name}.listGroups(): Failed to get groups`);
@@ -59,7 +59,7 @@ class GroupController extends controller_base_1.default {
     }
     async listGroupsByUser(r, w) {
         try {
-            const userId = validators_1.default.uuid.parse(r.params.userId);
+            const userId = validators_1.Validate.uuid.parse(r.params.userId);
             const groups = await this.repository.listGroupsByUser(userId);
             if (!groups) {
                 console.error(`${this.constructor.name}.listUsersGroups(): Failed to get groups`);
@@ -73,7 +73,7 @@ class GroupController extends controller_base_1.default {
     }
     async getGroupById(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.id);
+            const groupId = validators_1.Validate.uuid.parse(r.params.id);
             const group = await this.repository.getGroupById(groupId);
             if (!group) {
                 console.error(`${this.constructor.name}.getGroupById(): Error`);
@@ -87,8 +87,8 @@ class GroupController extends controller_base_1.default {
     }
     async joinGroup(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.id);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const groupId = validators_1.Validate.uuid.parse(r.params.id);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const success = await this.repository.joinGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.joinGroup(): Error`);
@@ -102,8 +102,8 @@ class GroupController extends controller_base_1.default {
     }
     async leaveGroup(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.id);
-            const userId = validators_1.default.uuid.parse(r.user.id);
+            const groupId = validators_1.Validate.uuid.parse(r.params.id);
+            const userId = validators_1.Validate.uuid.parse(r.user.id);
             const success = await this.repository.leaveGroup(userId, groupId);
             if (!success) {
                 console.error(`${this.constructor.name}.leaveGroup(): Error`);
@@ -117,9 +117,9 @@ class GroupController extends controller_base_1.default {
     }
     async changeRole(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.groupId);
-            const senderId = validators_1.default.uuid.parse(r.user.id);
-            const recipientId = validators_1.default.uuid.parse(r.params.recipientId);
+            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
+            const senderId = validators_1.Validate.uuid.parse(r.user.id);
+            const recipientId = validators_1.Validate.uuid.parse(r.params.recipientId);
             if (r.body.newRole !== 'member' || r.body.newRole !== 'moderator') {
                 throw new Error('Invalid Role');
             }
@@ -136,9 +136,9 @@ class GroupController extends controller_base_1.default {
     }
     async removeMember(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.groupId);
-            const senderId = validators_1.default.uuid.parse(r.user.id);
-            const recipientId = validators_1.default.uuid.parse(r.params.recipientId);
+            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
+            const senderId = validators_1.Validate.uuid.parse(r.user.id);
+            const recipientId = validators_1.Validate.uuid.parse(r.params.recipientId);
             const success = await this.repository.removeMember(groupId, senderId, recipientId);
             if (!success) {
                 console.error(`${this.constructor.name}.removeMember(): Error`);
@@ -152,7 +152,7 @@ class GroupController extends controller_base_1.default {
     }
     async getMembersByGroupId(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.id);
+            const groupId = validators_1.Validate.uuid.parse(r.params.id);
             const members = await this.repository.getMembersByGroupId(groupId);
             if (!members) {
                 console.error(`${this.constructor.name}.changeRole(): Error`);
@@ -166,13 +166,13 @@ class GroupController extends controller_base_1.default {
     }
     async createPublication(r, w) {
         try {
-            const data = validators_1.default.create_publication.parse({
-                publisher_id: validators_1.default.uuid.parse(r.user.id),
+            const data = validators_1.Validate.create_publication.parse({
+                publisher_id: validators_1.Validate.uuid.parse(r.user.id),
                 description: r.body.description,
                 images: r.body.images,
                 publication_status: r.body.publication_status,
             });
-            const groupId = validators_1.default.uuid.parse(r.body.groupId);
+            const groupId = validators_1.Validate.uuid.parse(r.body.groupId);
             const publicationId = await this.repository.createPublication({ ...data, groupId });
             w.status(http_status_codes_2.default.CREATED).json({ id: publicationId });
         }
@@ -182,7 +182,7 @@ class GroupController extends controller_base_1.default {
     }
     async listPublications(r, w) {
         try {
-            const groupId = validators_1.default.uuid.parse(r.params.groupId);
+            const groupId = validators_1.Validate.uuid.parse(r.params.groupId);
             const publications = await this.repository.listPublications(groupId);
             w.status(http_status_codes_2.default.OK).json(publications);
         }

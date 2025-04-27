@@ -84,7 +84,7 @@ class BaseSocket {
         this.cache.set(`user=${user.id}`, JSON.stringify(userData));
         ws.on('message', (data) => this.onData(data, ws, userData));
         ws.on('close', (code, reason) => { this.onClose(code, reason, userData); });
-        ws.on('error', (e) => this.log.error({ e, m: 'Websocket ran into Error' }));
+        ws.on('error', (e) => { this.log.error({ e, m: 'Websocket ran into Error' }); });
     };
     async onData(bytes, host, user) {
         throw new vanilla_utility_pack_1.NotImplementedError(`Implement ${this.constructor.name}.onData()`);

@@ -15,7 +15,7 @@ export default class GroupRepository extends BaseRepository {
 			[userId, name, description, imageUrl]
 		).then((data) => data.rows[0].id)
 
-			.catch(e => this.errorHandler(e, 'createShort'));
+			.catch((error: unknown) => this.errorHandler(error, 'createShort'));
 	}
 
 	async removeGroup(userId: string, groupId: string) {

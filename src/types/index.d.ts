@@ -16,9 +16,7 @@ declare global {
 	namespace Express {
 		interface Request {
 			user: User.Payload
-			cookies: {
-				[key: string]: string
-			}
+			cookies: Record<string, string>,
 		}
 	}
 }

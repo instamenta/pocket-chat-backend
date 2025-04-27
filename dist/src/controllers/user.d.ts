@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { I_HashingHandler } from "../utilities/bcrypt";
 import { z } from 'zod';
 import BaseController from "../base/controller.base";
-import Validate from "../validators";
+import { Validate } from "../validators";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
 export default class UserController extends BaseController<UserRepository> {

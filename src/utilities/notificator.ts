@@ -58,8 +58,6 @@ export default class Notificator {
 				throw new NotImplementedError(`TODO: Notification handler for type ${data.type} is not implemented`)
 			case notification_types.LIVE:
 				throw new NotImplementedError(`TODO: Notification handler for type ${data.type} is not implemented`)
-			default:
-				throw new NotImplementedError(`Unknown notification type ${data.type}`);
 		}
 	}
 
@@ -69,7 +67,6 @@ export default class Notificator {
 	async #handleLikeNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for like notification', data); return; }
 
-		// @ts-ignore
 		const [publication, notification] = await Promise.all([
 			this.publication.getPublicationById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -111,7 +108,6 @@ export default class Notificator {
 	async #handleCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for comment notification', data); return; }
 
-		// @ts-ignore
 		const [publication, notification] = await Promise.all([
 			this.publication.getPublicationById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -136,7 +132,6 @@ export default class Notificator {
 	async #handleLikeCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for comment notification', data); return; }
 
-		// @ts-ignore
 		const [comment, notification] = await Promise.all([
 			this.comment.getCommentById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -162,7 +157,6 @@ export default class Notificator {
 	async #handleLikeShortNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for like short', data); return; }
 
-		// @ts-ignore
 		const [short, notification] = await Promise.all([
 			this.short.getShortById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -188,7 +182,6 @@ export default class Notificator {
 	async #handleCommentShortNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for comment notification', data); return; }
 
-		// @ts-ignore
 		const [short, notification] = await Promise.all([
 			this.short.getShortById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -213,7 +206,6 @@ export default class Notificator {
 	async #handleLikeShortCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for comment notification', data); return; }
 
-		// @ts-ignore
 		const [comment, notification] = await Promise.all([
 			this.short.getCommentById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -239,7 +231,6 @@ export default class Notificator {
 	async #handleLikeStoryNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for like story', data); return; }
 
-		// @ts-ignore
 		const [story, notification] = await Promise.all([
 			this.story.getStoryById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -265,7 +256,6 @@ export default class Notificator {
 	async #handleCommentStoryNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for comment notification', data); return; }
 
-		// @ts-ignore
 		const [publication, notification] = await Promise.all([
 			this.publication.getPublicationById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),
@@ -290,7 +280,6 @@ export default class Notificator {
 	async #handleLikeStoryCommentNotification(data: T.Notification.Data) {
 		if (!data.reference_id) { console.error('No reference id for comment notification', data); return; }
 
-		// @ts-ignore
 		const [comment, notification] = await Promise.all([
 			this.story.getCommentById(data.reference_id),
 			this.repository.getNotificationByReferenceId(data.reference_id),

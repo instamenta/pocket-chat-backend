@@ -55,7 +55,7 @@ export default class BaseSocket {
 
 		ws.on('message', (data) => this.onData(data, ws, userData));
 		ws.on('close', (code, reason) => { this.onClose(code, reason, userData); });
-		ws.on('error', (e) => this.log.error({e, m: 'Websocket ran into Error'}));
+		ws.on('error', (e) => { this.log.error({e, m: 'Websocket ran into Error'}); });
 	}
 
 	protected async onData(bytes: RawData, host: WebSocket, user: T.User.Schema,) {
