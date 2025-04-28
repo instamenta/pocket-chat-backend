@@ -33,7 +33,11 @@ export class GroupController extends BaseController<GroupRepository> {
       );
 
       if (!groupId) {
-        this.log.error({e: {}, f: 'createGroup', m: 'failed to create group'})
+        this.log.error({
+          e: {},
+          f: "createGroup",
+          m: "failed to create group",
+        });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -54,7 +58,11 @@ export class GroupController extends BaseController<GroupRepository> {
       const success = await this.repository.removeGroup(userId, groupId);
 
       if (!success) {
-        this.log.error({e: {}, f: 'removeGroup', m: 'failed to remove group'})
+        this.log.error({
+          e: {},
+          f: "removeGroup",
+          m: "failed to remove group",
+        });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -104,7 +112,7 @@ export class GroupController extends BaseController<GroupRepository> {
       const group = await this.repository.getGroupById(groupId);
 
       if (!group) {
-        this.log.error({e: {}, f: 'getGroupById', m: 'failed to get group'})
+        this.log.error({ e: {}, f: "getGroupById", m: "failed to get group" });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -122,7 +130,7 @@ export class GroupController extends BaseController<GroupRepository> {
       const success = await this.repository.joinGroup(userId, groupId);
 
       if (!success) {
-        this.log.error({e: {}, f: 'joinGroup', m: 'failed to join group'})
+        this.log.error({ e: {}, f: "joinGroup", m: "failed to join group" });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -143,7 +151,7 @@ export class GroupController extends BaseController<GroupRepository> {
       const success = await this.repository.leaveGroup(userId, groupId);
 
       if (!success) {
-        this.log.error({e: {}, f: 'leaveGroup', m: 'failed to leave group'})
+        this.log.error({ e: {}, f: "leaveGroup", m: "failed to leave group" });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -181,7 +189,7 @@ export class GroupController extends BaseController<GroupRepository> {
       );
 
       if (!success) {
-        this.log.error({e: {}, f: 'changeRole', m: 'failed to change role'})
+        this.log.error({ e: {}, f: "changeRole", m: "failed to change role" });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -207,7 +215,11 @@ export class GroupController extends BaseController<GroupRepository> {
       );
 
       if (!success) {
-        this.log.error({e: {}, f: 'removeMember', m: 'failed to remove member'})
+        this.log.error({
+          e: {},
+          f: "removeMember",
+          m: "failed to remove member",
+        });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 

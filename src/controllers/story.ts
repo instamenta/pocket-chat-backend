@@ -35,7 +35,11 @@ export class StoryController extends BaseController<StoryRepository> {
       const storyId = await this.repository.createStory({ userId, imageUrl });
 
       if (!storyId) {
-        this.log.error({ m: `Failed to send message`, f: 'createStory', e: {}});
+        this.log.error({
+          m: `Failed to send message`,
+          f: "createStory",
+          e: {},
+        });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -112,7 +116,7 @@ export class StoryController extends BaseController<StoryRepository> {
           seen: false,
         })
         .catch((error: unknown) => {
-          this.log.error({ e: error, f: 'likeStory'});
+          this.log.error({ e: error, f: "likeStory" });
         });
     } catch (error) {
       this.errorHandler(error, response);
@@ -165,7 +169,7 @@ export class StoryController extends BaseController<StoryRepository> {
           seen: false,
         })
         .catch((error: unknown) => {
-          this.log.error({ e: error, f: 'createStoryComment'});
+          this.log.error({ e: error, f: "createStoryComment" });
         });
     } catch (error) {
       this.errorHandler(error, response);
@@ -208,7 +212,7 @@ export class StoryController extends BaseController<StoryRepository> {
           seen: false,
         })
         .catch((error: unknown) => {
-          this.log.error({ e: error , f: 'likeStoryComment'});
+          this.log.error({ e: error, f: "likeStoryComment" });
         });
 
       response.status(statusCodes.OK).end();

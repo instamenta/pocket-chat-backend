@@ -10,7 +10,7 @@ import { BCryptHashingHandler } from "./utilities/bcrypt";
 import { Notificator } from "./utilities/notificator";
 import { initializeAll } from "./utilities/intialize";
 
-void async function main () {
+void (async function main() {
   const { api, database, cache, logger } = await initializeAll();
 
   gracefulShutdown(database, cache);
@@ -36,7 +36,7 @@ void async function main () {
     repository.comment,
     repository.short,
     repository.story,
-    logger
+    logger,
   );
 
   const controller = {
@@ -110,7 +110,7 @@ void async function main () {
       `Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`,
     );
   });
-}();
+})();
 
 function gracefulShutdown(database: Client, cache: Redis) {
   ["uncaughtException", "unhandledRejection"].map((type) => {

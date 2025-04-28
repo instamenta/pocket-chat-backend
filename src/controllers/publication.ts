@@ -163,7 +163,7 @@ export class PublicationController extends BaseController<PublicationRepository>
           seen: false,
         })
         .catch((error: unknown) => {
-          this.log.error({ e: error, f: 'likePublication'});
+          this.log.error({ e: error, f: "likePublication" });
         });
     } catch (error) {
       this.errorHandler(error, response);

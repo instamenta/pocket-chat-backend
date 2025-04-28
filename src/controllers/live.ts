@@ -16,7 +16,7 @@ export class LiveController extends BaseController<LiveRepository> {
       const shortId = await this.repository.createLive(userId);
 
       if (!shortId) {
-        this.log.error({ m: `Failed to create live`, f: 'createLive', e: {}});
+        this.log.error({ m: `Failed to create live`, f: "createLive", e: {} });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -64,7 +64,11 @@ export class LiveController extends BaseController<LiveRepository> {
       const userId = Validate.uuid.parse(request.user.id);
 
       if (!["active", "paused", "ended"].includes(request.params.state)) {
-        this.log.error({ m: `Invalid State`, f: 'updateLiveState', e: request.params});
+        this.log.error({
+          m: `Invalid State`,
+          f: "updateLiveState",
+          e: request.params,
+        });
         return response.status(statusCodes.BAD_REQUEST).end();
       }
 
@@ -74,7 +78,11 @@ export class LiveController extends BaseController<LiveRepository> {
       );
 
       if (!lives) {
-        this.log.error({ m: `Failed to update live state`, f: 'updateLiveState', e: {}});
+        this.log.error({
+          m: `Failed to update live state`,
+          f: "updateLiveState",
+          e: {},
+        });
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 

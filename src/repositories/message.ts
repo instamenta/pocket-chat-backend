@@ -30,11 +30,7 @@ export class MessageRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "createMessage"));
   }
 
-  public getMessagesByFriendshipId(
-    friendshipId: string,
-    skip = 0,
-    limit = 20,
-  ) {
+  public getMessagesByFriendshipId(friendshipId: string, skip = 0, limit = 20) {
     return this.database
       .query<T.Message.Message>(
         `

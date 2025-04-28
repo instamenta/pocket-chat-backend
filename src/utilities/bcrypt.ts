@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { SECURITY } from "./config";
-import VLogger, {IVlog} from "@instamenta/vlogger";
+import VLogger, { IVlog } from "@instamenta/vlogger";
 
 export interface HashingHandler {
   hashPassword(password: string): Promise<string>;
@@ -24,7 +24,7 @@ export class BCryptHashingHandler implements HashingHandler {
 
       return await bcrypt.hash(password, salt);
     } catch (error) {
-      this.log.error({e: error, f: 'hashPassword'});
+      this.log.error({ e: error, f: "hashPassword" });
       throw error;
     }
   }
@@ -33,7 +33,7 @@ export class BCryptHashingHandler implements HashingHandler {
     return await bcrypt
       .compare(plainPassword, hashedPassword)
       .catch((error: unknown) => {
-        this.log.error({e: error, f: 'comparePasswords'});
+        this.log.error({ e: error, f: "comparePasswords" });
         return false;
       });
   }

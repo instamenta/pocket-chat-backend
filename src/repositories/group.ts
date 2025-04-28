@@ -40,10 +40,7 @@ export class GroupRepository extends BaseRepository {
         getRoleQuery,
         [groupId, userId],
       );
-      if (
-        !userRole.rows.length ||
-        userRole.rows[0].role !== GroupRoles.OWNER
-      ) {
+      if (!userRole.rows.length || userRole.rows[0].role !== GroupRoles.OWNER) {
         throw new UnauthorizedError(" Only the owner can remove group.");
       }
     } catch (error) {

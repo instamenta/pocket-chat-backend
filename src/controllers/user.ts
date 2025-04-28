@@ -52,7 +52,7 @@ export class UserController extends BaseController<UserRepository> {
       const userId = await this.repository.createUser(userData);
 
       if (!userId) {
-        this.log.error({f: 'signUp', m: 'failed to create user', e: {}});
+        this.log.error({ f: "signUp", m: "failed to create user", e: {} });
         return response.status(statusCodes.I_AM_A_TEAPOT).end();
       }
 
@@ -83,7 +83,7 @@ export class UserController extends BaseController<UserRepository> {
       const userData = await this.repository.getByUsername(username);
 
       if (!userData) {
-        this.log.error({f: 'signIn', m: 'failed to login user', e: {}});
+        this.log.error({ f: "signIn", m: "failed to login user", e: {} });
         return response.status(statusCodes.UNAUTHORIZED).end();
       }
 
@@ -93,7 +93,7 @@ export class UserController extends BaseController<UserRepository> {
       );
 
       if (!isMatch) {
-        this.log.error({f: 'signIn', m: 'Invalid password', e: {}});
+        this.log.error({ f: "signIn", m: "Invalid password", e: {} });
         return response.status(statusCodes.UNAUTHORIZED).end();
       }
 
@@ -112,7 +112,11 @@ export class UserController extends BaseController<UserRepository> {
       await this.repository
         .updateLastActiveAtById(userData.id)
         .catch((error: unknown) => {
-          this.log.error({e: error, f: 'signIn', m: 'failed to update last active at'});
+          this.log.error({
+            e: error,
+            f: "signIn",
+            m: "failed to update last active at",
+          });
         });
     } catch (error) {
       this.errorHandler(error, response);
@@ -126,7 +130,7 @@ export class UserController extends BaseController<UserRepository> {
       const user = await this.repository.getUserById(id);
 
       if (!user) {
-        this.log.error({f: 'authUser', m: 'user not found', e: {}});
+        this.log.error({ f: "authUser", m: "user not found", e: {} });
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -146,7 +150,7 @@ export class UserController extends BaseController<UserRepository> {
       const user = await this.repository.getUserById(id);
 
       if (!user) {
-        this.log.error({f: 'getUserById', m: 'user not found', e: {}});
+        this.log.error({ f: "getUserById", m: "user not found", e: {} });
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -166,7 +170,7 @@ export class UserController extends BaseController<UserRepository> {
       const user = await this.repository.getUserByUsername(username);
 
       if (!user) {
-        this.log.error({f: 'getUserByUsername', m: 'user not found', e: {}});
+        this.log.error({ f: "getUserByUsername", m: "user not found", e: {} });
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -191,7 +195,7 @@ export class UserController extends BaseController<UserRepository> {
       const userData = await this.repository.updateBio(id, bio);
 
       if (!userData) {
-        this.log.error({f: 'updateBio', m: 'failed to update bio', e: {}});
+        this.log.error({ f: "updateBio", m: "failed to update bio", e: {} });
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -229,7 +233,11 @@ export class UserController extends BaseController<UserRepository> {
       );
 
       if (!userData) {
-        this.log.error({f: 'updateProfilePicture', m: 'failed to update picture', e: {}});
+        this.log.error({
+          f: "updateProfilePicture",
+          m: "failed to update picture",
+          e: {},
+        });
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -276,7 +284,11 @@ export class UserController extends BaseController<UserRepository> {
       );
 
       if (!userData) {
-        this.log.error({f: 'updateProfilePublicInformation', m: 'failed to update', e: {}});
+        this.log.error({
+          f: "updateProfilePublicInformation",
+          m: "failed to update",
+          e: {},
+        });
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
