@@ -7,7 +7,7 @@
     "start": "nodemon dist/index.js",
     "build": "tsc",
     "dev": "ts-node-dev src/index.ts",
-    "format": "npx prettier ./src/ --write",
+    "format": "npx prettier ./src ./eslint.config.mjs --write",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix"
   },
