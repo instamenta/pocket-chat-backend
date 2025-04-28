@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const create_user = z.object({
+export const createUser = z.object({
   firstName: z
     .string()
     .min(3, { message: "First name must be at least 3 characters" })
@@ -19,7 +19,7 @@ export const create_user = z.object({
   email: z.string().email({ message: "Invalid email address" }),
 });
 
-export const login_user = z.object({
+export const loginUser = z.object({
   username: z
     .string()
     .min(3, { message: "Username must be at least 3 characters" })
@@ -29,7 +29,7 @@ export const login_user = z.object({
     .min(8, { message: "Password must be at least 8 characters" }),
 });
 
-export const sender_recipient = z.object({
+export const senderRecipient = z.object({
   sender: z.string().uuid({ message: "Sender must be a valid UUID" }),
   recipient: z.string().uuid({ message: "Recipient must be a valid UUID" }),
 });
@@ -41,7 +41,7 @@ export const name = z
   .min(3, { message: "Username must be at least 3 characters" })
   .max(32, { message: "Username cannot exceed 32 characters" });
 
-export const create_message = z.object({
+export const createMessage = z.object({
   sender: z.string().uuid({ message: "Sender must be a valid UUID" }),
   recipient: z.string().uuid({ message: "Recipient must be a valid UUID" }),
   friendship: z.string().uuid({ message: "Friendship must be a valid UUID" }),
@@ -60,21 +60,21 @@ export const message = z.object({
   files: z.string().array().default([]),
 });
 
-export const live_message = z.object({
+export const liveMessage = z.object({
   type: z.string(),
   sender: z.string().uuid({ message: "Sender must be a valid UUID" }),
   liveId: z.string().uuid({ message: "LiveId must be a valid UUID" }),
   content: z.string(),
 });
 
-export const video_call_invitation_request = z.object({
+export const videoCallInvitationRequest = z.object({
   type: z.string(),
   room: z.string().uuid({ message: "Room must be a valid UUID" }),
   sender: z.string().uuid({ message: "Sender must be a valid UUID" }),
   recipient: z.string().uuid({ message: "Recipient must be a valid UUID" }),
 });
 
-export const create_notification = z.object({
+export const createNotification = z.object({
   sender: z.string().uuid({ message: "Sender must be a valid UUID" }),
   recipient: z.string().uuid({ message: "Recipient must be a valid UUID" }),
   content: z.string().min(1, { message: "Invalid content size" }),
@@ -82,7 +82,7 @@ export const create_notification = z.object({
   type: z.string(),
 });
 
-export const update_profile_public_information = z.object({
+export const updateProfilePublicInformation = z.object({
   firstName: z
     .string()
     .min(3, { message: "First name must be at least 3 characters" })
@@ -103,7 +103,7 @@ export const update_profile_public_information = z.object({
 
 export const url = z.string().url();
 
-export const create_publication = z.object({
+export const createPublication = z.object({
   publisher_id: z
     .string()
     .uuid({ message: "Publisher ID must be a valid UUID" }),
@@ -114,19 +114,19 @@ export const create_publication = z.object({
   publication_status: z.enum(["draft", "published"]),
 });
 
-export const update_publication = z.object({
+export const updatePublication = z.object({
   content: z.string().default("").optional(),
   images: z.array(z.string()).optional(),
   publication_status: z.enum(["draft", "published"]).optional(),
 });
 
-export const create_story = z.object({
+export const createStory = z.object({
   userId: z.string().uuid(),
   videoUrl: z.string(),
   description: z.string().default(""),
 });
 
-export const create_group = z.object({
+export const createGroup = z.object({
   userId: z.string().uuid(),
   name: z.string(),
   description: z.string().default(""),

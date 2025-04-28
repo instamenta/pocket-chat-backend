@@ -21,7 +21,7 @@ export class MessageController extends BaseController<MessageRepository> {
     response: Response<{ id: string }>,
   ) {
     try {
-      const message = Validate.create_message.parse({
+      const message = Validate.createMessage.parse({
         sender: request.user.id,
         recipient: request.body.recipient,
         content: request.body.content,

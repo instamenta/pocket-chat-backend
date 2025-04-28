@@ -82,7 +82,7 @@ export class UserRepository extends BaseRepository {
     password,
     firstName,
     lastName,
-  }: z.infer<typeof Validate.create_user>) {
+  }: z.infer<typeof Validate.createUser>) {
     const hashedPassword = await this.hashingHandler.hashPassword(password);
 
     return this.database

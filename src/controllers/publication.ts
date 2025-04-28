@@ -107,7 +107,7 @@ export class PublicationController extends BaseController<PublicationRepository>
     response: Response<{ id: string }>,
   ) {
     try {
-      const data = Validate.create_publication.parse({
+      const data = Validate.createPublication.parse({
         publisher_id: Validate.uuid.parse(request.user.id),
         description: request.body.description,
         images: request.body.images,
@@ -128,7 +128,7 @@ export class PublicationController extends BaseController<PublicationRepository>
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
-      const publicationData = Validate.update_publication.parse(request.body);
+      const publicationData = Validate.updatePublication.parse(request.body);
 
       const updatedPublicationId = await this.repository.updatePublication(
         id,

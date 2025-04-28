@@ -3,7 +3,7 @@ import { socket_events } from "../utilities/enumerations";
 import * as Validate from "../validators";
 import { MessageStatus } from "./unions";
 
-export type Create = z.infer<typeof Validate.create_message>;
+export type Create = z.infer<typeof Validate.createMessage>;
 
 export interface Message {
   id: string;

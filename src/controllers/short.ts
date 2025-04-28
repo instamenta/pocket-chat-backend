@@ -24,7 +24,7 @@ export class ShortController extends BaseController<ShortRepository> {
   ) {
     this.log.log("createShort");
     try {
-      const { userId, videoUrl, description } = Validate.create_story.parse({
+      const { userId, videoUrl, description } = Validate.createStory.parse({
         userId: request.user.id,
         videoUrl: request.body.videoUrl,
         description: request.body.description,

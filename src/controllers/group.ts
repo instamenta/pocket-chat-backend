@@ -18,7 +18,7 @@ export class GroupController extends BaseController<GroupRepository> {
   ) {
     try {
       const { userId, name, description, imageUrl } =
-        Validate.create_group.parse({
+        Validate.createGroup.parse({
           userId: request.user.id,
           name: request.body.name,
           description: request.body.description,
@@ -250,7 +250,7 @@ export class GroupController extends BaseController<GroupRepository> {
     response: Response<{ id: string }>,
   ) {
     try {
-      const data = Validate.create_publication.parse({
+      const data = Validate.createPublication.parse({
         publisher_id: Validate.uuid.parse(request.user.id),
         description: request.body.description,
         images: request.body.images,

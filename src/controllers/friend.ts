@@ -14,7 +14,7 @@ export class FriendController extends BaseController<FriendRepository> {
   ) {
     this.log.log("sendFriendRequest");
     try {
-      const { sender, recipient } = Validate.sender_recipient.parse({
+      const { sender, recipient } = Validate.senderRecipient.parse({
         sender: request.user.id,
         recipient: request.params.id,
       });
@@ -113,7 +113,7 @@ export class FriendController extends BaseController<FriendRepository> {
   ) {
     this.log.log("acceptFriendRequest");
     try {
-      const { sender, recipient } = Validate.sender_recipient.parse({
+      const { sender, recipient } = Validate.senderRecipient.parse({
         sender: request.user.id,
         recipient: request.params.id,
       });
@@ -143,7 +143,7 @@ export class FriendController extends BaseController<FriendRepository> {
   ) {
     this.log.log("deleteFriendRequest");
     try {
-      const { sender, recipient } = Validate.sender_recipient.parse({
+      const { sender, recipient } = Validate.senderRecipient.parse({
         sender: request.user.id,
         recipient: request.params.id,
       });
@@ -173,7 +173,7 @@ export class FriendController extends BaseController<FriendRepository> {
   ) {
     this.log.log("declineFriendRequest");
     try {
-      const { sender, recipient } = Validate.sender_recipient.parse({
+      const { sender, recipient } = Validate.senderRecipient.parse({
         sender: request.user.id,
         recipient: request.params.id,
       });

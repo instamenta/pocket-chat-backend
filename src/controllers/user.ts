@@ -40,14 +40,14 @@ export class UserController extends BaseController<UserRepository> {
   }
 
   public async signUp(
-    request: Request<object, z.infer<typeof Validate.create_user>>,
+    request: Request<object, z.infer<typeof Validate.createUser>>,
     response: Response<{
       token: string;
       id: string;
     }>,
   ) {
     try {
-      const userData = Validate.create_user.parse(request.body);
+      const userData = Validate.createUser.parse(request.body);
 
       const userId = await this.repository.createUser(userData);
 
@@ -80,7 +80,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{ token: string; id: string }>,
   ) {
     try {
-      const { username, password } = Validate.login_user.parse(request.body);
+      const { username, password } = Validate.loginUser.parse(request.body);
 
       const userData = await this.repository.getByUsername(username);
 
@@ -269,7 +269,7 @@ export class UserController extends BaseController<UserRepository> {
   ) {
     try {
       const id = Validate.uuid.parse(request.user.id);
-      const data = Validate.update_profile_public_information.parse({
+      const data = Validate.updateProfilePublicInformation.parse({
         firstName: request.body.firstName,
         lastName: request.body.lastName,
         username: request.body.username,
