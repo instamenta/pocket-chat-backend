@@ -13,7 +13,7 @@ import VLogger, { IVlog } from "@instamenta/vlogger";
 export class Notificator {
   private readonly log: IVlog;
 
-  constructor(
+  public constructor(
     private readonly repository: NotificationRepository,
     private readonly publication: PublicationRepository,
     private readonly comment: CommentRepository,

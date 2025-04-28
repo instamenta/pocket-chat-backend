@@ -3,7 +3,7 @@ import { GroupController } from "../controllers/group";
 import { BaseRouter } from "../base/router.base";
 
 export class GroupRouter extends BaseRouter<GroupController> {
-  initialize(c: GroupController) {
+  protected initialize(c: GroupController) {
     // @ts-expect-error - to assign handlers
     this.router.get("/", Middlewares.isAuthorized, c.listGroups.bind(c));
 

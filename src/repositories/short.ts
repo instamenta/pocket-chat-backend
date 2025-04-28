@@ -2,7 +2,7 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class ShortRepository extends BaseRepository {
-  async createShort(userId: string, videoUrl: string, description: string) {
+  public async createShort(userId: string, videoUrl: string, description: string) {
     const query = `INSERT INTO "shorts" (user_id, video_url, description)
                    VALUES ($1, $2, $3)
                    RETURNING id`;
@@ -18,7 +18,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async listShorts(userId: string) {
+  public async listShorts(userId: string) {
     const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
@@ -47,7 +47,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async listShortsById(userId: string) {
+  public async listShortsById(userId: string) {
     const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
@@ -76,7 +76,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async getShortById(id: string) {
+  public async getShortById(id: string) {
     const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
@@ -100,7 +100,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async likeShort(shortId: string, userId: string): Promise<boolean> {
+  public async likeShort(shortId: string, userId: string): Promise<boolean> {
     try {
       const likeExistsQuery =
         "SELECT id FROM short_likes WHERE short_id = $1 AND user_id = $2";
@@ -141,7 +141,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async listCommentsByShortId(shortId: string, userId: string) {
+  public async listCommentsByShortId(shortId: string, userId: string) {
     const query = `
         SELECT c.id,
                c.content,
@@ -174,7 +174,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async createShortComment(
+  public async createShortComment(
     shortId: string,
     userId: string,
     content: string,
@@ -205,7 +205,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async deleteShortComment(
+  public async deleteShortComment(
     commentId: string,
     userId: string,
   ): Promise<boolean> {
@@ -242,7 +242,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async likeShortComment(commentId: string, userId: string): Promise<void> {
+  public async likeShortComment(commentId: string, userId: string): Promise<void> {
     try {
       const likeExistsQuery =
         "SELECT id FROM short_comment_likes WHERE comment_id = $1 AND user_id = $2";
@@ -265,7 +265,7 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  async getCommentById(id: string) {
+  public async getCommentById(id: string) {
     const query = `
         SELECT c.*,
                COUNT(cl.user_id) AS likes_count

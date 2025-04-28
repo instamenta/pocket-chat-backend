@@ -3,7 +3,7 @@ import { Middlewares } from "../middlewares";
 import { BaseRouter } from "../base/router.base";
 
 export class CommentRouter extends BaseRouter<CommentController> {
-  initialize(c: CommentController) {
+  protected initialize(c: CommentController) {
     this.router.get(
       "/:publicationId",
       // @ts-expect-error - to assign handlers

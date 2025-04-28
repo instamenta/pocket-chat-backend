@@ -7,7 +7,7 @@ import {
 import * as T from "../types";
 
 export class GroupRepository extends BaseRepository {
-  async createGroup(
+  public async createGroup(
     userId: string,
     name: string,
     description: string,
@@ -28,7 +28,7 @@ export class GroupRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "createShort"));
   }
 
-  async removeGroup(userId: string, groupId: string) {
+  public async removeGroup(userId: string, groupId: string) {
     try {
       const getRoleQuery = `
           SELECT role
@@ -72,7 +72,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async listGroups(userId: string) {
+  public async listGroups(userId: string) {
     const query = `
         SELECT g.id,
                g.owner_id,
@@ -94,7 +94,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async listGroupsByUser(userId: string) {
+  public async listGroupsByUser(userId: string) {
     const query = `
         SELECT g.*
         FROM "groups" g
@@ -110,7 +110,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async joinGroup(userId: string, groupId: string) {
+  public async joinGroup(userId: string, groupId: string) {
     const insertQuery = `
         INSERT INTO "group_members" (group_id, user_id)
         VALUES ($1, $2)
@@ -130,7 +130,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async leaveGroup(userId: string, groupId: string) {
+  public async leaveGroup(userId: string, groupId: string) {
     const deleteQuery = `
         DELETE
         FROM "group_members"
@@ -158,7 +158,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async changeRole(
+  public async changeRole(
     senderId: string,
     groupId: string,
     recipientId: string,
@@ -202,7 +202,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async removeMember(senderId: string, groupId: string, recipientId: string) {
+  public async removeMember(senderId: string, groupId: string, recipientId: string) {
     const getSenderRoleQuery = `
         SELECT role
         FROM "group_members"
@@ -267,7 +267,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async getGroupById(groupId: string) {
+  public async getGroupById(groupId: string) {
     const query = `
         SELECT *
         FROM "groups" g
@@ -298,7 +298,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async listPublications(groupId: string) {
+  public async listPublications(groupId: string) {
     try {
       const query = `SELECT p.*,
                             u.username,
@@ -325,7 +325,7 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  async createPublication({
+  public async createPublication({
     publisherId,
     description,
     images,

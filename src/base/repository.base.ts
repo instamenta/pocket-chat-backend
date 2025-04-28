@@ -4,7 +4,7 @@ import VLogger, { IVlog } from "@instamenta/vlogger";
 export abstract class BaseRepository {
   protected readonly log: IVlog;
 
-  constructor(
+  public constructor(
     protected readonly database: Client,
     logger: VLogger,
   ) {

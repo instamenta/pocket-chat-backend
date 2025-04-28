@@ -3,7 +3,7 @@ import { Middlewares } from "../middlewares";
 import { BaseRouter } from "../base/router.base";
 
 export class UserRouter extends BaseRouter<UserController> {
-  initialize(c: UserController) {
+  protected initialize(c: UserController) {
     // @ts-expect-error - to assign handlers
     this.router.post("/sign-up", Middlewares.isGuest, c.signUp.bind(c));
 

@@ -3,7 +3,7 @@ import { StoryController } from "../controllers/story";
 import { BaseRouter } from "../base/router.base";
 
 export class StoryRouter extends BaseRouter<StoryController> {
-  initialize(c: StoryController) {
+  protected initialize(c: StoryController) {
     // @ts-expect-error - to assign handlers
     this.router.get("/", Middlewares.isAuthorized, c.listStories.bind(c));
 

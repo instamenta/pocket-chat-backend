@@ -3,7 +3,7 @@ import { Middlewares } from "../middlewares";
 import { BaseRouter } from "../base/router.base";
 
 export class PublicationRouter extends BaseRouter<PublicationController> {
-  initialize(c: PublicationController) {
+  protected initialize(c: PublicationController) {
     // @ts-expect-error - to assign handlers
     this.router.get("/", Middlewares.isAuthorized, c.listPublications.bind(c));
 

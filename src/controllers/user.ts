@@ -11,7 +11,7 @@ import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 
 export class UserController extends BaseController<UserRepository> {
-  constructor(
+  public constructor(
     repository: UserRepository,
     logger: VLogger,
     private readonly hashingHandler: HashingHandler,

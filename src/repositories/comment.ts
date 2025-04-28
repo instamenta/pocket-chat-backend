@@ -2,7 +2,7 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class CommentRepository extends BaseRepository {
-  async listCommentsByPublication(publicationId: string, userId: string) {
+  public async listCommentsByPublication(publicationId: string, userId: string) {
     const query = `
         SELECT c.id,
                c.content,
@@ -35,7 +35,7 @@ export class CommentRepository extends BaseRepository {
     }
   }
 
-  async createComment(
+  public async createComment(
     publicationId: string,
     userId: string,
     content: string,
@@ -66,7 +66,7 @@ export class CommentRepository extends BaseRepository {
     }
   }
 
-  async deleteComment(commentId: string, userId: string): Promise<boolean> {
+  public async deleteComment(commentId: string, userId: string): Promise<boolean> {
     const query = `
         DELETE
         FROM comments
@@ -80,7 +80,7 @@ export class CommentRepository extends BaseRepository {
     }
   }
 
-  async getCommentById(id: string) {
+  public async getCommentById(id: string) {
     const query = `
         SELECT c.*,
                COUNT(cl.user_id) AS likes_count
@@ -99,7 +99,7 @@ export class CommentRepository extends BaseRepository {
     }
   }
 
-  async likeComment(commentId: string, userId: string): Promise<void> {
+  public async likeComment(commentId: string, userId: string): Promise<void> {
     try {
       const likeExistsQuery =
         "SELECT id FROM comment_likes WHERE comment_id = $1 AND user_id = $2";

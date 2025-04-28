@@ -3,7 +3,7 @@ import { FriendController } from "../controllers";
 import { BaseRouter } from "../base/router.base";
 
 export class FriendRouter extends BaseRouter<FriendController> {
-  initialize(c: FriendController) {
+  protected initialize(c: FriendController) {
     this.router.get(
       "/",
       // @ts-expect-error - to assign handlers

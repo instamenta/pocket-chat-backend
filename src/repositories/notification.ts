@@ -3,7 +3,7 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class NotificationRepository extends BaseRepository {
-  async createNotification({
+  public async createNotification({
     senderId,
     recipientId,
     type,
@@ -27,7 +27,7 @@ export class NotificationRepository extends BaseRepository {
       );
   }
 
-  async listNotifications(
+  public async listNotifications(
     recipientId: string,
     filter: "all" | "seen" | "unseen" = "all",
   ) {
@@ -74,7 +74,7 @@ export class NotificationRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "getNotifications"));
   }
 
-  async markNotificationAsSeen(id: string) {
+  public async markNotificationAsSeen(id: string) {
     return this.database
       .query(
         `
@@ -91,7 +91,7 @@ export class NotificationRepository extends BaseRepository {
       );
   }
 
-  async markAllNotificationsAsSeen(recipientId: string) {
+  public async markAllNotificationsAsSeen(recipientId: string) {
     return this.database
       .query(
         `
@@ -108,7 +108,7 @@ export class NotificationRepository extends BaseRepository {
       );
   }
 
-  async getNotificationByReferenceId(referenceId: string) {
+  public async getNotificationByReferenceId(referenceId: string) {
     const query = `SELECT n.id,
                           n.type,
                           n.seen,
@@ -134,7 +134,7 @@ export class NotificationRepository extends BaseRepository {
     }
   }
 
-  async getNotificationBySenderAndRecipient(
+  public async getNotificationBySenderAndRecipient(
     senderId: string,
     recipientId: string,
     type: NotificationTypes,
@@ -167,7 +167,7 @@ export class NotificationRepository extends BaseRepository {
     }
   }
 
-  async updateNotification(
+  public async updateNotification(
     id: string,
     content: string,
     seen: boolean,

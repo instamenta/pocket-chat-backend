@@ -32,6 +32,9 @@ export default tslint.config(
       camelcase: "error",
       "no-console": "error",
 
+      // typescript
+      "@typescript-eslint/explicit-member-accessibility": "error",
+
       // import
       "import/consistent-type-specifier-style": "error",
       "import/no-duplicates": "error",

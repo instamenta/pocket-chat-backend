@@ -2,7 +2,7 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class StoryRepository extends BaseRepository {
-  async createStory({
+  public async createStory({
     userId,
     imageUrl,
   }: {
@@ -26,7 +26,7 @@ export class StoryRepository extends BaseRepository {
       );
   }
 
-  async listStories(userId: string) {
+  public async listStories(userId: string) {
     const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
@@ -51,7 +51,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async listFeedStories(userId: string) {
+  public async listFeedStories(userId: string) {
     const query = `
         SELECT DISTINCT ON (u.id) u.id      AS user_id,
                                   u.picture as user_picture,
@@ -86,7 +86,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async getStoryById(id: string) {
+  public async getStoryById(id: string) {
     const query = `
         SELECT user_id, id, likes_count
         FROM stories
@@ -103,7 +103,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async listFriendStoriesByUsername(username: string) {
+  public async listFriendStoriesByUsername(username: string) {
     const friendStoriesQuery = `
         SELECT s.id,
                s.image_url,
@@ -132,7 +132,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async likeStory(storyId: string, userId: string): Promise<void> {
+  public async likeStory(storyId: string, userId: string): Promise<void> {
     try {
       await this.database.query("BEGIN");
 
@@ -172,7 +172,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async listCommentsByStoryId(storyId: string, userId: string) {
+  public async listCommentsByStoryId(storyId: string, userId: string) {
     const query = `
         SELECT c.id,
                c.content,
@@ -205,7 +205,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async createStoryComment(
+  public async createStoryComment(
     storyId: string,
     userId: string,
     content: string,
@@ -234,7 +234,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async deleteStoryComment(
+  public async deleteStoryComment(
     commentId: string,
     userId: string,
   ): Promise<boolean> {
@@ -271,7 +271,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async likeStoryComment(commentId: string, userId: string): Promise<void> {
+  public async likeStoryComment(commentId: string, userId: string): Promise<void> {
     try {
       const likeExistsQuery =
         "SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
@@ -294,7 +294,7 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  async getCommentById(id: string) {
+  public async getCommentById(id: string) {
     const query = `
         SELECT c.id,
                c.user_id,

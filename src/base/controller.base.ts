@@ -6,7 +6,7 @@ import VLogger, { IVlog } from "@instamenta/vlogger";
 export abstract class BaseController<T> {
   protected readonly log: IVlog;
 
-  constructor(
+  public constructor(
     protected readonly repository: T,
     logger: VLogger,
   ) {

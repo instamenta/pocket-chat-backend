@@ -7,7 +7,7 @@ import * as Validate from "../validators";
 import VLogger from "@instamenta/vlogger";
 
 export class UserRepository extends BaseRepository {
-  constructor(
+  public constructor(
     client: Client,
     logger: VLogger,
     private readonly hashingHandler: HashingHandler,

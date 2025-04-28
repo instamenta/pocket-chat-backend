@@ -10,7 +10,7 @@ import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 
 export class StoryController extends BaseController<StoryRepository> {
-  constructor(
+  public constructor(
     repository: StoryRepository,
     logger: VLogger,
     private readonly notificator: Notificator,

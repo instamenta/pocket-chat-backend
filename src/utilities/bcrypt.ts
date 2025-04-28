@@ -14,11 +14,11 @@ export interface HashingHandler {
 export class BCryptHashingHandler implements HashingHandler {
   private readonly log: IVlog;
 
-  constructor(logger: VLogger) {
+  public constructor(logger: VLogger) {
     this.log = logger.getVlogger(this.constructor.name);
   }
 
-  async hashPassword(password: string) {
+  public async hashPassword(password: string) {
     try {
       const salt = await bcrypt.genSalt(SECURITY.SALT_ROUNDS);
 
@@ -29,7 +29,7 @@ export class BCryptHashingHandler implements HashingHandler {
     }
   }
 
-  async comparePasswords(plainPassword: string, hashedPassword: string) {
+  public async comparePasswords(plainPassword: string, hashedPassword: string) {
     return await bcrypt
       .compare(plainPassword, hashedPassword)
       .catch((error: unknown) => {

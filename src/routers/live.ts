@@ -3,7 +3,7 @@ import { LiveController } from "../controllers/live";
 import { BaseRouter } from "../base/router.base";
 
 export class LiveRouter extends BaseRouter<LiveController> {
-  initialize(c: LiveController) {
+  protected initialize(c: LiveController) {
     // @ts-expect-error - to assign handlers
     this.router.post("/", Middlewares.isAuthorized, c.createLive.bind(c));
 

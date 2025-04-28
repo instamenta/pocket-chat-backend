@@ -5,7 +5,7 @@ import { BaseController } from "./controller.base";
 export abstract class BaseRouter<T extends BaseController<any>> {
   public readonly router: Router = Router();
 
-  constructor(controller: T) {
+  public constructor(controller: T) {
     this.initialize(controller);
   }
 

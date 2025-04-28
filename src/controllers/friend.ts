@@ -8,7 +8,7 @@ import * as T from "../types";
 // TODO: Notifications for Friend Related Events
 
 export class FriendController extends BaseController<FriendRepository> {
-  async sendFriendRequest(
+  public async sendFriendRequest(
     request: Request<{ id: string }>,
     response: Response<{ friendshipId: string }>,
   ) {
@@ -35,7 +35,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listFriendRequestsOnly(
+  public async listFriendRequestsOnly(
     request: Request,
     response: Response<T.Friend.RequestData[]>,
   ) {
@@ -51,7 +51,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listFriendSentOnly(
+  public async listFriendSentOnly(
     request: Request,
     response: Response<T.Friend.RequestData[]>,
   ) {
@@ -67,7 +67,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listFriendRequests(
+  public async listFriendRequests(
     request: Request,
     response: Response<T.Friend.RequestData[]>,
   ) {
@@ -83,7 +83,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listFriendRecommendations(
+  public async listFriendRecommendations(
     request: Request,
     response: Response<
       {
@@ -107,7 +107,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async acceptFriendRequest(
+  public async acceptFriendRequest(
     request: Request<{ id: string }>,
     response: Response<void>,
   ) {
@@ -137,7 +137,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async deleteFriendRequest(
+  public async deleteFriendRequest(
     request: Request<{ id: string }>,
     response: Response<{ friendshipId: boolean }>,
   ) {
@@ -167,7 +167,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async declineFriendRequest(
+  public async declineFriendRequest(
     request: Request<{ id: string }>,
     response: Response<void>,
   ) {
@@ -197,7 +197,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async getFriendsCountByUserId(
+  public async getFriendsCountByUserId(
     request: Request<{ id: string }>,
     response: Response<{ count: number }>,
   ) {
@@ -217,7 +217,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listMutualFriendsByUsers(
+  public async listMutualFriendsByUsers(
     request: Request<{ id: string }>,
     response: Response<T.Friend.Mutual[]>,
   ) {
@@ -237,7 +237,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listFriendsByUserId(
+  public async listFriendsByUserId(
     request: Request<{ id: string }>,
     response: Response<T.User.Schema[]>,
   ) {
@@ -253,7 +253,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async listFriendsByUsername(
+  public async listFriendsByUsername(
     request: Request<{ username: string }>,
     response: Response<T.User.Schema[]>,
   ) {
@@ -269,7 +269,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async getBySenderAndRecipient(
+  public async getBySenderAndRecipient(
     request: Request<{
       sender: string;
       recipient: string;
@@ -292,7 +292,7 @@ export class FriendController extends BaseController<FriendRepository> {
     }
   }
 
-  async getById(
+  public async getById(
     request: Request<{ id: string }>,
     response: Response<T.Friend.Friendship>,
   ) {

@@ -3,7 +3,7 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class PublicationRepository extends BaseRepository {
-  async listPublications() {
+  public async listPublications() {
     try {
       const query = "SELECT * FROM publications ORDER BY created_at DESC";
       const result: QueryResult<T.Publication.Publication> =
@@ -14,7 +14,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async getPublicationById(id: string) {
+  public async getPublicationById(id: string) {
     try {
       const query = "SELECT * FROM publications WHERE id = $1";
       const result: QueryResult<T.Publication.Publication> =
@@ -25,7 +25,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async getPublicationsByUserId(userId: string) {
+  public async getPublicationsByUserId(userId: string) {
     try {
       const query = `SELECT p.*,
                             u.username,
@@ -56,7 +56,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async getPublicationsCountByUserId(userId: string) {
+  public async getPublicationsCountByUserId(userId: string) {
     try {
       const query = `SELECT id
                      FROM publications
@@ -68,7 +68,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async getRecommendations(
+  public async getRecommendations(
     userId: string,
   ): Promise<T.Publication.Publication[]> {
     try {
@@ -144,7 +144,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async createPublication({
+  public async createPublication({
     publisherId,
     description,
     images,
@@ -170,7 +170,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async updatePublication(
+  public async updatePublication(
     id: string,
     publicationData: {
       content?: string;
@@ -199,7 +199,7 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  async likePublication(publicationId: string, userId: string): Promise<void> {
+  public async likePublication(publicationId: string, userId: string): Promise<void> {
     try {
       await this.database.query("BEGIN");
 

@@ -2,7 +2,7 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class LiveRepository extends BaseRepository {
-  async createLive(userId: string) {
+  public async createLive(userId: string) {
     return this.database
       .query<{ id: string }>(
         `
@@ -18,7 +18,7 @@ export class LiveRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "createLive"));
   }
 
-  async listLives(userId: string) {
+  public async listLives(userId: string) {
     const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
@@ -43,7 +43,7 @@ export class LiveRepository extends BaseRepository {
     }
   }
 
-  async getLiveById(liveId: string) {
+  public async getLiveById(liveId: string) {
     const query = `SELECT id, state, user_id
                    FROM "lives"
                    WHERE state = 'active'
@@ -60,7 +60,7 @@ export class LiveRepository extends BaseRepository {
     }
   }
 
-  async updateLiveState(userId: string, state: T.U.LiveStates) {
+  public async updateLiveState(userId: string, state: T.U.LiveStates) {
     const query = `
         UPDATE "lives"
         SET state = $1
@@ -74,7 +74,7 @@ export class LiveRepository extends BaseRepository {
     }
   }
 
-  async createLiveMessage(liveId: string, userId: string, content: string) {
+  public async createLiveMessage(liveId: string, userId: string, content: string) {
     return this.database
       .query<{ id: string }>(
         `
@@ -90,7 +90,7 @@ export class LiveRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "createLiveMessage"));
   }
 
-  async listLiveMessages(liveId: string) {
+  public async listLiveMessages(liveId: string) {
     const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,

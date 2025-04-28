@@ -9,7 +9,7 @@ import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 
 export class PublicationController extends BaseController<PublicationRepository> {
-  constructor(
+  public constructor(
     repository: PublicationRepository,
     logger: VLogger,
     private readonly notificator: Notificator,
