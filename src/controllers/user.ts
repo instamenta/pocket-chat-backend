@@ -52,9 +52,7 @@ export class UserController extends BaseController<UserRepository> {
       const userId = await this.repository.createUser(userData);
 
       if (!userId) {
-        console.error(
-          `${this.constructor.name}.createUser(): failed to create User`,
-        );
+        this.log.error({f: 'signUp', m: 'failed to create user', e: {}});
         return response.status(statusCodes.I_AM_A_TEAPOT).end();
       }
 
@@ -85,9 +83,7 @@ export class UserController extends BaseController<UserRepository> {
       const userData = await this.repository.getByUsername(username);
 
       if (!userData) {
-        console.log(
-          `${this.constructor.name}.loginUser(): failed to login user`,
-        );
+        this.log.error({f: 'signIn', m: 'failed to login user', e: {}});
         return response.status(statusCodes.UNAUTHORIZED).end();
       }
 
@@ -97,7 +93,7 @@ export class UserController extends BaseController<UserRepository> {
       );
 
       if (!isMatch) {
-        console.log(`${this.constructor.name}.loginUser(): Invalid password`);
+        this.log.error({f: 'signIn', m: 'Invalid password', e: {}});
         return response.status(statusCodes.UNAUTHORIZED).end();
       }
 
@@ -115,7 +111,9 @@ export class UserController extends BaseController<UserRepository> {
 
       await this.repository
         .updateLastActiveAtById(userData.id)
-        .catch(console.error);
+        .catch((error: unknown) => {
+          this.log.error({e: error, f: 'signIn', m: 'failed to update last active at'});
+        });
     } catch (error) {
       this.errorHandler(error, response);
     }
@@ -128,7 +126,7 @@ export class UserController extends BaseController<UserRepository> {
       const user = await this.repository.getUserById(id);
 
       if (!user) {
-        console.log(`${this.constructor.name}.authUser(): User not found`);
+        this.log.error({f: 'authUser', m: 'user not found', e: {}});
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -148,7 +146,7 @@ export class UserController extends BaseController<UserRepository> {
       const user = await this.repository.getUserById(id);
 
       if (!user) {
-        console.log(`${this.constructor.name}.getUserById(): User not found`);
+        this.log.error({f: 'getUserById', m: 'user not found', e: {}});
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -168,9 +166,7 @@ export class UserController extends BaseController<UserRepository> {
       const user = await this.repository.getUserByUsername(username);
 
       if (!user) {
-        console.log(
-          `${this.constructor.name}.getUserByUsername(): User not found`,
-        );
+        this.log.error({f: 'getUserByUsername', m: 'user not found', e: {}});
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -195,7 +191,7 @@ export class UserController extends BaseController<UserRepository> {
       const userData = await this.repository.updateBio(id, bio);
 
       if (!userData) {
-        console.log(`${this.constructor.name}.updateBio(): Failed to update`);
+        this.log.error({f: 'updateBio', m: 'failed to update bio', e: {}});
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -225,17 +221,15 @@ export class UserController extends BaseController<UserRepository> {
   ) {
     try {
       const id = Validate.uuid.parse(request.user.id);
-      const picture_url = Validate.url.parse(request.body.picture_url);
+      const pictureUrl = Validate.url.parse(request.body.picture_url);
 
       const userData = await this.repository.updateProfilePicture(
         id,
-        picture_url,
+        pictureUrl,
       );
 
       if (!userData) {
-        console.log(
-          `${this.constructor.name}.updateProfilePicture(): Failed to update`,
-        );
+        this.log.error({f: 'updateProfilePicture', m: 'failed to update picture', e: {}});
         return response.status(statusCodes.NOT_FOUND).end();
       }
 
@@ -282,10 +276,7 @@ export class UserController extends BaseController<UserRepository> {
       );
 
       if (!userData) {
-        console.log(
-          `${this.constructor.name}.updateProfilePublicInformation(): Failed to update`,
-          request.body,
-        );
+        this.log.error({f: 'updateProfilePublicInformation', m: 'failed to update', e: {}});
         return response.status(statusCodes.NOT_FOUND).end();
       }
 

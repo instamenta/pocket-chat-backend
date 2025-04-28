@@ -1,9 +1,9 @@
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import * as T from "./index";
 
 export interface Notification {
   id: string;
-  type: notification_types;
+  type: NotificationTypes;
   seen: boolean;
   content: string;
   sender_id: string;

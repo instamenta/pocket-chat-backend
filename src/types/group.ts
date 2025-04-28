@@ -1,4 +1,4 @@
-import { group_roles } from "../utilities/enumerations";
+import { GroupRoles } from "../utilities/enumerations";
 
 export interface Group {
   id: string;
@@ -15,7 +15,7 @@ export interface Member {
   group_id: string;
   user_id: string;
   member_since: string;
-  role: group_roles;
+  role: GroupRoles;
 }
 
 export interface MemberPopulated {
@@ -24,6 +24,6 @@ export interface MemberPopulated {
   first_name: string;
   last_name: string;
   picture: string;
-  role: group_roles;
+  role: GroupRoles;
   member_since: string;
 }

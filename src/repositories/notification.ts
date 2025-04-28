@@ -1,4 +1,4 @@
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
@@ -137,7 +137,7 @@ export class NotificationRepository extends BaseRepository {
   async getNotificationBySenderAndRecipient(
     senderId: string,
     recipientId: string,
-    type: notification_types,
+    type: NotificationTypes,
   ) {
     const query = `SELECT n.id,
                           n.type,
@@ -171,7 +171,7 @@ export class NotificationRepository extends BaseRepository {
     id: string,
     content: string,
     seen: boolean,
-    type: notification_types,
+    type: NotificationTypes,
     senderId: string,
   ) {
     const query = `UPDATE notifications

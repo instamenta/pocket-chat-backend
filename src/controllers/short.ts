@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
 import { ShortRepository } from "../repositories/short";
 import { z } from "zod";
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
@@ -122,7 +122,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.LIKE_SHORT,
+          type: NotificationTypes.LIKE_SHORT,
           reference_id: shortId,
           recipient_id: "",
           sender_id: userId,
@@ -177,7 +177,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.COMMENT_SHORT,
+          type: NotificationTypes.COMMENT_SHORT,
           reference_id: shortId,
           recipient_id: "",
           sender_id: userId,
@@ -224,7 +224,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.LIKE_SHORT_COMMENT,
+          type: NotificationTypes.LIKE_SHORT_COMMENT,
           reference_id: commentId,
           recipient_id: "",
           sender_id: userId,

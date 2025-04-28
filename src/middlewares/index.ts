@@ -16,6 +16,7 @@ export function isGuest(
     try {
       const user = JWT.verifyToken(token);
       if (user) {
+        // eslint-disable-next-line no-console
         console.log("Middleware.isGuest(): FORBIDDEN", user);
 
         return response
@@ -24,6 +25,7 @@ export function isGuest(
       }
     } catch (error: unknown) {
       if (error instanceof TokenExpiredError) {
+        // eslint-disable-next-line no-console
         console.log("Middleware.isGuest(): Token expired");
         JWT.removeTokenFromCookie(response);
       }
@@ -41,6 +43,7 @@ export function isAuthorized(
 ) {
   const token = JWT.getTokenFromCookie(request);
   if (!token) {
+    // eslint-disable-next-line no-console
     console.log("Middleware.isAuthorized(): UNAUTHORIZED");
 
     return response
@@ -50,6 +53,7 @@ export function isAuthorized(
 
   const user = JWT.verifyToken(token);
   if (!user) {
+    // eslint-disable-next-line no-console
     console.log("Middleware.isAuthorized(): UNAUTHORIZED");
 
     return response
@@ -67,6 +71,7 @@ export function errorHandler(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ) {
+  // eslint-disable-next-line no-console
   console.error(error.stack);
 
   response

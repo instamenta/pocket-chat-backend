@@ -22,10 +22,10 @@ export abstract class BaseController<T> {
         };
       });
 
-      console.error(formattedError);
+      this.log.error({e: formattedError, f: 'errorHandler' });
       response.status(statusCodes.BAD_REQUEST).end();
     } else {
-      console.error(error);
+      this.log.error({e: error, f: 'errorHandler'});
       response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
     }
   }

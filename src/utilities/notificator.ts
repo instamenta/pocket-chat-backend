@@ -1,67 +1,70 @@
-import { NotificationRepository } from "../repositories/notification";
-import { notification_types } from "./enumerations";
-import { PublicationRepository } from "../repositories/publication";
-import { CommentRepository } from "../repositories/comment";
-import { ShortRepository } from "../repositories/short";
-import { StoryRepository } from "../repositories/story";
+import { NotificationRepository } from "../repositories";
+import { NotificationTypes } from "./enumerations";
+import { PublicationRepository } from "../repositories";
+import { CommentRepository } from "../repositories";
+import { ShortRepository } from "../repositories";
+import { StoryRepository } from "../repositories";
 import { NotImplementedError } from "@instamenta/vanilla-utility-pack";
 import * as T from "../types";
+import VLogger, {IVlog} from "@instamenta/vlogger";
 
 export class Notificator {
+  private readonly log: IVlog;
+
   constructor(
     private readonly repository: NotificationRepository,
     private readonly publication: PublicationRepository,
     private readonly comment: CommentRepository,
     private readonly short: ShortRepository,
     private readonly story: StoryRepository,
-  ) {}
+    logger: VLogger,
+  ) {
+    this.log = logger.getVlogger(this.constructor.name);
+  }
 
   public async handleNotification(data: T.Notification.Data) {
-    console.log(
-      `${this.constructor.name}.handleNotification(): Creating notification of type`,
-      data.type,
-    );
+    this.log.info({f: "handleNotification", m: 'Creating notification of type'});
 
     switch (data.type) {
-      case notification_types.LIKE:
+      case NotificationTypes.LIKE:
         await this.#handleLikeNotification(data);
         break;
-      case notification_types.MESSAGE:
+      case NotificationTypes.MESSAGE:
         await this.#handleMessageNotification(data);
         break;
-      case notification_types.COMMENT:
+      case NotificationTypes.COMMENT:
         await this.#handleCommentNotification(data);
         break;
-      case notification_types.LIKE_COMMENT:
+      case NotificationTypes.LIKE_COMMENT:
         await this.#handleLikeCommentNotification(data);
         break;
       //* Short Handlers
-      case notification_types.LIKE_SHORT:
+      case NotificationTypes.LIKE_SHORT:
         await this.#handleLikeShortNotification(data);
         break;
-      case notification_types.COMMENT_SHORT:
+      case NotificationTypes.COMMENT_SHORT:
         await this.#handleCommentShortNotification(data);
         break;
-      case notification_types.LIKE_SHORT_COMMENT:
+      case NotificationTypes.LIKE_SHORT_COMMENT:
         await this.#handleLikeShortCommentNotification(data);
         break;
       //* Story Handlers
-      case notification_types.LIKE_STORY:
+      case NotificationTypes.LIKE_STORY:
         await this.#handleLikeStoryNotification(data);
         break;
-      case notification_types.COMMENT_STORY:
+      case NotificationTypes.COMMENT_STORY:
         await this.#handleCommentStoryNotification(data);
         break;
-      case notification_types.LIKE_STORY_COMMENT:
+      case NotificationTypes.LIKE_STORY_COMMENT:
         await this.#handleLikeStoryCommentNotification(data);
         break;
-      case notification_types.CALL:
+      case NotificationTypes.CALL:
         throw new NotImplementedError(
-          `TODO: Notification handler for type ${data.type} is not implemented`,
+          `TODO: Notification handler for type ${String(data.type)} is not implemented`,
         );
-      case notification_types.LIVE:
+      case NotificationTypes.LIVE:
         throw new NotImplementedError(
-          `TODO: Notification handler for type ${data.type} is not implemented`,
+          `TODO: Notification handler for type ${String(data.type)} is not implemented`,
         );
     }
   }
@@ -71,7 +74,7 @@ export class Notificator {
    */
   async #handleLikeNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for like notification", data);
+      this.log.error({e: data, m: 'No reference id for like notification'})
       return;
     }
 
@@ -81,10 +84,7 @@ export class Notificator {
     ]);
 
     if (!publication) {
-      console.error(
-        `${this.constructor.name}.#handleLikeNotification(): Publication not found`,
-        data,
-      );
+      this.log.error({f: '#handleLikeNotification', m: 'Publication not found', e: data});
       return;
     }
     data.content = publication.likes_count.toString();
@@ -132,7 +132,7 @@ export class Notificator {
    */
   async #handleCommentNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for comment notification", data);
+      this.log.error({e: data, m: 'No reference id for comment notification'})
       return;
     }
 
@@ -142,10 +142,7 @@ export class Notificator {
     ]);
 
     if (!publication) {
-      console.error(
-        `${this.constructor.name}.#handleCommentNotification(): Publication not found`,
-        data,
-      );
+      this.log.error({f: '#handleCommentNotification', m: 'Publication not found', e: data});
       return;
     }
 
@@ -169,7 +166,7 @@ export class Notificator {
    */
   async #handleLikeCommentNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for comment notification", data);
+      this.log.error({e: data, m: 'No reference id for comment notification'})
       return;
     }
 
@@ -179,10 +176,7 @@ export class Notificator {
     ]);
 
     if (!comment) {
-      console.error(
-        `${this.constructor.name}.#handleLikeCommentNotification(): Comment not found`,
-        data,
-      );
+      this.log.error({f: '#handleLikeCommentNotification', m: 'Comment not found', e: data});
       return;
     }
 
@@ -207,7 +201,7 @@ export class Notificator {
    */
   async #handleLikeShortNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for like short", data);
+      this.log.error({e: data, m: 'No reference id for like short'});
       return;
     }
 
@@ -217,10 +211,7 @@ export class Notificator {
     ]);
 
     if (!short) {
-      console.error(
-        `${this.constructor.name}.#handleLikeShortNotification(): Not found`,
-        data,
-      );
+      this.log.error({f: '#handleLikeShortNotification', m: 'Not found', e: data});
       return;
     }
 
@@ -245,7 +236,7 @@ export class Notificator {
    */
   async #handleCommentShortNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for comment notification", data);
+      this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
@@ -255,10 +246,7 @@ export class Notificator {
     ]);
 
     if (!short) {
-      console.error(
-        `${this.constructor.name}.#handleCommentShortNotification(): Short not found`,
-        data,
-      );
+      this.log.error({f: '#handleCommentShortNotification', m: 'Short not found', e: data});
       return;
     }
 
@@ -282,7 +270,7 @@ export class Notificator {
    */
   async #handleLikeShortCommentNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for comment notification", data);
+      this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
@@ -292,10 +280,7 @@ export class Notificator {
     ]);
 
     if (!comment) {
-      console.error(
-        `${this.constructor.name}.#handleLikeShortCommentNotification(): Comment not found`,
-        data,
-      );
+      this.log.error({f: '#handleLikeShortCommentNotification', m: 'Comment not found', e: data});
       return;
     }
 
@@ -320,7 +305,7 @@ export class Notificator {
    */
   async #handleLikeStoryNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for like story", data);
+      this.log.error({e: data, m: 'No reference id for like notification'});
       return;
     }
 
@@ -330,10 +315,7 @@ export class Notificator {
     ]);
 
     if (!story) {
-      console.error(
-        `${this.constructor.name}.#handleLikeStorytNotification(): Not found`,
-        data,
-      );
+      this.log.error({f: '#handleLikeStoryNotification', m: 'Story not found', e: data});
       return;
     }
 
@@ -358,7 +340,7 @@ export class Notificator {
    */
   async #handleCommentStoryNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for comment notification", data);
+      this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
@@ -368,10 +350,7 @@ export class Notificator {
     ]);
 
     if (!publication) {
-      console.error(
-        `${this.constructor.name}.#handleCommentStoryNotification(): Comment not found`,
-        data,
-      );
+      this.log.error({f: '#handleCommentStoryNotification', m: 'Publication not found', e: data});
       return;
     }
 
@@ -395,7 +374,7 @@ export class Notificator {
    */
   async #handleLikeStoryCommentNotification(data: T.Notification.Data) {
     if (!data.reference_id) {
-      console.error("No reference id for comment notification", data);
+      this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
@@ -405,10 +384,7 @@ export class Notificator {
     ]);
 
     if (!comment) {
-      console.error(
-        `${this.constructor.name}.#handleLikeStoryCommentNotification(): Comment not found`,
-        data,
-      );
+      this.log.error({f: '#handleLikeStoryCommentNotification', m: 'Comment not found', e: data});
       return;
     }
 

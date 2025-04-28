@@ -1,88 +1,86 @@
 import { Middlewares } from "../middlewares";
-import { FriendController } from "../controllers/friend";
+import { FriendController } from "../controllers";
 import { BaseRouter } from "../base/router.base";
 
 export class FriendRouter extends BaseRouter<FriendController> {
   initialize(c: FriendController) {
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendRequests.bind(c),
     );
     // @ts-expect-error - to assign handlers
     this.router.get("/one/:id", Middlewares.isAuthorized, c.getById.bind(c));
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/requests",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendRequestsOnly.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/sent",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendSentOnly.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/:id/mutual",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listMutualFriendsByUsers.bind(c),
     );
-
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/recommendations",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendRecommendations.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendsByUserId.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/username/:username",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendsByUsername.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/:id/count",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getFriendsCountByUserId.bind(c),
     );
-
-    // @ts-expect-error - to assign handlers
     this.router.post(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.sendFriendRequest.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.delete(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.deleteFriendRequest.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.put(
       "/:id/accept",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.acceptFriendRequest.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.put(
       "/:id/decline",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.declineFriendRequest.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/:sender/:recipient",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getBySenderAndRecipient.bind(c),
     );

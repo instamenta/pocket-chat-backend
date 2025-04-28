@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PublicationRepository } from "../repositories/publication";
 import statusCodes from "@instamenta/http-status-codes";
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
@@ -155,7 +155,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
       await this.notificator
         .handleNotification({
-          type: notification_types.LIKE,
+          type: NotificationTypes.LIKE,
           reference_id: publicationId,
           recipient_id: "",
           sender_id: userId,

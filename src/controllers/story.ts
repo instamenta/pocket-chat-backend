@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
 import { StoryRepository } from "../repositories/story";
 import { z } from "zod";
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
@@ -106,7 +106,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.LIKE_STORY,
+          type: NotificationTypes.LIKE_STORY,
           reference_id: "",
           recipient_id: "",
           sender_id: userId,
@@ -157,7 +157,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.COMMENT_STORY,
+          type: NotificationTypes.COMMENT_STORY,
           reference_id: storyId,
           recipient_id: "",
           sender_id: userId,
@@ -198,7 +198,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.LIKE_STORY_COMMENT,
+          type: NotificationTypes.LIKE_STORY_COMMENT,
           reference_id: commentId,
           recipient_id: "",
           sender_id: userId,

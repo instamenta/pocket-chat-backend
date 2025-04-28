@@ -22,7 +22,7 @@ const corsOptions: CORS.CorsOptions = {
   allowedHeaders: ["Content-Type", SECURITY.JWT_TOKEN_NAME],
 };
 
-export async function initialize_all() {
+export async function initializeAll() {
   const logger = VLogger.getInstance();
 
   const log = logger.getVlogger("App");
@@ -44,7 +44,7 @@ export async function initialize_all() {
 
   const cache = new Redis({
     host: env.REDIS_HOST,
-    port: parseInt(env.REDIS_PORT),
+    port: parseInt(env.REDIS_PORT, 10),
   });
 
   return { api, database, cache, logger };

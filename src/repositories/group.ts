@@ -1,4 +1,4 @@
-import { group_roles } from "../utilities/enumerations";
+import { GroupRoles } from "../utilities/enumerations";
 import { BaseRepository } from "../base/repository.base";
 import {
   NotFoundError,
@@ -36,13 +36,13 @@ export class GroupRepository extends BaseRepository {
           WHERE group_id = $1
             AND user_id = $2;
 			`;
-      const userRole = await this.database.query<{ role: group_roles }>(
+      const userRole = await this.database.query<{ role: GroupRoles }>(
         getRoleQuery,
         [groupId, userId],
       );
       if (
         !userRole.rows.length ||
-        userRole.rows[0].role !== group_roles.OWNER
+        userRole.rows[0].role !== GroupRoles.OWNER
       ) {
         throw new UnauthorizedError(" Only the owner can remove group.");
       }
@@ -174,14 +174,14 @@ export class GroupRepository extends BaseRepository {
           AND user_id = $2;
 		`;
     try {
-      const senderRole = await this.database.query<{ role: group_roles }>(
+      const senderRole = await this.database.query<{ role: GroupRoles }>(
         getRoleQuery,
         [groupId, senderId],
       );
       if (
         !senderRole.rows.length ||
-        (senderRole.rows[0].role !== group_roles.OWNER &&
-          senderRole.rows[0].role !== group_roles.MODERATOR)
+        (senderRole.rows[0].role !== GroupRoles.OWNER &&
+          senderRole.rows[0].role !== GroupRoles.MODERATOR)
       )
         throw new Error(
           "Unauthorized: Only the owner or moderators can change roles.",
@@ -219,11 +219,11 @@ export class GroupRepository extends BaseRepository {
           AND user_id = $2;`;
     try {
       const [senderRole, recipientRole] = await Promise.all([
-        this.database.query<{ role: group_roles }>(getSenderRoleQuery, [
+        this.database.query<{ role: GroupRoles }>(getSenderRoleQuery, [
           groupId,
           senderId,
         ]),
-        this.database.query<{ role: group_roles }>(getRecipientRoleQuery, [
+        this.database.query<{ role: GroupRoles }>(getRecipientRoleQuery, [
           groupId,
           senderId,
         ]),
@@ -231,8 +231,8 @@ export class GroupRepository extends BaseRepository {
 
       if (
         !senderRole.rows.length ||
-        (senderRole.rows[0].role !== group_roles.OWNER &&
-          senderRole.rows[0].role !== group_roles.MODERATOR)
+        (senderRole.rows[0].role !== GroupRoles.OWNER &&
+          senderRole.rows[0].role !== GroupRoles.MODERATOR)
       )
         throw new Error(
           "Unauthorized: Only the owner or moderators can change roles.",
@@ -240,7 +240,7 @@ export class GroupRepository extends BaseRepository {
 
       if (
         !recipientRole.rows.length ||
-        recipientRole.rows[0].role === group_roles.OWNER
+        recipientRole.rows[0].role === GroupRoles.OWNER
       )
         throw new Error("Unauthorized: Cant remove the owner.");
     } catch (error) {

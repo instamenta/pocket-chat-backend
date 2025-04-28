@@ -1,4 +1,4 @@
-export enum socket_events {
+export enum SocketEvents {
   MESSAGE = "message",
   JOIN_LIVE = "join_live",
   LEAVE_LIVE = "leave_live",
@@ -7,12 +7,12 @@ export enum socket_events {
   VOICE_CALL_INVITE = "voice-call-invite",
 }
 
-export enum publication_status {
+export enum PublicationStatus {
   Draft = "draft",
   Published = "published",
 }
 
-export enum group_roles {
+export enum GroupRoles {
   OWNER = "owner",
   MODERATOR = "moderator",
   MEMBER = "member",
@@ -20,7 +20,7 @@ export enum group_roles {
 
 // TODO FRIEND INVITATION NOTIFICATION
 
-export enum notification_types {
+export enum NotificationTypes {
   CALL = "call",
   LIKE = "like",
   LIVE = "live",

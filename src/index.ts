@@ -8,10 +8,10 @@ import * as Repositories from "./repositories";
 import { Middlewares } from "./middlewares";
 import { BCryptHashingHandler } from "./utilities/bcrypt";
 import { Notificator } from "./utilities/notificator";
-import { initialize_all } from "./utilities/intialize";
+import { initializeAll } from "./utilities/intialize";
 
 void (async function start_service() {
-  const { api, database, cache, logger } = await initialize_all();
+  const { api, database, cache, logger } = await initializeAll();
 
   graceful_shutdown(database, cache);
 

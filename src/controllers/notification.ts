@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
 import { NotificationRepository } from "../repositories/notification";
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import * as T from "../types";
@@ -13,7 +13,7 @@ export class NotificationController extends BaseController<NotificationRepositor
       object,
       {
         recipient: string;
-        type: notification_types;
+        type: NotificationTypes;
         seen: boolean;
         content: string;
       }

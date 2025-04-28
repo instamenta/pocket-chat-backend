@@ -3,16 +3,16 @@ import jwt, { JwtPayload, Secret, SignOptions } from "jsonwebtoken";
 import { SECURITY } from "./config";
 import * as T from "../types";
 
-const jwt_secret: Secret = SECURITY.JWT_SECRET;
+const jwtSecret: Secret = SECURITY.JWT_SECRET;
 const signOptions: SignOptions = { expiresIn: SECURITY.JWT_EXPIRATION_TIME };
 
 export function signToken(userData: T.User.Payload): string {
-  return jwt.sign(userData as object, jwt_secret, signOptions);
+  return jwt.sign(userData as object, jwtSecret, signOptions);
 }
 
 export function verifyToken(token: string): T.User.Payload | null {
   try {
-    const decoded = jwt.verify(token, jwt_secret) as JwtPayload;
+    const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
     return decoded as T.User.Payload;
   } catch {
     return null;

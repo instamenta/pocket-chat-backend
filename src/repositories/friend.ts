@@ -107,8 +107,6 @@ export class FriendRepository extends BaseRepository {
   }
 
   public async listMutualFriendsByUsers(user1: string, sender: string) {
-    console.log({ user1, sender });
-
     const query = `
         SELECT u.id as user_id,
                u.first_name,

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { CommentRepository } from "../repositories";
 import statusCodes from "@instamenta/http-status-codes";
 import { z } from "zod";
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
@@ -58,7 +58,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.COMMENT,
+          type: NotificationTypes.COMMENT,
           reference_id: publicationId,
           recipient_id: "",
           sender_id: userId,
@@ -103,7 +103,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
       await this.notificator
         .handleNotification({
-          type: notification_types.LIKE_COMMENT,
+          type: NotificationTypes.LIKE_COMMENT,
           reference_id: commentId,
           recipient_id: "",
           sender_id: userId,

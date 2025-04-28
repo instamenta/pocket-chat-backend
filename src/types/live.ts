@@ -1,4 +1,4 @@
-import { socket_events } from "../utilities/enumerations";
+import { SocketEvents } from "../utilities/enumerations";
 import * as U from "./unions";
 
 export interface Populated {
@@ -24,4 +24,4 @@ export interface MessagePopulated {
   created_at: string;
 }
 
-export type MessageResponse = MessagePopulated & { type: socket_events };
+export type MessageResponse = MessagePopulated & { type: SocketEvents };

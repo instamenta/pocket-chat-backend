@@ -12,7 +12,7 @@ export default tslint.config(
     ]
   },
   { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } } },
-  {
+  { // TODO: USE IMPORT PLUGIN eslint-plugin-import
     files: ["**/*.ts"],
     ignores: ['dist/**'],
     rules: {
