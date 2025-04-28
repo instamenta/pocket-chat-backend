@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import statusCodes from '@instamenta/http-status-codes'
 import {FriendRepository} from "../repositories/friend";
 import {BaseController} from "../base/controller.base";
-import {Validate} from "../validators";
+import * as Validate from "../validators";
 import * as T from '../types'
 
 // TODO: Notifications for Friend Related Events

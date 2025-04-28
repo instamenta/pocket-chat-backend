@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import statusCodes from '@instamenta/http-status-codes'
 import {GroupRepository} from "../repositories/group";
 import {BaseController} from "../base/controller.base";
-import {Validate} from "../validators";
+import * as Validate from "../validators";
 import * as T from '../types'
 
 // TODO: Make post with percents based on all users engagement with post

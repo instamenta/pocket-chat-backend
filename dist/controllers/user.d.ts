@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { UserRepository } from "../repositories/user";
+import { UserRepository } from "../repositories";
 import { HashingHandler } from "../utilities/bcrypt";
 import { z } from 'zod';
 import { BaseController } from "../base/controller.base";
-import { Validate } from "../validators";
+import * as Validate from "../validators";
 import * as T from '../types';
 import VLogger from "@instamenta/vlogger";
 export declare class UserController extends BaseController<UserRepository> {

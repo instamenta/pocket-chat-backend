@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CommentRepository } from '../repositories/comment';
+import { CommentRepository } from '../repositories';
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as T from '../types';

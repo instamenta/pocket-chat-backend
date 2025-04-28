@@ -1,53 +1,33 @@
-import {NextFunction, Request, Response} from 'express';
+import {Request, Response} from 'express';
 import jwt, {JwtPayload, Secret, SignOptions} from 'jsonwebtoken';
 import {SECURITY} from "./config";
 import * as T from '../types';
 
-export class JWT {
-	private static secret: Secret = SECURITY.JWT_SECRET;
-	private static signOptions: SignOptions = {expiresIn: SECURITY.JWT_EXPIRATION_TIME}
+const jwt_secret: Secret = SECURITY.JWT_SECRET;
+const signOptions: SignOptions = {expiresIn: SECURITY.JWT_EXPIRATION_TIME}
 
-	static signToken(userData: T.User.Payload): string {
+export function signToken(userData: T.User.Payload): string {
 		return jwt.sign(
 			userData as object,
-			JWT.secret,
-	JWT.signOptions
+			jwt_secret,
+	signOptions
 		);
 	}
 
-	static verifyToken(token: string): T.User.Payload | null {
+export function verifyToken(token: string): T.User.Payload | null {
 		try {
-			const decoded = jwt.verify(token, this.secret) as JwtPayload;
+			const decoded = jwt.verify(token, jwt_secret) as JwtPayload;
 			return decoded as T.User.Payload;
 		} catch {
 			return null;
 		}
 	}
 
-	static setTokenCookie(response: Response, token: string): void {
-		response.cookie(SECURITY.JWT_TOKEN_NAME, token, {httpOnly: true});
-	}
-
-	static getTokenFromCookie(request: Request): string | null {
+export function  getTokenFromCookie(request: Request): string | null {
 		return request.cookies[SECURITY.JWT_TOKEN_NAME] || null;
 	}
 
-	static authenticate(request: Request, response: Response, next: NextFunction) {
-		const token = this.getTokenFromCookie(request);
-		if (!token) return response.status(401).json({message: 'Unauthorized'});
-
-		const user = this.verifyToken(token);
-		if (!user) return response.status(401).json({message: 'Unauthorized'});
-
-		request.user = user;
-		next();
-	}
-
-	static getUser(token: string) {
-		return this.verifyToken(token) ?? null;
-	}
-
-	static removeTokenFromCookie(response: Response): void {
+export function  removeTokenFromCookie(response: Response): void {
 		response.setHeader(
 			'Set-Cookie',
 			[
@@ -57,4 +37,3 @@ export class JWT {
 			]
 		);
 	}
-}

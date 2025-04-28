@@ -3,7 +3,7 @@ import statusCodes from '@instamenta/http-status-codes'
 import {NotificationRepository} from "../repositories/notification";
 import {notification_types} from "../utilities/enumerations";
 import {BaseController} from "../base/controller.base";
-import {Validate} from "../validators";
+import * as Validate from "../validators";
 import * as T from '../types';
 
 export class NotificationController extends BaseController<NotificationRepository> {

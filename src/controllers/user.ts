@@ -1,12 +1,12 @@
 import {Request, Response} from "express";
 import statusCodes from '@instamenta/http-status-codes'
-import {UserRepository} from "../repositories/user";
-import {JWT} from "../utilities/jwt";
+import {UserRepository} from "../repositories";
+import * as JWT from "../utilities/jwt";
 import {SECURITY} from "../utilities/config";
 import {HashingHandler} from "../utilities/bcrypt";
 import {z} from 'zod';
 import {BaseController} from "../base/controller.base";
-import {Validate} from "../validators";
+import * as Validate from "../validators";
 import * as T from '../types'
 import VLogger from "@instamenta/vlogger";
 

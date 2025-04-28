@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,7 +40,7 @@ exports.PublicationController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const enumerations_1 = require("../utilities/enumerations");
 const controller_base_1 = require("../base/controller.base");
-const validators_1 = require("../validators");
+const Validate = __importStar(require("../validators"));
 class PublicationController extends controller_base_1.BaseController {
     notificator;
     constructor(repository, logger, notificator) {
@@ -25,7 +58,7 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async getPublicationById(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(request.params.id);
+            const id = Validate.uuid.parse(request.params.id);
             const publication = await this.repository.getPublicationById(id);
             if (publication) {
                 response.status(http_status_codes_1.default.OK).json(publication);
@@ -40,7 +73,7 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async getPublicationsByUserId(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(request.params.id);
+            const id = Validate.uuid.parse(request.params.id);
             const publications = await this.repository.getPublicationsByUserId(id);
             response.status(http_status_codes_1.default.OK).json(publications);
         }
@@ -50,7 +83,7 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async getPublicationsCountByUserId(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(request.params.id);
+            const id = Validate.uuid.parse(request.params.id);
             const count = await this.repository.getPublicationsCountByUserId(id);
             response.status(http_status_codes_1.default.OK).json({ count });
         }
@@ -60,7 +93,7 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async getRecommendations(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const userId = Validate.uuid.parse(request.user.id);
             const recommendations = await this.repository.getRecommendations(userId);
             response.status(http_status_codes_1.default.OK).json(recommendations);
         }
@@ -70,8 +103,8 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async createPublication(request, response) {
         try {
-            const data = validators_1.Validate.create_publication.parse({
-                publisher_id: validators_1.Validate.uuid.parse(request.user.id),
+            const data = Validate.create_publication.parse({
+                publisher_id: Validate.uuid.parse(request.user.id),
                 description: request.body.description,
                 images: request.body.images,
                 publication_status: request.body.publication_status,
@@ -85,8 +118,8 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async updatePublication(request, response) {
         try {
-            const id = validators_1.Validate.uuid.parse(request.params.id);
-            const publicationData = validators_1.Validate.update_publication.parse(request.body);
+            const id = Validate.uuid.parse(request.params.id);
+            const publicationData = Validate.update_publication.parse(request.body);
             const updatedPublicationId = await this.repository.updatePublication(id, publicationData);
             response.status(http_status_codes_1.default.OK).json({ id: updatedPublicationId });
         }
@@ -96,8 +129,8 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async likePublication(request, response) {
         try {
-            const publicationId = validators_1.Validate.uuid.parse(request.params.id);
-            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const publicationId = Validate.uuid.parse(request.params.id);
+            const userId = Validate.uuid.parse(request.user.id);
             await this.repository.likePublication(publicationId, userId);
             response.status(http_status_codes_1.default.OK).end();
             await this.notificator.handleNotification({

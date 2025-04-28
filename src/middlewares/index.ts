@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {JWT} from '../utilities/jwt';
+import * as JWT from '../utilities/jwt';
 import statusCodes from "@instamenta/http-status-codes";
 import {TokenExpiredError} from "jsonwebtoken";
 

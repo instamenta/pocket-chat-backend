@@ -19,6 +19,5 @@ export default tseslint.config({
     {
       files: ["**/*.ts"], ignores: ['dist/**'],
       rules: {
-        '@typescript-eslint/no-extraneous-class': 'off'
       }
     });

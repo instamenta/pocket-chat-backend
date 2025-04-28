@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -6,11 +39,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const controller_base_1 = require("../base/controller.base");
-const validators_1 = require("../validators");
+const Validate = __importStar(require("../validators"));
 class MessageController extends controller_base_1.BaseController {
     async sendMessage(request, response) {
         try {
-            const message = validators_1.Validate.create_message.parse({
+            const message = Validate.create_message.parse({
                 sender: request.user.id,
                 recipient: request.body.recipient,
                 content: request.body.content,
@@ -31,7 +64,7 @@ class MessageController extends controller_base_1.BaseController {
     }
     async listMessagesByFriendship(request, response) {
         try {
-            const messages = await this.repository.getMessagesByFriendshipId(validators_1.Validate.uuid.parse(request.params.friendshipId), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
+            const messages = await this.repository.getMessagesByFriendshipId(Validate.uuid.parse(request.params.friendshipId), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
             response.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
@@ -40,7 +73,7 @@ class MessageController extends controller_base_1.BaseController {
     }
     async listMessagesByUsers(request, response) {
         try {
-            const messages = await this.repository.getMessagesByUsers(validators_1.Validate.uuid.parse(request.params.user1), validators_1.Validate.uuid.parse(request.params.user2), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
+            const messages = await this.repository.getMessagesByUsers(Validate.uuid.parse(request.params.user1), Validate.uuid.parse(request.params.user2), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
             response.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
@@ -49,7 +82,7 @@ class MessageController extends controller_base_1.BaseController {
     }
     async updateMessageStatus(request, response) {
         try {
-            const result = await this.repository.updateMessageStatus(validators_1.Validate.uuid.parse(request.params.id), request.body.status);
+            const result = await this.repository.updateMessageStatus(Validate.uuid.parse(request.params.id), request.body.status);
             if (!result) {
                 console.error(`${this.constructor.name}.updateMessageStatus(): Failed to update message status`);
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
@@ -62,7 +95,7 @@ class MessageController extends controller_base_1.BaseController {
     }
     async listConversations(request, response) {
         try {
-            const userId = validators_1.Validate.uuid.parse(request.user.id);
+            const userId = Validate.uuid.parse(request.user.id);
             const conversations = await this.repository.listConversations(userId);
             response.status(http_status_codes_1.default.OK).json(conversations);
         }
