@@ -54,7 +54,7 @@ class StoryController extends controller_base_1.BaseController {
             const imageUrl = zod_1.z.string().url().parse(request.body.imageUrl);
             const storyId = await this.repository.createStory({ userId, imageUrl });
             if (!storyId) {
-                console.error(`${this.constructor.name}.createStory(): Failed to send message`);
+                this.log.error({ m: `Failed to send message`, f: 'createStory', e: {} });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: storyId });
@@ -99,14 +99,18 @@ class StoryController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             await this.repository.likeStory(storyId, userId);
             response.status(http_status_codes_1.default.OK).end();
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.LIKE_STORY,
-                reference_id: '',
-                recipient_id: '',
-                sender_id: userId,
-                content: '',
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.LIKE_STORY,
+                referenceId: "",
+                recipientId: "",
+                senderId: userId,
+                content: "",
                 seen: false,
-            }).catch(console.error);
+            })
+                .catch((error) => {
+                this.log.error({ e: error, f: 'likeStory' });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -130,14 +134,18 @@ class StoryController extends controller_base_1.BaseController {
             const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createStoryComment(storyId, userId, content);
             response.status(http_status_codes_1.default.CREATED).json(comment);
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.COMMENT_STORY,
-                reference_id: storyId,
-                recipient_id: '',
-                sender_id: userId,
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.COMMENT_STORY,
+                referenceId: storyId,
+                recipientId: "",
+                senderId: userId,
                 content: content,
                 seen: false,
-            }).catch(console.error);
+            })
+                .catch((error) => {
+                this.log.error({ e: error, f: 'createStoryComment' });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);
@@ -159,14 +167,18 @@ class StoryController extends controller_base_1.BaseController {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const userId = Validate.uuid.parse(request.user.id);
             await this.repository.likeStoryComment(commentId, userId);
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.LIKE_STORY_COMMENT,
-                reference_id: commentId,
-                recipient_id: '',
-                sender_id: userId,
-                content: '',
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.LIKE_STORY_COMMENT,
+                referenceId: commentId,
+                recipientId: "",
+                senderId: userId,
+                content: "",
                 seen: false,
-            }).catch(console.error);
+            })
+                .catch((error) => {
+                this.log.error({ e: error, f: 'likeStoryComment' });
+            });
             response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {

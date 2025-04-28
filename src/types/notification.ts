@@ -6,10 +6,10 @@ export interface Notification {
   type: NotificationTypes;
   seen: boolean;
   content: string;
-  sender_id: string;
+  senderId: string;
   created_at: string;
-  recipient_id: string;
-  reference_id?: string;
+  recipientId: string;
+  referenceId?: string;
 }
 
 export interface Populated {

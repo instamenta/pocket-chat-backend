@@ -19,6 +19,6 @@ export interface RequestData {
     picture: string;
     username: string;
     request_date: string;
-    request_type: 'sent' | 'received';
+    request_type: "sent" | "received";
 }
 //# sourceMappingURL=friend.d.ts.map

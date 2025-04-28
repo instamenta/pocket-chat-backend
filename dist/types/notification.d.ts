@@ -1,14 +1,14 @@
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import * as T from "./index";
 export interface Notification {
     id: string;
-    type: notification_types;
+    type: NotificationTypes;
     seen: boolean;
     content: string;
-    sender_id: string;
+    senderId: string;
     created_at: string;
-    recipient_id: string;
-    reference_id?: string;
+    recipientId: string;
+    referenceId?: string;
 }
 export interface Populated {
     id: string;
@@ -24,5 +24,5 @@ export interface Populated {
     last_name: string;
     reference_id: string;
 }
-export type Data = Omit<T.Notification.Notification, 'created_at' | 'id'>;
+export type Data = Omit<T.Notification.Notification, "created_at" | "id">;
 //# sourceMappingURL=notification.d.ts.map

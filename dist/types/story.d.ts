@@ -1,4 +1,4 @@
-import * as U from './unions';
+import * as U from "./unions";
 export interface Story {
     id: string;
     user_id: string;

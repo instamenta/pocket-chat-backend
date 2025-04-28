@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { FriendRepository } from "../repositories/friend";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class FriendController extends BaseController<FriendRepository> {
     sendFriendRequest(request: Request<{
         id: string;
     }>, response: Response<{
-        friendship_id: string;
+        friendshipId: string;
     }>): Promise<Response<{
-        friendship_id: string;
+        friendshipId: string;
     }, Record<string, any>> | undefined>;
     listFriendRequestsOnly(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
     listFriendSentOnly(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
@@ -25,9 +25,9 @@ export declare class FriendController extends BaseController<FriendRepository> {
     deleteFriendRequest(request: Request<{
         id: string;
     }>, response: Response<{
-        friendship_id: boolean;
+        friendshipId: boolean;
     }>): Promise<Response<{
-        friendship_id: boolean;
+        friendshipId: boolean;
     }, Record<string, any>> | undefined>;
     declineFriendRequest(request: Request<{
         id: string;

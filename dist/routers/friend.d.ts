@@ -1,4 +1,4 @@
-import { FriendController } from "../controllers/friend";
+import { FriendController } from "../controllers";
 import { BaseRouter } from "../base/router.base";
 export declare class FriendRouter extends BaseRouter<FriendController> {
     initialize(c: FriendController): void;

@@ -8,11 +8,15 @@ class ShortRepository extends repository_base_1.BaseRepository {
                    VALUES ($1, $2, $3)
                    RETURNING id`;
         try {
-            const result = await this.database.query(query, [userId, videoUrl, description]);
+            const result = await this.database.query(query, [
+                userId,
+                videoUrl,
+                description,
+            ]);
             return result.rows[0].id;
         }
         catch (error) {
-            this.errorHandler(error, 'createShort');
+            this.errorHandler(error, "createShort");
         }
     }
     async listShorts(userId) {
@@ -34,11 +38,13 @@ class ShortRepository extends repository_base_1.BaseRepository {
                             LEFT join short_likes sl ON s.id = sl.short_id AND sl.user_id = $1
                    ORDER BY s.created_at DESC`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listShorts');
+            this.errorHandler(error, "listShorts");
         }
     }
     async listShortsById(userId) {
@@ -61,11 +67,13 @@ class ShortRepository extends repository_base_1.BaseRepository {
                    WHERE s.user_id = $1
                    ORDER BY s.created_at DESC`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listShortsById');
+            this.errorHandler(error, "listShortsById");
         }
     }
     async getShortById(id) {
@@ -89,35 +97,38 @@ class ShortRepository extends repository_base_1.BaseRepository {
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'listShortsById');
+            this.errorHandler(error, "listShortsById");
         }
     }
     async likeShort(shortId, userId) {
         try {
-            const likeExistsQuery = 'SELECT id FROM short_likes WHERE short_id = $1 AND user_id = $2';
-            const likeExistsResult = await this.database.query(likeExistsQuery, [shortId, userId]);
-            await this.database.query('BEGIN');
+            const likeExistsQuery = "SELECT id FROM short_likes WHERE short_id = $1 AND user_id = $2";
+            const likeExistsResult = await this.database.query(likeExistsQuery, [
+                shortId,
+                userId,
+            ]);
+            await this.database.query("BEGIN");
             if (likeExistsResult.rows.length > 0) {
-                const removeLikeQuery = 'DELETE FROM short_likes WHERE short_id = $1 AND user_id = $2';
-                const decrementLikeCountQuery = 'UPDATE shorts SET likes_count = likes_count - 1 WHERE id = $1';
+                const removeLikeQuery = "DELETE FROM short_likes WHERE short_id = $1 AND user_id = $2";
+                const decrementLikeCountQuery = "UPDATE shorts SET likes_count = likes_count - 1 WHERE id = $1";
                 await Promise.all([
                     await this.database.query(removeLikeQuery, [shortId, userId]),
                     await this.database.query(decrementLikeCountQuery, [shortId]),
                 ]);
             }
             else {
-                const addLikeQuery = 'INSERT INTO short_likes (short_id, user_id) VALUES ($1, $2)';
-                const incrementLikeCountQuery = 'UPDATE shorts SET likes_count = likes_count + 1 WHERE id = $1';
+                const addLikeQuery = "INSERT INTO short_likes (short_id, user_id) VALUES ($1, $2)";
+                const incrementLikeCountQuery = "UPDATE shorts SET likes_count = likes_count + 1 WHERE id = $1";
                 await Promise.all([
                     await this.database.query(addLikeQuery, [shortId, userId]),
                     await this.database.query(incrementLikeCountQuery, [shortId]),
                 ]);
             }
-            await this.database.query('COMMIT');
+            await this.database.query("COMMIT");
             return !(likeExistsResult.rows.length > 0);
         }
         catch (error) {
-            await this.database.query('ROLLBACK');
+            await this.database.query("ROLLBACK");
             throw error;
         }
     }
@@ -144,11 +155,14 @@ class ShortRepository extends repository_base_1.BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
         try {
-            const result = await this.database.query(query, [shortId, userId]);
+            const result = await this.database.query(query, [
+                shortId,
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listCommentsByShortId');
+            this.errorHandler(error, "listCommentsByShortId");
         }
     }
     async createShortComment(shortId, userId, content) {
@@ -163,13 +177,13 @@ class ShortRepository extends repository_base_1.BaseRepository {
         try {
             const insertResult = await this.database.query(insertQuery, [content, shortId, userId]);
             if (insertResult.rows.length === 0) {
-                throw new Error('Failed to insert comment');
+                throw new Error("Failed to insert comment");
             }
             await this.database.query(updateQuery, [shortId]);
             return insertResult.rows[0];
         }
         catch (error) {
-            this.errorHandler(error, 'createShortComment');
+            this.errorHandler(error, "createShortComment");
         }
     }
     async deleteShortComment(commentId, userId) {
@@ -189,28 +203,34 @@ class ShortRepository extends repository_base_1.BaseRepository {
                 throw new Error(`Failed to get short! Comment id ${commentId}`);
             }
             await this.database.query(updateQuery, [short.rows[0].short_id]);
-            const result = await this.database.query(deleteQuery, [commentId, userId]);
+            const result = await this.database.query(deleteQuery, [
+                commentId,
+                userId,
+            ]);
             return !!result.rowCount;
         }
         catch (error) {
-            this.errorHandler(error, 'deleteShortComment');
+            this.errorHandler(error, "deleteShortComment");
         }
     }
     async likeShortComment(commentId, userId) {
         try {
-            const likeExistsQuery = 'SELECT id FROM short_comment_likes WHERE comment_id = $1 AND user_id = $2';
-            const likeExistsResult = await this.database.query(likeExistsQuery, [commentId, userId]);
+            const likeExistsQuery = "SELECT id FROM short_comment_likes WHERE comment_id = $1 AND user_id = $2";
+            const likeExistsResult = await this.database.query(likeExistsQuery, [
+                commentId,
+                userId,
+            ]);
             if (likeExistsResult.rows.length > 0) {
-                const removeLikeQuery = 'DELETE FROM short_comment_likes WHERE comment_id = $1 AND user_id = $2';
+                const removeLikeQuery = "DELETE FROM short_comment_likes WHERE comment_id = $1 AND user_id = $2";
                 await this.database.query(removeLikeQuery, [commentId, userId]);
             }
             else {
-                const addLikeQuery = 'INSERT INTO short_comment_likes (comment_id, user_id) VALUES ($1, $2)';
+                const addLikeQuery = "INSERT INTO short_comment_likes (comment_id, user_id) VALUES ($1, $2)";
                 await this.database.query(addLikeQuery, [commentId, userId]);
             }
         }
         catch (error) {
-            this.errorHandler(error, 'likeShortComment');
+            this.errorHandler(error, "likeShortComment");
         }
     }
     async getCommentById(id) {
@@ -227,7 +247,7 @@ class ShortRepository extends repository_base_1.BaseRepository {
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getCommentById');
+            this.errorHandler(error, "getCommentById");
         }
     }
 }

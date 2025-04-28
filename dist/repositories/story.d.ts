@@ -1,7 +1,7 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class StoryRepository extends BaseRepository {
-    createStory({ userId, imageUrl }: {
+    createStory({ userId, imageUrl, }: {
         userId: string;
         imageUrl: string;
     }): Promise<string>;

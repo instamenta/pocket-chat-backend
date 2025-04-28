@@ -6,13 +6,15 @@ const repository_base_1 = require("../base/repository.base");
 const vanilla_utility_pack_1 = require("@instamenta/vanilla-utility-pack");
 class GroupRepository extends repository_base_1.BaseRepository {
     async createGroup(userId, name, description, imageUrl) {
-        return this.database.query(`
+        return this.database
+            .query(`
 
                 INSERT INTO "groups" (owner_id, name, description, image_url)
                 VALUES ($1, $2, $3, $4)
                 RETURNING id
-			`, [userId, name, description, imageUrl]).then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, 'createShort'));
+			`, [userId, name, description, imageUrl])
+            .then((data) => data.rows[0].id)
+            .catch((error) => this.errorHandler(error, "createShort"));
     }
     async removeGroup(userId, groupId) {
         try {
@@ -23,12 +25,13 @@ class GroupRepository extends repository_base_1.BaseRepository {
             AND user_id = $2;
 			`;
             const userRole = await this.database.query(getRoleQuery, [groupId, userId]);
-            if (!userRole.rows.length || userRole.rows[0].role !== enumerations_1.group_roles.OWNER) {
-                throw new vanilla_utility_pack_1.UnauthorizedError(' Only the owner can remove group.');
+            if (!userRole.rows.length ||
+                userRole.rows[0].role !== enumerations_1.GroupRoles.OWNER) {
+                throw new vanilla_utility_pack_1.UnauthorizedError(" Only the owner can remove group.");
             }
         }
         catch (error) {
-            this.errorHandler(error, 'removeGroup');
+            this.errorHandler(error, "removeGroup");
         }
         const deleteGroupQuery = `
         DELETE
@@ -51,7 +54,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return true;
         }
         catch (error) {
-            this.errorHandler(error, 'removeGroup');
+            this.errorHandler(error, "removeGroup");
         }
     }
     async listGroups(userId) {
@@ -73,7 +76,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listGroups');
+            this.errorHandler(error, "listGroups");
         }
     }
     async listGroupsByUser(userId) {
@@ -89,7 +92,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listGroupsByUser');
+            this.errorHandler(error, "listGroupsByUser");
         }
     }
     async joinGroup(userId, groupId) {
@@ -109,7 +112,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return true;
         }
         catch (error) {
-            this.errorHandler(error, 'joinGroup');
+            this.errorHandler(error, "joinGroup");
         }
     }
     async leaveGroup(userId, groupId) {
@@ -125,15 +128,18 @@ class GroupRepository extends repository_base_1.BaseRepository {
         WHERE id = $1;
 		`;
         try {
-            const deleteResult = await this.database.query(deleteQuery, [groupId, userId]);
+            const deleteResult = await this.database.query(deleteQuery, [
+                groupId,
+                userId,
+            ]);
             if (!deleteResult.rowCount) {
-                throw new vanilla_utility_pack_1.NotFoundError('User not found in group');
+                throw new vanilla_utility_pack_1.NotFoundError("User not found in group");
             }
             await this.database.query(updateQuery, [groupId]);
             return true;
         }
         catch (error) {
-            this.errorHandler(error, 'leaveGroup');
+            this.errorHandler(error, "leaveGroup");
         }
     }
     async changeRole(senderId, groupId, recipientId, newRole) {
@@ -145,20 +151,25 @@ class GroupRepository extends repository_base_1.BaseRepository {
 		`;
         try {
             const senderRole = await this.database.query(getRoleQuery, [groupId, senderId]);
-            if (!senderRole.rows.length || (senderRole.rows[0].role !== enumerations_1.group_roles.OWNER &&
-                senderRole.rows[0].role !== enumerations_1.group_roles.MODERATOR))
-                throw new Error('Unauthorized: Only the owner or moderators can change roles.');
+            if (!senderRole.rows.length ||
+                (senderRole.rows[0].role !== enumerations_1.GroupRoles.OWNER &&
+                    senderRole.rows[0].role !== enumerations_1.GroupRoles.MODERATOR))
+                throw new Error("Unauthorized: Only the owner or moderators can change roles.");
             const updateRoleQuery = `
           UPDATE "group_members"
           SET role = $3
           WHERE group_id = $1
             AND user_id = $2;
 			`;
-            await this.database.query(updateRoleQuery, [groupId, recipientId, newRole]);
+            await this.database.query(updateRoleQuery, [
+                groupId,
+                recipientId,
+                newRole,
+            ]);
             return true;
         }
         catch (error) {
-            this.errorHandler(error, 'changeRole');
+            this.errorHandler(error, "changeRole");
         }
     }
     async removeMember(senderId, groupId, recipientId) {
@@ -174,17 +185,25 @@ class GroupRepository extends repository_base_1.BaseRepository {
           AND user_id = $2;`;
         try {
             const [senderRole, recipientRole] = await Promise.all([
-                this.database.query(getSenderRoleQuery, [groupId, senderId]),
-                this.database.query(getRecipientRoleQuery, [groupId, senderId]),
+                this.database.query(getSenderRoleQuery, [
+                    groupId,
+                    senderId,
+                ]),
+                this.database.query(getRecipientRoleQuery, [
+                    groupId,
+                    senderId,
+                ]),
             ]);
-            if (!senderRole.rows.length || (senderRole.rows[0].role !== enumerations_1.group_roles.OWNER &&
-                senderRole.rows[0].role !== enumerations_1.group_roles.MODERATOR))
-                throw new Error('Unauthorized: Only the owner or moderators can change roles.');
-            if (!recipientRole.rows.length || (recipientRole.rows[0].role === enumerations_1.group_roles.OWNER))
-                throw new Error('Unauthorized: Cant remove the owner.');
+            if (!senderRole.rows.length ||
+                (senderRole.rows[0].role !== enumerations_1.GroupRoles.OWNER &&
+                    senderRole.rows[0].role !== enumerations_1.GroupRoles.MODERATOR))
+                throw new Error("Unauthorized: Only the owner or moderators can change roles.");
+            if (!recipientRole.rows.length ||
+                recipientRole.rows[0].role === enumerations_1.GroupRoles.OWNER)
+                throw new Error("Unauthorized: Cant remove the owner.");
         }
         catch (error) {
-            this.errorHandler(error, 'removeMember');
+            this.errorHandler(error, "removeMember");
         }
         const deleteGroupMemberQuery = `
         DELETE
@@ -204,7 +223,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return true;
         }
         catch (error) {
-            this.errorHandler(error, 'removeMember');
+            this.errorHandler(error, "removeMember");
         }
     }
     async getGroupById(groupId) {
@@ -218,7 +237,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getGroupById');
+            this.errorHandler(error, "getGroupById");
         }
     }
     async getMembersByGroupId(groupId) {
@@ -229,11 +248,13 @@ class GroupRepository extends repository_base_1.BaseRepository {
         WHERE gm.group_id = $1;
 		`;
         try {
-            const result = await this.database.query(query, [groupId]);
+            const result = await this.database.query(query, [
+                groupId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'getMembersByGroupId');
+            this.errorHandler(error, "getMembersByGroupId");
         }
     }
     async listPublications(groupId) {
@@ -257,26 +278,26 @@ class GroupRepository extends repository_base_1.BaseRepository {
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listPublications');
+            this.errorHandler(error, "listPublications");
         }
     }
-    async createPublication({ publisher_id, description, images, publication_status, groupId }) {
+    async createPublication({ publisherId, description, images, publicationStatus, groupId, }) {
         try {
             const query = `
           INSERT INTO publications (publisher_id, description, images, publication_status, group_id)
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id`;
             const result = await this.database.query(query, [
-                publisher_id,
+                publisherId,
                 description,
                 images,
-                publication_status,
+                publicationStatus,
                 groupId,
             ]);
             return result.rows[0].id;
         }
         catch (error) {
-            this.errorHandler(error, 'createPublication');
+            this.errorHandler(error, "createPublication");
         }
     }
 }

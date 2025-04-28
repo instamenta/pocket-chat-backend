@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 export declare const Middlewares: {
     isAuthorized: typeof isAuthorized;
     isGuest: typeof isGuest;

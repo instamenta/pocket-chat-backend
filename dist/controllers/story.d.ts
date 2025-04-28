@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { StoryRepository } from "../repositories/story";
+import { StoryRepository } from "../repositories";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 export declare class StoryController extends BaseController<StoryRepository> {
     private readonly notificator;

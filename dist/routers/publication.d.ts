@@ -1,4 +1,4 @@
-import { PublicationController } from '../controllers/publication';
+import { PublicationController } from "../controllers/publication";
 import { BaseRouter } from "../base/router.base";
 export declare class PublicationRouter extends BaseRouter<PublicationController> {
     initialize(c: PublicationController): void;

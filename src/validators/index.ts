@@ -104,20 +104,20 @@ export const updateProfilePublicInformation = z.object({
 export const url = z.string().url();
 
 export const createPublication = z.object({
-  publisher_id: z
+  publisherId: z
     .string()
     .uuid({ message: "Publisher ID must be a valid UUID" }),
   description: z.string().default(""),
   images: z
     .array(z.string())
     .min(1, { message: "At least one image must be provided" }),
-  publication_status: z.enum(["draft", "published"]),
+  publicationStatus: z.enum(["draft", "published"]),
 });
 
 export const updatePublication = z.object({
   content: z.string().default("").optional(),
   images: z.array(z.string()).optional(),
-  publication_status: z.enum(["draft", "published"]).optional(),
+  publicationStatus: z.enum(["draft", "published"]).optional(),
 });
 
 export const createStory = z.object({

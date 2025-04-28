@@ -17,15 +17,15 @@ class BaseController {
         if (error instanceof zod_1.ZodError) {
             const formattedError = error.errors.map((issue) => {
                 return {
-                    path: issue.path.join('.'),
+                    path: issue.path.join("."),
                     message: issue.message,
                 };
             });
-            console.error(formattedError);
+            this.log.error({ e: formattedError, f: 'errorHandler' });
             response.status(http_status_codes_1.default.BAD_REQUEST).end();
         }
         else {
-            console.error(error);
+            this.log.error({ e: error, f: 'errorHandler' });
             response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
         }
     }

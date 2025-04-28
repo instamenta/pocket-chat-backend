@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { LiveRepository } from "../repositories/live";
+import { LiveRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class LiveController extends BaseController<LiveRepository> {
     createLive(request: Request<object, object>, response: Response<{
         id: string;

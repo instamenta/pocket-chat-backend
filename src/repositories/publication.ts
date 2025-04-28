@@ -145,15 +145,15 @@ export class PublicationRepository extends BaseRepository {
   }
 
   async createPublication({
-    publisher_id,
+    publisherId,
     description,
     images,
-    publication_status,
+    publicationStatus,
   }: {
-    publisher_id: string;
+    publisherId: string;
     description: string;
     images: string[];
-    publication_status: string;
+    publicationStatus: string;
   }): Promise<string> {
     try {
       const query = `
@@ -162,7 +162,7 @@ export class PublicationRepository extends BaseRepository {
           RETURNING id`;
       const result: QueryResult<{ id: string }> = await this.database.query(
         query,
-        [publisher_id, description, images, publication_status],
+        [publisherId, description, images, publicationStatus],
       );
       return result.rows[0].id;
     } catch (error) {

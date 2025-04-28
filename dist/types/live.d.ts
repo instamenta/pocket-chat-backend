@@ -1,5 +1,5 @@
-import { socket_events } from "../utilities/enumerations";
-import * as U from './unions';
+import { SocketEvents } from "../utilities/enumerations";
+import * as U from "./unions";
 export interface Populated {
     user_id: string;
     user_picture: string;
@@ -22,6 +22,6 @@ export interface MessagePopulated {
     created_at: string;
 }
 export type MessageResponse = MessagePopulated & {
-    type: socket_events;
+    type: SocketEvents;
 };
 //# sourceMappingURL=live.d.ts.map

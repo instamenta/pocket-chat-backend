@@ -33,9 +33,7 @@ export class MessageController extends BaseController<MessageRepository> {
       const messageId = await this.repository.createMessage(message);
 
       if (!messageId) {
-        console.error(
-          `${this.constructor.name}.sendMessage(): Failed to send message`,
-        );
+        this.log.error({ m: `Failed to send message`, f: 'sendMessage', e: {}});
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -101,9 +99,7 @@ export class MessageController extends BaseController<MessageRepository> {
       );
 
       if (!result) {
-        console.error(
-          `${this.constructor.name}.updateMessageStatus(): Failed to update message status`,
-        );
+        this.log.error({ m: `Failed to update message status`, f: 'updateMessageStatus', e: {}});
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 

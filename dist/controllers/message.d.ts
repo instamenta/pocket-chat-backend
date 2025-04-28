@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { MessageRepository } from "../repositories/message";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class MessageController extends BaseController<MessageRepository> {
     sendMessage(request: Request<object, object, {
         recipient: string;

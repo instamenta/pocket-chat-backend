@@ -7,5 +7,5 @@ export { StoryRouter } from "./story";
 export { ShortRouter } from "./short";
 export { GroupRouter } from "./group";
 export { LiveRouter } from "./live";
-export { UserRouter } from './user';
+export { UserRouter } from "./user";
 //# sourceMappingURL=index.d.ts.map

@@ -10,7 +10,7 @@ import * as T from "../types";
 export class FriendController extends BaseController<FriendRepository> {
   async sendFriendRequest(
     request: Request<{ id: string }>,
-    response: Response<{ friendship_id: string }>,
+    response: Response<{ friendshipId: string }>,
   ) {
     this.log.log("sendFriendRequest");
     try {
@@ -29,7 +29,7 @@ export class FriendController extends BaseController<FriendRepository> {
         return response.status(statusCodes.BAD_GATEWAY).end();
       }
 
-      response.status(statusCodes.OK).json({ friendship_id: status });
+      response.status(statusCodes.OK).json({ friendshipId: status });
     } catch (error) {
       this.errorHandler(error, response);
     }
@@ -139,7 +139,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   async deleteFriendRequest(
     request: Request<{ id: string }>,
-    response: Response<{ friendship_id: boolean }>,
+    response: Response<{ friendshipId: boolean }>,
   ) {
     this.log.log("deleteFriendRequest");
     try {
@@ -161,7 +161,7 @@ export class FriendController extends BaseController<FriendRepository> {
         return response.status(statusCodes.BAD_GATEWAY).end();
       }
 
-      response.status(statusCodes.OK).json({ friendship_id: status });
+      response.status(statusCodes.OK).json({ friendshipId: status });
     } catch (error) {
       this.errorHandler(error, response);
     }
@@ -210,8 +210,6 @@ export class FriendController extends BaseController<FriendRepository> {
         this.log.error({ e: `Failed to get friends count`, m: id });
         return response.status(statusCodes.BAD_GATEWAY).end();
       }
-
-      console.log(count);
 
       response.status(statusCodes.OK).json({ count });
     } catch (error) {
@@ -300,9 +298,9 @@ export class FriendController extends BaseController<FriendRepository> {
   ) {
     this.log.log("getById");
     try {
-      const friendship_id = Validate.uuid.parse(request.params.id);
+      const friendshipId = Validate.uuid.parse(request.params.id);
 
-      const friendship = await this.repository.getById(friendship_id);
+      const friendship = await this.repository.getById(friendshipId);
 
       response.status(statusCodes.OK).json(friendship);
     } catch (error) {

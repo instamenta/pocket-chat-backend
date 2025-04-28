@@ -4,13 +4,15 @@ exports.LiveRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class LiveRepository extends repository_base_1.BaseRepository {
     async createLive(userId) {
-        return this.database.query(`
+        return this.database
+            .query(`
 
                 INSERT INTO "lives" (user_id)
                 VALUES ($1)
                 RETURNING id
-			`, [userId]).then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, 'createLive'));
+			`, [userId])
+            .then((data) => data.rows[0].id)
+            .catch((error) => this.errorHandler(error, "createLive"));
     }
     async listLives(userId) {
         const query = `SELECT u.id      AS user_id,
@@ -28,11 +30,13 @@ class LiveRepository extends repository_base_1.BaseRepository {
                    ORDER BY l.created_at DESC
 		`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listLives');
+            this.errorHandler(error, "listLives");
         }
     }
     async getLiveById(liveId) {
@@ -45,7 +49,7 @@ class LiveRepository extends repository_base_1.BaseRepository {
             return result.rows.length ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getLiveById');
+            this.errorHandler(error, "getLiveById");
         }
     }
     async updateLiveState(userId, state) {
@@ -59,17 +63,19 @@ class LiveRepository extends repository_base_1.BaseRepository {
             return !!result.rowCount;
         }
         catch (error) {
-            this.errorHandler(error, 'updateLiveState');
+            this.errorHandler(error, "updateLiveState");
         }
     }
     async createLiveMessage(liveId, userId, content) {
-        return this.database.query(`
+        return this.database
+            .query(`
 
                 INSERT INTO "lives_messages" (live_id, sender_id, content)
                 VALUES ($1, $2, $3)
                 RETURNING id
-			`, [liveId, userId, content]).then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, 'createLiveMessage'));
+			`, [liveId, userId, content])
+            .then((data) => data.rows[0].id)
+            .catch((error) => this.errorHandler(error, "createLiveMessage"));
     }
     async listLiveMessages(liveId) {
         const query = `SELECT u.id      AS user_id,
@@ -87,11 +93,13 @@ class LiveRepository extends repository_base_1.BaseRepository {
                    ORDER BY lm.created_at DESC
 		`;
         try {
-            const result = await this.database.query(query, [liveId]);
+            const result = await this.database.query(query, [
+                liveId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listLiveMessages');
+            this.errorHandler(error, "listLiveMessages");
         }
     }
 }

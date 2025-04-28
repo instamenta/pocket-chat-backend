@@ -43,7 +43,7 @@ const Validate = __importStar(require("../validators"));
 class GroupController extends controller_base_1.BaseController {
     async createGroup(request, response) {
         try {
-            const { userId, name, description, imageUrl } = Validate.create_group.parse({
+            const { userId, name, description, imageUrl } = Validate.createGroup.parse({
                 userId: request.user.id,
                 name: request.body.name,
                 description: request.body.description,
@@ -51,7 +51,7 @@ class GroupController extends controller_base_1.BaseController {
             });
             const groupId = await this.repository.createGroup(userId, name, description, imageUrl);
             if (!groupId) {
-                console.error(`${this.constructor.name}.createGroup(): Failed to create group`);
+                this.log.error({ e: {}, f: 'createGroup', m: 'failed to create group' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: groupId });
@@ -66,7 +66,7 @@ class GroupController extends controller_base_1.BaseController {
             const groupId = Validate.uuid.parse(request.params.groupId);
             const success = await this.repository.removeGroup(userId, groupId);
             if (!success) {
-                console.error(`${this.constructor.name}.removeGroup(): Failed to remove group`);
+                this.log.error({ e: {}, f: 'removeGroup', m: 'failed to remove group' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).end();
@@ -100,7 +100,7 @@ class GroupController extends controller_base_1.BaseController {
             const groupId = Validate.uuid.parse(request.params.id);
             const group = await this.repository.getGroupById(groupId);
             if (!group) {
-                console.error(`${this.constructor.name}.getGroupById(): Error`);
+                this.log.error({ e: {}, f: 'getGroupById', m: 'failed to get group' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).json(group);
@@ -115,7 +115,7 @@ class GroupController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             const success = await this.repository.joinGroup(userId, groupId);
             if (!success) {
-                console.error(`${this.constructor.name}.joinGroup(): Error`);
+                this.log.error({ e: {}, f: 'joinGroup', m: 'failed to join group' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -130,7 +130,7 @@ class GroupController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             const success = await this.repository.leaveGroup(userId, groupId);
             if (!success) {
-                console.error(`${this.constructor.name}.leaveGroup(): Error`);
+                this.log.error({ e: {}, f: 'leaveGroup', m: 'failed to leave group' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -144,12 +144,13 @@ class GroupController extends controller_base_1.BaseController {
             const groupId = Validate.uuid.parse(request.params.groupId);
             const senderId = Validate.uuid.parse(request.user.id);
             const recipientId = Validate.uuid.parse(request.params.recipientId);
-            if (request.body.newRole !== 'member' && request.body.newRole !== 'moderator') {
-                throw new Error('Invalid Role');
+            if (request.body.newRole !== "member" &&
+                request.body.newRole !== "moderator") {
+                throw new Error("Invalid Role");
             }
             const success = await this.repository.changeRole(groupId, senderId, recipientId, request.body.newRole);
             if (!success) {
-                console.error(`${this.constructor.name}.changeRole(): Error`);
+                this.log.error({ e: {}, f: 'changeRole', m: 'failed to change role' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -165,7 +166,7 @@ class GroupController extends controller_base_1.BaseController {
             const recipientId = Validate.uuid.parse(request.params.recipientId);
             const success = await this.repository.removeMember(groupId, senderId, recipientId);
             if (!success) {
-                console.error(`${this.constructor.name}.removeMember(): Error`);
+                this.log.error({ e: {}, f: 'removeMember', m: 'failed to remove member' });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -186,14 +187,17 @@ class GroupController extends controller_base_1.BaseController {
     }
     async createPublication(request, response) {
         try {
-            const data = Validate.create_publication.parse({
-                publisher_id: Validate.uuid.parse(request.user.id),
+            const data = Validate.createPublication.parse({
+                publisherId: Validate.uuid.parse(request.user.id),
                 description: request.body.description,
                 images: request.body.images,
-                publication_status: request.body.publication_status,
+                publicationStatus: request.body.publication_status,
             });
             const groupId = Validate.uuid.parse(request.body.groupId);
-            const publicationId = await this.repository.createPublication({ ...data, groupId });
+            const publicationId = await this.repository.createPublication({
+                ...data,
+                groupId,
+            });
             response.status(http_status_codes_1.default.CREATED).json({ id: publicationId });
         }
         catch (error) {

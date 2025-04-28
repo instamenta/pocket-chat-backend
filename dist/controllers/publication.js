@@ -47,7 +47,7 @@ class PublicationController extends controller_base_1.BaseController {
         super(repository, logger);
         this.notificator = notificator;
     }
-    async listPublications(request, response) {
+    async listPublications(_request, response) {
         try {
             const publications = await this.repository.listPublications();
             response.status(http_status_codes_1.default.OK).json(publications);
@@ -103,11 +103,11 @@ class PublicationController extends controller_base_1.BaseController {
     }
     async createPublication(request, response) {
         try {
-            const data = Validate.create_publication.parse({
-                publisher_id: Validate.uuid.parse(request.user.id),
+            const data = Validate.createPublication.parse({
+                publisherId: Validate.uuid.parse(request.user.id),
                 description: request.body.description,
                 images: request.body.images,
-                publication_status: request.body.publication_status,
+                publicationStatus: request.body.publication_status,
             });
             const publicationId = await this.repository.createPublication(data);
             response.status(http_status_codes_1.default.CREATED).json({ id: publicationId });
@@ -119,7 +119,7 @@ class PublicationController extends controller_base_1.BaseController {
     async updatePublication(request, response) {
         try {
             const id = Validate.uuid.parse(request.params.id);
-            const publicationData = Validate.update_publication.parse(request.body);
+            const publicationData = Validate.updatePublication.parse(request.body);
             const updatedPublicationId = await this.repository.updatePublication(id, publicationData);
             response.status(http_status_codes_1.default.OK).json({ id: updatedPublicationId });
         }
@@ -133,14 +133,18 @@ class PublicationController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             await this.repository.likePublication(publicationId, userId);
             response.status(http_status_codes_1.default.OK).end();
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.LIKE,
-                reference_id: publicationId,
-                recipient_id: '',
-                sender_id: userId,
-                content: '',
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.LIKE,
+                referenceId: publicationId,
+                recipientId: "",
+                senderId: userId,
+                content: "",
                 seen: false,
-            }).catch(console.error);
+            })
+                .catch((error) => {
+                this.log.error({ e: error, f: 'likePublication' });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);

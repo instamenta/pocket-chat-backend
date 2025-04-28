@@ -59,9 +59,9 @@ export class CommentController extends BaseController<CommentRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.COMMENT,
-          reference_id: publicationId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: publicationId,
+          recipientId: "",
+          senderId: userId,
           content: content,
           seen: false,
         })
@@ -104,9 +104,9 @@ export class CommentController extends BaseController<CommentRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.LIKE_COMMENT,
-          reference_id: commentId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: commentId,
+          recipientId: "",
+          senderId: userId,
           content: "",
           seen: false,
         })

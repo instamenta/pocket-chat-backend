@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 import { NotificationRepository } from "../repositories/notification";
-import { notification_types } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities/enumerations";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class NotificationController extends BaseController<NotificationRepository> {
     createNotification(_request: Request<object, object, {
         recipient: string;
-        type: notification_types;
+        type: NotificationTypes;
         seen: boolean;
         content: string;
     }>, response: Response): void;
     listNotifications(request: Request<object, object, object, {
-        filter?: 'all' | 'seen' | 'unseen';
+        filter?: "all" | "seen" | "unseen";
     }>, response: Response<T.Notification.Populated[]>): Promise<void>;
     markNotificationAsSeen(request: Request<{
         id: string;

@@ -1,9 +1,10 @@
-import { NotificationRepository } from "../repositories/notification";
-import { PublicationRepository } from "../repositories/publication";
-import { CommentRepository } from "../repositories/comment";
-import { ShortRepository } from "../repositories/short";
-import { StoryRepository } from "../repositories/story";
-import * as T from '../types';
+import { NotificationRepository } from "../repositories";
+import { PublicationRepository } from "../repositories";
+import { CommentRepository } from "../repositories";
+import { ShortRepository } from "../repositories";
+import { StoryRepository } from "../repositories";
+import * as T from "../types";
+import VLogger from "@instamenta/vlogger";
 export declare class Notificator {
     #private;
     private readonly repository;
@@ -11,7 +12,8 @@ export declare class Notificator {
     private readonly comment;
     private readonly short;
     private readonly story;
-    constructor(repository: NotificationRepository, publication: PublicationRepository, comment: CommentRepository, short: ShortRepository, story: StoryRepository);
+    private readonly log;
+    constructor(repository: NotificationRepository, publication: PublicationRepository, comment: CommentRepository, short: ShortRepository, story: StoryRepository, logger: VLogger);
     handleNotification(data: T.Notification.Data): Promise<void>;
 }
 //# sourceMappingURL=notificator.d.ts.map

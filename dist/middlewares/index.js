@@ -50,13 +50,15 @@ function isGuest(request, response, next) {
         try {
             const user = JWT.verifyToken(token);
             if (user) {
-                console.log('Middleware.isGuest(): FORBIDDEN', user);
-                return response.status(http_status_codes_1.default.FORBIDDEN).json({ message: 'User is already authenticated' });
+                console.log("Middleware.isGuest(): FORBIDDEN", user);
+                return response
+                    .status(http_status_codes_1.default.FORBIDDEN)
+                    .json({ message: "User is already authenticated" });
             }
         }
         catch (error) {
             if (error instanceof jsonwebtoken_1.TokenExpiredError) {
-                console.log('Middleware.isGuest(): Token expired');
+                console.log("Middleware.isGuest(): Token expired");
                 JWT.removeTokenFromCookie(response);
             }
             return response.status(http_status_codes_1.default.EXPECTATION_FAILED).end();
@@ -67,18 +69,24 @@ function isGuest(request, response, next) {
 function isAuthorized(request, response, next) {
     const token = JWT.getTokenFromCookie(request);
     if (!token) {
-        console.log('Middleware.isAuthorized(): UNAUTHORIZED');
-        return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'User is not authenticated' });
+        console.log("Middleware.isAuthorized(): UNAUTHORIZED");
+        return response
+            .status(http_status_codes_1.default.UNAUTHORIZED)
+            .json({ message: "User is not authenticated" });
     }
     const user = JWT.verifyToken(token);
     if (!user) {
-        console.log('Middleware.isAuthorized(): UNAUTHORIZED');
-        return response.status(http_status_codes_1.default.UNAUTHORIZED).json({ message: 'Invalid token' });
+        console.log("Middleware.isAuthorized(): UNAUTHORIZED");
+        return response
+            .status(http_status_codes_1.default.UNAUTHORIZED)
+            .json({ message: "Invalid token" });
     }
     request.user = user;
     next();
 }
 function errorHandler(error, _request, response, _next) {
     console.error(error.stack);
-    response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+    response
+        .status(http_status_codes_1.default.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
 }

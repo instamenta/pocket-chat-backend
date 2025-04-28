@@ -1,5 +1,5 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class FriendRepository extends BaseRepository {
     sendFriendRequest(sender: string, recipient: string): Promise<string>;
     deleteFriendRequest(sender: string, recipient: string): Promise<boolean>;

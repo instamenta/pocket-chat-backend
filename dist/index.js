@@ -42,10 +42,10 @@ const middlewares_1 = require("./middlewares");
 const bcrypt_1 = require("./utilities/bcrypt");
 const notificator_1 = require("./utilities/notificator");
 const intialize_1 = require("./utilities/intialize");
-void async function start_service() {
-    const { api, database, cache, logger } = await (0, intialize_1.initialize_all)();
-    graceful_shutdown(database, cache);
-    const hashingHandler = new bcrypt_1.BCryptHashingHandler();
+void async function main() {
+    const { api, database, cache, logger } = await (0, intialize_1.initializeAll)();
+    gracefulShutdown(database, cache);
+    const hashingHandler = new bcrypt_1.BCryptHashingHandler(logger);
     const repository = {
         user: new Repositories.UserRepository(database, logger, hashingHandler),
         live: new Repositories.LiveRepository(database, logger),
@@ -58,7 +58,7 @@ void async function start_service() {
         publication: new Repositories.PublicationRepository(database, logger),
         notification: new Repositories.NotificationRepository(database, logger),
     };
-    const notificator = new notificator_1.Notificator(repository.notification, repository.publication, repository.comment, repository.short, repository.story);
+    const notificator = new notificator_1.Notificator(repository.notification, repository.publication, repository.comment, repository.short, repository.story, logger);
     const controller = {
         user: new Controllers.UserController(repository.user, logger, hashingHandler),
         live: new Controllers.LiveController(repository.live, logger),
@@ -81,32 +81,37 @@ void async function start_service() {
         comment: new Routers.CommentRouter(controller.comment).router,
         message: new Routers.MessageRouter(controller.message).router,
         publication: new Routers.PublicationRouter(controller.publication).router,
-        notification: new Routers.NotificationRouter(controller.notification).router,
+        notification: new Routers.NotificationRouter(controller.notification)
+            .router,
     };
-    api.use('/api/user', router.user);
-    api.use('/api/live', router.live);
-    api.use('/api/story', router.story);
-    api.use('/api/short', router.short);
-    api.use('/api/group', router.group);
-    api.use('/api/friend', router.friend);
-    api.use('/api/comment', router.comment);
-    api.use('/api/message', router.message);
-    api.use('/api/publication', router.publication);
-    api.use('/api/notification', router.notification);
+    api.use("/api/user", router.user);
+    api.use("/api/live", router.live);
+    api.use("/api/story", router.story);
+    api.use("/api/short", router.short);
+    api.use("/api/group", router.group);
+    api.use("/api/friend", router.friend);
+    api.use("/api/comment", router.comment);
+    api.use("/api/message", router.message);
+    api.use("/api/publication", router.publication);
+    api.use("/api/notification", router.notification);
     api.use(middlewares_1.Middlewares.errorHandler);
     api.listen(+config_1.env.SERVER_PORT, config_1.env.SERVER_HOST, () => {
-        logger.info('App', '', `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
+        logger.info("App", "", `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
     });
 }();
-function graceful_shutdown(database, cache) {
-    ['uncaughtException', 'unhandledRejection'].map((type) => {
+function gracefulShutdown(database, cache) {
+    ["uncaughtException", "unhandledRejection"].map((type) => {
         process.on(type, (...args) => {
             console.error(`process.on ${type} with ${args}`, args);
-            database.end().then(() => {
+            database
+                .end()
+                .then(() => {
                 cache.disconnect();
-            }).catch((error) => {
+            })
+                .catch((error) => {
                 console.error(error);
-            }).finally(() => {
+            })
+                .finally(() => {
                 process.exit(1);
             });
         });

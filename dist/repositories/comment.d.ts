@@ -1,5 +1,5 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class CommentRepository extends BaseRepository {
     listCommentsByPublication(publicationId: string, userId: string): Promise<T.Comment.Populated[]>;
     createComment(publicationId: string, userId: string, content: string): Promise<T.Comment.Comment>;

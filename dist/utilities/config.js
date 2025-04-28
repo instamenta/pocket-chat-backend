@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SECURITY = exports.env = void 0;
 require("dotenv/config");
 const zod_1 = __importDefault(require("zod"));
-exports.env = zod_1.default.object({
+exports.env = zod_1.default
+    .object({
     FOLDER: zod_1.default.string(),
     CERTIFICATE_AGE: zod_1.default.string(),
     CERTIFICATE_NAME: zod_1.default.string(),
@@ -26,7 +27,8 @@ exports.env = zod_1.default.object({
     SOCKET_PORT: zod_1.default.string(),
     PEER_PORT: zod_1.default.string(),
     MEDIA_SOCKET_PORT: zod_1.default.string(),
-}).parse(process.env);
+})
+    .parse(process.env);
 exports.SECURITY = {
     FOLDER: exports.env.FOLDER,
     AGE: exports.env.CERTIFICATE_AGE,
@@ -34,8 +36,8 @@ exports.SECURITY = {
     SERVER_KEY_PATH: exports.env.SERVER_KEY_PATH,
     SERVER_CERT_PATH: exports.env.SERVER_CERT_PATH,
     CLIENT_CERT_PATH: exports.env.CLIENT_CERT_PATH,
-    SALT_ROUNDS: parseInt(exports.env.SALT_ROUNDS),
+    SALT_ROUNDS: parseInt(exports.env.SALT_ROUNDS, 10),
     JWT_SECRET: exports.env.JWT_SECRET,
     JWT_TOKEN_NAME: exports.env.JWT_TOKEN_NAME,
-    JWT_EXPIRATION_TIME: exports.env.JWT_EXPIRATION_TIME
+    JWT_EXPIRATION_TIME: exports.env.JWT_EXPIRATION_TIME,
 };

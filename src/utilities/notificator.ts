@@ -73,14 +73,14 @@ export class Notificator {
    ** Like Publication
    */
   async #handleLikeNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for like notification'})
       return;
     }
 
     const [publication, notification] = await Promise.all([
-      this.publication.getPublicationById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.publication.getPublicationById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!publication) {
@@ -88,7 +88,7 @@ export class Notificator {
       return;
     }
     data.content = publication.likes_count.toString();
-    data.recipient_id = publication.publisher_id;
+    data.recipientId = publication.publisher_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -96,7 +96,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -109,8 +109,8 @@ export class Notificator {
   async #handleMessageNotification(data: T.Notification.Data) {
     const notification =
       await this.repository.getNotificationBySenderAndRecipient(
-        data.sender_id,
-        data.recipient_id,
+        data.senderId,
+        data.recipientId,
         data.type,
       );
 
@@ -120,7 +120,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -131,14 +131,14 @@ export class Notificator {
    ** Comment Publication
    */
   async #handleCommentNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for comment notification'})
       return;
     }
 
     const [publication, notification] = await Promise.all([
-      this.publication.getPublicationById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.publication.getPublicationById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!publication) {
@@ -146,7 +146,7 @@ export class Notificator {
       return;
     }
 
-    data.recipient_id = publication.publisher_id;
+    data.recipientId = publication.publisher_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -154,7 +154,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -165,14 +165,14 @@ export class Notificator {
    ** Like Comment Publication
    */
   async #handleLikeCommentNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for comment notification'})
       return;
     }
 
     const [comment, notification] = await Promise.all([
-      this.comment.getCommentById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.comment.getCommentById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!comment) {
@@ -181,7 +181,7 @@ export class Notificator {
     }
 
     data.content = comment.likes_count.toString();
-    data.recipient_id = comment.user_id;
+    data.recipientId = comment.user_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -189,7 +189,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -200,14 +200,14 @@ export class Notificator {
    ** Like Short
    */
   async #handleLikeShortNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for like short'});
       return;
     }
 
     const [short, notification] = await Promise.all([
-      this.short.getShortById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.short.getShortById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!short) {
@@ -216,7 +216,7 @@ export class Notificator {
     }
 
     data.content = short.likes_count.toString();
-    data.recipient_id = short.user_id;
+    data.recipientId = short.user_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -224,7 +224,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -235,14 +235,14 @@ export class Notificator {
    ** Comment Short
    */
   async #handleCommentShortNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
     const [short, notification] = await Promise.all([
-      this.short.getShortById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.short.getShortById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!short) {
@@ -250,7 +250,7 @@ export class Notificator {
       return;
     }
 
-    data.recipient_id = short.user_id;
+    data.recipientId = short.user_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -258,7 +258,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -269,14 +269,14 @@ export class Notificator {
    ** Like Comment Short
    */
   async #handleLikeShortCommentNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
     const [comment, notification] = await Promise.all([
-      this.short.getCommentById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.short.getCommentById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!comment) {
@@ -285,7 +285,7 @@ export class Notificator {
     }
 
     data.content = comment.likes_count.toString();
-    data.recipient_id = comment.user_id;
+    data.recipientId = comment.user_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -293,7 +293,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -304,14 +304,14 @@ export class Notificator {
    ** Like Story
    */
   async #handleLikeStoryNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for like notification'});
       return;
     }
 
     const [story, notification] = await Promise.all([
-      this.story.getStoryById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.story.getStoryById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!story) {
@@ -320,7 +320,7 @@ export class Notificator {
     }
 
     data.content = story.likes_count.toString();
-    data.recipient_id = story.user_id;
+    data.recipientId = story.user_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -328,7 +328,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -339,14 +339,14 @@ export class Notificator {
    ** Comment Story
    */
   async #handleCommentStoryNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
     const [publication, notification] = await Promise.all([
-      this.publication.getPublicationById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.publication.getPublicationById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!publication) {
@@ -354,7 +354,7 @@ export class Notificator {
       return;
     }
 
-    data.recipient_id = publication.publisher_id;
+    data.recipientId = publication.publisher_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -362,7 +362,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);
@@ -373,14 +373,14 @@ export class Notificator {
    ** Like Comment Story
    */
   async #handleLikeStoryCommentNotification(data: T.Notification.Data) {
-    if (!data.reference_id) {
+    if (!data.referenceId) {
       this.log.error({e: data, m: 'No reference id for comment notification'});
       return;
     }
 
     const [comment, notification] = await Promise.all([
-      this.story.getCommentById(data.reference_id),
-      this.repository.getNotificationByReferenceId(data.reference_id),
+      this.story.getCommentById(data.referenceId),
+      this.repository.getNotificationByReferenceId(data.referenceId),
     ]);
 
     if (!comment) {
@@ -389,7 +389,7 @@ export class Notificator {
     }
 
     data.content = comment.likes_count.toString();
-    data.recipient_id = comment.user_id;
+    data.recipientId = comment.user_id;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -397,7 +397,7 @@ export class Notificator {
         data.content,
         data.seen,
         data.type,
-        data.sender_id,
+        data.senderId,
       );
     } else {
       await this.repository.createNotification(data);

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ShortRepository } from "../repositories/short";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 export declare class ShortController extends BaseController<ShortRepository> {
     private readonly notificator;

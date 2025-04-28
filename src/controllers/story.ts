@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
-import { StoryRepository } from "../repositories/story";
+import { StoryRepository } from "../repositories";
 import { z } from "zod";
 import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
@@ -35,9 +35,7 @@ export class StoryController extends BaseController<StoryRepository> {
       const storyId = await this.repository.createStory({ userId, imageUrl });
 
       if (!storyId) {
-        console.error(
-          `${this.constructor.name}.createStory(): Failed to send message`,
-        );
+        this.log.error({ m: `Failed to send message`, f: 'createStory', e: {}});
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -107,13 +105,15 @@ export class StoryController extends BaseController<StoryRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.LIKE_STORY,
-          reference_id: "",
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: "",
+          recipientId: "",
+          senderId: userId,
           content: "",
           seen: false,
         })
-        .catch(console.error);
+        .catch((error: unknown) => {
+          this.log.error({ e: error, f: 'likeStory'});
+        });
     } catch (error) {
       this.errorHandler(error, response);
     }
@@ -158,13 +158,15 @@ export class StoryController extends BaseController<StoryRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.COMMENT_STORY,
-          reference_id: storyId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: storyId,
+          recipientId: "",
+          senderId: userId,
           content: content,
           seen: false,
         })
-        .catch(console.error);
+        .catch((error: unknown) => {
+          this.log.error({ e: error, f: 'createStoryComment'});
+        });
     } catch (error) {
       this.errorHandler(error, response);
     }
@@ -199,13 +201,15 @@ export class StoryController extends BaseController<StoryRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.LIKE_STORY_COMMENT,
-          reference_id: commentId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: commentId,
+          recipientId: "",
+          senderId: userId,
           content: "",
           seen: false,
         })
-        .catch(console.error);
+        .catch((error: unknown) => {
+          this.log.error({ e: error , f: 'likeStoryComment'});
+        });
 
       response.status(statusCodes.OK).end();
     } catch (error) {

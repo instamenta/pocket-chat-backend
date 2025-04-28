@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { UserRepository } from "../repositories";
 import { HashingHandler } from "../utilities/bcrypt";
-import { z } from 'zod';
+import { z } from "zod";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from '../types';
+import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 export declare class UserController extends BaseController<UserRepository> {
     private readonly hashingHandler;
@@ -13,7 +13,7 @@ export declare class UserController extends BaseController<UserRepository> {
         skip?: string;
         number?: string;
     }>, response: Response<Omit<T.User.Schema, "updated_at">[]>): Promise<void>;
-    signUp(request: Request<object, z.infer<typeof Validate.create_user>>, response: Response<{
+    signUp(request: Request<object, z.infer<typeof Validate.createUser>>, response: Response<{
         token: string;
         id: string;
     }>): Promise<Response<{

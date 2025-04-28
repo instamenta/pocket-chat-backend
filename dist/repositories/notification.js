@@ -3,15 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class NotificationRepository extends repository_base_1.BaseRepository {
-    async createNotification({ sender_id, recipient_id, type, seen, content, reference_id = '' }) {
-        return this.database.query(`
+    async createNotification({ senderId, recipientId, type, seen, content, referenceId = "", }) {
+        return this.database
+            .query(`
                 INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content, reference_id)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
-			`, [sender_id, recipient_id, type, seen, content, reference_id]).then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, 'createNotification'));
+			`, [senderId, recipientId, type, seen, content, referenceId])
+            .then((data) => data.rows[0].id)
+            .catch((error) => this.errorHandler(error, "createNotification"));
     }
-    async listNotifications(recipientId, filter = 'all') {
+    async listNotifications(recipientId, filter = "all") {
         let query;
         switch (filter) {
             case "all":
@@ -46,24 +48,30 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                  ORDER BY created_at DESC `;
                 break;
         }
-        return this.database.query(query, [recipientId]).then(data => data.rows)
-            .catch((error) => this.errorHandler(error, 'getNotifications'));
+        return this.database
+            .query(query, [recipientId])
+            .then((data) => data.rows)
+            .catch((error) => this.errorHandler(error, "getNotifications"));
     }
     async markNotificationAsSeen(id) {
-        return this.database.query(`
+        return this.database
+            .query(`
                 UPDATE notifications
                 SET seen = true
                 WHERE id = $1
-			`, [id]).then(data => data.rowCount ?? null)
-            .catch((error) => this.errorHandler(error, 'markNotificationAsSeen'));
+			`, [id])
+            .then((data) => data.rowCount ?? null)
+            .catch((error) => this.errorHandler(error, "markNotificationAsSeen"));
     }
     async markAllNotificationsAsSeen(recipientId) {
-        return this.database.query(`
+        return this.database
+            .query(`
                 UPDATE notifications
                 SET seen = true
                 WHERE recipient_id = $1
-			`, [recipientId]).then(data => data.rowCount ?? null)
-            .catch((error) => this.errorHandler(error, 'markNotificationAsSeen'));
+			`, [recipientId])
+            .then((data) => data.rowCount ?? null)
+            .catch((error) => this.errorHandler(error, "markNotificationAsSeen"));
     }
     async getNotificationByReferenceId(referenceId) {
         const query = `SELECT n.id,
@@ -82,11 +90,13 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                    WHERE n.reference_id = $1
 		`;
         try {
-            const data = await this.database.query(query, [referenceId]);
+            const data = await this.database.query(query, [
+                referenceId,
+            ]);
             return data.rowCount ? data.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getNotificationByReferenceId');
+            this.errorHandler(error, "getNotificationByReferenceId");
         }
     }
     async getNotificationBySenderAndRecipient(senderId, recipientId, type) {
@@ -107,11 +117,15 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                      AND n.reference_id = $2
                      AND n.type = $3`;
         try {
-            const data = await this.database.query(query, [senderId, recipientId, type]);
+            const data = await this.database.query(query, [
+                senderId,
+                recipientId,
+                type,
+            ]);
             return data.rowCount ? data.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getNotificationBySenderAndRecipient');
+            this.errorHandler(error, "getNotificationBySenderAndRecipient");
         }
     }
     async updateNotification(id, content, seen, type, senderId) {
@@ -126,7 +140,7 @@ class NotificationRepository extends repository_base_1.BaseRepository {
             await this.database.query(query, [id, content, seen, type, senderId]);
         }
         catch (error) {
-            this.errorHandler(error, 'getNotificationByReferenceId');
+            this.errorHandler(error, "getNotificationByReferenceId");
         }
     }
 }

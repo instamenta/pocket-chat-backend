@@ -43,7 +43,7 @@ const Validate = __importStar(require("../validators"));
 class MessageController extends controller_base_1.BaseController {
     async sendMessage(request, response) {
         try {
-            const message = Validate.create_message.parse({
+            const message = Validate.createMessage.parse({
                 sender: request.user.id,
                 recipient: request.body.recipient,
                 content: request.body.content,
@@ -53,7 +53,7 @@ class MessageController extends controller_base_1.BaseController {
             });
             const messageId = await this.repository.createMessage(message);
             if (!messageId) {
-                console.error(`${this.constructor.name}.sendMessage(): Failed to send message`);
+                this.log.error({ m: `Failed to send message`, f: 'sendMessage', e: {} });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: messageId });
@@ -64,7 +64,7 @@ class MessageController extends controller_base_1.BaseController {
     }
     async listMessagesByFriendship(request, response) {
         try {
-            const messages = await this.repository.getMessagesByFriendshipId(Validate.uuid.parse(request.params.friendshipId), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
+            const messages = await this.repository.getMessagesByFriendshipId(Validate.uuid.parse(request.params.friendshipId), Number.parseInt(request.query.skip ?? "0", 10), Number.parseInt(request.query.limit ?? "20", 10));
             response.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
@@ -73,7 +73,7 @@ class MessageController extends controller_base_1.BaseController {
     }
     async listMessagesByUsers(request, response) {
         try {
-            const messages = await this.repository.getMessagesByUsers(Validate.uuid.parse(request.params.user1), Validate.uuid.parse(request.params.user2), Number.parseInt(request.query.skip ?? '0', 10), Number.parseInt(request.query.limit ?? '20', 10));
+            const messages = await this.repository.getMessagesByUsers(Validate.uuid.parse(request.params.user1), Validate.uuid.parse(request.params.user2), Number.parseInt(request.query.skip ?? "0", 10), Number.parseInt(request.query.limit ?? "20", 10));
             response.status(http_status_codes_1.default.OK).json(messages);
         }
         catch (error) {
@@ -84,7 +84,7 @@ class MessageController extends controller_base_1.BaseController {
         try {
             const result = await this.repository.updateMessageStatus(Validate.uuid.parse(request.params.id), request.body.status);
             if (!result) {
-                console.error(`${this.constructor.name}.updateMessageStatus(): Failed to update message status`);
+                this.log.error({ m: `Failed to update message status`, f: 'updateMessageStatus', e: {} });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).json({ success: true });

@@ -9,7 +9,9 @@ class BaseRepository {
         this.log = logger.getVlogger(this.constructor.name);
     }
     errorHandler(error, method) {
-        throw new Error(`${this.constructor.name}.${method}(): Error`, { cause: error });
+        throw new Error(`${this.constructor.name}.${method}(): Error`, {
+            cause: error,
+        });
     }
 }
 exports.BaseRepository = BaseRepository;

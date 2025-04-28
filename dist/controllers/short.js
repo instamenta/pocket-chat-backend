@@ -49,12 +49,12 @@ class ShortController extends controller_base_1.BaseController {
         this.notificator = notificator;
     }
     async createShort(request, response) {
-        this.log.log('createShort');
+        this.log.log("createShort");
         try {
-            const { userId, videoUrl, description } = Validate.create_story.parse({
+            const { userId, videoUrl, description } = Validate.createStory.parse({
                 userId: request.user.id,
                 videoUrl: request.body.videoUrl,
-                description: request.body.description
+                description: request.body.description,
             });
             const shortId = await this.repository.createShort(userId, videoUrl, description);
             if (!shortId) {
@@ -68,7 +68,7 @@ class ShortController extends controller_base_1.BaseController {
         }
     }
     async listShorts(request, response) {
-        this.log.log('listShorts');
+        this.log.log("listShorts");
         try {
             const userId = Validate.uuid.parse(request.user.id);
             const shorts = await this.repository.listShorts(userId);
@@ -79,7 +79,7 @@ class ShortController extends controller_base_1.BaseController {
         }
     }
     async listShortsByUsername(request, response) {
-        this.log.log('listShortsByUsername');
+        this.log.log("listShortsByUsername");
         try {
             const userId = Validate.uuid.parse(request.params.id);
             const stories = await this.repository.listShortsById(userId);
@@ -90,7 +90,7 @@ class ShortController extends controller_base_1.BaseController {
         }
     }
     async getShortById(request, response) {
-        this.log.log('getShortById');
+        this.log.log("getShortById");
         try {
             const shortId = Validate.uuid.parse(request.params.shortId);
             const short = await this.repository.getShortById(shortId);
@@ -105,35 +105,38 @@ class ShortController extends controller_base_1.BaseController {
         }
     }
     async likeShort(request, response) {
-        this.log.log('likeShort');
+        this.log.log("likeShort");
         try {
             const shortId = Validate.uuid.parse(request.params.id);
             const userId = Validate.uuid.parse(request.user.id);
             const isLiked = await this.repository.likeShort(shortId, userId);
             response.status(http_status_codes_1.default.OK).end();
             if (!isLiked) {
-                this.log.info({ m: 'Unliking short' });
+                this.log.info({ m: "Unliking short" });
                 return;
             }
             else {
-                this.log.info({ m: 'Liking short' });
+                this.log.info({ m: "Liking short" });
             }
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.LIKE_SHORT,
-                reference_id: shortId,
-                recipient_id: '',
-                sender_id: userId,
-                content: '',
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.LIKE_SHORT,
+                referenceId: shortId,
+                recipientId: "",
+                senderId: userId,
+                content: "",
                 seen: false,
             })
-                .catch((error) => { this.log.error({ e: error }); });
+                .catch((error) => {
+                this.log.error({ e: error });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
     async listCommentsByShort(request, response) {
-        this.log.log('listCommentsByShort');
+        this.log.log("listCommentsByShort");
         try {
             const shortId = Validate.uuid.parse(request.params.shortId);
             const userId = Validate.uuid.parse(request.user.id);
@@ -145,29 +148,32 @@ class ShortController extends controller_base_1.BaseController {
         }
     }
     async createShortComment(request, response) {
-        this.log.log('createShortComment');
+        this.log.log("createShortComment");
         try {
             const shortId = Validate.uuid.parse(request.params.shortId);
             const userId = Validate.uuid.parse(request.user.id);
             const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createShortComment(shortId, userId, content);
             response.status(http_status_codes_1.default.CREATED).json(comment);
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.COMMENT_SHORT,
-                reference_id: shortId,
-                recipient_id: '',
-                sender_id: userId,
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.COMMENT_SHORT,
+                referenceId: shortId,
+                recipientId: "",
+                senderId: userId,
                 content: content,
                 seen: false,
             })
-                .catch((error) => { this.log.error({ e: error }); });
+                .catch((error) => {
+                this.log.error({ e: error });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
     async deleteShortComment(request, response) {
-        this.log.log('deleteShortComment');
+        this.log.log("deleteShortComment");
         try {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const userId = Validate.uuid.parse(request.user.id);
@@ -179,33 +185,36 @@ class ShortController extends controller_base_1.BaseController {
         }
     }
     async likeShortComment(request, response) {
-        this.log.log('likeShortComment');
+        this.log.log("likeShortComment");
         try {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const userId = Validate.uuid.parse(request.user.id);
             await this.repository.likeShortComment(commentId, userId);
             response.status(http_status_codes_1.default.OK).end();
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.LIKE_SHORT_COMMENT,
-                reference_id: commentId,
-                recipient_id: '',
-                sender_id: userId,
-                content: '',
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.LIKE_SHORT_COMMENT,
+                referenceId: commentId,
+                recipientId: "",
+                senderId: userId,
+                content: "",
                 seen: false,
             })
-                .catch((error) => { this.log.error({ e: error }); });
+                .catch((error) => {
+                this.log.error({ e: error });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
     async getCommentById(request, response) {
-        this.log.log('getCommentById');
+        this.log.log("getCommentById");
         try {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const comment = await this.repository.getCommentById(commentId);
             if (!comment) {
-                this.log.error({ m: `Not found ${commentId}`, e: '' });
+                this.log.error({ m: `Not found ${commentId}`, e: "" });
                 return response.status(http_status_codes_1.default.NOT_FOUND).end();
             }
             response.status(http_status_codes_1.default.OK).json(comment);

@@ -3,14 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StoryRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class StoryRepository extends repository_base_1.BaseRepository {
-    async createStory({ userId, imageUrl }) {
-        return this.database.query(`
+    async createStory({ userId, imageUrl, }) {
+        return this.database
+            .query(`
 
                 INSERT INTO "stories" (user_id, image_url)
                 VALUES ($1, $2)
                 RETURNING id
-			`, [userId, imageUrl]).then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, 'createNotification'));
+			`, [userId, imageUrl])
+            .then((data) => data.rows[0].id)
+            .catch((error) => this.errorHandler(error, "createNotification"));
     }
     async listStories(userId) {
         const query = `SELECT u.id      AS user_id,
@@ -34,7 +36,7 @@ class StoryRepository extends repository_base_1.BaseRepository {
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listStories');
+            this.errorHandler(error, "listStories");
         }
     }
     async listFeedStories(userId) {
@@ -68,7 +70,7 @@ class StoryRepository extends repository_base_1.BaseRepository {
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listFeedStories');
+            this.errorHandler(error, "listFeedStories");
         }
     }
     async getStoryById(id) {
@@ -81,7 +83,7 @@ class StoryRepository extends repository_base_1.BaseRepository {
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'listFeedStories');
+            this.errorHandler(error, "listFeedStories");
         }
     }
     async listFriendStoriesByUsername(username) {
@@ -106,34 +108,37 @@ class StoryRepository extends repository_base_1.BaseRepository {
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listFriendStoriesByUsername');
+            this.errorHandler(error, "listFriendStoriesByUsername");
         }
     }
     async likeStory(storyId, userId) {
         try {
-            await this.database.query('BEGIN');
-            const likeExistsQuery = 'SELECT id FROM story_likes WHERE story_id = $1 AND user_id = $2';
-            const likeExistsResult = await this.database.query(likeExistsQuery, [storyId, userId]);
+            await this.database.query("BEGIN");
+            const likeExistsQuery = "SELECT id FROM story_likes WHERE story_id = $1 AND user_id = $2";
+            const likeExistsResult = await this.database.query(likeExistsQuery, [
+                storyId,
+                userId,
+            ]);
             if (likeExistsResult.rows.length > 0) {
-                const removeLikeQuery = 'DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2';
-                const decrementLikeCountQuery = 'UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1';
+                const removeLikeQuery = "DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2";
+                const decrementLikeCountQuery = "UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1";
                 await Promise.all([
                     await this.database.query(removeLikeQuery, [storyId, userId]),
                     await this.database.query(decrementLikeCountQuery, [storyId]),
                 ]);
             }
             else {
-                const addLikeQuery = 'INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)';
-                const incrementLikeCountQuery = 'UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1';
+                const addLikeQuery = "INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)";
+                const incrementLikeCountQuery = "UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1";
                 await Promise.all([
                     await this.database.query(addLikeQuery, [storyId, userId]),
                     await this.database.query(incrementLikeCountQuery, [storyId]),
                 ]);
             }
-            await this.database.query('COMMIT');
+            await this.database.query("COMMIT");
         }
         catch (error) {
-            await this.database.query('ROLLBACK');
+            await this.database.query("ROLLBACK");
             throw error;
         }
     }
@@ -160,11 +165,14 @@ class StoryRepository extends repository_base_1.BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
         try {
-            const result = await this.database.query(query, [storyId, userId]);
+            const result = await this.database.query(query, [
+                storyId,
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listCommentsByStoryId');
+            this.errorHandler(error, "listCommentsByStoryId");
         }
     }
     async createStoryComment(storyId, userId, content) {
@@ -177,13 +185,13 @@ class StoryRepository extends repository_base_1.BaseRepository {
         try {
             const insertResult = await this.database.query(insertQuery, [content, storyId, userId]);
             if (insertResult.rows.length === 0) {
-                throw new Error('Failed to insert comment');
+                throw new Error("Failed to insert comment");
             }
             await this.database.query(updateQuery, [storyId]);
             return insertResult.rows[0];
         }
         catch (error) {
-            this.errorHandler(error, 'createStoryComment');
+            this.errorHandler(error, "createStoryComment");
         }
     }
     async deleteStoryComment(commentId, userId) {
@@ -203,28 +211,34 @@ class StoryRepository extends repository_base_1.BaseRepository {
                 throw new Error(`Failed to get story! Comment id ${commentId}`);
             }
             await this.database.query(updateQuery, [story.rows[0].story_id]);
-            const result = await this.database.query(deleteQuery, [commentId, userId]);
+            const result = await this.database.query(deleteQuery, [
+                commentId,
+                userId,
+            ]);
             return !!result.rowCount;
         }
         catch (error) {
-            this.errorHandler(error, 'deleteStoryComment');
+            this.errorHandler(error, "deleteStoryComment");
         }
     }
     async likeStoryComment(commentId, userId) {
         try {
-            const likeExistsQuery = 'SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2';
-            const likeExistsResult = await this.database.query(likeExistsQuery, [commentId, userId]);
+            const likeExistsQuery = "SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
+            const likeExistsResult = await this.database.query(likeExistsQuery, [
+                commentId,
+                userId,
+            ]);
             if (likeExistsResult.rows.length > 0) {
-                const removeLikeQuery = 'DELETE FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2';
+                const removeLikeQuery = "DELETE FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
                 await this.database.query(removeLikeQuery, [commentId, userId]);
             }
             else {
-                const addLikeQuery = 'INSERT INTO story_comment_likes (comment_id, user_id) VALUES ($1, $2)';
+                const addLikeQuery = "INSERT INTO story_comment_likes (comment_id, user_id) VALUES ($1, $2)";
                 await this.database.query(addLikeQuery, [commentId, userId]);
             }
         }
         catch (error) {
-            this.errorHandler(error, 'likeStoryComment');
+            this.errorHandler(error, "likeStoryComment");
         }
     }
     async getCommentById(id) {
@@ -242,7 +256,7 @@ class StoryRepository extends repository_base_1.BaseRepository {
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getCommentById');
+            this.errorHandler(error, "getCommentById");
         }
     }
 }

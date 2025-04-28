@@ -1,8 +1,8 @@
-import { z } from 'zod';
-import { socket_events } from "../utilities/enumerations";
+import { z } from "zod";
+import { SocketEvents } from "../utilities/enumerations";
 import * as Validate from "../validators";
 import { MessageStatus } from "./unions";
-export type Create = z.infer<typeof Validate.create_message>;
+export type Create = z.infer<typeof Validate.createMessage>;
 export interface Message {
     id: string;
     edited: boolean;
@@ -23,27 +23,27 @@ export interface MessageRequest {
     recipient: string;
     images?: string[];
     files?: string[];
-    type: socket_events;
+    type: SocketEvents;
 }
 export interface JoinLiveRequest {
-    type: socket_events;
+    type: SocketEvents;
     liveId: string;
 }
 export interface LeaveLiveRequest {
-    type: socket_events;
+    type: SocketEvents;
     liveId: string;
 }
 export interface LiveMessageRequest {
     sender: string;
     content: string;
     liveId: string;
-    type: socket_events;
+    type: SocketEvents;
 }
 export interface VideoCallRequest {
     room: string;
     sender: string;
     recipient: string;
-    type: socket_events;
+    type: SocketEvents;
 }
 export interface MessageResponse {
     type: string;
@@ -57,7 +57,7 @@ export interface MessageResponse {
     files?: string[];
 }
 export interface JoinLiveResponse {
-    type: socket_events;
+    type: SocketEvents;
     hostPeerId: string;
 }
 export interface Conversations {

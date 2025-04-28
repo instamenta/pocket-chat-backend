@@ -49,7 +49,7 @@ class CommentController extends controller_base_1.BaseController {
         this.notificator = notificator;
     }
     async listByPublication(request, response) {
-        this.log.log('listByPublication');
+        this.log.log("listByPublication");
         try {
             const publicationId = Validate.uuid.parse(request.params.publicationId);
             const userId = Validate.uuid.parse(request.user.id);
@@ -61,29 +61,32 @@ class CommentController extends controller_base_1.BaseController {
         }
     }
     async create(request, response) {
-        this.log.log('create');
+        this.log.log("create");
         try {
             const publicationId = Validate.uuid.parse(request.params.publicationId);
             const userId = Validate.uuid.parse(request.user.id);
             const content = zod_1.z.string().min(1).parse(request.body.content);
             const comment = await this.repository.createComment(publicationId, userId, content);
             response.status(http_status_codes_1.default.CREATED).json(comment);
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.COMMENT,
-                reference_id: publicationId,
-                recipient_id: '',
-                sender_id: userId,
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.COMMENT,
+                referenceId: publicationId,
+                recipientId: "",
+                senderId: userId,
                 content: content,
                 seen: false,
             })
-                .catch((error) => { this.log.error({ e: error }); });
+                .catch((error) => {
+                this.log.error({ e: error });
+            });
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
     async delete(request, response) {
-        this.log.log('delete');
+        this.log.log("delete");
         try {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const userId = Validate.uuid.parse(request.user.id);
@@ -95,20 +98,23 @@ class CommentController extends controller_base_1.BaseController {
         }
     }
     async like(request, response) {
-        this.log.log('like');
+        this.log.log("like");
         try {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const userId = Validate.uuid.parse(request.user.id);
             await this.repository.likeComment(commentId, userId);
-            await this.notificator.handleNotification({
-                type: enumerations_1.notification_types.LIKE_COMMENT,
-                reference_id: commentId,
-                recipient_id: '',
-                sender_id: userId,
-                content: '',
+            await this.notificator
+                .handleNotification({
+                type: enumerations_1.NotificationTypes.LIKE_COMMENT,
+                referenceId: commentId,
+                recipientId: "",
+                senderId: userId,
+                content: "",
                 seen: false,
             })
-                .catch((error) => { this.log.error({ e: error }); });
+                .catch((error) => {
+                this.log.error({ e: error });
+            });
             response.status(http_status_codes_1.default.OK).end();
         }
         catch (error) {
@@ -116,7 +122,7 @@ class CommentController extends controller_base_1.BaseController {
         }
     }
     async getCommentById(request, response) {
-        this.log.log('getCommentById');
+        this.log.log("getCommentById");
         try {
             const commentId = Validate.uuid.parse(request.params.commentId);
             const comment = await this.repository.getCommentById(commentId);

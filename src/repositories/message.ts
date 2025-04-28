@@ -31,7 +31,7 @@ export class MessageRepository extends BaseRepository {
   }
 
   public getMessagesByFriendshipId(
-    friendship_id: string,
+    friendshipId: string,
     skip = 0,
     limit = 20,
   ) {
@@ -44,7 +44,7 @@ export class MessageRepository extends BaseRepository {
                 ORDER BY created_at DESC
                 OFFSET $2 LIMIT $3
 			`,
-        [friendship_id, skip, limit],
+        [friendshipId, skip, limit],
       )
       .then((data) => data.rows)
 

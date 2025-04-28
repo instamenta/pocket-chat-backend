@@ -1,5 +1,5 @@
-import z from 'zod';
-export declare const create_user: z.ZodObject<{
+import z from "zod";
+export declare const createUser: z.ZodObject<{
     firstName: z.ZodString;
     lastName: z.ZodString;
     username: z.ZodString;
@@ -18,7 +18,7 @@ export declare const create_user: z.ZodObject<{
     password: string;
     email: string;
 }>;
-export declare const login_user: z.ZodObject<{
+export declare const loginUser: z.ZodObject<{
     username: z.ZodString;
     password: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -28,7 +28,7 @@ export declare const login_user: z.ZodObject<{
     username: string;
     password: string;
 }>;
-export declare const sender_recipient: z.ZodObject<{
+export declare const senderRecipient: z.ZodObject<{
     sender: z.ZodString;
     recipient: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -40,7 +40,7 @@ export declare const sender_recipient: z.ZodObject<{
 }>;
 export declare const uuid: z.ZodString;
 export declare const name: z.ZodString;
-export declare const create_message: z.ZodObject<{
+export declare const createMessage: z.ZodObject<{
     sender: z.ZodString;
     recipient: z.ZodString;
     friendship: z.ZodString;
@@ -87,7 +87,7 @@ export declare const message: z.ZodObject<{
     files?: string[] | undefined;
     date?: string | undefined;
 }>;
-export declare const live_message: z.ZodObject<{
+export declare const liveMessage: z.ZodObject<{
     type: z.ZodString;
     sender: z.ZodString;
     liveId: z.ZodString;
@@ -103,7 +103,7 @@ export declare const live_message: z.ZodObject<{
     content: string;
     liveId: string;
 }>;
-export declare const video_call_invitation_request: z.ZodObject<{
+export declare const videoCallInvitationRequest: z.ZodObject<{
     type: z.ZodString;
     room: z.ZodString;
     sender: z.ZodString;
@@ -119,7 +119,7 @@ export declare const video_call_invitation_request: z.ZodObject<{
     recipient: string;
     room: string;
 }>;
-export declare const create_notification: z.ZodObject<{
+export declare const createNotification: z.ZodObject<{
     sender: z.ZodString;
     recipient: z.ZodString;
     content: z.ZodString;
@@ -138,7 +138,7 @@ export declare const create_notification: z.ZodObject<{
     content: string;
     seen?: boolean | undefined;
 }>;
-export declare const update_profile_public_information: z.ZodObject<{
+export declare const updateProfilePublicInformation: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     username: z.ZodOptional<z.ZodString>;
@@ -155,36 +155,36 @@ export declare const update_profile_public_information: z.ZodObject<{
     email?: string | undefined;
 }>;
 export declare const url: z.ZodString;
-export declare const create_publication: z.ZodObject<{
-    publisher_id: z.ZodString;
+export declare const createPublication: z.ZodObject<{
+    publisherId: z.ZodString;
     description: z.ZodDefault<z.ZodString>;
     images: z.ZodArray<z.ZodString, "many">;
-    publication_status: z.ZodEnum<["draft", "published"]>;
+    publicationStatus: z.ZodEnum<["draft", "published"]>;
 }, "strip", z.ZodTypeAny, {
     images: string[];
-    publisher_id: string;
+    publisherId: string;
     description: string;
-    publication_status: "draft" | "published";
+    publicationStatus: "draft" | "published";
 }, {
     images: string[];
-    publisher_id: string;
-    publication_status: "draft" | "published";
+    publisherId: string;
+    publicationStatus: "draft" | "published";
     description?: string | undefined;
 }>;
-export declare const update_publication: z.ZodObject<{
+export declare const updatePublication: z.ZodObject<{
     content: z.ZodOptional<z.ZodDefault<z.ZodString>>;
     images: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-    publication_status: z.ZodOptional<z.ZodEnum<["draft", "published"]>>;
+    publicationStatus: z.ZodOptional<z.ZodEnum<["draft", "published"]>>;
 }, "strip", z.ZodTypeAny, {
     images?: string[] | undefined;
     content?: string | undefined;
-    publication_status?: "draft" | "published" | undefined;
+    publicationStatus?: "draft" | "published" | undefined;
 }, {
     images?: string[] | undefined;
     content?: string | undefined;
-    publication_status?: "draft" | "published" | undefined;
+    publicationStatus?: "draft" | "published" | undefined;
 }>;
-export declare const create_story: z.ZodObject<{
+export declare const createStory: z.ZodObject<{
     userId: z.ZodString;
     videoUrl: z.ZodString;
     description: z.ZodDefault<z.ZodString>;
@@ -197,7 +197,7 @@ export declare const create_story: z.ZodObject<{
     videoUrl: string;
     description?: string | undefined;
 }>;
-export declare const create_group: z.ZodObject<{
+export declare const createGroup: z.ZodObject<{
     userId: z.ZodString;
     name: z.ZodString;
     description: z.ZodDefault<z.ZodString>;

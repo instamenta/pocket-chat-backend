@@ -46,7 +46,7 @@ class LiveController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             const shortId = await this.repository.createLive(userId);
             if (!shortId) {
-                console.error(`${this.constructor.name}.createLive(): Failed to create live`);
+                this.log.error({ m: `Failed to create live`, f: 'createLive', e: {} });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: shortId });
@@ -78,13 +78,13 @@ class LiveController extends controller_base_1.BaseController {
     async updateLiveState(request, response) {
         try {
             const userId = Validate.uuid.parse(request.user.id);
-            if (!['active', 'paused', 'ended'].includes(request.params.state)) {
-                console.error(`${this.constructor.name}.lives(): Invalid State`, request.params);
+            if (!["active", "paused", "ended"].includes(request.params.state)) {
+                this.log.error({ m: `Invalid State`, f: 'updateLiveState', e: request.params });
                 return response.status(http_status_codes_1.default.BAD_REQUEST).end();
             }
             const lives = await this.repository.updateLiveState(userId, request.params.state);
             if (!lives) {
-                console.error(`${this.constructor.name}.updateLiveState(): Failed to update live state`);
+                this.log.error({ m: `Failed to update live state`, f: 'updateLiveState', e: {} });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();

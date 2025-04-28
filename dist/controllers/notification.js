@@ -62,7 +62,7 @@ class NotificationController extends controller_base_1.BaseController {
         try {
             const messages = await this.repository.markNotificationAsSeen(Validate.uuid.parse(request.params.id));
             if (!messages) {
-                console.error(`${this.constructor.name}.markNotificationAsSeen(): Failed to update notification`);
+                this.log.error({ m: `Failed to update notification`, f: 'markNotificationAsSeen', e: {} });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -75,7 +75,7 @@ class NotificationController extends controller_base_1.BaseController {
         try {
             const messages = await this.repository.markAllNotificationsAsSeen(Validate.uuid.parse(request.user.id));
             if (!messages) {
-                console.error(`${this.constructor.name}.markAllNotificationsAsSeen(): Failed to update notifications`, request.params);
+                this.log.error({ m: `Failed to update notifications`, f: 'markAllNotificationsAsSeen', e: request.params });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();

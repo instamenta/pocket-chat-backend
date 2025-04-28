@@ -123,9 +123,9 @@ export class ShortController extends BaseController<ShortRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.LIKE_SHORT,
-          reference_id: shortId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: shortId,
+          recipientId: "",
+          senderId: userId,
           content: "",
           seen: false,
         })
@@ -178,9 +178,9 @@ export class ShortController extends BaseController<ShortRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.COMMENT_SHORT,
-          reference_id: shortId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: shortId,
+          recipientId: "",
+          senderId: userId,
           content: content,
           seen: false,
         })
@@ -225,9 +225,9 @@ export class ShortController extends BaseController<ShortRepository> {
       await this.notificator
         .handleNotification({
           type: NotificationTypes.LIKE_SHORT_COMMENT,
-          reference_id: commentId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: commentId,
+          recipientId: "",
+          senderId: userId,
           content: "",
           seen: false,
         })

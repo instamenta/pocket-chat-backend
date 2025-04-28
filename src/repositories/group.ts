@@ -329,16 +329,16 @@ export class GroupRepository extends BaseRepository {
   }
 
   async createPublication({
-    publisher_id,
+    publisherId,
     description,
     images,
-    publication_status,
+    publicationStatus,
     groupId,
   }: {
-    publisher_id: string;
+    publisherId: string;
     description: string;
     images: string[];
-    publication_status: string;
+    publicationStatus: string;
     groupId: string;
   }): Promise<string> {
     try {
@@ -347,10 +347,10 @@ export class GroupRepository extends BaseRepository {
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id`;
       const result = await this.database.query<{ id: string }>(query, [
-        publisher_id,
+        publisherId,
         description,
         images,
-        publication_status,
+        publicationStatus,
         groupId,
       ]);
       return result.rows[0].id;

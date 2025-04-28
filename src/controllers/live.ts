@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
-import { LiveRepository } from "../repositories/live";
+import { LiveRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import * as T from "../types";
@@ -16,9 +16,7 @@ export class LiveController extends BaseController<LiveRepository> {
       const shortId = await this.repository.createLive(userId);
 
       if (!shortId) {
-        console.error(
-          `${this.constructor.name}.createLive(): Failed to create live`,
-        );
+        this.log.error({ m: `Failed to create live`, f: 'createLive', e: {}});
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 
@@ -66,10 +64,7 @@ export class LiveController extends BaseController<LiveRepository> {
       const userId = Validate.uuid.parse(request.user.id);
 
       if (!["active", "paused", "ended"].includes(request.params.state)) {
-        console.error(
-          `${this.constructor.name}.lives(): Invalid State`,
-          request.params,
-        );
+        this.log.error({ m: `Invalid State`, f: 'updateLiveState', e: request.params});
         return response.status(statusCodes.BAD_REQUEST).end();
       }
 
@@ -79,9 +74,7 @@ export class LiveController extends BaseController<LiveRepository> {
       );
 
       if (!lives) {
-        console.error(
-          `${this.constructor.name}.updateLiveState(): Failed to update live state`,
-        );
+        this.log.error({ m: `Failed to update live state`, f: 'updateLiveState', e: {}});
         return response.status(statusCodes.INTERNAL_SERVER_ERROR).end();
       }
 

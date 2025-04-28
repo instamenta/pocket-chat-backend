@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PublicationRepository } from "../repositories/publication";
+import { PublicationRepository } from "../repositories";
 import statusCodes from "@instamenta/http-status-codes";
 import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
@@ -18,7 +18,7 @@ export class PublicationController extends BaseController<PublicationRepository>
   }
 
   public async listPublications(
-    request: Request,
+    _request: Request,
     response: Response<T.Publication.Publication[]>,
   ) {
     try {
@@ -108,10 +108,10 @@ export class PublicationController extends BaseController<PublicationRepository>
   ) {
     try {
       const data = Validate.createPublication.parse({
-        publisher_id: Validate.uuid.parse(request.user.id),
+        publisherId: Validate.uuid.parse(request.user.id),
         description: request.body.description,
         images: request.body.images,
-        publication_status: request.body.publication_status,
+        publicationStatus: request.body.publication_status,
       });
 
       const publicationId = await this.repository.createPublication(data);
@@ -156,13 +156,15 @@ export class PublicationController extends BaseController<PublicationRepository>
       await this.notificator
         .handleNotification({
           type: NotificationTypes.LIKE,
-          reference_id: publicationId,
-          recipient_id: "",
-          sender_id: userId,
+          referenceId: publicationId,
+          recipientId: "",
+          senderId: userId,
           content: "",
           seen: false,
         })
-        .catch(console.error);
+        .catch((error: unknown) => {
+          this.log.error({ e: error, f: 'likePublication'});
+        });
     } catch (error) {
       this.errorHandler(error, response);
     }

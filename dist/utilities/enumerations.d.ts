@@ -1,4 +1,4 @@
-export declare enum socket_events {
+export declare enum SocketEvents {
     MESSAGE = "message",
     JOIN_LIVE = "join_live",
     LEAVE_LIVE = "leave_live",
@@ -6,16 +6,16 @@ export declare enum socket_events {
     VIDEO_CALL_INVITE = "video-call-invite",
     VOICE_CALL_INVITE = "voice-call-invite"
 }
-export declare enum publication_status {
+export declare enum PublicationStatus {
     Draft = "draft",
     Published = "published"
 }
-export declare enum group_roles {
+export declare enum GroupRoles {
     OWNER = "owner",
     MODERATOR = "moderator",
     MEMBER = "member"
 }
-export declare enum notification_types {
+export declare enum NotificationTypes {
     CALL = "call",
     LIKE = "like",
     LIVE = "live",

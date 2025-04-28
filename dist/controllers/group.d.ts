@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GroupRepository } from "../repositories/group";
 import { BaseController } from "../base/controller.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class GroupController extends BaseController<GroupRepository> {
     createGroup(request: Request<object, {
         id: string;

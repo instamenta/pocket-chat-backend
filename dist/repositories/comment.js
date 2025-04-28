@@ -26,11 +26,14 @@ class CommentRepository extends repository_base_1.BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
         try {
-            const result = await this.database.query(query, [publicationId, userId]);
+            const result = await this.database.query(query, [
+                publicationId,
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
-            this.errorHandler(error, 'listCommentsByPublication');
+            this.errorHandler(error, "listCommentsByPublication");
         }
     }
     async createComment(publicationId, userId, content) {
@@ -45,13 +48,13 @@ class CommentRepository extends repository_base_1.BaseRepository {
         try {
             const insertResult = await this.database.query(insertQuery, [content, publicationId, userId]);
             if (insertResult.rows.length === 0) {
-                throw new Error('Failed to insert comment');
+                throw new Error("Failed to insert comment");
             }
             await this.database.query(updateQuery, [publicationId]);
             return insertResult.rows[0];
         }
         catch (error) {
-            this.errorHandler(error, 'createComment');
+            this.errorHandler(error, "createComment");
         }
     }
     async deleteComment(commentId, userId) {
@@ -65,7 +68,7 @@ class CommentRepository extends repository_base_1.BaseRepository {
             return !!result.rowCount;
         }
         catch (error) {
-            this.errorHandler(error, 'deleteComment');
+            this.errorHandler(error, "deleteComment");
         }
     }
     async getCommentById(id) {
@@ -82,24 +85,27 @@ class CommentRepository extends repository_base_1.BaseRepository {
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
-            this.errorHandler(error, 'getCommentById ');
+            this.errorHandler(error, "getCommentById ");
         }
     }
     async likeComment(commentId, userId) {
         try {
-            const likeExistsQuery = 'SELECT id FROM comment_likes WHERE comment_id = $1 AND user_id = $2';
-            const likeExistsResult = await this.database.query(likeExistsQuery, [commentId, userId]);
+            const likeExistsQuery = "SELECT id FROM comment_likes WHERE comment_id = $1 AND user_id = $2";
+            const likeExistsResult = await this.database.query(likeExistsQuery, [
+                commentId,
+                userId,
+            ]);
             if (likeExistsResult.rows.length > 0) {
-                const removeLikeQuery = 'DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2';
+                const removeLikeQuery = "DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2";
                 await this.database.query(removeLikeQuery, [commentId, userId]);
             }
             else {
-                const addLikeQuery = 'INSERT INTO comment_likes (comment_id, user_id) VALUES ($1, $2)';
+                const addLikeQuery = "INSERT INTO comment_likes (comment_id, user_id) VALUES ($1, $2)";
                 await this.database.query(addLikeQuery, [commentId, userId]);
             }
         }
         catch (error) {
-            this.errorHandler(error, 'likeComment');
+            this.errorHandler(error, "likeComment");
         }
     }
 }

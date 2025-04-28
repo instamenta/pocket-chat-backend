@@ -1,5 +1,5 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from '../types';
+import * as T from "../types";
 export declare class ShortRepository extends BaseRepository {
     createShort(userId: string, videoUrl: string, description: string): Promise<string>;
     listShorts(userId: string): Promise<T.Short.Populated[]>;

@@ -4,12 +4,12 @@ import * as T from "../types";
 
 export class NotificationRepository extends BaseRepository {
   async createNotification({
-    sender_id,
-    recipient_id,
+    senderId,
+    recipientId,
     type,
     seen,
     content,
-    reference_id = "",
+    referenceId = "",
   }: Omit<T.Notification.Notification, "created_at" | "id">) {
     return this.database
       .query<{ id: string }>(
@@ -18,7 +18,7 @@ export class NotificationRepository extends BaseRepository {
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`,
-        [sender_id, recipient_id, type, seen, content, reference_id],
+        [senderId, recipientId, type, seen, content, referenceId],
       )
       .then((data) => data.rows[0].id)
 

@@ -42,22 +42,28 @@ const controller_base_1 = require("../base/controller.base");
 const Validate = __importStar(require("../validators"));
 class FriendController extends controller_base_1.BaseController {
     async sendFriendRequest(request, response) {
-        this.log.log('sendFriendRequest');
+        this.log.log("sendFriendRequest");
         try {
-            const { sender, recipient } = Validate.sender_recipient.parse({ sender: request.user.id, recipient: request.params.id });
+            const { sender, recipient } = Validate.senderRecipient.parse({
+                sender: request.user.id,
+                recipient: request.params.id,
+            });
             const status = await this.repository.sendFriendRequest(sender, recipient);
             if (!status) {
-                this.log.error({ e: `Failed to send friend request`, m: `sender: ${sender}, recipient: ${recipient}` });
+                this.log.error({
+                    e: `Failed to send friend request`,
+                    m: `sender: ${sender}, recipient: ${recipient}`,
+                });
                 return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
-            response.status(http_status_codes_1.default.OK).json({ friendship_id: status });
+            response.status(http_status_codes_1.default.OK).json({ friendshipId: status });
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
     async listFriendRequestsOnly(request, response) {
-        this.log.log('listFriendRequestsOnly');
+        this.log.log("listFriendRequestsOnly");
         try {
             const id = Validate.uuid.parse(request.user.id);
             const list = await this.repository.listFriendRequestsOnly(id);
@@ -68,7 +74,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async listFriendSentOnly(request, response) {
-        this.log.log('listFriendSentOnly');
+        this.log.log("listFriendSentOnly");
         try {
             const id = Validate.uuid.parse(request.user.id);
             const list = await this.repository.listFriendSentOnly(id);
@@ -79,7 +85,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async listFriendRequests(request, response) {
-        this.log.log('listFriendRequests');
+        this.log.log("listFriendRequests");
         try {
             const id = Validate.uuid.parse(request.user.id);
             const friendRequests = await this.repository.listFriendRequests(id);
@@ -90,7 +96,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async listFriendRecommendations(request, response) {
-        this.log.log('listFriendRecommendations');
+        this.log.log("listFriendRecommendations");
         try {
             const id = Validate.uuid.parse(request.user.id);
             const recommendations = await this.repository.listFriendRecommendations(id);
@@ -101,12 +107,18 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async acceptFriendRequest(request, response) {
-        this.log.log('acceptFriendRequest');
+        this.log.log("acceptFriendRequest");
         try {
-            const { sender, recipient } = Validate.sender_recipient.parse({ sender: request.user.id, recipient: request.params.id });
+            const { sender, recipient } = Validate.senderRecipient.parse({
+                sender: request.user.id,
+                recipient: request.params.id,
+            });
             const status = await this.repository.acceptFriendRequest(sender, recipient);
             if (!status) {
-                this.log.error({ e: `Failed to accept friend request`, m: `sender: ${sender}, recipient: ${recipient}` });
+                this.log.error({
+                    e: `Failed to accept friend request`,
+                    m: `sender: ${sender}, recipient: ${recipient}`,
+                });
                 return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -116,27 +128,39 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async deleteFriendRequest(request, response) {
-        this.log.log('deleteFriendRequest');
+        this.log.log("deleteFriendRequest");
         try {
-            const { sender, recipient } = Validate.sender_recipient.parse({ sender: request.user.id, recipient: request.params.id });
+            const { sender, recipient } = Validate.senderRecipient.parse({
+                sender: request.user.id,
+                recipient: request.params.id,
+            });
             const status = await this.repository.deleteFriendRequest(sender, recipient);
             if (!status) {
-                this.log.error({ e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}` });
+                this.log.error({
+                    e: `Failed to delete friend request`,
+                    m: `sender: ${sender}, recipient: ${recipient}`,
+                });
                 return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
-            response.status(http_status_codes_1.default.OK).json({ friendship_id: status });
+            response.status(http_status_codes_1.default.OK).json({ friendshipId: status });
         }
         catch (error) {
             this.errorHandler(error, response);
         }
     }
     async declineFriendRequest(request, response) {
-        this.log.log('declineFriendRequest');
+        this.log.log("declineFriendRequest");
         try {
-            const { sender, recipient } = Validate.sender_recipient.parse({ sender: request.user.id, recipient: request.params.id });
+            const { sender, recipient } = Validate.senderRecipient.parse({
+                sender: request.user.id,
+                recipient: request.params.id,
+            });
             const status = await this.repository.declineFriendRequest(sender, recipient);
             if (!status) {
-                this.log.error({ e: `Failed to delete friend request`, m: `sender: ${sender}, recipient: ${recipient}` });
+                this.log.error({
+                    e: `Failed to delete friend request`,
+                    m: `sender: ${sender}, recipient: ${recipient}`,
+                });
                 return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -146,7 +170,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async getFriendsCountByUserId(request, response) {
-        this.log.log('getFriendsCountByUserId');
+        this.log.log("getFriendsCountByUserId");
         try {
             const id = Validate.uuid.parse(request.params.id);
             const count = await this.repository.getFriendsCountByUserId(id);
@@ -154,7 +178,6 @@ class FriendController extends controller_base_1.BaseController {
                 this.log.error({ e: `Failed to get friends count`, m: id });
                 return response.status(http_status_codes_1.default.BAD_GATEWAY).end();
             }
-            console.log(count);
             response.status(http_status_codes_1.default.OK).json({ count });
         }
         catch (error) {
@@ -162,7 +185,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async listMutualFriendsByUsers(request, response) {
-        this.log.log('listMutualFriendsByUsers');
+        this.log.log("listMutualFriendsByUsers");
         try {
             const sender = Validate.uuid.parse(request.user.id);
             const recipient = Validate.uuid.parse(request.params.id);
@@ -174,7 +197,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async listFriendsByUserId(request, response) {
-        this.log.log('listFriendsByUserId');
+        this.log.log("listFriendsByUserId");
         try {
             const id = Validate.uuid.parse(request.params.id);
             const friends = await this.repository.listFriendsByUserId(id);
@@ -185,7 +208,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async listFriendsByUsername(request, response) {
-        this.log.log('listFriendsByUsername');
+        this.log.log("listFriendsByUsername");
         try {
             const username = Validate.name.parse(request.params.username);
             const friends = await this.repository.listFriendsByUsername(username);
@@ -196,7 +219,7 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async getBySenderAndRecipient(request, response) {
-        this.log.log('getBySenderAndRecipient');
+        this.log.log("getBySenderAndRecipient");
         try {
             const sender = Validate.uuid.parse(request.params.sender);
             const recipient = Validate.uuid.parse(request.params.recipient);
@@ -208,10 +231,10 @@ class FriendController extends controller_base_1.BaseController {
         }
     }
     async getById(request, response) {
-        this.log.log('getById');
+        this.log.log("getById");
         try {
-            const friendship_id = Validate.uuid.parse(request.params.id);
-            const friendship = await this.repository.getById(friendship_id);
+            const friendshipId = Validate.uuid.parse(request.params.id);
+            const friendship = await this.repository.getById(friendshipId);
             response.status(http_status_codes_1.default.OK).json(friendship);
         }
         catch (error) {

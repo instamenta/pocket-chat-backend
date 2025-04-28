@@ -10,12 +10,12 @@ import { BCryptHashingHandler } from "./utilities/bcrypt";
 import { Notificator } from "./utilities/notificator";
 import { initializeAll } from "./utilities/intialize";
 
-void (async function start_service() {
+void async function main () {
   const { api, database, cache, logger } = await initializeAll();
 
-  graceful_shutdown(database, cache);
+  gracefulShutdown(database, cache);
 
-  const hashingHandler = new BCryptHashingHandler();
+  const hashingHandler = new BCryptHashingHandler(logger);
 
   const repository = {
     user: new Repositories.UserRepository(database, logger, hashingHandler),
@@ -36,6 +36,7 @@ void (async function start_service() {
     repository.comment,
     repository.short,
     repository.story,
+    logger
   );
 
   const controller = {
@@ -109,12 +110,12 @@ void (async function start_service() {
       `Server is running on http://${env.SERVER_HOST}:${env.SERVER_PORT}`,
     );
   });
-})();
+}();
 
-function graceful_shutdown(database: Client, cache: Redis) {
+function gracefulShutdown(database: Client, cache: Redis) {
   ["uncaughtException", "unhandledRejection"].map((type) => {
     process.on(type, (...args) => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      // eslint-disable-next-line no-console,@typescript-eslint/restrict-template-expressions
       console.error(`process.on ${type} with ${args}`, args);
 
       database
@@ -123,6 +124,7 @@ function graceful_shutdown(database: Client, cache: Redis) {
           cache.disconnect();
         })
         .catch((error: unknown) => {
+          // eslint-disable-next-line no-console
           console.error(error);
         })
         .finally(() => {
