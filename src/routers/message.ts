@@ -6,16 +6,17 @@ export class MessageRouter extends BaseRouter<MessageController> {
   initialize(c: MessageController) {
     // @ts-expect-error - to assign handlers
     this.router.post("/", Middlewares.isAuthorized, c.sendMessage.bind(c));
-    // @ts-expect-error - to assign handlers
+
     this.router.put(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updateMessageStatus.bind(c),
     );
 
-    // @ts-expect-error - to assign handlers
     this.router.get(
       "/conversations",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listConversations.bind(c),
     );

@@ -6,38 +6,45 @@ export class PublicationRouter extends BaseRouter<PublicationController> {
   initialize(c: PublicationController) {
     // @ts-expect-error - to assign handlers
     this.router.get("/", Middlewares.isAuthorized, c.listPublications.bind(c));
-    // @ts-expect-error - to assign handlers
+
     this.router.get(
       "/recommendations",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getRecommendations.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.get(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getPublicationById.bind(c),
     );
+
     // @ts-expect-error - to assign handlers
     this.router.get("/user/:id", c.getPublicationsByUserId.bind(c));
+
+
     // @ts-expect-error - to assign handlers
     this.router.get("/user/:id/count", c.getPublicationsCountByUserId.bind(c));
 
-    // @ts-expect-error - to assign handlers
     this.router.post(
       "/",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createPublication.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.put(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updatePublication.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.put(
       "/:id/like",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.likePublication.bind(c),
     );

@@ -6,14 +6,17 @@ export class ShortRouter extends BaseRouter<ShortController> {
   initialize(c: ShortController) {
     // @ts-expect-error - to assign handlers
     this.router.post("/", Middlewares.isAuthorized, c.createShort.bind(c));
+
     // @ts-expect-error - to assign handlers
     this.router.get("/", Middlewares.isAuthorized, c.listShorts.bind(c));
-    // @ts-expect-error - to assign handlers
+
     this.router.get(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listShortsByUsername.bind(c),
     );
+
     // @ts-expect-error - to assign handlers
     this.router.get("/:shortId/details", c.getShortById.bind(c));
 
@@ -24,27 +27,31 @@ export class ShortRouter extends BaseRouter<ShortController> {
     //* Comments
     // @ts-expect-error - to assign handlers
     this.router.get("/comments/details", c.getCommentById.bind(c));
-    // @ts-expect-error - to assign handlers
+
     this.router.get(
       "/comments/:shortId",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listCommentsByShort.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.post(
       "/comments/:shortId",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createShortComment.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.delete(
       "/comments/:commentId",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.deleteShortComment.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.put(
       "/comments/:commentId",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.likeShortComment.bind(c),
     );

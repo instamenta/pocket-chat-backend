@@ -6,21 +6,24 @@ export class NotificationRouter extends BaseRouter<NotificationController> {
   initialize(c: NotificationController) {
     // @ts-expect-error - to assign handlers
     this.router.get("/", Middlewares.isAuthorized, c.listNotifications.bind(c));
-    // @ts-expect-error - to assign handlers
+
     this.router.post(
       "/",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createNotification.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.put(
       "/",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.markAllNotificationsAsSeen.bind(c),
     );
-    // @ts-expect-error - to assign handlers
+
     this.router.put(
       "/:id",
+        // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.markNotificationAsSeen.bind(c),
     );

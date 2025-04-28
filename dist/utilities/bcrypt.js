@@ -17,7 +17,7 @@ class BCryptHashingHandler {
             return await bcrypt_1.default.hash(password, salt);
         }
         catch (error) {
-            this.log.error({ e: error, f: 'hashPassword' });
+            this.log.error({ e: error, f: "hashPassword" });
             throw error;
         }
     }
@@ -25,7 +25,7 @@ class BCryptHashingHandler {
         return await bcrypt_1.default
             .compare(plainPassword, hashedPassword)
             .catch((error) => {
-            this.log.error({ e: error, f: 'comparePasswords' });
+            this.log.error({ e: error, f: "comparePasswords" });
             return false;
         });
     }

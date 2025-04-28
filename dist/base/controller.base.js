@@ -21,11 +21,11 @@ class BaseController {
                     message: issue.message,
                 };
             });
-            this.log.error({ e: formattedError, f: 'errorHandler' });
+            this.log.error({ e: formattedError, f: "errorHandler" });
             response.status(http_status_codes_1.default.BAD_REQUEST).end();
         }
         else {
-            this.log.error({ e: error, f: 'errorHandler' });
+            this.log.error({ e: error, f: "errorHandler" });
             response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
         }
     }

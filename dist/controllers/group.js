@@ -51,7 +51,11 @@ class GroupController extends controller_base_1.BaseController {
             });
             const groupId = await this.repository.createGroup(userId, name, description, imageUrl);
             if (!groupId) {
-                this.log.error({ e: {}, f: 'createGroup', m: 'failed to create group' });
+                this.log.error({
+                    e: {},
+                    f: "createGroup",
+                    m: "failed to create group",
+                });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: groupId });
@@ -66,7 +70,11 @@ class GroupController extends controller_base_1.BaseController {
             const groupId = Validate.uuid.parse(request.params.groupId);
             const success = await this.repository.removeGroup(userId, groupId);
             if (!success) {
-                this.log.error({ e: {}, f: 'removeGroup', m: 'failed to remove group' });
+                this.log.error({
+                    e: {},
+                    f: "removeGroup",
+                    m: "failed to remove group",
+                });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).end();
@@ -100,7 +108,7 @@ class GroupController extends controller_base_1.BaseController {
             const groupId = Validate.uuid.parse(request.params.id);
             const group = await this.repository.getGroupById(groupId);
             if (!group) {
-                this.log.error({ e: {}, f: 'getGroupById', m: 'failed to get group' });
+                this.log.error({ e: {}, f: "getGroupById", m: "failed to get group" });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).json(group);
@@ -115,7 +123,7 @@ class GroupController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             const success = await this.repository.joinGroup(userId, groupId);
             if (!success) {
-                this.log.error({ e: {}, f: 'joinGroup', m: 'failed to join group' });
+                this.log.error({ e: {}, f: "joinGroup", m: "failed to join group" });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -130,7 +138,7 @@ class GroupController extends controller_base_1.BaseController {
             const userId = Validate.uuid.parse(request.user.id);
             const success = await this.repository.leaveGroup(userId, groupId);
             if (!success) {
-                this.log.error({ e: {}, f: 'leaveGroup', m: 'failed to leave group' });
+                this.log.error({ e: {}, f: "leaveGroup", m: "failed to leave group" });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -150,7 +158,7 @@ class GroupController extends controller_base_1.BaseController {
             }
             const success = await this.repository.changeRole(groupId, senderId, recipientId, request.body.newRole);
             if (!success) {
-                this.log.error({ e: {}, f: 'changeRole', m: 'failed to change role' });
+                this.log.error({ e: {}, f: "changeRole", m: "failed to change role" });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();
@@ -166,7 +174,11 @@ class GroupController extends controller_base_1.BaseController {
             const recipientId = Validate.uuid.parse(request.params.recipientId);
             const success = await this.repository.removeMember(groupId, senderId, recipientId);
             if (!success) {
-                this.log.error({ e: {}, f: 'removeMember', m: 'failed to remove member' });
+                this.log.error({
+                    e: {},
+                    f: "removeMember",
+                    m: "failed to remove member",
+                });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).end();

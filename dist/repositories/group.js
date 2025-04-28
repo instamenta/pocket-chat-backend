@@ -25,8 +25,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
             AND user_id = $2;
 			`;
             const userRole = await this.database.query(getRoleQuery, [groupId, userId]);
-            if (!userRole.rows.length ||
-                userRole.rows[0].role !== enumerations_1.GroupRoles.OWNER) {
+            if (!userRole.rows.length || userRole.rows[0].role !== enumerations_1.GroupRoles.OWNER) {
                 throw new vanilla_utility_pack_1.UnauthorizedError(" Only the owner can remove group.");
             }
         }

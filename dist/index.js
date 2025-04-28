@@ -42,7 +42,7 @@ const middlewares_1 = require("./middlewares");
 const bcrypt_1 = require("./utilities/bcrypt");
 const notificator_1 = require("./utilities/notificator");
 const intialize_1 = require("./utilities/intialize");
-void async function main() {
+void (async function main() {
     const { api, database, cache, logger } = await (0, intialize_1.initializeAll)();
     gracefulShutdown(database, cache);
     const hashingHandler = new bcrypt_1.BCryptHashingHandler(logger);
@@ -98,7 +98,7 @@ void async function main() {
     api.listen(+config_1.env.SERVER_PORT, config_1.env.SERVER_HOST, () => {
         logger.info("App", "", `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
     });
-}();
+})();
 function gracefulShutdown(database, cache) {
     ["uncaughtException", "unhandledRejection"].map((type) => {
         process.on(type, (...args) => {

@@ -54,7 +54,11 @@ class StoryController extends controller_base_1.BaseController {
             const imageUrl = zod_1.z.string().url().parse(request.body.imageUrl);
             const storyId = await this.repository.createStory({ userId, imageUrl });
             if (!storyId) {
-                this.log.error({ m: `Failed to send message`, f: 'createStory', e: {} });
+                this.log.error({
+                    m: `Failed to send message`,
+                    f: "createStory",
+                    e: {},
+                });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: storyId });
@@ -109,7 +113,7 @@ class StoryController extends controller_base_1.BaseController {
                 seen: false,
             })
                 .catch((error) => {
-                this.log.error({ e: error, f: 'likeStory' });
+                this.log.error({ e: error, f: "likeStory" });
             });
         }
         catch (error) {
@@ -144,7 +148,7 @@ class StoryController extends controller_base_1.BaseController {
                 seen: false,
             })
                 .catch((error) => {
-                this.log.error({ e: error, f: 'createStoryComment' });
+                this.log.error({ e: error, f: "createStoryComment" });
             });
         }
         catch (error) {
@@ -177,7 +181,7 @@ class StoryController extends controller_base_1.BaseController {
                 seen: false,
             })
                 .catch((error) => {
-                this.log.error({ e: error, f: 'likeStoryComment' });
+                this.log.error({ e: error, f: "likeStoryComment" });
             });
             response.status(http_status_codes_1.default.OK).end();
         }

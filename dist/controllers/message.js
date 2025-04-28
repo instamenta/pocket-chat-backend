@@ -53,7 +53,11 @@ class MessageController extends controller_base_1.BaseController {
             });
             const messageId = await this.repository.createMessage(message);
             if (!messageId) {
-                this.log.error({ m: `Failed to send message`, f: 'sendMessage', e: {} });
+                this.log.error({
+                    m: `Failed to send message`,
+                    f: "sendMessage",
+                    e: {},
+                });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.CREATED).json({ id: messageId });
@@ -84,7 +88,11 @@ class MessageController extends controller_base_1.BaseController {
         try {
             const result = await this.repository.updateMessageStatus(Validate.uuid.parse(request.params.id), request.body.status);
             if (!result) {
-                this.log.error({ m: `Failed to update message status`, f: 'updateMessageStatus', e: {} });
+                this.log.error({
+                    m: `Failed to update message status`,
+                    f: "updateMessageStatus",
+                    e: {},
+                });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
             }
             response.status(http_status_codes_1.default.OK).json({ success: true });

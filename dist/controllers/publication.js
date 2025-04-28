@@ -143,7 +143,7 @@ class PublicationController extends controller_base_1.BaseController {
                 seen: false,
             })
                 .catch((error) => {
-                this.log.error({ e: error, f: 'likePublication' });
+                this.log.error({ e: error, f: "likePublication" });
             });
         }
         catch (error) {

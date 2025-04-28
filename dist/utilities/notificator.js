@@ -19,7 +19,10 @@ class Notificator {
         this.log = logger.getVlogger(this.constructor.name);
     }
     async handleNotification(data) {
-        this.log.info({ f: "handleNotification", m: 'Creating notification of type' });
+        this.log.info({
+            f: "handleNotification",
+            m: "Creating notification of type",
+        });
         switch (data.type) {
             case enumerations_1.NotificationTypes.LIKE:
                 await this.#handleLikeNotification(data);
@@ -59,7 +62,7 @@ class Notificator {
     }
     async #handleLikeNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for like notification' });
+            this.log.error({ e: data, m: "No reference id for like notification" });
             return;
         }
         const [publication, notification] = await Promise.all([
@@ -67,7 +70,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!publication) {
-            this.log.error({ f: '#handleLikeNotification', m: 'Publication not found', e: data });
+            this.log.error({
+                f: "#handleLikeNotification",
+                m: "Publication not found",
+                e: data,
+            });
             return;
         }
         data.content = publication.likes_count.toString();
@@ -90,7 +97,10 @@ class Notificator {
     }
     async #handleCommentNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for comment notification' });
+            this.log.error({
+                e: data,
+                m: "No reference id for comment notification",
+            });
             return;
         }
         const [publication, notification] = await Promise.all([
@@ -98,7 +108,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!publication) {
-            this.log.error({ f: '#handleCommentNotification', m: 'Publication not found', e: data });
+            this.log.error({
+                f: "#handleCommentNotification",
+                m: "Publication not found",
+                e: data,
+            });
             return;
         }
         data.recipientId = publication.publisher_id;
@@ -111,7 +125,10 @@ class Notificator {
     }
     async #handleLikeCommentNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for comment notification' });
+            this.log.error({
+                e: data,
+                m: "No reference id for comment notification",
+            });
             return;
         }
         const [comment, notification] = await Promise.all([
@@ -119,7 +136,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!comment) {
-            this.log.error({ f: '#handleLikeCommentNotification', m: 'Comment not found', e: data });
+            this.log.error({
+                f: "#handleLikeCommentNotification",
+                m: "Comment not found",
+                e: data,
+            });
             return;
         }
         data.content = comment.likes_count.toString();
@@ -133,7 +154,7 @@ class Notificator {
     }
     async #handleLikeShortNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for like short' });
+            this.log.error({ e: data, m: "No reference id for like short" });
             return;
         }
         const [short, notification] = await Promise.all([
@@ -141,7 +162,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!short) {
-            this.log.error({ f: '#handleLikeShortNotification', m: 'Not found', e: data });
+            this.log.error({
+                f: "#handleLikeShortNotification",
+                m: "Not found",
+                e: data,
+            });
             return;
         }
         data.content = short.likes_count.toString();
@@ -155,7 +180,10 @@ class Notificator {
     }
     async #handleCommentShortNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for comment notification' });
+            this.log.error({
+                e: data,
+                m: "No reference id for comment notification",
+            });
             return;
         }
         const [short, notification] = await Promise.all([
@@ -163,7 +191,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!short) {
-            this.log.error({ f: '#handleCommentShortNotification', m: 'Short not found', e: data });
+            this.log.error({
+                f: "#handleCommentShortNotification",
+                m: "Short not found",
+                e: data,
+            });
             return;
         }
         data.recipientId = short.user_id;
@@ -176,7 +208,10 @@ class Notificator {
     }
     async #handleLikeShortCommentNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for comment notification' });
+            this.log.error({
+                e: data,
+                m: "No reference id for comment notification",
+            });
             return;
         }
         const [comment, notification] = await Promise.all([
@@ -184,7 +219,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!comment) {
-            this.log.error({ f: '#handleLikeShortCommentNotification', m: 'Comment not found', e: data });
+            this.log.error({
+                f: "#handleLikeShortCommentNotification",
+                m: "Comment not found",
+                e: data,
+            });
             return;
         }
         data.content = comment.likes_count.toString();
@@ -198,7 +237,7 @@ class Notificator {
     }
     async #handleLikeStoryNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for like notification' });
+            this.log.error({ e: data, m: "No reference id for like notification" });
             return;
         }
         const [story, notification] = await Promise.all([
@@ -206,7 +245,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!story) {
-            this.log.error({ f: '#handleLikeStoryNotification', m: 'Story not found', e: data });
+            this.log.error({
+                f: "#handleLikeStoryNotification",
+                m: "Story not found",
+                e: data,
+            });
             return;
         }
         data.content = story.likes_count.toString();
@@ -220,7 +263,10 @@ class Notificator {
     }
     async #handleCommentStoryNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for comment notification' });
+            this.log.error({
+                e: data,
+                m: "No reference id for comment notification",
+            });
             return;
         }
         const [publication, notification] = await Promise.all([
@@ -228,7 +274,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!publication) {
-            this.log.error({ f: '#handleCommentStoryNotification', m: 'Publication not found', e: data });
+            this.log.error({
+                f: "#handleCommentStoryNotification",
+                m: "Publication not found",
+                e: data,
+            });
             return;
         }
         data.recipientId = publication.publisher_id;
@@ -241,7 +291,10 @@ class Notificator {
     }
     async #handleLikeStoryCommentNotification(data) {
         if (!data.referenceId) {
-            this.log.error({ e: data, m: 'No reference id for comment notification' });
+            this.log.error({
+                e: data,
+                m: "No reference id for comment notification",
+            });
             return;
         }
         const [comment, notification] = await Promise.all([
@@ -249,7 +302,11 @@ class Notificator {
             this.repository.getNotificationByReferenceId(data.referenceId),
         ]);
         if (!comment) {
-            this.log.error({ f: '#handleLikeStoryCommentNotification', m: 'Comment not found', e: data });
+            this.log.error({
+                f: "#handleLikeStoryCommentNotification",
+                m: "Comment not found",
+                e: data,
+            });
             return;
         }
         data.content = comment.likes_count.toString();
