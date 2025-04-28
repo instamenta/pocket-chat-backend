@@ -1,23 +1,33 @@
-import {BaseRepository} from "../base/repository.base";
-import * as T from '../types';
+import { BaseRepository } from "../base/repository.base";
+import * as T from "../types";
 
 export class StoryRepository extends BaseRepository {
-
-	async createStory({userId, imageUrl}: { userId: string, imageUrl: string }) {
-		return this.database.query<{ id: string }>(`
+  async createStory({
+    userId,
+    imageUrl,
+  }: {
+    userId: string;
+    imageUrl: string;
+  }) {
+    return this.database
+      .query<{ id: string }>(
+        `
 
                 INSERT INTO "stories" (user_id, image_url)
                 VALUES ($1, $2)
                 RETURNING id
 			`,
-			[userId, imageUrl]
-		).then((data) => data.rows[0].id)
+        [userId, imageUrl],
+      )
+      .then((data) => data.rows[0].id)
 
-			.catch((error: unknown) => this.errorHandler(error, 'createNotification'));
-	}
+      .catch((error: unknown) =>
+        this.errorHandler(error, "createNotification"),
+      );
+  }
 
-	async listStories(userId: string) {
-		const query = `SELECT u.id      AS user_id,
+  async listStories(userId: string) {
+    const query = `SELECT u.id      AS user_id,
                           u.picture as user_picture,
                           u.username,
                           u.first_name,
@@ -33,16 +43,16 @@ export class StoryRepository extends BaseRepository {
                    WHERE s.created_at > NOW() - INTERVAL '24 hours'
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
-		try {
-			const result = await this.database.query<T.Story.Feed>(query, [userId]);
-			return result.rows;
-		} catch (error) {
-			this.errorHandler(error, 'listStories');
-		}
-	}
+    try {
+      const result = await this.database.query<T.Story.Feed>(query, [userId]);
+      return result.rows;
+    } catch (error) {
+      this.errorHandler(error, "listStories");
+    }
+  }
 
-	async listFeedStories(userId: string) {
-		const query = `
+  async listFeedStories(userId: string) {
+    const query = `
         SELECT DISTINCT ON (u.id) u.id      AS user_id,
                                   u.picture as user_picture,
                                   u.username,
@@ -68,30 +78,33 @@ export class StoryRepository extends BaseRepository {
         ORDER BY u.id, s.created_at DESC
 		`;
 
-		try {
-			const result = await this.database.query<T.Story.Feed>(query, [userId]);
-			return result.rows;
-		} catch (error) {
-			this.errorHandler(error, 'listFeedStories');
-		}
-	}
+    try {
+      const result = await this.database.query<T.Story.Feed>(query, [userId]);
+      return result.rows;
+    } catch (error) {
+      this.errorHandler(error, "listFeedStories");
+    }
+  }
 
-	async getStoryById(id: string) {
-		const query = `
+  async getStoryById(id: string) {
+    const query = `
         SELECT user_id, id, likes_count
         FROM stories
         WHERE id = $1`;
-		try {
-			const result = await this.database.query<{ user_id: string, id: string, likes_count: string }>(query, [id]);
-			return result.rowCount ? result.rows[0] : null;
-		} catch (error) {
-			this.errorHandler(error, 'listFeedStories');
-		}
-	}
+    try {
+      const result = await this.database.query<{
+        user_id: string;
+        id: string;
+        likes_count: string;
+      }>(query, [id]);
+      return result.rowCount ? result.rows[0] : null;
+    } catch (error) {
+      this.errorHandler(error, "listFeedStories");
+    }
+  }
 
-
-	async listFriendStoriesByUsername(username: string) {
-		const friendStoriesQuery = `
+  async listFriendStoriesByUsername(username: string) {
+    const friendStoriesQuery = `
         SELECT s.id,
                s.image_url,
                s.created_at,
@@ -108,49 +121,59 @@ export class StoryRepository extends BaseRepository {
           AND u.username != $1
 		`;
 
-		try {
-			const result = await this.database.query<T.Story.Full>(friendStoriesQuery, [username]);
-			return result.rows;
-		} catch (error) {
-			this.errorHandler(error, 'listFriendStoriesByUsername');
-		}
-	}
+    try {
+      const result = await this.database.query<T.Story.Full>(
+        friendStoriesQuery,
+        [username],
+      );
+      return result.rows;
+    } catch (error) {
+      this.errorHandler(error, "listFriendStoriesByUsername");
+    }
+  }
 
+  async likeStory(storyId: string, userId: string): Promise<void> {
+    try {
+      await this.database.query("BEGIN");
 
-	async likeStory(storyId: string, userId: string): Promise<void> {
-		try {
-			await this.database.query('BEGIN');
+      const likeExistsQuery =
+        "SELECT id FROM story_likes WHERE story_id = $1 AND user_id = $2";
+      const likeExistsResult = await this.database.query(likeExistsQuery, [
+        storyId,
+        userId,
+      ]);
 
-			const likeExistsQuery = 'SELECT id FROM story_likes WHERE story_id = $1 AND user_id = $2';
-			const likeExistsResult = await this.database.query(likeExistsQuery, [storyId, userId]);
+      if (likeExistsResult.rows.length > 0) {
+        const removeLikeQuery =
+          "DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2";
+        const decrementLikeCountQuery =
+          "UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1";
 
-			if (likeExistsResult.rows.length > 0) {
-				const removeLikeQuery = 'DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2';
-				const decrementLikeCountQuery = 'UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1';
+        await Promise.all([
+          await this.database.query(removeLikeQuery, [storyId, userId]),
+          await this.database.query(decrementLikeCountQuery, [storyId]),
+        ]);
+      } else {
+        const addLikeQuery =
+          "INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)";
+        const incrementLikeCountQuery =
+          "UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1";
 
-				await Promise.all([
-					await this.database.query(removeLikeQuery, [storyId, userId]),
-					await this.database.query(decrementLikeCountQuery, [storyId]),
-				]);
-			} else {
-				const addLikeQuery = 'INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)';
-				const incrementLikeCountQuery = 'UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1';
+        await Promise.all([
+          await this.database.query(addLikeQuery, [storyId, userId]),
+          await this.database.query(incrementLikeCountQuery, [storyId]),
+        ]);
+      }
 
-				await Promise.all([
-					await this.database.query(addLikeQuery, [storyId, userId]),
-					await this.database.query(incrementLikeCountQuery, [storyId]),
-				]);
-			}
+      await this.database.query("COMMIT");
+    } catch (error) {
+      await this.database.query("ROLLBACK");
+      throw error;
+    }
+  }
 
-			await this.database.query('COMMIT');
-		} catch (error) {
-			await this.database.query('ROLLBACK');
-			throw error;
-		}
-	}
-
-	async listCommentsByStoryId(storyId: string, userId: string) {
-		const query = `
+  async listCommentsByStoryId(storyId: string, userId: string) {
+    const query = `
         SELECT c.id,
                c.content,
                c.created_at,
@@ -171,83 +194,108 @@ export class StoryRepository extends BaseRepository {
         WHERE c.story_id = $1
         ORDER BY c.created_at DESC;
 		`;
-		try {
-			const result = await this.database.query<T.Comment.Populated>(query, [storyId, userId]);
-			return result.rows;
-		} catch (error) {
-			this.errorHandler(error, 'listCommentsByStoryId');
-		}
-	}
+    try {
+      const result = await this.database.query<T.Comment.Populated>(query, [
+        storyId,
+        userId,
+      ]);
+      return result.rows;
+    } catch (error) {
+      this.errorHandler(error, "listCommentsByStoryId");
+    }
+  }
 
-	async createStoryComment(storyId: string, userId: string, content: string): Promise<T.Comment.Comment> {
-		const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
+  async createStoryComment(
+    storyId: string,
+    userId: string,
+    content: string,
+  ): Promise<T.Comment.Comment> {
+    const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
                          VALUES ($1, $2, $3)
                          RETURNING *`;
 
-		const updateQuery = `UPDATE stories
+    const updateQuery = `UPDATE stories
                          SET comments_count = comments_count + 1
                          WHERE id = $1`;
 
-		try {
-			const insertResult = await this.database.query<T.Comment.Comment>(insertQuery, [content, storyId, userId]);
-			if (insertResult.rows.length === 0) {
-				throw new Error('Failed to insert comment');
-			}
+    try {
+      const insertResult = await this.database.query<T.Comment.Comment>(
+        insertQuery,
+        [content, storyId, userId],
+      );
+      if (insertResult.rows.length === 0) {
+        throw new Error("Failed to insert comment");
+      }
 
-			await this.database.query(updateQuery, [storyId]);
-			return insertResult.rows[0];
-		} catch (error) {
-			this.errorHandler(error, 'createStoryComment');
-		}
-	}
+      await this.database.query(updateQuery, [storyId]);
+      return insertResult.rows[0];
+    } catch (error) {
+      this.errorHandler(error, "createStoryComment");
+    }
+  }
 
-	async deleteStoryComment(commentId: string, userId: string): Promise<boolean> {
-		const selectQuery = `SELECT story_id
+  async deleteStoryComment(
+    commentId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const selectQuery = `SELECT story_id
                          FROM story_comments
                          WHERE id = $1`;
 
-		const updateQuery = `UPDATE stories
+    const updateQuery = `UPDATE stories
                          SET comments_count = comments_count - 1
                          WHERE id = $1`;
 
-		const deleteQuery = `DELETE
+    const deleteQuery = `DELETE
                          FROM story_comments
                          WHERE id = $1
                            AND user_id = $2`;
-		try {
-			const story = await this.database.query<{ story_id: string }>(selectQuery, [commentId]);
-			if (!story.rowCount) {
-				throw new Error(`Failed to get story! Comment id ${commentId}`);
-			}
+    try {
+      const story = await this.database.query<{ story_id: string }>(
+        selectQuery,
+        [commentId],
+      );
+      if (!story.rowCount) {
+        throw new Error(`Failed to get story! Comment id ${commentId}`);
+      }
 
-			await this.database.query(updateQuery, [story.rows[0].story_id]);
+      await this.database.query(updateQuery, [story.rows[0].story_id]);
 
-			const result = await this.database.query(deleteQuery, [commentId, userId]);
-			return !!result.rowCount
-		} catch (error) {
-			this.errorHandler(error, 'deleteStoryComment');
-		}
-	}
+      const result = await this.database.query(deleteQuery, [
+        commentId,
+        userId,
+      ]);
+      return !!result.rowCount;
+    } catch (error) {
+      this.errorHandler(error, "deleteStoryComment");
+    }
+  }
 
-	async likeStoryComment(commentId: string, userId: string): Promise<void> {
-		try {
-			const likeExistsQuery = 'SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2';
-			const likeExistsResult = await this.database.query(likeExistsQuery, [commentId, userId]);
+  async likeStoryComment(commentId: string, userId: string): Promise<void> {
+    try {
+      const likeExistsQuery =
+        "SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
+      const likeExistsResult = await this.database.query(likeExistsQuery, [
+        commentId,
+        userId,
+      ]);
 
-			if (likeExistsResult.rows.length > 0) {
-				const removeLikeQuery = 'DELETE FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2';
-				await this.database.query(removeLikeQuery, [commentId, userId]);
-			} else {
-				const addLikeQuery = 'INSERT INTO story_comment_likes (comment_id, user_id) VALUES ($1, $2)';
-				await this.database.query(addLikeQuery, [commentId, userId]);
-			}
-		} catch (error) {
-			this.errorHandler(error, 'likeStoryComment');
-		}
-	}
+      if (likeExistsResult.rows.length > 0) {
+        const removeLikeQuery =
+          "DELETE FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
+        await this.database.query(removeLikeQuery, [commentId, userId]);
+      } else {
+        const addLikeQuery =
+          "INSERT INTO story_comment_likes (comment_id, user_id) VALUES ($1, $2)";
+        await this.database.query(addLikeQuery, [commentId, userId]);
+      }
+    } catch (error) {
+      this.errorHandler(error, "likeStoryComment");
+    }
+  }
 
-	async getCommentById(id: string) {
-		const query = `
+  async getCommentById(id: string) {
+    const query = `
         SELECT c.id,
                c.user_id,
                COUNT(cl.user_id) AS likes_count
@@ -256,13 +304,15 @@ export class StoryRepository extends BaseRepository {
         WHERE c.id = $1
         GROUP BY c.id;
 		`;
-		try {
-			const result = await this.database.query<{ id: string, user_id: string, likes_count: number }>(query, [id]);
-			return result.rowCount ? result.rows[0] : null;
-		} catch (error) {
-			this.errorHandler(error, 'getCommentById');
-		}
-	}
-
+    try {
+      const result = await this.database.query<{
+        id: string;
+        user_id: string;
+        likes_count: number;
+      }>(query, [id]);
+      return result.rowCount ? result.rows[0] : null;
+    } catch (error) {
+      this.errorHandler(error, "getCommentById");
+    }
+  }
 }
-

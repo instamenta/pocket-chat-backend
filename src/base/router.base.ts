@@ -1,13 +1,13 @@
-import {Router} from "express";
-import {BaseController} from "./controller.base";
+import { Router } from "express";
+import { BaseController } from "./controller.base";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export abstract class BaseRouter<T extends BaseController<any>> {
-	public readonly router: Router = Router();
+  public readonly router: Router = Router();
 
-	constructor(controller: T) {
-		this.initialize(controller);
-	}
+  constructor(controller: T) {
+    this.initialize(controller);
+  }
 
-	protected abstract initialize(controller: T): void;
+  protected abstract initialize(controller: T): void;
 }

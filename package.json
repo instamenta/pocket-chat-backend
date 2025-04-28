@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon dist/index.js",
     "build": "tsc",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "format": "npx prettier ./src/ --write"
   },
   "keywords": [],
   "author": "",
@@ -52,6 +53,7 @@
     "eslint": "^9.25.1",
     "globals": "^16.0.0",
     "nodemon": "^3.1.10",
+    "prettier": "3.5.3",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3",

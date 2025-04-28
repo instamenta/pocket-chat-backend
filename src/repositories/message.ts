@@ -1,11 +1,19 @@
-import {QueryResult} from "pg";
-import {BaseRepository} from "../base/repository.base";
-import * as T from '../types';
+import { QueryResult } from "pg";
+import { BaseRepository } from "../base/repository.base";
+import * as T from "../types";
 
 export class MessageRepository extends BaseRepository {
-
-	public createMessage({sender, recipient, content, friendship, images = [], files = []}: T.Message.Create) {
-		return this.database.query<{ id: string }>(`
+  public createMessage({
+    sender,
+    recipient,
+    content,
+    friendship,
+    images = [],
+    files = [],
+  }: T.Message.Create) {
+    return this.database
+      .query<{ id: string }>(
+        `
                 INSERT INTO "messages" (sender_id,
                                         recipient_id,
                                         friendship_id,
@@ -15,28 +23,45 @@ export class MessageRepository extends BaseRepository {
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`,
-			[sender, recipient, friendship, content, images, files]
-		).then((data) => data.rows[0].id)
+        [sender, recipient, friendship, content, images, files],
+      )
+      .then((data) => data.rows[0].id)
 
-			.catch((error: unknown) => this.errorHandler(error, 'createMessage'));
-	}
+      .catch((error: unknown) => this.errorHandler(error, "createMessage"));
+  }
 
-	public getMessagesByFriendshipId(friendship_id: string, skip = 0, limit = 20) {
-		return this.database.query<T.Message.Message>(`
+  public getMessagesByFriendshipId(
+    friendship_id: string,
+    skip = 0,
+    limit = 20,
+  ) {
+    return this.database
+      .query<T.Message.Message>(
+        `
                 SELECT *
                 FROM messages
                 WHERE friendship_id = $1
                 ORDER BY created_at DESC
                 OFFSET $2 LIMIT $3
 			`,
-			[friendship_id, skip, limit]
-		).then(data => data.rows)
+        [friendship_id, skip, limit],
+      )
+      .then((data) => data.rows)
 
-			.catch((error: unknown) => this.errorHandler(error, 'getMessagesByFriendshipId'));
-	}
+      .catch((error: unknown) =>
+        this.errorHandler(error, "getMessagesByFriendshipId"),
+      );
+  }
 
-	public getMessagesByUsers(user1: string, user2: string, skip = 0, limit = 20) {
-		return this.database.query<T.Message.Message>(`
+  public getMessagesByUsers(
+    user1: string,
+    user2: string,
+    skip = 0,
+    limit = 20,
+  ) {
+    return this.database
+      .query<T.Message.Message>(
+        `
                 SELECT *
                 FROM messages
                 WHERE sender_id = $1 AND recipient_id = $2
@@ -44,27 +69,35 @@ export class MessageRepository extends BaseRepository {
                 ORDER BY created_at DESC
                 OFFSET $3 LIMIT $4
 			`,
-			[user1, user2, skip, limit]
-		).then(data => data.rows)
+        [user1, user2, skip, limit],
+      )
+      .then((data) => data.rows)
 
-			.catch((error: unknown) => this.errorHandler(error, 'getMessagesByUsers'));
-	}
+      .catch((error: unknown) =>
+        this.errorHandler(error, "getMessagesByUsers"),
+      );
+  }
 
-	public updateMessageStatus(id: string, status: string) {
-		return this.database.query(`
+  public updateMessageStatus(id: string, status: string) {
+    return this.database
+      .query(
+        `
                 UPDATE messages
                 SET message_status = $2,
                     updated_at     = NOW()
                 WHERE id = $1;
 			`,
-			[id, status]
-		).then(data => data.rowCount ?? null)
+        [id, status],
+      )
+      .then((data) => data.rowCount ?? null)
 
-			.catch((error: unknown) => this.errorHandler(error, 'updateMessageStatus'));
-	}
+      .catch((error: unknown) =>
+        this.errorHandler(error, "updateMessageStatus"),
+      );
+  }
 
-	public async listConversations(userId: string) {
-		const query = `
+  public async listConversations(userId: string) {
+    const query = `
         WITH DistinctConversations AS (SELECT CASE
                                                   WHEN sender_id = $1 THEN recipient_id
                                                   ELSE sender_id
@@ -91,12 +124,12 @@ export class MessageRepository extends BaseRepository {
         FROM LatestMessages
         ORDER BY created_at DESC;
 		`;
-		try {
-			const result: QueryResult<T.Message.Conversations> = await this.database.query(query, [userId]);
-			return result.rows;
-		} catch (error) {
-			this.errorHandler(error, 'listConversations');
-		}
-	}
-
+    try {
+      const result: QueryResult<T.Message.Conversations> =
+        await this.database.query(query, [userId]);
+      return result.rows;
+    } catch (error) {
+      this.errorHandler(error, "listConversations");
+    }
+  }
 }

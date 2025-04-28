@@ -1,16 +1,24 @@
-import {Middlewares} from '../middlewares';
-import {LiveController} from "../controllers/live";
-import {BaseRouter} from "../base/router.base";
+import { Middlewares } from "../middlewares";
+import { LiveController } from "../controllers/live";
+import { BaseRouter } from "../base/router.base";
 
 export class LiveRouter extends BaseRouter<LiveController> {
-	initialize(c: LiveController) {
-		// @ts-expect-error - to assign handlers
-		this.router.post('/', Middlewares.isAuthorized, c.createLive.bind(c));
-		// @ts-expect-error - to assign handlers
-		this.router.get('/', Middlewares.isAuthorized, c.listLives.bind(c));
-		// @ts-expect-error - to assign handlers
-		this.router.put('/:state', Middlewares.isAuthorized, c.updateLiveState.bind(c));
-		// @ts-expect-error - to assign handlers
-		this.router.get('/:liveId', Middlewares.isAuthorized, c.listLiveMessages.bind(c));
-	}
+  initialize(c: LiveController) {
+    // @ts-expect-error - to assign handlers
+    this.router.post("/", Middlewares.isAuthorized, c.createLive.bind(c));
+    // @ts-expect-error - to assign handlers
+    this.router.get("/", Middlewares.isAuthorized, c.listLives.bind(c));
+    // @ts-expect-error - to assign handlers
+    this.router.put(
+      "/:state",
+      Middlewares.isAuthorized,
+      c.updateLiveState.bind(c),
+    );
+    // @ts-expect-error - to assign handlers
+    this.router.get(
+      "/:liveId",
+      Middlewares.isAuthorized,
+      c.listLiveMessages.bind(c),
+    );
+  }
 }
