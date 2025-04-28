@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon dist/index.js",
-    "build": "tsc",
-    "dev": "ts-node-dev src/index.ts",
-    "format": "npx prettier ./src ./eslint.config.mjs --write",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "build": "tsc --project ./configs/tsconfig.json",
+    "dev": "nodemon --config ./configs/nodemon.json src/index.ts",
+    "format": "npx prettier ./src ./configs --write",
+    "lint": "eslint . --config ./configs/eslint.config.mjs",
+    "lint-fix": "eslint . --config ./configs/eslint.config.mjs --fix"
   },
   "keywords": [],
   "author": "",

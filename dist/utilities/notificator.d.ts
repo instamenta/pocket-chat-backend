@@ -1,8 +1,4 @@
-import { NotificationRepository } from "../repositories";
-import { PublicationRepository } from "../repositories";
-import { CommentRepository } from "../repositories";
-import { ShortRepository } from "../repositories";
-import { StoryRepository } from "../repositories";
+import { NotificationRepository, PublicationRepository, CommentRepository, ShortRepository, StoryRepository } from "../repositories";
 import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
 export declare class Notificator {
