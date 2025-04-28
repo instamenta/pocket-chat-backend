@@ -60,11 +60,11 @@ export function isAuthorized(
   next();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(
   error: Error,
   _request: Request,
   response: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ) {
   console.error(error.stack);
