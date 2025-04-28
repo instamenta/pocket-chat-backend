@@ -9,14 +9,14 @@ export class MessageRouter extends BaseRouter<MessageController> {
 
     this.router.put(
       "/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updateMessageStatus.bind(c),
     );
 
     this.router.get(
       "/conversations",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listConversations.bind(c),
     );

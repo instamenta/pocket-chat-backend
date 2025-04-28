@@ -12,14 +12,14 @@ export class StoryRouter extends BaseRouter<StoryController> {
 
     this.router.get(
       "/feed",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFeedStories.bind(c),
     );
 
     this.router.get(
       "/:username",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listFriendStoriesByUsername.bind(c),
     );
@@ -31,28 +31,28 @@ export class StoryRouter extends BaseRouter<StoryController> {
     //* Comments
     this.router.get(
       "/comments/:shortId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listCommentsByStory.bind(c),
     );
 
     this.router.post(
       "/comments/:shortId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createStoryComment.bind(c),
     );
 
     this.router.delete(
       "/comments/:commentId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.deleteStoryComment.bind(c),
     );
 
     this.router.put(
       "/comments/:commentId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.likeStoryComment.bind(c),
     );

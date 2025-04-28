@@ -12,7 +12,7 @@ export class ShortRouter extends BaseRouter<ShortController> {
 
     this.router.get(
       "/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listShortsByUsername.bind(c),
     );
@@ -30,28 +30,28 @@ export class ShortRouter extends BaseRouter<ShortController> {
 
     this.router.get(
       "/comments/:shortId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listCommentsByShort.bind(c),
     );
 
     this.router.post(
       "/comments/:shortId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createShortComment.bind(c),
     );
 
     this.router.delete(
       "/comments/:commentId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.deleteShortComment.bind(c),
     );
 
     this.router.put(
       "/comments/:commentId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.likeShortComment.bind(c),
     );

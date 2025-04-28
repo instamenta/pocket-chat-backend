@@ -15,14 +15,14 @@ export class GroupRouter extends BaseRouter<GroupController> {
 
     this.router.get(
       "/member/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getMembersByGroupId.bind(c),
     );
 
     this.router.get(
       "/post/:groupId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listPublications.bind(c),
     );
@@ -32,7 +32,7 @@ export class GroupRouter extends BaseRouter<GroupController> {
 
     this.router.post(
       "/post",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createPublication.bind(c),
     );
@@ -42,28 +42,28 @@ export class GroupRouter extends BaseRouter<GroupController> {
 
     this.router.put(
       "/leave/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.leaveGroup.bind(c),
     );
 
     this.router.put(
       "/:groupId/:recipientId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.changeRole.bind(c),
     );
 
     this.router.delete(
       "/:groupId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.removeGroup.bind(c),
     );
 
     this.router.delete(
       "/:groupId/:recipientId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.removeMember.bind(c),
     );

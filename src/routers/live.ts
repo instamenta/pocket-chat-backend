@@ -12,14 +12,14 @@ export class LiveRouter extends BaseRouter<LiveController> {
 
     this.router.put(
       "/:state",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updateLiveState.bind(c),
     );
 
     this.router.get(
       "/:liveId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listLiveMessages.bind(c),
     );

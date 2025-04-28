@@ -9,21 +9,21 @@ export class NotificationRouter extends BaseRouter<NotificationController> {
 
     this.router.post(
       "/",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createNotification.bind(c),
     );
 
     this.router.put(
       "/",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.markAllNotificationsAsSeen.bind(c),
     );
 
     this.router.put(
       "/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.markNotificationAsSeen.bind(c),
     );

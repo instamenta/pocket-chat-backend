@@ -6,7 +6,7 @@ export class CommentRouter extends BaseRouter<CommentController> {
   initialize(c: CommentController) {
     this.router.get(
       "/:publicationId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.listByPublication.bind(c),
     );
@@ -16,14 +16,14 @@ export class CommentRouter extends BaseRouter<CommentController> {
 
     this.router.post(
       "/:publicationId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.create.bind(c),
     );
 
     this.router.delete(
       "/:commentId",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.delete.bind(c),
     );

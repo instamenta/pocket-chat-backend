@@ -9,14 +9,14 @@ export class PublicationRouter extends BaseRouter<PublicationController> {
 
     this.router.get(
       "/recommendations",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getRecommendations.bind(c),
     );
 
     this.router.get(
       "/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.getPublicationById.bind(c),
     );
@@ -24,27 +24,26 @@ export class PublicationRouter extends BaseRouter<PublicationController> {
     // @ts-expect-error - to assign handlers
     this.router.get("/user/:id", c.getPublicationsByUserId.bind(c));
 
-
     // @ts-expect-error - to assign handlers
     this.router.get("/user/:id/count", c.getPublicationsCountByUserId.bind(c));
 
     this.router.post(
       "/",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.createPublication.bind(c),
     );
 
     this.router.put(
       "/:id",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updatePublication.bind(c),
     );
 
     this.router.put(
       "/:id/like",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.likePublication.bind(c),
     );

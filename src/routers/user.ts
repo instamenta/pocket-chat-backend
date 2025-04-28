@@ -24,14 +24,14 @@ export class UserRouter extends BaseRouter<UserController> {
 
     this.router.put(
       "/",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updateProfilePublicInformation.bind(c),
     );
 
     this.router.put(
       "/picture",
-        // @ts-expect-error - to assign handlers
+      // @ts-expect-error - to assign handlers
       Middlewares.isAuthorized,
       c.updateProfilePicture.bind(c),
     );
