@@ -1,23 +1,25 @@
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
+import tslint from "typescript-eslint";
 
-export default tseslint.config({
-      files: ["**/*.ts"], ignores: ['dist/**'], extends: [
-        eslint.configs.recommended,
-        tseslint.configs.strictTypeChecked,
-        tseslint.configs.stylisticTypeChecked,
-      ]
-    },
-    {
-      languageOptions: {
-        parserOptions: {
-          projectService: true,
-          tsconfigRootDir: import.meta.dirname,
-        },
-      },
-    },
-    {
-      files: ["**/*.ts"], ignores: ['dist/**'],
-      rules: {
-      }
-    });
+export default tslint.config(
+  {
+    files: ["**/*.ts"],
+    ignores: ['dist/**'],
+    extends: [
+      eslint.configs.recommended,
+      tslint.configs.strictTypeChecked,
+      tslint.configs.stylisticTypeChecked,
+    ]
+  },
+  { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } } },
+  {
+    files: ["**/*.ts"],
+    ignores: ['dist/**'],
+    rules: {
+      radix: "error",
+      camelcase: "error",
+      "no-console": "error"
+    }
+  }
+);
+
