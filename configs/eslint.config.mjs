@@ -4,8 +4,8 @@ import esimport from "eslint-plugin-import";
 
 export default tslint.config(
   {
-    files: ["../**/*.ts"],
-    ignores: ["../dist/**"],
+    files: ["**/*.ts"],
+    ignores: ["dist/**"],
     extends: [
       eslint.configs.recommended,
       tslint.configs.strictTypeChecked,
@@ -19,14 +19,14 @@ export default tslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: new URL("../", import.meta.url).pathname,
-        project: "./tsconfig.json",
+        tsconfigRootDir: import.meta.dirname,
+        project: './tsconfig.json',
       },
     },
   },
   {
-    files: ["../**/*.ts"],
-    ignores: ["../dist/**"],
+    files: ["**/*.ts"],
+    ignores: ["dist/**"],
     rules: {
       radix: "error",
       camelcase: "error",
