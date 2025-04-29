@@ -2,6 +2,7 @@ import eslint from "@eslint/js";
 import tslint from "typescript-eslint";
 import esimport from "eslint-plugin-import";
 import sonarjs from 'eslint-plugin-sonarjs';
+import * as depend from 'eslint-plugin-depend';
 
 export default tslint.config(
   {
@@ -13,9 +14,11 @@ export default tslint.config(
       tslint.configs.stylisticTypeChecked,
       esimport.flatConfigs.typescript,
       esimport.flatConfigs.errors,
-      sonarjs.configs.recommended
+      sonarjs.configs.recommended,
+      depend.configs["flat/recommended"]
     ],
-    plugins: {},
+    plugins: {
+    },
   },
   {
     languageOptions: {
@@ -48,6 +51,8 @@ export default tslint.config(
       // sonarjs
       "sonarjs/no-clear-text-protocols": 'off',
       'sonarjs/sql-queries': 'off',
+      'sonarjs/bool-param-default': 'error',
+      'sonarjs/no-built-in-override': 'error',
     },
   },
 );
