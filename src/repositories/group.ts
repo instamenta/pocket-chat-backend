@@ -202,7 +202,11 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  public async removeMember(senderId: string, groupId: string, recipientId: string) {
+  public async removeMember(
+    senderId: string,
+    groupId: string,
+    recipientId: string,
+  ) {
     const getSenderRoleQuery = `
         SELECT role
         FROM "group_members"

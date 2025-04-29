@@ -271,7 +271,10 @@ export class StoryRepository extends BaseRepository {
     }
   }
 
-  public async likeStoryComment(commentId: string, userId: string): Promise<void> {
+  public async likeStoryComment(
+    commentId: string,
+    userId: string,
+  ): Promise<void> {
     try {
       const likeExistsQuery =
         "SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";

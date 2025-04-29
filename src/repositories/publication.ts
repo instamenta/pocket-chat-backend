@@ -199,7 +199,10 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  public async likePublication(publicationId: string, userId: string): Promise<void> {
+  public async likePublication(
+    publicationId: string,
+    userId: string,
+  ): Promise<void> {
     try {
       await this.database.query("BEGIN");
 

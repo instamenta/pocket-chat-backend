@@ -2,7 +2,10 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class CommentRepository extends BaseRepository {
-  public async listCommentsByPublication(publicationId: string, userId: string) {
+  public async listCommentsByPublication(
+    publicationId: string,
+    userId: string,
+  ) {
     const query = `
         SELECT c.id,
                c.content,
@@ -66,7 +69,10 @@ export class CommentRepository extends BaseRepository {
     }
   }
 
-  public async deleteComment(commentId: string, userId: string): Promise<boolean> {
+  public async deleteComment(
+    commentId: string,
+    userId: string,
+  ): Promise<boolean> {
     const query = `
         DELETE
         FROM comments

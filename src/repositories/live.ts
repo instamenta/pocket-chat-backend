@@ -74,7 +74,11 @@ export class LiveRepository extends BaseRepository {
     }
   }
 
-  public async createLiveMessage(liveId: string, userId: string, content: string) {
+  public async createLiveMessage(
+    liveId: string,
+    userId: string,
+    content: string,
+  ) {
     return this.database
       .query<{ id: string }>(
         `

@@ -20,7 +20,7 @@ export default tslint.config(
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
-        project: './tsconfig.json',
+        project: "./tsconfig.json",
       },
     },
   },

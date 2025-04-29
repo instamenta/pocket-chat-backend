@@ -2,7 +2,11 @@ import { BaseRepository } from "../base/repository.base";
 import * as T from "../types";
 
 export class ShortRepository extends BaseRepository {
-  public async createShort(userId: string, videoUrl: string, description: string) {
+  public async createShort(
+    userId: string,
+    videoUrl: string,
+    description: string,
+  ) {
     const query = `INSERT INTO "shorts" (user_id, video_url, description)
                    VALUES ($1, $2, $3)
                    RETURNING id`;
@@ -242,7 +246,10 @@ export class ShortRepository extends BaseRepository {
     }
   }
 
-  public async likeShortComment(commentId: string, userId: string): Promise<void> {
+  public async likeShortComment(
+    commentId: string,
+    userId: string,
+  ): Promise<void> {
     try {
       const likeExistsQuery =
         "SELECT id FROM short_comment_likes WHERE comment_id = $1 AND user_id = $2";
