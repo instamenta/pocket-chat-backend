@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
-import { FriendRepository } from "../repositories/friend";
+import { FriendRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import * as T from "../types";
-
-// TODO: Notifications for Friend Related Events
 
 export class FriendController extends BaseController<FriendRepository> {
   public async sendFriendRequest(

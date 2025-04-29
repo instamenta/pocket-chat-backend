@@ -1,5 +1,5 @@
 import { NotificationTypes } from "../utilities/enumerations";
-import * as T from "./index";
+import * as T from ".";
 
 export interface Notification {
   id: string;

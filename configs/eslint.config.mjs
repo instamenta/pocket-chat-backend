@@ -1,6 +1,7 @@
 import eslint from "@eslint/js";
 import tslint from "typescript-eslint";
 import esimport from "eslint-plugin-import";
+import sonarjs from 'eslint-plugin-sonarjs';
 
 export default tslint.config(
   {
@@ -12,6 +13,7 @@ export default tslint.config(
       tslint.configs.stylisticTypeChecked,
       esimport.flatConfigs.typescript,
       esimport.flatConfigs.errors,
+      sonarjs.configs.recommended
     ],
     plugins: {},
   },
@@ -36,11 +38,16 @@ export default tslint.config(
       "@typescript-eslint/explicit-member-accessibility": "error",
 
       // import
-      "import/consistent-type-specifier-style": "error",
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       "import/no-duplicates": "error",
       "import/no-extraneous-dependencies": "error",
       "import/no-unused-modules": "error",
       "import/no-default-export": "error",
+      'import/no-useless-path-segments': ['error', { noUselessIndex: true }],
+
+      // sonarjs
+      "sonarjs/no-clear-text-protocols": 'off',
+      'sonarjs/sql-queries': 'off',
     },
   },
 );

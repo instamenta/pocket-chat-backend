@@ -5,8 +5,6 @@ import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import * as T from "../types";
 
-// TODO: Make post with percents based on all users engagement with post
-
 export class GroupController extends BaseController<GroupRepository> {
   public async createGroup(
     request: Request<
@@ -182,8 +180,8 @@ export class GroupController extends BaseController<GroupRepository> {
       }
 
       const success = await this.repository.changeRole(
-        groupId,
         senderId,
+        groupId,
         recipientId,
         request.body.newRole,
       );
@@ -209,8 +207,8 @@ export class GroupController extends BaseController<GroupRepository> {
       const recipientId = Validate.uuid.parse(request.params.recipientId);
 
       const success = await this.repository.removeMember(
-        groupId,
         senderId,
+        groupId,
         recipientId,
       );
 

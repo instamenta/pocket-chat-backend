@@ -28,6 +28,8 @@ export async function initializeAll() {
   const log = logger.getVlogger("App");
 
   const api = express();
+  api.disable("x-powered-by");
+
 
   api.use(CORS(corsOptions));
   api.use(COOKIE_PARSER());

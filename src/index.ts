@@ -113,7 +113,7 @@ void (async function main() {
 })();
 
 function gracefulShutdown(database: Client, cache: Redis) {
-  ["uncaughtException", "unhandledRejection"].map((type) => {
+  ["uncaughtException", "unhandledRejection"].forEach((type) => {
     process.on(type, (...args) => {
       // eslint-disable-next-line no-console,@typescript-eslint/restrict-template-expressions
       console.error(`process.on ${type} with ${args}`, args);

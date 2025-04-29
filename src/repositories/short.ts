@@ -138,7 +138,7 @@ export class ShortRepository extends BaseRepository {
       }
 
       await this.database.query("COMMIT");
-      return !(likeExistsResult.rows.length > 0);
+      return !!likeExistsResult.rows.length;
     } catch (error) {
       await this.database.query("ROLLBACK");
       throw error;

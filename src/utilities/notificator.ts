@@ -64,9 +64,6 @@ export class Notificator {
         await this.#handleLikeStoryCommentNotification(data);
         break;
       case NotificationTypes.CALL:
-        throw new NotImplementedError(
-          `TODO: Notification handler for type ${String(data.type)} is not implemented`,
-        );
       case NotificationTypes.LIVE:
         throw new NotImplementedError(
           `TODO: Notification handler for type ${String(data.type)} is not implemented`,

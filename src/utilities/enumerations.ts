@@ -18,8 +18,6 @@ export enum GroupRoles {
   MEMBER = "member",
 }
 
-// TODO FRIEND INVITATION NOTIFICATION
-
 export enum NotificationTypes {
   CALL = "call",
   LIKE = "like",
