@@ -1,18 +1,18 @@
-import { QueryResult } from "pg";
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import type { QueryResult } from "pg";
+import type { ConversationsStruct, CreateMessageRequestStruct, MessageStruct } from "../types/messages";
 
 export class MessageRepository extends BaseRepository {
-  public createMessage({
+  public async createMessage({
     sender,
     recipient,
     content,
     friendship,
     images = [],
     files = [],
-  }: T.Message.CreateMessageRequestStruct) {
-    return this.database
-      .query<{ id: string }>(
+  }: CreateMessageRequestStruct): Promise<string> {
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
                 INSERT INTO "messages" (sender_id,
                                         recipient_id,
@@ -24,15 +24,20 @@ export class MessageRepository extends BaseRepository {
                 RETURNING id
 			`,
         [sender, recipient, friendship, content, images, files],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) => this.errorHandler(error, "createMessage"));
+      );
+      return data.rows[0].id;
+    } catch (error) {
+      this.errorHandler(error, "createMessage");
+    }
   }
 
-  public getMessagesByFriendshipId(friendshipId: string, skip = 0, limit = 20) {
-    return this.database
-      .query<T.Message.MessageStruct>(
+  public async getMessagesByFriendshipId(
+    friendshipId: string,
+    skip = 0,
+    limit = 20,
+  ) {
+    try {
+      const data = await this.database.query<MessageStruct>(
         `
                 SELECT *
                 FROM messages
@@ -41,22 +46,21 @@ export class MessageRepository extends BaseRepository {
                 OFFSET $2 LIMIT $3
 			`,
         [friendshipId, skip, limit],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "getMessagesByFriendshipId"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "getMessagesByFriendshipId");
+    }
   }
 
-  public getMessagesByUsers(
+  public async getMessagesByUsers(
     user1: string,
     user2: string,
     skip = 0,
     limit = 20,
   ) {
-    return this.database
-      .query<T.Message.MessageStruct>(
+    try {
+      const data = await this.database.query<MessageStruct>(
         `
                 SELECT *
                 FROM messages
@@ -66,17 +70,16 @@ export class MessageRepository extends BaseRepository {
                 OFFSET $3 LIMIT $4
 			`,
         [user1, user2, skip, limit],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "getMessagesByUsers"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "getMessagesByUsers");
+    }
   }
 
-  public updateMessageStatus(id: string, status: string) {
-    return this.database
-      .query(
+  public async updateMessageStatus(id: string, status: string): Promise<number | null> {
+    try {
+      const data = await this.database.query<object>(
         `
                 UPDATE messages
                 SET message_status = $2,
@@ -84,12 +87,11 @@ export class MessageRepository extends BaseRepository {
                 WHERE id = $1;
 			`,
         [id, status],
-      )
-      .then((data) => data.rowCount ?? null)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "updateMessageStatus"),
       );
+      return data.rowCount ?? null;
+    } catch (error) {
+      return this.errorHandler(error, "updateMessageStatus");
+    }
   }
 
   public async listConversations(userId: string) {
@@ -121,7 +123,7 @@ export class MessageRepository extends BaseRepository {
         ORDER BY created_at DESC;
 		`;
     try {
-      const result: QueryResult<T.Message.ConversationsStruct> =
+      const result: QueryResult<ConversationsStruct> =
         await this.database.query(query, [userId]);
       return result.rows;
     } catch (error) {

@@ -1,21 +1,22 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import { PopulatedLiveMessageStruct, PopulatedLiveStruct } from "../types/live";
+import { LiveStatesUnion } from "../types/unions";
 
 export class LiveRepository extends BaseRepository {
-  public async createLive(userId: string) {
-    return this.database
-      .query<{ id: string }>(
+  public async createLive(userId: string): Promise<string> {
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
-
                 INSERT INTO "lives" (user_id)
                 VALUES ($1)
                 RETURNING id
 			`,
         [userId],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) => this.errorHandler(error, "createLive"));
+      );
+      return data.rows[0].id;
+    } catch (error) {
+      this.errorHandler(error, "createLive");
+    }
   }
 
   public async listLives(userId: string) {
@@ -34,10 +35,9 @@ export class LiveRepository extends BaseRepository {
                    ORDER BY l.created_at DESC
 		`;
     try {
-      const result = await this.database.query<T.Live.PopulatedLiveStruct>(
-        query,
-        [userId],
-      );
+      const result = await this.database.query<PopulatedLiveStruct>(query, [
+        userId,
+      ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listLives");
@@ -50,25 +50,26 @@ export class LiveRepository extends BaseRepository {
                    WHERE state = 'active'
                      AND id = $1`;
     try {
-      const result = await this.database.query<{
-        id: string;
-        state: string;
-        user_id: string;
-      }>(query, [liveId]);
+      const result = await this.database.query<
+        Pick<PopulatedLiveStruct, "id" | "state" | "userId">
+      >(query, [liveId]);
       return result.rows.length ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getLiveById");
     }
   }
 
-  public async updateLiveState(userId: string, state: T.U.LiveStatesUnion) {
+  public async updateLiveState(
+    userId: string,
+    state: LiveStatesUnion,
+  ): Promise<boolean> {
     const query = `
         UPDATE "lives"
         SET state = $1
         WHERE user_id = $2
 		`;
     try {
-      const result = await this.database.query(query, [state, userId]);
+      const result = await this.database.query<object>(query, [state, userId]);
       return !!result.rowCount;
     } catch (error) {
       this.errorHandler(error, "updateLiveState");
@@ -79,20 +80,20 @@ export class LiveRepository extends BaseRepository {
     liveId: string,
     userId: string,
     content: string,
-  ) {
-    return this.database
-      .query<{ id: string }>(
+  ): Promise<string> {
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
-
                 INSERT INTO "lives_messages" (live_id, sender_id, content)
                 VALUES ($1, $2, $3)
                 RETURNING id
 			`,
         [liveId, userId, content],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) => this.errorHandler(error, "createLiveMessage"));
+      );
+      return data.rows[0].id;
+    } catch (error) {
+      this.errorHandler(error, "createLiveMessage");
+    }
   }
 
   public async listLiveMessages(liveId: string) {
@@ -112,9 +113,10 @@ export class LiveRepository extends BaseRepository {
 		`;
     try {
       const result =
-        await this.database.query<T.Live.PopulatedLiveMessageStruct>(query, [
-          liveId,
-        ]);
+        await this.database.query<PopulatedLiveMessageStruct>(
+          query,
+          [liveId],
+        );
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listLiveMessages");
