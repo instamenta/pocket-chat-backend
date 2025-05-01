@@ -7,7 +7,6 @@ import {
 } from "../repositories";
 import { NotificationTypes } from "./enumerations";
 import { NotImplementedError } from "@instamenta/vanilla-utility-pack";
-import * as T from "../types";
 import VLogger, { IVlog } from "@instamenta/vlogger";
 import { NotificationData } from "../types/notifications";
 

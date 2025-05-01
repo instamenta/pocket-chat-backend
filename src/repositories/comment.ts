@@ -65,7 +65,7 @@ export class CommentRepository extends BaseRepository {
         throw new Error("Failed to insert comment");
       }
 
-      await this.database.query(updateQuery, [publicationId]);
+      await this.database.query<object>(updateQuery, [publicationId]);
       return insertResult.rows[0];
     } catch (error) {
       this.errorHandler(error, "createComment");
@@ -82,7 +82,7 @@ export class CommentRepository extends BaseRepository {
         WHERE id = $1
           AND user_id = $2`;
     try {
-      const result = await this.database.query(query, [commentId, userId]);
+      const result = await this.database.query<object>(query, [commentId, userId]);
       return !!result.rowCount;
     } catch (error) {
       this.errorHandler(error, "deleteComment");
@@ -120,11 +120,13 @@ export class CommentRepository extends BaseRepository {
       if (likeExistsResult.rows.length > 0) {
         const removeLikeQuery =
           "DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2";
-        await this.database.query(removeLikeQuery, [commentId, userId]);
+
+        await this.database.query<object>(removeLikeQuery, [commentId, userId]);
       } else {
         const addLikeQuery =
           "INSERT INTO comment_likes (comment_id, user_id) VALUES ($1, $2)";
-        await this.database.query(addLikeQuery, [commentId, userId]);
+
+        await this.database.query<object>(addLikeQuery, [commentId, userId]);
       }
     } catch (error) {
       this.errorHandler(error, "likeComment");

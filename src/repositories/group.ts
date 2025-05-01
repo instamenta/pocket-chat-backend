@@ -1,10 +1,14 @@
-import { GroupRoles } from "../utilities/enumerations";
+import { GroupRoles } from "../utilities";
 import { BaseRepository } from "../base/repository.base";
 import {
   NotFoundError,
   UnauthorizedError,
 } from "@instamenta/vanilla-utility-pack";
-import * as T from "../types";
+import { GroupStruct, MemberPopulated } from "../types/groups";
+import {
+  PublicationStruct,
+  RecommendationPublicationStruct,
+} from "../types/publications";
 
 export class GroupRepository extends BaseRepository {
   public async createGroup(
@@ -13,22 +17,23 @@ export class GroupRepository extends BaseRepository {
     description: string,
     imageUrl: string,
   ): Promise<string> {
-    return this.database
-      .query<{ id: string }>(
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
-
                 INSERT INTO "groups" (owner_id, name, description, image_url)
                 VALUES ($1, $2, $3, $4)
                 RETURNING id
 			`,
         [userId, name, description, imageUrl],
-      )
-      .then((data) => data.rows[0].id)
+      );
 
-      .catch((error: unknown) => this.errorHandler(error, "createShort"));
+      return data.rows[0].id;
+    } catch (error: unknown) {
+      this.errorHandler(error, "createShort");
+    }
   }
 
-  public async removeGroup(userId: string, groupId: string) {
+  public async removeGroup(userId: string, groupId: string): Promise<boolean> {
     try {
       const getRoleQuery = `
           SELECT role
@@ -40,6 +45,7 @@ export class GroupRepository extends BaseRepository {
         getRoleQuery,
         [groupId, userId],
       );
+
       if (!userRole.rows.length || userRole.rows[0].role !== GroupRoles.OWNER) {
         throw new UnauthorizedError(" Only the owner can remove group.");
       }
@@ -47,23 +53,14 @@ export class GroupRepository extends BaseRepository {
       this.errorHandler(error, "removeGroup");
     }
 
-    const deleteGroupQuery = `
-        DELETE
-        FROM "groups"
-        WHERE id = $1;`;
-    const deleteGroupMembersReferenceQuery = `
-        DELETE
-        FROM "group_members"
-        WHERE group_id = $1;`;
-    const deleteGroupPosts = `
-        DELETE
-        FROM "publications"
-        WHERE group_id = $1;`;
+    const deleteGroupQuery = `DELETE FROM "groups" WHERE id = $1;`;
+    const deleteGroupMembersReferenceQuery = `DELETE FROM "group_members" WHERE group_id = $1;`;
+    const deleteGroupPosts = `DELETE FROM "publications" WHERE group_id = $1;`;
     try {
       await Promise.all([
-        this.database.query(deleteGroupQuery, [groupId]),
-        this.database.query(deleteGroupPosts, [groupId]),
-        this.database.query(deleteGroupMembersReferenceQuery, [groupId]),
+        this.database.query<object>(deleteGroupQuery, [groupId]),
+        this.database.query<object>(deleteGroupPosts, [groupId]),
+        this.database.query<object>(deleteGroupMembersReferenceQuery, [groupId]),
       ]);
 
       return true;
@@ -87,9 +84,8 @@ export class GroupRepository extends BaseRepository {
         ORDER BY g.members_count DESC;
 		`;
     try {
-      const result = await this.database.query<T.Group.GroupStruct>(query, [
-        userId,
-      ]);
+      const result = await this.database.query<GroupStruct>(query, [userId]);
+
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listGroups");
@@ -105,21 +101,21 @@ export class GroupRepository extends BaseRepository {
         ORDER BY g.members_count DESC
 		`;
     try {
-      const result = await this.database.query<T.Group.GroupStruct>(query, [
-        userId,
-      ]);
+      const result = await this.database.query<GroupStruct>(query, [userId]);
+
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listGroupsByUser");
     }
   }
 
-  public async joinGroup(userId: string, groupId: string) {
+  public async joinGroup(userId: string, groupId: string): Promise<boolean> {
     const insertQuery = `
         INSERT INTO "group_members" (group_id, user_id)
         VALUES ($1, $2)
         RETURNING id;
 		`;
+
     const updateQuery = `
         UPDATE "groups"
         SET members_count = members_count + 1
@@ -134,20 +130,21 @@ export class GroupRepository extends BaseRepository {
     }
   }
 
-  public async leaveGroup(userId: string, groupId: string) {
+  public async leaveGroup(userId: string, groupId: string): Promise<boolean> {
     const deleteQuery = `
         DELETE
         FROM "group_members"
         WHERE group_id = $1
           AND user_id = $2;
 		`;
+
     const updateQuery = `
         UPDATE "groups"
         SET members_count = members_count - 1
         WHERE id = $1;
 		`;
     try {
-      const deleteResult = await this.database.query(deleteQuery, [
+      const deleteResult = await this.database.query<object>(deleteQuery, [
         groupId,
         userId,
       ]);
@@ -155,7 +152,7 @@ export class GroupRepository extends BaseRepository {
         throw new NotFoundError("User not found in group");
       }
 
-      await this.database.query(updateQuery, [groupId]);
+      await this.database.query<object>(updateQuery, [groupId]);
       return true;
     } catch (error) {
       this.errorHandler(error, "leaveGroup");
@@ -167,7 +164,7 @@ export class GroupRepository extends BaseRepository {
     groupId: string,
     recipientId: string,
     newRole: "moderator" | "member",
-  ) {
+  ): Promise<boolean> {
     const getRoleQuery = `
         SELECT role
         FROM "group_members"
@@ -195,11 +192,12 @@ export class GroupRepository extends BaseRepository {
             AND user_id = $2;
 			`;
 
-      await this.database.query(updateRoleQuery, [
+      await this.database.query<object>(updateRoleQuery, [
         groupId,
         recipientId,
         newRole,
       ]);
+
       return true;
     } catch (error) {
       this.errorHandler(error, "changeRole");
@@ -210,7 +208,7 @@ export class GroupRepository extends BaseRepository {
     senderId: string,
     groupId: string,
     recipientId: string,
-  ) {
+  ): Promise<boolean> {
     const getSenderRoleQuery = `
         SELECT role
         FROM "group_members"
@@ -282,9 +280,7 @@ export class GroupRepository extends BaseRepository {
         WHERE g.id = $1;
 		`;
     try {
-      const result = await this.database.query<T.Group.GroupStruct>(query, [
-        groupId,
-      ]);
+      const result = await this.database.query<GroupStruct>(query, [groupId]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getGroupById");
@@ -299,9 +295,10 @@ export class GroupRepository extends BaseRepository {
         WHERE gm.group_id = $1;
 		`;
     try {
-      const result = await this.database.query<T.Group.MemberPopulated>(query, [
+      const result = await this.database.query<MemberPopulated>(query, [
         groupId,
       ]);
+
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "getMembersByGroupId");
@@ -325,11 +322,12 @@ export class GroupRepository extends BaseRepository {
                      WHERE p.publication_status = 'published'
                        AND p.group_id = $1
                      ORDER BY p.created_at DESC`;
-      const result =
-        await this.database.query<T.Publication.RecommendationPublicationStruct>(
-          query,
-          [groupId],
-        );
+
+      const result = await this.database.query<RecommendationPublicationStruct>(
+        query,
+        [groupId],
+      );
+
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listPublications");
@@ -342,13 +340,10 @@ export class GroupRepository extends BaseRepository {
     images,
     publicationStatus,
     groupId,
-  }: {
-    publisherId: string;
-    description: string;
-    images: string[];
-    publicationStatus: string;
-    groupId: string;
-  }): Promise<string> {
+  }: Pick<
+    PublicationStruct,
+    "publisherId" | "description" | "images" | "publicationStatus" | "groupId"
+  >): Promise<string> {
     try {
       const query = `
           INSERT INTO publications (publisher_id, description, images, publication_status, group_id)

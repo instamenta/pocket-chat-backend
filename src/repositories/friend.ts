@@ -31,7 +31,7 @@ export class FriendRepository extends BaseRepository {
     recipient: string,
   ): Promise<boolean> {
     try {
-      const data = await this.database.query<{}>(
+      const data = await this.database.query<object>(
         `
                 DELETE
                 FROM friendships
@@ -51,7 +51,7 @@ export class FriendRepository extends BaseRepository {
     recipient: string,
   ): Promise<boolean> {
     try {
-      const data = await this.database.query<{}>(
+      const data = await this.database.query<object>(
         `
                 DELETE
                 FROM friendships
@@ -98,7 +98,7 @@ export class FriendRepository extends BaseRepository {
     recipient: string,
   ): Promise<boolean> {
     try {
-      const data = await this.database.query<{}>(
+      const data = await this.database.query<object>(
         `
                 UPDATE friendships
                 SET friendship_status = 'accepted'
