@@ -8,23 +8,23 @@ export interface MessageStruct {
   id: string;
   edited: boolean;
   content: string;
-  sender_id: string;
-  created_at: string;
-  updated_at: string;
-  recipient_id: string;
-  friendship_id: string;
+  senderId: string;
+  createdAt: string;
+  updatedAt: string;
+  recipientId: string;
+  friendshipId: string;
   images?: string[];
   files?: string[];
-  message_status: MessageStatusUnion;
+  messageStatus: MessageStatusUnion;
 }
 
 export interface ConversationsStruct {
-  created_at: string;
-  first_name: string;
-  last_message: string;
-  last_name: string;
-  message_id: string;
-  user_id: string;
+  createdAt: string;
+  firstName: string;
+  lastMessage: string;
+  lastName: string;
+  messageId: string;
+  userId: string;
   username: string;
   picture: string;
 }

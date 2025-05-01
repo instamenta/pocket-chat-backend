@@ -30,6 +30,7 @@ async function initializeAll() {
     const logger = vlogger_1.default.getInstance();
     const log = logger.getVlogger("App");
     const api = (0, express_1.default)();
+    api.disable("x-powered-by");
     api.use((0, cors_1.default)(corsOptions));
     api.use((0, cookie_parser_1.default)());
     api.use(body_parser_1.default.json());

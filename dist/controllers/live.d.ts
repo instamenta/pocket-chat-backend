@@ -8,12 +8,12 @@ export declare class LiveController extends BaseController<LiveRepository> {
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listLives(request: Request, response: Response<T.Live.Populated[]>): Promise<void>;
+    listLives(request: Request, response: Response<T.Live.PopulatedLiveStruct[]>): Promise<void>;
     listLiveMessages(request: Request<{
         liveId: string;
-    }>, response: Response<T.Live.MessagePopulated[]>): Promise<void>;
+    }>, response: Response<T.Live.PopulatedLiveMessageStruct[]>): Promise<void>;
     updateLiveState(request: Request<{
-        state: T.U.LiveStates;
+        state: T.U.LiveStatesUnion;
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=live.d.ts.map

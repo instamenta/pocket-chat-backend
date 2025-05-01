@@ -1,16 +1,15 @@
-import { SocketEvents } from "../utilities/enumerations";
-import * as U from "./unions";
-export interface Populated {
+import { LiveStatesUnion } from "./unions";
+export interface PopulatedLiveStruct {
     user_id: string;
     user_picture: string;
     username: string;
     first_name: string;
     last_name: string;
-    state: U.LiveStates;
+    state: LiveStatesUnion;
     created_at: string;
     id: string;
 }
-export interface MessagePopulated {
+export interface PopulatedLiveMessageStruct {
     message_id: string;
     user_id: string;
     user_picture: string;
@@ -21,7 +20,4 @@ export interface MessagePopulated {
     live_id: string;
     created_at: string;
 }
-export type MessageResponse = MessagePopulated & {
-    type: SocketEvents;
-};
 //# sourceMappingURL=live.d.ts.map

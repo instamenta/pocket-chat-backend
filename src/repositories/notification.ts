@@ -10,7 +10,7 @@ export class NotificationRepository extends BaseRepository {
     seen,
     content,
     referenceId = "",
-  }: Omit<T.Notification.NotificationStruct, "created_at" | "id">) {
+  }: Omit<T.Notification.NotificationStruct, "createdAt" | "id">) {
     return this.database
       .query<{ id: string }>(
         `

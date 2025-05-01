@@ -156,7 +156,7 @@ class GroupController extends controller_base_1.BaseController {
                 request.body.newRole !== "moderator") {
                 throw new Error("Invalid Role");
             }
-            const success = await this.repository.changeRole(groupId, senderId, recipientId, request.body.newRole);
+            const success = await this.repository.changeRole(senderId, groupId, recipientId, request.body.newRole);
             if (!success) {
                 this.log.error({ e: {}, f: "changeRole", m: "failed to change role" });
                 return response.status(http_status_codes_1.default.INTERNAL_SERVER_ERROR).end();
@@ -172,7 +172,7 @@ class GroupController extends controller_base_1.BaseController {
             const groupId = Validate.uuid.parse(request.params.groupId);
             const senderId = Validate.uuid.parse(request.user.id);
             const recipientId = Validate.uuid.parse(request.params.recipientId);
-            const success = await this.repository.removeMember(groupId, senderId, recipientId);
+            const success = await this.repository.removeMember(senderId, groupId, recipientId);
             if (!success) {
                 this.log.error({
                     e: {},

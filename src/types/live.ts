@@ -1,24 +1,24 @@
 import { LiveStatesUnion } from "./unions";
 
 export interface PopulatedLiveStruct {
-  user_id: string;
-  user_picture: string;
+  userId: string;
+  userPicture: string;
   username: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   state: LiveStatesUnion;
-  created_at: string;
+  createdAt: string;
   id: string;
 }
 
 export interface PopulatedLiveMessageStruct {
-  message_id: string;
-  user_id: string;
-  user_picture: string;
+  messageId: string;
+  userId: string;
+  userPicture: string;
   username: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   content: string;
-  live_id: string;
-  created_at: string;
+  liveId: string;
+  createdAt: string;
 }

@@ -15,24 +15,24 @@ export declare class ShortController extends BaseController<ShortRepository> {
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listShorts(request: Request, response: Response<T.Short.Populated[]>): Promise<void>;
+    listShorts(request: Request, response: Response<T.Short.ShortStruct[]>): Promise<void>;
     listShortsByUsername(request: Request<{
         id: string;
-    }>, response: Response<T.Short.Populated[]>): Promise<void>;
+    }>, response: Response<T.Short.ShortStruct[]>): Promise<void>;
     getShortById(request: Request<{
         shortId: string;
-    }>, response: Response<T.Short.Populated>): Promise<Response<T.Short.Populated, Record<string, any>> | undefined>;
+    }>, response: Response<T.Short.ShortStruct>): Promise<Response<T.Short.ShortStruct, Record<string, any>> | undefined>;
     likeShort(request: Request<{
         id: string;
     }>, response: Response<void>): Promise<void>;
     listCommentsByShort(request: Request<{
         shortId: string;
-    }>, response: Response<T.Comment.Populated[]>): Promise<void>;
+    }>, response: Response<T.Comment.PopulatedCommentStructure[]>): Promise<void>;
     createShortComment(request: Request<{
         shortId: string;
     }, object, {
         content: string;
-    }>, response: Response<T.Comment.Comment>): Promise<void>;
+    }>, response: Response<T.Comment.CommentStructure>): Promise<void>;
     deleteShortComment(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
@@ -41,9 +41,9 @@ export declare class ShortController extends BaseController<ShortRepository> {
     }>, response: Response<void>): Promise<void>;
     getCommentById(request: Request<{
         commentId: string;
-    }>, response: Response<T.Comment.Comment & {
+    }>, response: Response<T.Comment.CommentStructure & {
         likes_count: number;
-    }>): Promise<Response<T.Comment.Comment & {
+    }>): Promise<Response<T.Comment.CommentStructure & {
         likes_count: number;
     }, Record<string, any>> | undefined>;
 }

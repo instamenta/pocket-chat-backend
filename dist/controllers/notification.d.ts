@@ -12,7 +12,7 @@ export declare class NotificationController extends BaseController<NotificationR
     }>, response: Response): void;
     listNotifications(request: Request<object, object, object, {
         filter?: "all" | "seen" | "unseen";
-    }>, response: Response<T.Notification.Populated[]>): Promise<void>;
+    }>, response: Response<T.Notification.PopulatedNotificationStruct[]>): Promise<void>;
     markNotificationAsSeen(request: Request<{
         id: string;
     }>, response: Response<void>): Promise<Response<void, Record<string, any>> | undefined>;

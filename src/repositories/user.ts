@@ -18,9 +18,9 @@ export class UserRepository extends BaseRepository {
   public listUsers(
     skip = 0,
     limit = 0,
-  ): Promise<Omit<T.User.UserSchemaStruct, "updated_at">[]> {
+  ): Promise<Omit<T.User.UserSchemaStruct, "updatedAt">[]> {
     return this.database
-      .query<Omit<T.User.UserSchemaStruct, "updated_at">>(
+      .query<Omit<T.User.UserSchemaStruct, "updatedAt">>(
         `
 
                 SELECT id,

@@ -6,7 +6,7 @@ export interface NotificationStruct {
   seen: boolean;
   content: string;
   senderId: string;
-  created_at: string;
+  createdAt: string;
   recipientId: string;
   referenceId?: string;
 }
@@ -16,14 +16,14 @@ export interface PopulatedNotificationStruct {
   type: string;
   boolean: string;
   content: string;
-  sender_id: string;
-  created_at: string;
-  recipient_id: string;
+  senderId: string;
+  createdAt: string;
+  recipientId: string;
   picture: string;
-  first_name: string;
+  firstName: string;
   seen: boolean;
-  last_name: string;
-  reference_id: string;
+  lastName: string;
+  referenceId: string;
 }
 
-export type Data = Omit<NotificationStruct, "created_at" | "id">;
+export type Data = Omit<NotificationStruct, "createdAt" | "id">;

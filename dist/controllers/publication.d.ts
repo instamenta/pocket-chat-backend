@@ -7,19 +7,19 @@ import VLogger from "@instamenta/vlogger";
 export declare class PublicationController extends BaseController<PublicationRepository> {
     private readonly notificator;
     constructor(repository: PublicationRepository, logger: VLogger, notificator: Notificator);
-    listPublications(_request: Request, response: Response<T.Publication.Publication[]>): Promise<void>;
+    listPublications(_request: Request, response: Response<T.Publication.PublicationStruct[]>): Promise<void>;
     getPublicationById(request: Request<{
         id: string;
-    }>, response: Response<T.Publication.Publication>): Promise<void>;
+    }>, response: Response<T.Publication.PublicationStruct>): Promise<void>;
     getPublicationsByUserId(request: Request<{
         id: string;
-    }>, response: Response<T.Publication.Publication[]>): Promise<void>;
+    }>, response: Response<T.Publication.PublicationStruct[]>): Promise<void>;
     getPublicationsCountByUserId(request: Request<{
         id: string;
     }>, response: Response<{
         count: number;
     }>): Promise<void>;
-    getRecommendations(request: Request, response: Response<T.Publication.Publication[]>): Promise<void>;
+    getRecommendations(request: Request, response: Response<T.Publication.PublicationStruct[]>): Promise<void>;
     createPublication(request: Request<object, {
         id: string;
     }, {

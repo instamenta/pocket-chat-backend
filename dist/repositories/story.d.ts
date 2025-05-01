@@ -5,17 +5,17 @@ export declare class StoryRepository extends BaseRepository {
         userId: string;
         imageUrl: string;
     }): Promise<string>;
-    listStories(userId: string): Promise<T.Story.Feed[]>;
-    listFeedStories(userId: string): Promise<T.Story.Feed[]>;
+    listStories(userId: string): Promise<T.Story.StoryFeedStruct[]>;
+    listFeedStories(userId: string): Promise<T.Story.StoryFeedStruct[]>;
     getStoryById(id: string): Promise<{
         user_id: string;
         id: string;
         likes_count: string;
     } | null>;
-    listFriendStoriesByUsername(username: string): Promise<T.Story.Full[]>;
+    listFriendStoriesByUsername(username: string): Promise<T.Story.FullStoryStruct[]>;
     likeStory(storyId: string, userId: string): Promise<void>;
-    listCommentsByStoryId(storyId: string, userId: string): Promise<T.Comment.Populated[]>;
-    createStoryComment(storyId: string, userId: string, content: string): Promise<T.Comment.Comment>;
+    listCommentsByStoryId(storyId: string, userId: string): Promise<T.Comment.PopulatedCommentStructure[]>;
+    createStoryComment(storyId: string, userId: string, content: string): Promise<T.Comment.CommentStructure>;
     deleteStoryComment(commentId: string, userId: string): Promise<boolean>;
     likeStoryComment(commentId: string, userId: string): Promise<void>;
     getCommentById(id: string): Promise<{

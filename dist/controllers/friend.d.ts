@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { FriendRepository } from "../repositories/friend";
+import { FriendRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as T from "../types";
 export declare class FriendController extends BaseController<FriendRepository> {
@@ -10,9 +10,9 @@ export declare class FriendController extends BaseController<FriendRepository> {
     }>): Promise<Response<{
         friendshipId: string;
     }, Record<string, any>> | undefined>;
-    listFriendRequestsOnly(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
-    listFriendSentOnly(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
-    listFriendRequests(request: Request, response: Response<T.Friend.RequestData[]>): Promise<void>;
+    listFriendRequestsOnly(request: Request, response: Response<T.Friend.FriendshipRequestStruct[]>): Promise<void>;
+    listFriendSentOnly(request: Request, response: Response<T.Friend.FriendshipRequestStruct[]>): Promise<void>;
+    listFriendRequests(request: Request, response: Response<T.Friend.FriendshipRequestStruct[]>): Promise<void>;
     listFriendRecommendations(request: Request, response: Response<{
         id: string;
         first_name: string;
@@ -41,19 +41,19 @@ export declare class FriendController extends BaseController<FriendRepository> {
     }, Record<string, any>> | undefined>;
     listMutualFriendsByUsers(request: Request<{
         id: string;
-    }>, response: Response<T.Friend.Mutual[]>): Promise<void>;
+    }>, response: Response<T.Friend.MutualFriendshipStruct[]>): Promise<void>;
     listFriendsByUserId(request: Request<{
         id: string;
-    }>, response: Response<T.User.Schema[]>): Promise<void>;
+    }>, response: Response<T.User.UserSchemaStruct[]>): Promise<void>;
     listFriendsByUsername(request: Request<{
         username: string;
-    }>, response: Response<T.User.Schema[]>): Promise<void>;
+    }>, response: Response<T.User.UserSchemaStruct[]>): Promise<void>;
     getBySenderAndRecipient(request: Request<{
         sender: string;
         recipient: string;
-    }>, response: Response<T.Friend.Friendship>): Promise<void>;
+    }>, response: Response<T.Friend.FriendshipStruct>): Promise<void>;
     getById(request: Request<{
         id: string;
-    }>, response: Response<T.Friend.Friendship>): Promise<void>;
+    }>, response: Response<T.Friend.FriendshipStruct>): Promise<void>;
 }
 //# sourceMappingURL=friend.d.ts.map

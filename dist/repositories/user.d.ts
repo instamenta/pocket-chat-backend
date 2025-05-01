@@ -8,19 +8,19 @@ import VLogger from "@instamenta/vlogger";
 export declare class UserRepository extends BaseRepository {
     private readonly hashingHandler;
     constructor(client: Client, logger: VLogger, hashingHandler: HashingHandler);
-    listUsers(skip?: number, limit?: number): Promise<Omit<T.User.Schema, "updated_at">[]>;
-    getByUsername(username: string): Promise<T.User.GetByUsername | null>;
+    listUsers(skip?: number, limit?: number): Promise<Omit<T.User.UserSchemaStruct, "updated_at">[]>;
+    getByUsername(username: string): Promise<T.User.GetUserByUsernameStruct | null>;
     updateLastActiveAtById(id: string): Promise<number | null>;
     createUser({ username, email, password, firstName, lastName, }: z.infer<typeof Validate.createUser>): Promise<string>;
-    getUserById(id: string): Promise<T.User.Schema | null>;
-    getUserByUsername(username: string): Promise<T.User.Schema | null>;
-    updateProfilePicture(id: string, pictureUrl: string): Promise<T.User.Schema | null>;
-    updateBio(id: string, bio: string): Promise<T.User.Schema | null>;
+    getUserById(id: string): Promise<T.User.UserSchemaStruct | null>;
+    getUserByUsername(username: string): Promise<T.User.UserSchemaStruct | null>;
+    updateProfilePicture(id: string, pictureUrl: string): Promise<T.User.UserSchemaStruct | null>;
+    updateBio(id: string, bio: string): Promise<T.User.UserSchemaStruct | null>;
     updateProfilePublicInformation(id: string, { username, email, firstName, lastName, }: {
         username?: string;
         email?: string;
         firstName?: string;
         lastName?: string;
-    }): Promise<T.User.Schema | null>;
+    }): Promise<T.User.UserSchemaStruct | null>;
 }
 //# sourceMappingURL=user.d.ts.map

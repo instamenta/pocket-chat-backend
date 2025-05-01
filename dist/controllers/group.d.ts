@@ -17,13 +17,13 @@ export declare class GroupController extends BaseController<GroupRepository> {
     removeGroup(request: Request<{
         groupId: string;
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    listGroups(request: Request, response: Response<T.Group.Group[]>): Promise<void>;
+    listGroups(request: Request, response: Response<T.Group.GroupStruct[]>): Promise<void>;
     listGroupsByUser(request: Request<{
         userId: string;
-    }>, response: Response<T.Group.Group[]>): Promise<void>;
+    }>, response: Response<T.Group.GroupStruct[]>): Promise<void>;
     getGroupById(request: Request<{
         id: string;
-    }>, response: Response<T.Group.Group>): Promise<Response<T.Group.Group, Record<string, any>> | undefined>;
+    }>, response: Response<T.Group.GroupStruct>): Promise<Response<T.Group.GroupStruct, Record<string, any>> | undefined>;
     joinGroup(request: Request<{
         id: string;
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
@@ -55,6 +55,6 @@ export declare class GroupController extends BaseController<GroupRepository> {
     }>): Promise<void>;
     listPublications(request: Request<{
         groupId: string;
-    }>, response: Response<T.Publication.Publication[]>): Promise<void>;
+    }>, response: Response<T.Publication.PublicationStruct[]>): Promise<void>;
 }
 //# sourceMappingURL=group.d.ts.map

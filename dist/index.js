@@ -100,7 +100,7 @@ void (async function main() {
     });
 })();
 function gracefulShutdown(database, cache) {
-    ["uncaughtException", "unhandledRejection"].map((type) => {
+    ["uncaughtException", "unhandledRejection"].forEach((type) => {
         process.on(type, (...args) => {
             console.error(`process.on ${type} with ${args}`, args);
             database

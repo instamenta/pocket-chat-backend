@@ -26,7 +26,7 @@ export class UserController extends BaseController<UserRepository> {
       object,
       { skip?: string; number?: string }
     >,
-    response: Response<Omit<T.User.UserSchemaStruct, "updated_at">[]>,
+    response: Response<Omit<T.User.UserSchemaStruct, "updatedAt">[]>,
   ) {
     try {
       const { skip, limit } = { skip: 0, limit: 10 };

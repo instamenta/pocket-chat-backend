@@ -14,22 +14,22 @@ export declare class StoryController extends BaseController<StoryRepository> {
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listStories(request: Request, response: Response<T.Story.Feed[]>): Promise<void>;
-    listFeedStories(request: Request, response: Response<T.Story.Feed[]>): Promise<void>;
+    listStories(request: Request, response: Response<T.Story.StoryFeedStruct[]>): Promise<void>;
+    listFeedStories(request: Request, response: Response<T.Story.StoryFeedStruct[]>): Promise<void>;
     listFriendStoriesByUsername(request: Request<{
         username: string;
-    }>, response: Response<T.Story.Full[]>): Promise<void>;
+    }>, response: Response<T.Story.FullStoryStruct[]>): Promise<void>;
     likeStory(request: Request<{
         id: string;
     }>, response: Response<void>): Promise<void>;
     listCommentsByStory(request: Request<{
         storyId: string;
-    }>, response: Response<T.Comment.Populated[]>): Promise<void>;
+    }>, response: Response<T.Comment.PopulatedCommentStructure[]>): Promise<void>;
     createStoryComment(request: Request<{
         storyId: string;
     }, object, {
         content: string;
-    }>, response: Response<T.Comment.Comment>): Promise<void>;
+    }>, response: Response<T.Comment.CommentStructure>): Promise<void>;
     deleteStoryComment(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;

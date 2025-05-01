@@ -11,14 +11,14 @@ export declare class FriendRepository extends BaseRepository {
         username: string;
     }[]>;
     acceptFriendRequest(sender: string, recipient: string): Promise<boolean>;
-    listMutualFriendsByUsers(user1: string, sender: string): Promise<T.Friend.Mutual[]>;
+    listMutualFriendsByUsers(user1: string, sender: string): Promise<T.Friend.MutualFriendshipStruct[]>;
     getFriendsCountByUserId(id: string): Promise<number>;
-    listFriendsByUserId(id: string): Promise<T.User.Schema[]>;
-    listFriendsByUsername(username: string): Promise<T.User.Schema[]>;
-    listFriendRequests(id: string): Promise<T.Friend.RequestData[]>;
-    listFriendRequestsOnly(id: string): Promise<T.Friend.RequestData[]>;
-    listFriendSentOnly(id: string): Promise<T.Friend.RequestData[]>;
-    getBySenderAndRecipient(sender: string, recipient: string): Promise<T.Friend.Friendship>;
-    getById(id: string): Promise<T.Friend.Friendship>;
+    listFriendsByUserId(id: string): Promise<T.User.UserSchemaStruct[]>;
+    listFriendsByUsername(username: string): Promise<T.User.UserSchemaStruct[]>;
+    listFriendRequests(id: string): Promise<T.Friend.FriendshipRequestStruct[]>;
+    listFriendRequestsOnly(id: string): Promise<T.Friend.FriendshipRequestStruct[]>;
+    listFriendSentOnly(id: string): Promise<T.Friend.FriendshipRequestStruct[]>;
+    getBySenderAndRecipient(sender: string, recipient: string): Promise<T.Friend.FriendshipStruct>;
+    getById(id: string): Promise<T.Friend.FriendshipStruct>;
 }
 //# sourceMappingURL=friend.d.ts.map

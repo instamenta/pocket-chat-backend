@@ -125,7 +125,7 @@ class ShortRepository extends repository_base_1.BaseRepository {
                 ]);
             }
             await this.database.query("COMMIT");
-            return !(likeExistsResult.rows.length > 0);
+            return !!likeExistsResult.rows.length;
         }
         catch (error) {
             await this.database.query("ROLLBACK");

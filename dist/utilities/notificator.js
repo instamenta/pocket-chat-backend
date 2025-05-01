@@ -55,7 +55,6 @@ class Notificator {
                 await this.#handleLikeStoryCommentNotification(data);
                 break;
             case enumerations_1.NotificationTypes.CALL:
-                throw new vanilla_utility_pack_1.NotImplementedError(`TODO: Notification handler for type ${String(data.type)} is not implemented`);
             case enumerations_1.NotificationTypes.LIVE:
                 throw new vanilla_utility_pack_1.NotImplementedError(`TODO: Notification handler for type ${String(data.type)} is not implemented`);
         }

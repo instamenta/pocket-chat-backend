@@ -12,7 +12,7 @@ export declare class UserController extends BaseController<UserRepository> {
     listUsers(request: Request<object, object, object, {
         skip?: string;
         number?: string;
-    }>, response: Response<Omit<T.User.Schema, "updated_at">[]>): Promise<void>;
+    }>, response: Response<Omit<T.User.UserSchemaStruct, "updated_at">[]>): Promise<void>;
     signUp(request: Request<object, z.infer<typeof Validate.createUser>>, response: Response<{
         token: string;
         id: string;
@@ -30,34 +30,34 @@ export declare class UserController extends BaseController<UserRepository> {
         token: string;
         id: string;
     }, Record<string, any>> | undefined>;
-    authUser(request: Request, response: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
+    authUser(request: Request, response: Response<T.User.UserSchemaStruct>): Promise<Response<T.User.UserSchemaStruct, Record<string, any>> | undefined>;
     getUserById(request: Request<{
         id: string;
-    }>, response: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
+    }>, response: Response<T.User.UserSchemaStruct>): Promise<Response<T.User.UserSchemaStruct, Record<string, any>> | undefined>;
     getUserByUsername(request: Request<{
         username: string;
-    }>, response: Response<T.User.Schema>): Promise<Response<T.User.Schema, Record<string, any>> | undefined>;
+    }>, response: Response<T.User.UserSchemaStruct>): Promise<Response<T.User.UserSchemaStruct, Record<string, any>> | undefined>;
     updateBio(request: Request<object, object, {
         bio: string;
     }>, response: Response<{
         token: string;
         id: string;
-        userData: T.User.Schema;
+        userData: T.User.UserSchemaStruct;
     }>): Promise<Response<{
         token: string;
         id: string;
-        userData: T.User.Schema;
+        userData: T.User.UserSchemaStruct;
     }, Record<string, any>> | undefined>;
     updateProfilePicture(request: Request<object, object, {
         picture_url: string;
     }>, response: Response<{
         token: string;
         id: string;
-        userData: T.User.Schema;
+        userData: T.User.UserSchemaStruct;
     }>): Promise<Response<{
         token: string;
         id: string;
-        userData: T.User.Schema;
+        userData: T.User.UserSchemaStruct;
     }, Record<string, any>> | undefined>;
     updateProfilePublicInformation(request: Request<object, object, {
         firstName: string;
@@ -67,11 +67,11 @@ export declare class UserController extends BaseController<UserRepository> {
     }>, response: Response<{
         token: string;
         id: string;
-        userData: T.User.Schema;
+        userData: T.User.UserSchemaStruct;
     }>): Promise<Response<{
         token: string;
         id: string;
-        userData: T.User.Schema;
+        userData: T.User.UserSchemaStruct;
     }, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=user.d.ts.map

@@ -9,12 +9,12 @@ export declare class CommentController extends BaseController<CommentRepository>
     constructor(repository: CommentRepository, logger: VLogger, notificator: Notificator);
     listByPublication(request: Request<{
         publicationId: string;
-    }>, response: Response<T.Comment.Populated[]>): Promise<void>;
+    }>, response: Response<T.Comment.PopulatedCommentStructure[]>): Promise<void>;
     create(request: Request<{
         publicationId: string;
     }, object, {
         content: string;
-    }>, response: Response<T.Comment.Comment>): Promise<void>;
+    }>, response: Response<T.Comment.CommentStructure>): Promise<void>;
     delete(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
@@ -23,9 +23,9 @@ export declare class CommentController extends BaseController<CommentRepository>
     }>, response: Response<void>): Promise<void>;
     getCommentById(request: Request<{
         commentId: string;
-    }>, response: Response<T.Comment.Comment & {
+    }>, response: Response<T.Comment.CommentStructure & {
         likes_count: number;
-    }>): Promise<Response<T.Comment.Comment & {
+    }>): Promise<Response<T.Comment.CommentStructure & {
         likes_count: number;
     }, Record<string, any>> | undefined>;
 }
