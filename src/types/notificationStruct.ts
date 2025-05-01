@@ -1,7 +1,6 @@
 import { NotificationTypes } from "../utilities/enumerations";
-import * as T from ".";
 
-export interface Notification {
+export interface NotificationStruct {
   id: string;
   type: NotificationTypes;
   seen: boolean;
@@ -12,7 +11,7 @@ export interface Notification {
   referenceId?: string;
 }
 
-export interface Populated {
+export interface PopulatedNotificationStruct {
   id: string;
   type: string;
   boolean: string;
@@ -27,4 +26,4 @@ export interface Populated {
   reference_id: string;
 }
 
-export type Data = Omit<T.Notification.Notification, "created_at" | "id">;
+export type Data = Omit<NotificationStruct, "created_at" | "id">;

@@ -28,7 +28,7 @@ export class CommentRepository extends BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
     try {
-      const result = await this.database.query<T.Comment.Populated>(query, [
+      const result = await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
         publicationId,
         userId,
       ]);
@@ -42,7 +42,7 @@ export class CommentRepository extends BaseRepository {
     publicationId: string,
     userId: string,
     content: string,
-  ): Promise<T.Comment.Comment> {
+  ): Promise<T.Comment.CommentStructure> {
     const insertQuery = `
         INSERT INTO comments (content, publication_id, user_id)
         VALUES ($1, $2, $3)
@@ -54,7 +54,7 @@ export class CommentRepository extends BaseRepository {
         WHERE id = $1`;
 
     try {
-      const insertResult = await this.database.query<T.Comment.Comment>(
+      const insertResult = await this.database.query<T.Comment.CommentStructure>(
         insertQuery,
         [content, publicationId, userId],
       );
@@ -97,7 +97,7 @@ export class CommentRepository extends BaseRepository {
 		`;
     try {
       const result = await this.database.query<
-        T.Comment.Comment & { likes_count: number }
+        T.Comment.CommentStructure & { likes_count: number }
       >(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {

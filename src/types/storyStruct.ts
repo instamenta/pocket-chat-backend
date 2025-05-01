@@ -1,16 +1,16 @@
-import * as U from "./unions";
+import { StoryVisibilityUnion } from "./unions";
 
-export interface Story {
+export interface StoryStruct {
   id: string;
   user_id: string;
   image_url: string;
   created_at: string;
-  visibility: U.StoryVisibility;
+  visibility: StoryVisibilityUnion;
   likes_count: number;
   comments_count: number;
 }
 
-export interface Feed {
+export interface StoryFeedStruct {
   id: string;
   username: string;
   first_name: string;
@@ -22,8 +22,8 @@ export interface Feed {
   likes_count: number;
 }
 
-export type Full =
-  | Story
+export type FullStoryStruct =
+  | StoryStruct
   | {
       user_picture: string;
       user_username: string;

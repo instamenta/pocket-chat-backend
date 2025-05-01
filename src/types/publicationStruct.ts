@@ -1,6 +1,6 @@
 import { PublicationStatus } from "../utilities/enumerations";
 
-export interface Publication {
+export interface PublicationStruct {
   id: string;
   created_at: string;
   updated_at: string;
@@ -14,7 +14,7 @@ export interface Publication {
   group_id?: string;
 }
 
-export interface Recommendation {
+export interface RecommendationPublicationStruct {
   id: string;
   created_at: string;
   updated_at: string;

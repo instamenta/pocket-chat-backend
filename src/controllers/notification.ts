@@ -34,7 +34,7 @@ export class NotificationController extends BaseController<NotificationRepositor
       object,
       { filter?: "all" | "seen" | "unseen" }
     >,
-    response: Response<T.Notification.Populated[]>,
+    response: Response<T.Notification.PopulatedNotificationStruct[]>,
   ) {
     try {
       const notifications = await this.repository.listNotifications(

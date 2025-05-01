@@ -19,7 +19,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async listPublications(
     _request: Request,
-    response: Response<T.Publication.Publication[]>,
+    response: Response<T.Publication.PublicationStruct[]>,
   ) {
     try {
       const publications = await this.repository.listPublications();
@@ -32,7 +32,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async getPublicationById(
     request: Request<{ id: string }>,
-    response: Response<T.Publication.Publication>,
+    response: Response<T.Publication.PublicationStruct>,
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
@@ -51,7 +51,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async getPublicationsByUserId(
     request: Request<{ id: string }>,
-    response: Response<T.Publication.Publication[]>,
+    response: Response<T.Publication.PublicationStruct[]>,
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
@@ -81,7 +81,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async getRecommendations(
     request: Request,
-    response: Response<T.Publication.Publication[]>,
+    response: Response<T.Publication.PublicationStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);

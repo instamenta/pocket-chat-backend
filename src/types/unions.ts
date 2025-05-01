@@ -1,7 +1,7 @@
-export type MessageStatus = "seen" | "sent" | "pending";
+export type MessageStatusUnion = "seen" | "sent" | "pending";
 
-export type FriendshipStatus = "seen" | "sent" | "pending";
+export type FriendshipStatusUnion = "seen" | "sent" | "pending";
 
-export type StoryVisibility = "public" | "private" | "archive";
+export type StoryVisibilityUnion = "public" | "private" | "archive";
 
-export type LiveStates = "active" | "paused" | "ended";
+export type LiveStatesUnion = "active" | "paused" | "ended";

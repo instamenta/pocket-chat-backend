@@ -1,4 +1,4 @@
-export interface Schema {
+export interface UserSchemaStruct {
   id: string;
   email: string;
   picture: string;
@@ -12,14 +12,14 @@ export interface Schema {
   last_active_at: string;
 }
 
-export interface Payload {
+export interface UserDataPayloadStruct {
   id: string;
   email: string;
   picture: string;
   username: string;
 }
 
-export interface GetByUsername {
+export interface GetUserByUsernameStruct {
   id: string;
   username: string;
   password: string;

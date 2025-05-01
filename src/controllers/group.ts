@@ -72,7 +72,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async listGroups(
     request: Request,
-    response: Response<T.Group.Group[]>,
+    response: Response<T.Group.GroupStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -87,7 +87,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async listGroupsByUser(
     request: Request<{ userId: string }>,
-    response: Response<T.Group.Group[]>,
+    response: Response<T.Group.GroupStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.params.userId);
@@ -102,7 +102,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async getGroupById(
     request: Request<{ id: string }>,
-    response: Response<T.Group.Group>,
+    response: Response<T.Group.GroupStruct>,
   ) {
     try {
       const groupId = Validate.uuid.parse(request.params.id);
@@ -278,7 +278,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async listPublications(
     request: Request<{ groupId: string }>,
-    response: Response<T.Publication.Publication[]>,
+    response: Response<T.Publication.PublicationStruct[]>,
   ) {
     try {
       const groupId = Validate.uuid.parse(request.params.groupId);

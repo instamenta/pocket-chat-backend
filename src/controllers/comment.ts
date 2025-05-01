@@ -20,7 +20,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
   public async listByPublication(
     request: Request<{ publicationId: string }>,
-    response: Response<T.Comment.Populated[]>,
+    response: Response<T.Comment.PopulatedCommentStructure[]>,
   ) {
     this.log.log("listByPublication");
     try {
@@ -40,7 +40,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
   public async create(
     request: Request<{ publicationId: string }, object, { content: string }>,
-    response: Response<T.Comment.Comment>,
+    response: Response<T.Comment.CommentStructure>,
   ) {
     this.log.log("create");
     try {
@@ -123,7 +123,7 @@ export class CommentController extends BaseController<CommentRepository> {
   public async getCommentById(
     request: Request<{ commentId: string }>,
     response: Response<
-      T.Comment.Comment & {
+      T.Comment.CommentStructure & {
         likes_count: number;
       }
     >,

@@ -10,7 +10,7 @@ export class MessageRepository extends BaseRepository {
     friendship,
     images = [],
     files = [],
-  }: T.Message.Create) {
+  }: T.Message.CreateMessageRequestStruct) {
     return this.database
       .query<{ id: string }>(
         `
@@ -32,7 +32,7 @@ export class MessageRepository extends BaseRepository {
 
   public getMessagesByFriendshipId(friendshipId: string, skip = 0, limit = 20) {
     return this.database
-      .query<T.Message.Message>(
+      .query<T.Message.MessageStruct>(
         `
                 SELECT *
                 FROM messages
@@ -56,7 +56,7 @@ export class MessageRepository extends BaseRepository {
     limit = 20,
   ) {
     return this.database
-      .query<T.Message.Message>(
+      .query<T.Message.MessageStruct>(
         `
                 SELECT *
                 FROM messages
@@ -121,7 +121,7 @@ export class MessageRepository extends BaseRepository {
         ORDER BY created_at DESC;
 		`;
     try {
-      const result: QueryResult<T.Message.Conversations> =
+      const result: QueryResult<T.Message.ConversationsStruct> =
         await this.database.query(query, [userId]);
       return result.rows;
     } catch (error) {

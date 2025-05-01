@@ -6,14 +6,14 @@ import * as T from "../types";
 const jwtSecret: Secret = SECURITY.JWT_SECRET;
 const signOptions: SignOptions = { expiresIn: SECURITY.JWT_EXPIRATION_TIME };
 
-export function signToken(userData: T.User.Payload): string {
+export function signToken(userData: T.User.UserDataPayloadStruct): string {
   return jwt.sign(userData as object, jwtSecret, signOptions);
 }
 
-export function verifyToken(token: string): T.User.Payload | null {
+export function verifyToken(token: string): T.User.UserDataPayloadStruct | null {
   try {
     const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
-    return decoded as T.User.Payload;
+    return decoded as T.User.UserDataPayloadStruct;
   } catch {
     return null;
   }

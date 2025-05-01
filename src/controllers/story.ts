@@ -51,7 +51,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listStories(
     request: Request,
-    response: Response<T.Story.Feed[]>,
+    response: Response<T.Story.StoryFeedStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -66,7 +66,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listFeedStories(
     request: Request,
-    response: Response<T.Story.Feed[]>,
+    response: Response<T.Story.StoryFeedStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -81,7 +81,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listFriendStoriesByUsername(
     request: Request<{ username: string }>,
-    response: Response<T.Story.Full[]>,
+    response: Response<T.Story.FullStoryStruct[]>,
   ) {
     try {
       const userId = Validate.name.parse(request.params.username);
@@ -125,7 +125,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listCommentsByStory(
     request: Request<{ storyId: string }>,
-    response: Response<T.Comment.Populated[]>,
+    response: Response<T.Comment.PopulatedCommentStructure[]>,
   ) {
     try {
       const storyId = Validate.uuid.parse(request.params.storyId);
@@ -144,7 +144,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async createStoryComment(
     request: Request<{ storyId: string }, object, { content: string }>,
-    response: Response<T.Comment.Comment>,
+    response: Response<T.Comment.CommentStructure>,
   ) {
     try {
       const storyId = Validate.uuid.parse(request.params.storyId);

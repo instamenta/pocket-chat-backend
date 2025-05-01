@@ -28,7 +28,7 @@ export class LiveController extends BaseController<LiveRepository> {
 
   public async listLives(
     request: Request,
-    response: Response<T.Live.Populated[]>,
+    response: Response<T.Live.PopulatedLiveStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -43,7 +43,7 @@ export class LiveController extends BaseController<LiveRepository> {
 
   public async listLiveMessages(
     request: Request<{ liveId: string }>,
-    response: Response<T.Live.MessagePopulated[]>,
+    response: Response<T.Live.PopulatedLiveMessageStruct[]>,
   ) {
     try {
       const liveId = Validate.uuid.parse(request.params.liveId);
@@ -57,7 +57,7 @@ export class LiveController extends BaseController<LiveRepository> {
   }
 
   public async updateLiveState(
-    request: Request<{ state: T.U.LiveStates }>,
+    request: Request<{ state: T.U.LiveStatesUnion }>,
     response: Response,
   ) {
     try {

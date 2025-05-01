@@ -54,7 +54,7 @@ export class MessageController extends BaseController<MessageRepository> {
       object,
       { skip?: string; limit?: string }
     >,
-    response: Response<T.Message.Message[]>,
+    response: Response<T.Message.MessageStruct[]>,
   ) {
     try {
       const messages = await this.repository.getMessagesByFriendshipId(
@@ -76,7 +76,7 @@ export class MessageController extends BaseController<MessageRepository> {
       object,
       { skip?: string; limit?: string }
     >,
-    response: Response<T.Message.Message[]>,
+    response: Response<T.Message.MessageStruct[]>,
   ) {
     try {
       const messages = await this.repository.getMessagesByUsers(
@@ -119,7 +119,7 @@ export class MessageController extends BaseController<MessageRepository> {
 
   public async listConversations(
     request: Request,
-    response: Response<T.Message.Conversations[]>,
+    response: Response<T.Message.ConversationsStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);

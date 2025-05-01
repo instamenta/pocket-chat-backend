@@ -34,7 +34,7 @@ export class LiveRepository extends BaseRepository {
                    ORDER BY l.created_at DESC
 		`;
     try {
-      const result = await this.database.query<T.Live.Populated>(query, [
+      const result = await this.database.query<T.Live.PopulatedLiveStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -60,7 +60,7 @@ export class LiveRepository extends BaseRepository {
     }
   }
 
-  public async updateLiveState(userId: string, state: T.U.LiveStates) {
+  public async updateLiveState(userId: string, state: T.U.LiveStatesUnion) {
     const query = `
         UPDATE "lives"
         SET state = $1
@@ -110,7 +110,7 @@ export class LiveRepository extends BaseRepository {
                    ORDER BY lm.created_at DESC
 		`;
     try {
-      const result = await this.database.query<T.Live.MessagePopulated>(query, [
+      const result = await this.database.query<T.Live.PopulatedLiveMessageStruct>(query, [
         liveId,
       ]);
       return result.rows;

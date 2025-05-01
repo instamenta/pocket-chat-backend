@@ -35,7 +35,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async listFriendRequestsOnly(
     request: Request,
-    response: Response<T.Friend.RequestData[]>,
+    response: Response<T.Friend.FriendshipRequestStruct[]>,
   ) {
     this.log.log("listFriendRequestsOnly");
     try {
@@ -51,7 +51,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async listFriendSentOnly(
     request: Request,
-    response: Response<T.Friend.RequestData[]>,
+    response: Response<T.Friend.FriendshipRequestStruct[]>,
   ) {
     this.log.log("listFriendSentOnly");
     try {
@@ -67,7 +67,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async listFriendRequests(
     request: Request,
-    response: Response<T.Friend.RequestData[]>,
+    response: Response<T.Friend.FriendshipRequestStruct[]>,
   ) {
     this.log.log("listFriendRequests");
     try {
@@ -217,7 +217,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async listMutualFriendsByUsers(
     request: Request<{ id: string }>,
-    response: Response<T.Friend.Mutual[]>,
+    response: Response<T.Friend.MutualFriendshipStruct[]>,
   ) {
     this.log.log("listMutualFriendsByUsers");
     try {
@@ -237,7 +237,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async listFriendsByUserId(
     request: Request<{ id: string }>,
-    response: Response<T.User.Schema[]>,
+    response: Response<T.User.UserSchemaStruct[]>,
   ) {
     this.log.log("listFriendsByUserId");
     try {
@@ -253,7 +253,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async listFriendsByUsername(
     request: Request<{ username: string }>,
-    response: Response<T.User.Schema[]>,
+    response: Response<T.User.UserSchemaStruct[]>,
   ) {
     this.log.log("listFriendsByUsername");
     try {
@@ -272,7 +272,7 @@ export class FriendController extends BaseController<FriendRepository> {
       sender: string;
       recipient: string;
     }>,
-    response: Response<T.Friend.Friendship>,
+    response: Response<T.Friend.FriendshipStruct>,
   ) {
     this.log.log("getBySenderAndRecipient");
     try {
@@ -292,7 +292,7 @@ export class FriendController extends BaseController<FriendRepository> {
 
   public async getById(
     request: Request<{ id: string }>,
-    response: Response<T.Friend.Friendship>,
+    response: Response<T.Friend.FriendshipStruct>,
   ) {
     this.log.log("getById");
     try {

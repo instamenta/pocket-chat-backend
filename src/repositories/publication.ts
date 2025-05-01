@@ -6,7 +6,7 @@ export class PublicationRepository extends BaseRepository {
   public async listPublications() {
     try {
       const query = "SELECT * FROM publications ORDER BY created_at DESC";
-      const result: QueryResult<T.Publication.Publication> =
+      const result: QueryResult<T.Publication.PublicationStruct> =
         await this.database.query(query);
       return result.rows;
     } catch (error) {
@@ -17,7 +17,7 @@ export class PublicationRepository extends BaseRepository {
   public async getPublicationById(id: string) {
     try {
       const query = "SELECT * FROM publications WHERE id = $1";
-      const result: QueryResult<T.Publication.Publication> =
+      const result: QueryResult<T.Publication.PublicationStruct> =
         await this.database.query(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
@@ -46,7 +46,7 @@ export class PublicationRepository extends BaseRepository {
                               LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
                      WHERE publisher_id = $1
                      ORDER BY created_at DESC`;
-      const result = await this.database.query<T.Publication.Recommendation>(
+      const result = await this.database.query<T.Publication.RecommendationPublicationStruct>(
         query,
         [userId],
       );
@@ -70,7 +70,7 @@ export class PublicationRepository extends BaseRepository {
 
   public async getRecommendations(
     userId: string,
-  ): Promise<T.Publication.Publication[]> {
+  ): Promise<T.Publication.PublicationStruct[]> {
     try {
       const query = `
           SELECT p.*,
@@ -96,7 +96,7 @@ export class PublicationRepository extends BaseRepository {
           ORDER BY p.created_at
           LIMIT 20`;
       const result: QueryResult<
-        T.Publication.Publication & {
+        T.Publication.PublicationStruct & {
           liked_by_user: boolean;
         }
       > = await this.database.query(query, [userId]);
@@ -127,7 +127,7 @@ export class PublicationRepository extends BaseRepository {
             ORDER BY p.created_at
             LIMIT $2`;
         const additionalResult: QueryResult<
-          T.Publication.Publication & {
+          T.Publication.PublicationStruct & {
             liked_by_user: boolean;
           }
         > = await this.database.query(additionalQuery, [

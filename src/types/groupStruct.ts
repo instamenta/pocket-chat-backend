@@ -1,6 +1,6 @@
 import { GroupRoles } from "../utilities/enumerations";
 
-export interface Group {
+export interface GroupStruct {
   id: string;
   owner_id: string;
   name: string;
@@ -8,14 +8,6 @@ export interface Group {
   created_at: string;
   members_count: number;
   image_url: string;
-}
-
-export interface Member {
-  id: string;
-  group_id: string;
-  user_id: string;
-  member_since: string;
-  role: GroupRoles;
 }
 
 export interface MemberPopulated {

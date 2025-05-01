@@ -1,21 +1,21 @@
-import * as U from "./unions";
+import { FriendshipStatusUnion } from "./unions";
 
-export interface Friendship {
+export interface FriendshipStruct {
   id: string;
   sender_id: string;
   created_at: string;
   recipient_id: string;
-  friendship_status: U.FriendshipStatus;
+  friendship_status: FriendshipStatusUnion;
 }
 
-export interface Mutual {
+export interface MutualFriendshipStruct {
   user_id: string;
   first_name: string;
   last_name: string;
   username: string;
 }
 
-export interface RequestData {
+export interface FriendshipRequestStruct {
   id: string;
   first_name: string;
   last_name: string;

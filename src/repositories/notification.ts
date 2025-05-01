@@ -10,7 +10,7 @@ export class NotificationRepository extends BaseRepository {
     seen,
     content,
     referenceId = "",
-  }: Omit<T.Notification.Notification, "created_at" | "id">) {
+  }: Omit<T.Notification.NotificationStruct, "created_at" | "id">) {
     return this.database
       .query<{ id: string }>(
         `
@@ -68,7 +68,7 @@ export class NotificationRepository extends BaseRepository {
     }
 
     return this.database
-      .query<T.Notification.Populated>(query, [recipientId])
+      .query<T.Notification.PopulatedNotificationStruct>(query, [recipientId])
       .then((data) => data.rows)
 
       .catch((error: unknown) => this.errorHandler(error, "getNotifications"));
@@ -125,7 +125,7 @@ export class NotificationRepository extends BaseRepository {
                    WHERE n.reference_id = $1
 		`;
     try {
-      const data = await this.database.query<T.Notification.Populated>(query, [
+      const data = await this.database.query<T.Notification.PopulatedNotificationStruct>(query, [
         referenceId,
       ]);
       return data.rowCount ? data.rows[0] : null;
@@ -156,7 +156,7 @@ export class NotificationRepository extends BaseRepository {
                      AND n.reference_id = $2
                      AND n.type = $3`;
     try {
-      const data = await this.database.query<T.Notification.Populated>(query, [
+      const data = await this.database.query<T.Notification.PopulatedNotificationStruct>(query, [
         senderId,
         recipientId,
         type,

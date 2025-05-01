@@ -26,7 +26,7 @@ export class UserController extends BaseController<UserRepository> {
       object,
       { skip?: string; number?: string }
     >,
-    response: Response<Omit<T.User.Schema, "updated_at">[]>,
+    response: Response<Omit<T.User.UserSchemaStruct, "updated_at">[]>,
   ) {
     try {
       const { skip, limit } = { skip: 0, limit: 10 };
@@ -123,7 +123,7 @@ export class UserController extends BaseController<UserRepository> {
     }
   }
 
-  public async authUser(request: Request, response: Response<T.User.Schema>) {
+  public async authUser(request: Request, response: Response<T.User.UserSchemaStruct>) {
     try {
       const id = Validate.uuid.parse(request.user.id);
 
@@ -142,7 +142,7 @@ export class UserController extends BaseController<UserRepository> {
 
   public async getUserById(
     request: Request<{ id: string }>,
-    response: Response<T.User.Schema>,
+    response: Response<T.User.UserSchemaStruct>,
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
@@ -162,7 +162,7 @@ export class UserController extends BaseController<UserRepository> {
 
   public async getUserByUsername(
     request: Request<{ username: string }>,
-    response: Response<T.User.Schema>,
+    response: Response<T.User.UserSchemaStruct>,
   ) {
     try {
       const username = Validate.name.parse(request.params.username);
@@ -185,7 +185,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{
       token: string;
       id: string;
-      userData: T.User.Schema;
+      userData: T.User.UserSchemaStruct;
     }>,
   ) {
     try {
@@ -220,7 +220,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{
       token: string;
       id: string;
-      userData: T.User.Schema;
+      userData: T.User.UserSchemaStruct;
     }>,
   ) {
     try {
@@ -266,7 +266,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{
       token: string;
       id: string;
-      userData: T.User.Schema;
+      userData: T.User.UserSchemaStruct;
     }>,
   ) {
     try {

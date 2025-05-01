@@ -42,7 +42,7 @@ export class ShortRepository extends BaseRepository {
                    ORDER BY s.created_at DESC`;
     // --                    WHERE s.user_id != $1
     try {
-      const result = await this.database.query<T.Short.Populated>(query, [
+      const result = await this.database.query<T.Short.ShortStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -71,7 +71,7 @@ export class ShortRepository extends BaseRepository {
                    WHERE s.user_id = $1
                    ORDER BY s.created_at DESC`;
     try {
-      const result = await this.database.query<T.Short.Populated>(query, [
+      const result = await this.database.query<T.Short.ShortStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -97,7 +97,7 @@ export class ShortRepository extends BaseRepository {
                    WHERE s.id = $1
                    LIMIT 1`;
     try {
-      const result = await this.database.query<T.Short.Populated>(query, [id]);
+      const result = await this.database.query<T.Short.ShortStruct>(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "listShortsById");
@@ -168,7 +168,7 @@ export class ShortRepository extends BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
     try {
-      const result = await this.database.query<T.Comment.Populated>(query, [
+      const result = await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
         shortId,
         userId,
       ]);
@@ -182,7 +182,7 @@ export class ShortRepository extends BaseRepository {
     shortId: string,
     userId: string,
     content: string,
-  ): Promise<T.Comment.Comment> {
+  ): Promise<T.Comment.CommentStructure> {
     const insertQuery = `
         INSERT INTO short_comments (content, short_id, user_id)
         VALUES ($1, $2, $3)
@@ -194,7 +194,7 @@ export class ShortRepository extends BaseRepository {
         WHERE id = $1`;
 
     try {
-      const insertResult = await this.database.query<T.Comment.Comment>(
+      const insertResult = await this.database.query<T.Comment.CommentStructure>(
         insertQuery,
         [content, shortId, userId],
       );
@@ -283,7 +283,7 @@ export class ShortRepository extends BaseRepository {
 		`;
     try {
       const result = await this.database.query<
-        T.Comment.Comment & { likes_count: number }
+        T.Comment.CommentStructure & { likes_count: number }
       >(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {

@@ -1,4 +1,4 @@
-export interface Comment {
+export interface CommentStructure {
   id: string;
   content: string;
   created_at: string;
@@ -6,7 +6,7 @@ export interface Comment {
   user_id: string;
 }
 
-export interface Populated {
+export interface PopulatedCommentStructure {
   id: string;
   content: string;
   created_at: string;

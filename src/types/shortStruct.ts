@@ -1,14 +1,4 @@
-export interface Short {
-  id: string;
-  user_id: string;
-  video_url: string;
-  description: string;
-  created_at: string;
-  likes_count: number;
-  comments_count: number;
-}
-
-export interface Populated {
+export interface ShortStruct {
   id: string;
   user_id: string;
   user_picture: string;

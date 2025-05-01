@@ -18,9 +18,9 @@ export class UserRepository extends BaseRepository {
   public listUsers(
     skip = 0,
     limit = 0,
-  ): Promise<Omit<T.User.Schema, "updated_at">[]> {
+  ): Promise<Omit<T.User.UserSchemaStruct, "updated_at">[]> {
     return this.database
-      .query<Omit<T.User.Schema, "updated_at">>(
+      .query<Omit<T.User.UserSchemaStruct, "updated_at">>(
         `
 
                 SELECT id,
@@ -42,9 +42,9 @@ export class UserRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "listUsers"));
   }
 
-  public getByUsername(username: string): Promise<T.User.GetByUsername | null> {
+  public getByUsername(username: string): Promise<T.User.GetUserByUsernameStruct | null> {
     return this.database
-      .query<T.User.GetByUsername>(
+      .query<T.User.GetUserByUsernameStruct>(
         `
 
                 SELECT id, username, password, email, username
@@ -100,7 +100,7 @@ export class UserRepository extends BaseRepository {
 
   public getUserById(id: string) {
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
                 SELECT *
                 FROM users
@@ -115,7 +115,7 @@ export class UserRepository extends BaseRepository {
 
   public getUserByUsername(username: string) {
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
                 SELECT *
                 FROM users
@@ -130,7 +130,7 @@ export class UserRepository extends BaseRepository {
 
   public updateProfilePicture(id: string, pictureUrl: string) {
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
                 UPDATE "users"
                 SET picture = $2
@@ -148,7 +148,7 @@ export class UserRepository extends BaseRepository {
 
   public updateBio(id: string, bio: string) {
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
                 UPDATE "users"
                 SET bio = $2
@@ -198,7 +198,7 @@ export class UserRepository extends BaseRepository {
     }
 
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
                 UPDATE "users"
                 SET ${fields.join(", ")}

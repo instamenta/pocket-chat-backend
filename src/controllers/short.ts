@@ -49,7 +49,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async listShorts(
     request: Request,
-    response: Response<T.Short.Populated[]>,
+    response: Response<T.Short.ShortStruct[]>,
   ) {
     this.log.log("listShorts");
     try {
@@ -65,7 +65,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async listShortsByUsername(
     request: Request<{ id: string }>,
-    response: Response<T.Short.Populated[]>,
+    response: Response<T.Short.ShortStruct[]>,
   ) {
     this.log.log("listShortsByUsername");
     try {
@@ -81,7 +81,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async getShortById(
     request: Request<{ shortId: string }>,
-    response: Response<T.Short.Populated>,
+    response: Response<T.Short.ShortStruct>,
   ) {
     this.log.log("getShortById");
     try {
@@ -139,7 +139,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async listCommentsByShort(
     request: Request<{ shortId: string }>,
-    response: Response<T.Comment.Populated[]>,
+    response: Response<T.Comment.PopulatedCommentStructure[]>,
   ) {
     this.log.log("listCommentsByShort");
     try {
@@ -159,7 +159,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async createShortComment(
     request: Request<{ shortId: string }, object, { content: string }>,
-    response: Response<T.Comment.Comment>,
+    response: Response<T.Comment.CommentStructure>,
   ) {
     this.log.log("createShortComment");
     try {
@@ -242,7 +242,7 @@ export class ShortController extends BaseController<ShortRepository> {
   public async getCommentById(
     request: Request<{ commentId: string }>,
     response: Response<
-      T.Comment.Comment & {
+      T.Comment.CommentStructure & {
         likes_count: number;
       }
     >,

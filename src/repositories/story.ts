@@ -44,7 +44,7 @@ export class StoryRepository extends BaseRepository {
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
     try {
-      const result = await this.database.query<T.Story.Feed>(query, [userId]);
+      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [userId]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listStories");
@@ -79,7 +79,7 @@ export class StoryRepository extends BaseRepository {
 		`;
 
     try {
-      const result = await this.database.query<T.Story.Feed>(query, [userId]);
+      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [userId]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listFeedStories");
@@ -122,7 +122,7 @@ export class StoryRepository extends BaseRepository {
 		`;
 
     try {
-      const result = await this.database.query<T.Story.Full>(
+      const result = await this.database.query<T.Story.FullStoryStruct>(
         friendStoriesQuery,
         [username],
       );
@@ -195,7 +195,7 @@ export class StoryRepository extends BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
     try {
-      const result = await this.database.query<T.Comment.Populated>(query, [
+      const result = await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
         storyId,
         userId,
       ]);
@@ -209,7 +209,7 @@ export class StoryRepository extends BaseRepository {
     storyId: string,
     userId: string,
     content: string,
-  ): Promise<T.Comment.Comment> {
+  ): Promise<T.Comment.CommentStructure> {
     const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
                          VALUES ($1, $2, $3)
                          RETURNING *`;
@@ -219,7 +219,7 @@ export class StoryRepository extends BaseRepository {
                          WHERE id = $1`;
 
     try {
-      const insertResult = await this.database.query<T.Comment.Comment>(
+      const insertResult = await this.database.query<T.Comment.CommentStructure>(
         insertQuery,
         [content, storyId, userId],
       );

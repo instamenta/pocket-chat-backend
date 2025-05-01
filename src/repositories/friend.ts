@@ -120,7 +120,7 @@ export class FriendRepository extends BaseRepository {
           AND f1.recipient_id <> f2.recipient_id;
         ;`;
     try {
-      const result = await this.database.query<T.Friend.Mutual>(query, [
+      const result = await this.database.query<T.Friend.MutualFriendshipStruct>(query, [
         user1,
         sender,
       ]);
@@ -148,7 +148,7 @@ export class FriendRepository extends BaseRepository {
 
   public listFriendsByUserId(id: string) {
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
 
                 SELECT *
@@ -169,7 +169,7 @@ export class FriendRepository extends BaseRepository {
 
   public listFriendsByUsername(username: string) {
     return this.database
-      .query<T.User.Schema>(
+      .query<T.User.UserSchemaStruct>(
         `
                 SELECT DISTINCT u.*
                 FROM friendships f
@@ -193,7 +193,7 @@ export class FriendRepository extends BaseRepository {
 
   public listFriendRequests(id: string) {
     return this.database
-      .query<T.Friend.RequestData>(
+      .query<T.Friend.FriendshipRequestStruct>(
         `
 
                 SELECT u.id,
@@ -226,7 +226,7 @@ export class FriendRepository extends BaseRepository {
 
   public listFriendRequestsOnly(id: string) {
     return this.database
-      .query<T.Friend.RequestData>(
+      .query<T.Friend.FriendshipRequestStruct>(
         `
 
                 SELECT u.id,
@@ -250,7 +250,7 @@ export class FriendRepository extends BaseRepository {
 
   public listFriendSentOnly(id: string) {
     return this.database
-      .query<T.Friend.RequestData>(
+      .query<T.Friend.FriendshipRequestStruct>(
         `
                 SELECT u.id,
                        u.first_name,
@@ -274,7 +274,7 @@ export class FriendRepository extends BaseRepository {
 
   public getBySenderAndRecipient(sender: string, recipient: string) {
     return this.database
-      .query<T.Friend.Friendship>(
+      .query<T.Friend.FriendshipStruct>(
         `
 
                 SELECT *
@@ -294,7 +294,7 @@ export class FriendRepository extends BaseRepository {
 
   public getById(id: string) {
     return this.database
-      .query<T.Friend.Friendship>(
+      .query<T.Friend.FriendshipStruct>(
         `
                 SELECT *
                 FROM friendships
