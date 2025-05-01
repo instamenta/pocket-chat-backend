@@ -10,9 +10,7 @@ export function signToken(userData: UserDataPayloadStruct): string {
   return jwt.sign(userData as object, jwtSecret, signOptions);
 }
 
-export function verifyToken(
-  token: string,
-): UserDataPayloadStruct | null {
+export function verifyToken(token: string): UserDataPayloadStruct | null {
   try {
     const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
     return decoded as UserDataPayloadStruct;

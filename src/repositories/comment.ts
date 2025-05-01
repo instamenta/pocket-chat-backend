@@ -1,5 +1,8 @@
 import { BaseRepository } from "../base/repository.base";
-import type { CommentStructure, PopulatedCommentStructure } from "../types/comments";
+import type {
+  CommentStructure,
+  PopulatedCommentStructure,
+} from "../types/comments";
 
 export class CommentRepository extends BaseRepository {
   public async listCommentsByPublication(
@@ -28,11 +31,10 @@ export class CommentRepository extends BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
     try {
-      const result =
-        await this.database.query<PopulatedCommentStructure>(query, [
-          publicationId,
-          userId,
-        ]);
+      const result = await this.database.query<PopulatedCommentStructure>(
+        query,
+        [publicationId, userId],
+      );
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listCommentsByPublication");
@@ -55,12 +57,10 @@ export class CommentRepository extends BaseRepository {
         WHERE id = $1`;
 
     try {
-      const insertResult =
-        await this.database.query<CommentStructure>(insertQuery, [
-          content,
-          publicationId,
-          userId,
-        ]);
+      const insertResult = await this.database.query<CommentStructure>(
+        insertQuery,
+        [content, publicationId, userId],
+      );
       if (insertResult.rows.length === 0) {
         throw new Error("Failed to insert comment");
       }

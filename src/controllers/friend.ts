@@ -3,7 +3,11 @@ import { FriendRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import type { Request, Response } from "express";
-import type { FriendshipRequestStruct, FriendshipStruct, MutualFriendshipStruct } from "../types/friend";
+import type {
+  FriendshipRequestStruct,
+  FriendshipStruct,
+  MutualFriendshipStruct,
+} from "../types/friend";
 import type { UserSchemaStruct } from "../types/user";
 
 export class FriendController extends BaseController<FriendRepository> {

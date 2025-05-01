@@ -1,71 +1,77 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import {
+  FriendshipRequestStruct,
+  FriendshipStruct,
+  MutualFriendshipStruct,
+} from "../types/friend";
+import { UserSchemaStruct } from "../types/user";
 
 export class FriendRepository extends BaseRepository {
-  public sendFriendRequest(sender: string, recipient: string) {
-    return this.database
-      .query<{ id: string }>(
+  public async sendFriendRequest(
+    sender: string,
+    recipient: string,
+  ): Promise<string> {
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
-
                 INSERT INTO friendships (sender_id, recipient_id)
                 VALUES ($1, $2)
                 RETURNING id;
 			`,
         [sender, recipient],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) => this.errorHandler(error, "sendFriendRequest"));
+      );
+      return data.rows[0].id;
+    } catch (error) {
+      this.errorHandler(error, "sendFriendRequest");
+    }
   }
 
-  public deleteFriendRequest(sender: string, recipient: string) {
-    return this.database
-      .query(
+  public async deleteFriendRequest(
+    sender: string,
+    recipient: string,
+  ): Promise<boolean> {
+    try {
+      const data = await this.database.query<{}>(
         `
-
                 DELETE
                 FROM friendships
                 WHERE sender_id = $1
                   AND recipient_id = $2
 			`,
         [sender, recipient],
-      )
-      .then((data) => !!data.rowCount)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "deleteFriendRequest"),
       );
+      return !!data.rowCount;
+    } catch (error) {
+      this.errorHandler(error, "deleteFriendRequest");
+    }
   }
 
-  public declineFriendRequest(sender: string, recipient: string) {
-    return this.database
-      .query(
+  public async declineFriendRequest(
+    sender: string,
+    recipient: string,
+  ): Promise<boolean> {
+    try {
+      const data = await this.database.query<{}>(
         `
-
                 DELETE
                 FROM friendships
                 WHERE sender_id = $2
                   AND recipient_id = $1;
 			`,
         [sender, recipient],
-      )
-      .then((data) => !!data.rowCount)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "declineFriendRequest"),
       );
+      return !!data.rowCount;
+    } catch (error) {
+      this.errorHandler(error, "declineFriendRequest");
+    }
   }
 
-  public listFriendRecommendations(id: string) {
-    return this.database
-      .query<{
-        id: string;
-        first_name: string;
-        picture: string;
-        username: string;
-      }>(
+  public async listFriendRecommendations(id: string) {
+    try {
+      const data = await this.database.query<
+        Pick<UserSchemaStruct, "id" | "firstName" | "picture" | "username">
+      >(
         `
-
                 SELECT u.id, u.first_name, u.last_name, u.picture, u.username
                 FROM users u
                          LEFT JOIN friendships f_sender
@@ -79,31 +85,32 @@ export class FriendRepository extends BaseRepository {
                   AND u.id != $1;
 			`,
         [id],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "listFriendRecommendations"),
       );
+
+      return data.rows;
+    } catch (error) {
+      this.errorHandler(error, "listFriendRecommendations");
+    }
   }
 
-  public acceptFriendRequest(sender: string, recipient: string) {
-    return this.database
-      .query(
+  public async acceptFriendRequest(
+    sender: string,
+    recipient: string,
+  ): Promise<boolean> {
+    try {
+      const data = await this.database.query<{}>(
         `
-
                 UPDATE friendships
                 SET friendship_status = 'accepted'
                 WHERE sender_id = $2
                   AND recipient_id = $1;
 			`,
         [sender, recipient],
-      )
-      .then((data) => !!data.rowCount)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "acceptFriendRequest"),
       );
+      return !!data.rowCount;
+    } catch (error) {
+      this.errorHandler(error, "acceptFriendRequest");
+    }
   }
 
   public async listMutualFriendsByUsers(user1: string, sender: string) {
@@ -120,17 +127,17 @@ export class FriendRepository extends BaseRepository {
           AND f1.recipient_id <> f2.recipient_id;
         ;`;
     try {
-      const result = await this.database.query<T.Friend.MutualFriendshipStruct>(
-        query,
-        [user1, sender],
-      );
+      const result = await this.database.query<MutualFriendshipStruct>(query, [
+        user1,
+        sender,
+      ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listMutualFriendsByUsers");
     }
   }
 
-  public async getFriendsCountByUserId(id: string) {
+  public async getFriendsCountByUserId(id: string): Promise<number> {
     const query = `SELECT f.id
                    FROM friendships f
                             JOIN users u
@@ -139,18 +146,17 @@ export class FriendRepository extends BaseRepository {
                    WHERE f.friendship_status = 'accepted'
     ;`;
     try {
-      const result = await this.database.query(query, [id]);
+      const result = await this.database.query<{ id: string }>(query, [id]);
       return result.rowCount ?? 0;
     } catch (error) {
       this.errorHandler(error, "getFriendsCountByUserId");
     }
   }
 
-  public listFriendsByUserId(id: string) {
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+  public async listFriendsByUserId(id: string) {
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
-
                 SELECT *
                 FROM friendships f
                          JOIN users u
@@ -159,17 +165,16 @@ export class FriendRepository extends BaseRepository {
                 WHERE f.friendship_status = 'accepted'
                 ;`,
         [id],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "listFriendsByUserId"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "listFriendsByUserId");
+    }
   }
 
-  public listFriendsByUsername(username: string) {
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+  public async listFriendsByUsername(username: string) {
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
                 SELECT DISTINCT u.*
                 FROM friendships f
@@ -184,18 +189,17 @@ export class FriendRepository extends BaseRepository {
                     );
 			`,
         [username],
-      )
-      .then((data) => data.rows)
-      .catch((error: unknown) =>
-        this.errorHandler(error, "listFriendsByUsername"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "listFriendsByUsername");
+    }
   }
 
-  public listFriendRequests(id: string) {
-    return this.database
-      .query<T.Friend.FriendshipRequestStruct>(
+  public async listFriendRequests(id: string) {
+    try {
+      const data = await this.database.query<FriendshipRequestStruct>(
         `
-
                 SELECT u.id,
                        u.first_name,
                        u.last_name,
@@ -216,19 +220,17 @@ export class FriendRepository extends BaseRepository {
                     OR (f.recipient_id = u.id AND f.sender_id = $1);
 			`,
         [id],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "listFriendRequests"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "listFriendRequests");
+    }
   }
 
-  public listFriendRequestsOnly(id: string) {
-    return this.database
-      .query<T.Friend.FriendshipRequestStruct>(
+  public async listFriendRequestsOnly(id: string) {
+    try {
+      const data = await this.database.query<FriendshipRequestStruct>(
         `
-
                 SELECT u.id,
                        u.first_name,
                        u.last_name,
@@ -241,16 +243,16 @@ export class FriendRepository extends BaseRepository {
                   AND friendship_status != 'accepted';
 			`,
         [id],
-      )
-      .then((data) => data.rows)
-      .catch((error: unknown) =>
-        this.errorHandler(error, "listFriendRequestsOnly"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "listFriendRequestsOnly");
+    }
   }
 
-  public listFriendSentOnly(id: string) {
-    return this.database
-      .query<T.Friend.FriendshipRequestStruct>(
+  public async listFriendSentOnly(id: string) {
+    try {
+      const data = await this.database.query<FriendshipRequestStruct>(
         `
                 SELECT u.id,
                        u.first_name,
@@ -264,19 +266,17 @@ export class FriendRepository extends BaseRepository {
                   AND friendship_status != 'accepted';
 			`,
         [id],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "listFriendSentOnly"),
       );
+      return data.rows;
+    } catch (error) {
+      return this.errorHandler(error, "listFriendSentOnly");
+    }
   }
 
-  public getBySenderAndRecipient(sender: string, recipient: string) {
-    return this.database
-      .query<T.Friend.FriendshipStruct>(
+  public async getBySenderAndRecipient(sender: string, recipient: string) {
+    try {
+      const data = await this.database.query<FriendshipStruct>(
         `
-
                 SELECT *
                 FROM friendships
                 WHERE (sender_id = $1 AND recipient_id = $2)
@@ -284,28 +284,26 @@ export class FriendRepository extends BaseRepository {
                 LIMIT 1
 			`,
         [sender, recipient],
-      )
-      .then((data) => data.rows[0] ?? null)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "getBySenderAndRecipient"),
       );
+      return data.rows[0] ?? null;
+    } catch (error) {
+      return this.errorHandler(error, "getBySenderAndRecipient");
+    }
   }
 
-  public getById(id: string) {
-    return this.database
-      .query<T.Friend.FriendshipStruct>(
+  public async getById(id: string) {
+    try {
+      const data = await this.database.query<FriendshipStruct>(
         `
                 SELECT *
                 FROM friendships
                 WHERE id = $1
                 LIMIT 1`,
         [id],
-      )
-      .then((data) => data.rows[0] ?? null)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "getBySenderAndRecipient"),
       );
+      return data.rows[0] ?? null;
+    } catch (error) {
+      return this.errorHandler(error, "getBySenderAndRecipient");
+    }
   }
 }

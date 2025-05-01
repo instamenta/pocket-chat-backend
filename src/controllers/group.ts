@@ -71,10 +71,7 @@ export class GroupController extends BaseController<GroupRepository> {
     }
   }
 
-  public async listGroups(
-    request: Request,
-    response: Response<GroupStruct[]>,
-  ) {
+  public async listGroups(request: Request, response: Response<GroupStruct[]>) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
 

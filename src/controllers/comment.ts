@@ -7,7 +7,10 @@ import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import type VLogger from "@instamenta/vlogger";
 import type { Request, Response } from "express";
-import type { CommentStructure, PopulatedCommentStructure } from "../types/comments";
+import type {
+  CommentStructure,
+  PopulatedCommentStructure,
+} from "../types/comments";
 
 export class CommentController extends BaseController<CommentRepository> {
   public constructor(
