@@ -1,9 +1,10 @@
-import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
-import { GroupRepository } from "../repositories/group";
+import { GroupRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
+import type { Request, Response } from "express";
+import type { GroupStruct, MemberPopulated } from "../types/groups";
+import type { PublicationStruct } from "../types/publications";
 
 export class GroupController extends BaseController<GroupRepository> {
   public async createGroup(
@@ -72,7 +73,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async listGroups(
     request: Request,
-    response: Response<T.Group.GroupStruct[]>,
+    response: Response<GroupStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -87,7 +88,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async listGroupsByUser(
     request: Request<{ userId: string }>,
-    response: Response<T.Group.GroupStruct[]>,
+    response: Response<GroupStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.params.userId);
@@ -102,7 +103,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async getGroupById(
     request: Request<{ id: string }>,
-    response: Response<T.Group.GroupStruct>,
+    response: Response<GroupStruct>,
   ) {
     try {
       const groupId = Validate.uuid.parse(request.params.id);
@@ -229,7 +230,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async getMembersByGroupId(
     request: Request<{ id: string }>,
-    response: Response<T.Group.MemberPopulated[]>,
+    response: Response<MemberPopulated[]>,
   ) {
     try {
       const groupId = Validate.uuid.parse(request.params.id);
@@ -278,7 +279,7 @@ export class GroupController extends BaseController<GroupRepository> {
 
   public async listPublications(
     request: Request<{ groupId: string }>,
-    response: Response<T.Publication.PublicationStruct[]>,
+    response: Response<PublicationStruct[]>,
   ) {
     try {
       const groupId = Validate.uuid.parse(request.params.groupId);

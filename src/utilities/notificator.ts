@@ -9,6 +9,7 @@ import { NotificationTypes } from "./enumerations";
 import { NotImplementedError } from "@instamenta/vanilla-utility-pack";
 import * as T from "../types";
 import VLogger, { IVlog } from "@instamenta/vlogger";
+import { NotificationData } from "../types/notifications";
 
 export class Notificator {
   private readonly log: IVlog;
@@ -24,7 +25,7 @@ export class Notificator {
     this.log = logger.getVlogger(this.constructor.name);
   }
 
-  public async handleNotification(data: T.Notification.Data) {
+  public async handleNotification(data: NotificationData) {
     this.log.info({
       f: "handleNotification",
       m: "Creating notification of type",
@@ -74,7 +75,7 @@ export class Notificator {
   /**
    ** Like Publication
    */
-  async #handleLikeNotification(data: T.Notification.Data) {
+  async #handleLikeNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({ e: data, m: "No reference id for like notification" });
       return;
@@ -112,7 +113,7 @@ export class Notificator {
   /**
    ** Chat Message
    */
-  async #handleMessageNotification(data: T.Notification.Data) {
+  async #handleMessageNotification(data: NotificationData) {
     const notification =
       await this.repository.getNotificationBySenderAndRecipient(
         data.senderId,
@@ -136,7 +137,7 @@ export class Notificator {
   /**
    ** Comment Publication
    */
-  async #handleCommentNotification(data: T.Notification.Data) {
+  async #handleCommentNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({
         e: data,
@@ -177,7 +178,7 @@ export class Notificator {
   /**
    ** Like Comment Publication
    */
-  async #handleLikeCommentNotification(data: T.Notification.Data) {
+  async #handleLikeCommentNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({
         e: data,
@@ -219,7 +220,7 @@ export class Notificator {
   /**
    ** Like Short
    */
-  async #handleLikeShortNotification(data: T.Notification.Data) {
+  async #handleLikeShortNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({ e: data, m: "No reference id for like short" });
       return;
@@ -258,7 +259,7 @@ export class Notificator {
   /**
    ** Comment Short
    */
-  async #handleCommentShortNotification(data: T.Notification.Data) {
+  async #handleCommentShortNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({
         e: data,
@@ -299,7 +300,7 @@ export class Notificator {
   /**
    ** Like Comment Short
    */
-  async #handleLikeShortCommentNotification(data: T.Notification.Data) {
+  async #handleLikeShortCommentNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({
         e: data,
@@ -341,7 +342,7 @@ export class Notificator {
   /**
    ** Like Story
    */
-  async #handleLikeStoryNotification(data: T.Notification.Data) {
+  async #handleLikeStoryNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({ e: data, m: "No reference id for like notification" });
       return;
@@ -380,7 +381,7 @@ export class Notificator {
   /**
    ** Comment Story
    */
-  async #handleCommentStoryNotification(data: T.Notification.Data) {
+  async #handleCommentStoryNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({
         e: data,
@@ -421,7 +422,7 @@ export class Notificator {
   /**
    ** Like Comment Story
    */
-  async #handleLikeStoryCommentNotification(data: T.Notification.Data) {
+  async #handleLikeStoryCommentNotification(data: NotificationData) {
     if (!data.referenceId) {
       this.log.error({
         e: data,

@@ -1,20 +1,20 @@
-import { Request, Response } from "express";
 import { CommentRepository } from "../repositories";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
-import * as T from "../types";
-import VLogger from "@instamenta/vlogger";
+import type VLogger from "@instamenta/vlogger";
+import type { Request, Response } from "express";
+import type { CommentStructure, PopulatedCommentStructure } from "../types/comments";
 export declare class CommentController extends BaseController<CommentRepository> {
     private readonly notificator;
     constructor(repository: CommentRepository, logger: VLogger, notificator: Notificator);
     listByPublication(request: Request<{
         publicationId: string;
-    }>, response: Response<T.Comment.PopulatedCommentStructure[]>): Promise<void>;
+    }>, response: Response<PopulatedCommentStructure[]>): Promise<void>;
     create(request: Request<{
         publicationId: string;
     }, object, {
         content: string;
-    }>, response: Response<T.Comment.CommentStructure>): Promise<void>;
+    }>, response: Response<CommentStructure>): Promise<void>;
     delete(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;
@@ -23,9 +23,9 @@ export declare class CommentController extends BaseController<CommentRepository>
     }>, response: Response<void>): Promise<void>;
     getCommentById(request: Request<{
         commentId: string;
-    }>, response: Response<T.Comment.CommentStructure & {
+    }>, response: Response<CommentStructure & {
         likes_count: number;
-    }>): Promise<Response<T.Comment.CommentStructure & {
+    }>): Promise<Response<CommentStructure & {
         likes_count: number;
     }, Record<string, any>> | undefined>;
 }

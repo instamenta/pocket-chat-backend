@@ -23,5 +23,5 @@ export interface PopulatedNotificationStruct {
     lastName: string;
     referenceId: string;
 }
-export type Data = Omit<NotificationStruct, "createdAt" | "id">;
+export type NotificationData = Omit<NotificationStruct, "createdAt" | "id">;
 //# sourceMappingURL=notifications.d.ts.map

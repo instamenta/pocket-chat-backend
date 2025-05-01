@@ -1,5 +1,5 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import type { CommentStructure, PopulatedCommentStructure } from "../types/comments";
 
 export class CommentRepository extends BaseRepository {
   public async listCommentsByPublication(
@@ -29,7 +29,7 @@ export class CommentRepository extends BaseRepository {
 		`;
     try {
       const result =
-        await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
+        await this.database.query<PopulatedCommentStructure>(query, [
           publicationId,
           userId,
         ]);
@@ -43,7 +43,7 @@ export class CommentRepository extends BaseRepository {
     publicationId: string,
     userId: string,
     content: string,
-  ): Promise<T.Comment.CommentStructure> {
+  ): Promise<CommentStructure> {
     const insertQuery = `
         INSERT INTO comments (content, publication_id, user_id)
         VALUES ($1, $2, $3)
@@ -56,7 +56,7 @@ export class CommentRepository extends BaseRepository {
 
     try {
       const insertResult =
-        await this.database.query<T.Comment.CommentStructure>(insertQuery, [
+        await this.database.query<CommentStructure>(insertQuery, [
           content,
           publicationId,
           userId,
@@ -100,7 +100,7 @@ export class CommentRepository extends BaseRepository {
 		`;
     try {
       const result = await this.database.query<
-        T.Comment.CommentStructure & { likes_count: number }
+        CommentStructure & { likes_count: number }
       >(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {

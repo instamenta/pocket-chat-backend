@@ -26,4 +26,4 @@ export interface PopulatedNotificationStruct {
   referenceId: string;
 }
 
-export type Data = Omit<NotificationStruct, "createdAt" | "id">;
+export type NotificationData = Omit<NotificationStruct, "createdAt" | "id">;

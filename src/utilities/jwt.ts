@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload, Secret, SignOptions } from "jsonwebtoken";
 import { SECURITY } from "./config";
-import * as T from "../types";
+import { UserDataPayloadStruct } from "../types/user";
 
 const jwtSecret: Secret = SECURITY.JWT_SECRET;
 const signOptions: SignOptions = { expiresIn: SECURITY.JWT_EXPIRATION_TIME };
 
-export function signToken(userData: T.User.UserDataPayloadStruct): string {
+export function signToken(userData: UserDataPayloadStruct): string {
   return jwt.sign(userData as object, jwtSecret, signOptions);
 }
 
 export function verifyToken(
   token: string,
-): T.User.UserDataPayloadStruct | null {
+): UserDataPayloadStruct | null {
   try {
     const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
-    return decoded as T.User.UserDataPayloadStruct;
+    return decoded as UserDataPayloadStruct;
   } catch {
     return null;
   }

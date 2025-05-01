@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
 import { CommentRepository } from "../repositories";
 import statusCodes from "@instamenta/http-status-codes";
 import { z } from "zod";
-import { NotificationTypes } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
-import VLogger from "@instamenta/vlogger";
+import type VLogger from "@instamenta/vlogger";
+import type { Request, Response } from "express";
+import type { CommentStructure, PopulatedCommentStructure } from "../types/comments";
 
 export class CommentController extends BaseController<CommentRepository> {
   public constructor(
@@ -20,7 +20,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
   public async listByPublication(
     request: Request<{ publicationId: string }>,
-    response: Response<T.Comment.PopulatedCommentStructure[]>,
+    response: Response<PopulatedCommentStructure[]>,
   ) {
     this.log.log("listByPublication");
     try {
@@ -40,7 +40,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
   public async create(
     request: Request<{ publicationId: string }, object, { content: string }>,
-    response: Response<T.Comment.CommentStructure>,
+    response: Response<CommentStructure>,
   ) {
     this.log.log("create");
     try {
@@ -122,11 +122,7 @@ export class CommentController extends BaseController<CommentRepository> {
 
   public async getCommentById(
     request: Request<{ commentId: string }>,
-    response: Response<
-      T.Comment.CommentStructure & {
-        likes_count: number;
-      }
-    >,
+    response: Response<CommentStructure & { likes_count: number }>,
   ) {
     this.log.log("getCommentById");
     try {

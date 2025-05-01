@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const zod_1 = require("zod");
-const enumerations_1 = require("../utilities/enumerations");
+const utilities_1 = require("../utilities");
 const controller_base_1 = require("../base/controller.base");
 const Validate = __importStar(require("../validators"));
 class CommentController extends controller_base_1.BaseController {
@@ -70,7 +70,7 @@ class CommentController extends controller_base_1.BaseController {
             response.status(http_status_codes_1.default.CREATED).json(comment);
             await this.notificator
                 .handleNotification({
-                type: enumerations_1.NotificationTypes.COMMENT,
+                type: utilities_1.NotificationTypes.COMMENT,
                 referenceId: publicationId,
                 recipientId: "",
                 senderId: userId,
@@ -105,7 +105,7 @@ class CommentController extends controller_base_1.BaseController {
             await this.repository.likeComment(commentId, userId);
             await this.notificator
                 .handleNotification({
-                type: enumerations_1.NotificationTypes.LIKE_COMMENT,
+                type: utilities_1.NotificationTypes.LIKE_COMMENT,
                 referenceId: commentId,
                 recipientId: "",
                 senderId: userId,
