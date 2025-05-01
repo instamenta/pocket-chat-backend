@@ -30,9 +30,7 @@ class LiveRepository extends repository_base_1.BaseRepository {
                    ORDER BY l.created_at DESC
 		`;
         try {
-            const result = await this.database.query(query, [
-                userId,
-            ]);
+            const result = await this.database.query(query, [userId]);
             return result.rows;
         }
         catch (error) {

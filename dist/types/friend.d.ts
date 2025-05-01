@@ -1,24 +1,24 @@
 import { FriendshipStatusUnion } from "./unions";
 export interface FriendshipStruct {
     id: string;
-    sender_id: string;
-    created_at: string;
-    recipient_id: string;
-    friendship_status: FriendshipStatusUnion;
+    senderId: string;
+    createdAt: string;
+    recipientId: string;
+    friendshipStatus: FriendshipStatusUnion;
 }
 export interface MutualFriendshipStruct {
-    user_id: string;
-    first_name: string;
-    last_name: string;
+    userId: string;
+    firstName: string;
+    lastName: string;
     username: string;
 }
 export interface FriendshipRequestStruct {
     id: string;
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     picture: string;
     username: string;
-    request_date: string;
-    request_type: "sent" | "received";
+    requestDate: string;
+    requestType: "sent" | "received";
 }
 //# sourceMappingURL=friend.d.ts.map

@@ -44,7 +44,9 @@ export class StoryRepository extends BaseRepository {
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
     try {
-      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [userId]);
+      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [
+        userId,
+      ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listStories");
@@ -79,7 +81,9 @@ export class StoryRepository extends BaseRepository {
 		`;
 
     try {
-      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [userId]);
+      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [
+        userId,
+      ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listFeedStories");
@@ -195,10 +199,11 @@ export class StoryRepository extends BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
     try {
-      const result = await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
-        storyId,
-        userId,
-      ]);
+      const result =
+        await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
+          storyId,
+          userId,
+        ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listCommentsByStoryId");
@@ -219,10 +224,12 @@ export class StoryRepository extends BaseRepository {
                          WHERE id = $1`;
 
     try {
-      const insertResult = await this.database.query<T.Comment.CommentStructure>(
-        insertQuery,
-        [content, storyId, userId],
-      );
+      const insertResult =
+        await this.database.query<T.Comment.CommentStructure>(insertQuery, [
+          content,
+          storyId,
+          userId,
+        ]);
       if (insertResult.rows.length === 0) {
         throw new Error("Failed to insert comment");
       }

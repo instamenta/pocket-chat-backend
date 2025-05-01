@@ -5,11 +5,11 @@ export interface UserSchemaStruct {
     username: string;
     password: string;
     bio: string;
-    first_name: string;
-    last_name: string;
-    created_at: string;
-    updated_at: string;
-    last_active_at: string;
+    firstName: string;
+    lastName: string;
+    createdAt: string;
+    updatedAt: string;
+    lastActiveAt: string;
 }
 export interface UserDataPayloadStruct {
     id: string;

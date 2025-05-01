@@ -1,21 +1,21 @@
 export interface CommentStructure {
     id: string;
     content: string;
-    created_at: string;
-    publication_id: string;
-    user_id: string;
+    createdAt: string;
+    publicationId: string;
+    userId: string;
 }
 export interface PopulatedCommentStructure {
     id: string;
     content: string;
-    created_at: string;
-    publication_id: string;
-    user_id: string;
+    createdAt: string;
+    publicationId: string;
+    userId: string;
     username: string;
     picture: string;
-    liked_by_user: boolean;
-    first_name: string;
-    last_name: string;
-    likes_count: number;
+    likedByUser: boolean;
+    firstName: string;
+    lastName: string;
+    likesCount: number;
 }
 //# sourceMappingURL=comments.d.ts.map

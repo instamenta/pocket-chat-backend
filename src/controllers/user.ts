@@ -123,7 +123,10 @@ export class UserController extends BaseController<UserRepository> {
     }
   }
 
-  public async authUser(request: Request, response: Response<T.User.UserSchemaStruct>) {
+  public async authUser(
+    request: Request,
+    response: Response<T.User.UserSchemaStruct>,
+  ) {
     try {
       const id = Validate.uuid.parse(request.user.id);
 

@@ -46,10 +46,11 @@ export class PublicationRepository extends BaseRepository {
                               LEFT JOIN publication_likes pl ON p.id = pl.publication_id AND pl.user_id = $1
                      WHERE publisher_id = $1
                      ORDER BY created_at DESC`;
-      const result = await this.database.query<T.Publication.RecommendationPublicationStruct>(
-        query,
-        [userId],
-      );
+      const result =
+        await this.database.query<T.Publication.RecommendationPublicationStruct>(
+          query,
+          [userId],
+        );
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "getPublicationsByUserId");

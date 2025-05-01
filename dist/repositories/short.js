@@ -93,7 +93,9 @@ class ShortRepository extends repository_base_1.BaseRepository {
                    WHERE s.id = $1
                    LIMIT 1`;
         try {
-            const result = await this.database.query(query, [id]);
+            const result = await this.database.query(query, [
+                id,
+            ]);
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {
@@ -175,7 +177,11 @@ class ShortRepository extends repository_base_1.BaseRepository {
         SET comments_count = comments_count + 1
         WHERE id = $1`;
         try {
-            const insertResult = await this.database.query(insertQuery, [content, shortId, userId]);
+            const insertResult = await this.database.query(insertQuery, [
+                content,
+                shortId,
+                userId,
+            ]);
             if (insertResult.rows.length === 0) {
                 throw new Error("Failed to insert comment");
             }

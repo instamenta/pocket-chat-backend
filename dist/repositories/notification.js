@@ -90,9 +90,7 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                    WHERE n.reference_id = $1
 		`;
         try {
-            const data = await this.database.query(query, [
-                referenceId,
-            ]);
+            const data = await this.database.query(query, [referenceId]);
             return data.rowCount ? data.rows[0] : null;
         }
         catch (error) {
@@ -117,11 +115,7 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                      AND n.reference_id = $2
                      AND n.type = $3`;
         try {
-            const data = await this.database.query(query, [
-                senderId,
-                recipientId,
-                type,
-            ]);
+            const data = await this.database.query(query, [senderId, recipientId, type]);
             return data.rowCount ? data.rows[0] : null;
         }
         catch (error) {

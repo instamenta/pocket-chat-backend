@@ -125,9 +125,11 @@ export class NotificationRepository extends BaseRepository {
                    WHERE n.reference_id = $1
 		`;
     try {
-      const data = await this.database.query<T.Notification.PopulatedNotificationStruct>(query, [
-        referenceId,
-      ]);
+      const data =
+        await this.database.query<T.Notification.PopulatedNotificationStruct>(
+          query,
+          [referenceId],
+        );
       return data.rowCount ? data.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getNotificationByReferenceId");
@@ -156,11 +158,11 @@ export class NotificationRepository extends BaseRepository {
                      AND n.reference_id = $2
                      AND n.type = $3`;
     try {
-      const data = await this.database.query<T.Notification.PopulatedNotificationStruct>(query, [
-        senderId,
-        recipientId,
-        type,
-      ]);
+      const data =
+        await this.database.query<T.Notification.PopulatedNotificationStruct>(
+          query,
+          [senderId, recipientId, type],
+        );
       return data.rowCount ? data.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getNotificationBySenderAndRecipient");

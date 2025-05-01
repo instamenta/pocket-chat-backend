@@ -120,10 +120,10 @@ export class FriendRepository extends BaseRepository {
           AND f1.recipient_id <> f2.recipient_id;
         ;`;
     try {
-      const result = await this.database.query<T.Friend.MutualFriendshipStruct>(query, [
-        user1,
-        sender,
-      ]);
+      const result = await this.database.query<T.Friend.MutualFriendshipStruct>(
+        query,
+        [user1, sender],
+      );
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listMutualFriendsByUsers");

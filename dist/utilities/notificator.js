@@ -76,8 +76,8 @@ class Notificator {
             });
             return;
         }
-        data.content = publication.likes_count.toString();
-        data.recipientId = publication.publisher_id;
+        data.content = publication.likesCount.toString();
+        data.recipientId = publication.publisherId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }
@@ -114,7 +114,7 @@ class Notificator {
             });
             return;
         }
-        data.recipientId = publication.publisher_id;
+        data.recipientId = publication.publisherId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }
@@ -143,7 +143,7 @@ class Notificator {
             return;
         }
         data.content = comment.likes_count.toString();
-        data.recipientId = comment.user_id;
+        data.recipientId = comment.userId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }
@@ -168,8 +168,8 @@ class Notificator {
             });
             return;
         }
-        data.content = short.likes_count.toString();
-        data.recipientId = short.user_id;
+        data.content = short.likesCount.toString();
+        data.recipientId = short.userId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }
@@ -197,7 +197,7 @@ class Notificator {
             });
             return;
         }
-        data.recipientId = short.user_id;
+        data.recipientId = short.userId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }
@@ -226,7 +226,7 @@ class Notificator {
             return;
         }
         data.content = comment.likes_count.toString();
-        data.recipientId = comment.user_id;
+        data.recipientId = comment.userId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }
@@ -280,7 +280,7 @@ class Notificator {
             });
             return;
         }
-        data.recipientId = publication.publisher_id;
+        data.recipientId = publication.publisherId;
         if (notification) {
             await this.repository.updateNotification(notification.id, data.content, data.seen, data.type, data.senderId);
         }

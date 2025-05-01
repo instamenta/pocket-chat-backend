@@ -34,9 +34,10 @@ export class LiveRepository extends BaseRepository {
                    ORDER BY l.created_at DESC
 		`;
     try {
-      const result = await this.database.query<T.Live.PopulatedLiveStruct>(query, [
-        userId,
-      ]);
+      const result = await this.database.query<T.Live.PopulatedLiveStruct>(
+        query,
+        [userId],
+      );
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listLives");
@@ -110,9 +111,10 @@ export class LiveRepository extends BaseRepository {
                    ORDER BY lm.created_at DESC
 		`;
     try {
-      const result = await this.database.query<T.Live.PopulatedLiveMessageStruct>(query, [
-        liveId,
-      ]);
+      const result =
+        await this.database.query<T.Live.PopulatedLiveMessageStruct>(query, [
+          liveId,
+        ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listLiveMessages");

@@ -30,7 +30,6 @@ export async function initializeAll() {
   const api = express();
   api.disable("x-powered-by");
 
-
   api.use(CORS(corsOptions));
   api.use(COOKIE_PARSER());
   api.use(BODY_PARSER.json());

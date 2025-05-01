@@ -87,7 +87,9 @@ export class GroupRepository extends BaseRepository {
         ORDER BY g.members_count DESC;
 		`;
     try {
-      const result = await this.database.query<T.Group.GroupStruct>(query, [userId]);
+      const result = await this.database.query<T.Group.GroupStruct>(query, [
+        userId,
+      ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listGroups");
@@ -103,7 +105,9 @@ export class GroupRepository extends BaseRepository {
         ORDER BY g.members_count DESC
 		`;
     try {
-      const result = await this.database.query<T.Group.GroupStruct>(query, [userId]);
+      const result = await this.database.query<T.Group.GroupStruct>(query, [
+        userId,
+      ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listGroupsByUser");
@@ -278,7 +282,9 @@ export class GroupRepository extends BaseRepository {
         WHERE g.id = $1;
 		`;
     try {
-      const result = await this.database.query<T.Group.GroupStruct>(query, [groupId]);
+      const result = await this.database.query<T.Group.GroupStruct>(query, [
+        groupId,
+      ]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getGroupById");
@@ -319,10 +325,11 @@ export class GroupRepository extends BaseRepository {
                      WHERE p.publication_status = 'published'
                        AND p.group_id = $1
                      ORDER BY p.created_at DESC`;
-      const result = await this.database.query<T.Publication.RecommendationPublicationStruct>(
-        query,
-        [groupId],
-      );
+      const result =
+        await this.database.query<T.Publication.RecommendationPublicationStruct>(
+          query,
+          [groupId],
+        );
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listPublications");

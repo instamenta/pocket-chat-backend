@@ -32,7 +32,9 @@ class StoryRepository extends repository_base_1.BaseRepository {
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
@@ -66,7 +68,9 @@ class StoryRepository extends repository_base_1.BaseRepository {
         ORDER BY u.id, s.created_at DESC
 		`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
@@ -183,7 +187,11 @@ class StoryRepository extends repository_base_1.BaseRepository {
                          SET comments_count = comments_count + 1
                          WHERE id = $1`;
         try {
-            const insertResult = await this.database.query(insertQuery, [content, storyId, userId]);
+            const insertResult = await this.database.query(insertQuery, [
+                content,
+                storyId,
+                userId,
+            ]);
             if (insertResult.rows.length === 0) {
                 throw new Error("Failed to insert comment");
             }

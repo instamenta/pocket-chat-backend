@@ -46,7 +46,11 @@ class CommentRepository extends repository_base_1.BaseRepository {
         SET comments_count = comments_count + 1
         WHERE id = $1`;
         try {
-            const insertResult = await this.database.query(insertQuery, [content, publicationId, userId]);
+            const insertResult = await this.database.query(insertQuery, [
+                content,
+                publicationId,
+                userId,
+            ]);
             if (insertResult.rows.length === 0) {
                 throw new Error("Failed to insert comment");
             }

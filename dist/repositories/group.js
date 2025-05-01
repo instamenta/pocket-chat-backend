@@ -71,7 +71,9 @@ class GroupRepository extends repository_base_1.BaseRepository {
         ORDER BY g.members_count DESC;
 		`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
@@ -87,7 +89,9 @@ class GroupRepository extends repository_base_1.BaseRepository {
         ORDER BY g.members_count DESC
 		`;
         try {
-            const result = await this.database.query(query, [userId]);
+            const result = await this.database.query(query, [
+                userId,
+            ]);
             return result.rows;
         }
         catch (error) {
@@ -232,7 +236,9 @@ class GroupRepository extends repository_base_1.BaseRepository {
         WHERE g.id = $1;
 		`;
         try {
-            const result = await this.database.query(query, [groupId]);
+            const result = await this.database.query(query, [
+                groupId,
+            ]);
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {

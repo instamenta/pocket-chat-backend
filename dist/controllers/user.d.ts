@@ -12,7 +12,7 @@ export declare class UserController extends BaseController<UserRepository> {
     listUsers(request: Request<object, object, object, {
         skip?: string;
         number?: string;
-    }>, response: Response<Omit<T.User.UserSchemaStruct, "updated_at">[]>): Promise<void>;
+    }>, response: Response<Omit<T.User.UserSchemaStruct, "updatedAt">[]>): Promise<void>;
     signUp(request: Request<object, z.infer<typeof Validate.createUser>>, response: Response<{
         token: string;
         id: string;

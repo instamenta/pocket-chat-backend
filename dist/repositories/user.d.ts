@@ -8,7 +8,7 @@ import VLogger from "@instamenta/vlogger";
 export declare class UserRepository extends BaseRepository {
     private readonly hashingHandler;
     constructor(client: Client, logger: VLogger, hashingHandler: HashingHandler);
-    listUsers(skip?: number, limit?: number): Promise<Omit<T.User.UserSchemaStruct, "updated_at">[]>;
+    listUsers(skip?: number, limit?: number): Promise<Omit<T.User.UserSchemaStruct, "updatedAt">[]>;
     getByUsername(username: string): Promise<T.User.GetUserByUsernameStruct | null>;
     updateLastActiveAtById(id: string): Promise<number | null>;
     createUser({ username, email, password, firstName, lastName, }: z.infer<typeof Validate.createUser>): Promise<string>;

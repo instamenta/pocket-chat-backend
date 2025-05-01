@@ -42,7 +42,9 @@ export class UserRepository extends BaseRepository {
       .catch((error: unknown) => this.errorHandler(error, "listUsers"));
   }
 
-  public getByUsername(username: string): Promise<T.User.GetUserByUsernameStruct | null> {
+  public getByUsername(
+    username: string,
+  ): Promise<T.User.GetUserByUsernameStruct | null> {
     return this.database
       .query<T.User.GetUserByUsernameStruct>(
         `

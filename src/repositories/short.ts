@@ -97,7 +97,9 @@ export class ShortRepository extends BaseRepository {
                    WHERE s.id = $1
                    LIMIT 1`;
     try {
-      const result = await this.database.query<T.Short.ShortStruct>(query, [id]);
+      const result = await this.database.query<T.Short.ShortStruct>(query, [
+        id,
+      ]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "listShortsById");
@@ -168,10 +170,11 @@ export class ShortRepository extends BaseRepository {
         ORDER BY c.created_at DESC;
 		`;
     try {
-      const result = await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
-        shortId,
-        userId,
-      ]);
+      const result =
+        await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
+          shortId,
+          userId,
+        ]);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listCommentsByShortId");
@@ -194,10 +197,12 @@ export class ShortRepository extends BaseRepository {
         WHERE id = $1`;
 
     try {
-      const insertResult = await this.database.query<T.Comment.CommentStructure>(
-        insertQuery,
-        [content, shortId, userId],
-      );
+      const insertResult =
+        await this.database.query<T.Comment.CommentStructure>(insertQuery, [
+          content,
+          shortId,
+          userId,
+        ]);
       if (insertResult.rows.length === 0) {
         throw new Error("Failed to insert comment");
       }

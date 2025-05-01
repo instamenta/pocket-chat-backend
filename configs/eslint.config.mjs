@@ -1,8 +1,8 @@
 import eslint from "@eslint/js";
 import tslint from "typescript-eslint";
 import esimport from "eslint-plugin-import";
-import sonarjs from 'eslint-plugin-sonarjs';
-import * as depend from 'eslint-plugin-depend';
+import sonarjs from "eslint-plugin-sonarjs";
+import * as depend from "eslint-plugin-depend";
 
 export default tslint.config(
   {
@@ -15,10 +15,9 @@ export default tslint.config(
       esimport.flatConfigs.typescript,
       esimport.flatConfigs.errors,
       sonarjs.configs.recommended,
-      depend.configs["flat/recommended"]
+      depend.configs["flat/recommended"],
     ],
-    plugins: {
-    },
+    plugins: {},
   },
   {
     languageOptions: {
@@ -41,18 +40,18 @@ export default tslint.config(
       "@typescript-eslint/explicit-member-accessibility": "error",
 
       // import
-      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+      "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
       "import/no-duplicates": "error",
       "import/no-extraneous-dependencies": "error",
       "import/no-unused-modules": "error",
       "import/no-default-export": "error",
-      'import/no-useless-path-segments': ['error', { noUselessIndex: true }],
+      "import/no-useless-path-segments": ["error", { noUselessIndex: true }],
 
       // sonarjs
-      "sonarjs/no-clear-text-protocols": 'off',
-      'sonarjs/sql-queries': 'off',
-      'sonarjs/bool-param-default': 'error',
-      'sonarjs/no-built-in-override': 'error',
+      "sonarjs/no-clear-text-protocols": "off",
+      "sonarjs/sql-queries": "off",
+      "sonarjs/bool-param-default": "error",
+      "sonarjs/no-built-in-override": "error",
     },
   },
 );
