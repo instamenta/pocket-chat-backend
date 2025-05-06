@@ -1,6 +1,6 @@
 import { z } from "zod";
 import * as Validate from "../validators";
-import { MessageStatusUnion } from "./unions";
+import { MessageStatusUnion } from "./union";
 
 export type CreateMessageRequestStruct = z.infer<typeof Validate.createMessage>;
 

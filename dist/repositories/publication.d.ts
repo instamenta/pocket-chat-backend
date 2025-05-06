@@ -1,11 +1,11 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import type { PublicationStruct, RecommendationPublicationStruct } from "../types/publication";
 export declare class PublicationRepository extends BaseRepository {
-    listPublications(): Promise<T.Publication.PublicationStruct[]>;
-    getPublicationById(id: string): Promise<T.Publication.PublicationStruct | null>;
-    getPublicationsByUserId(userId: string): Promise<T.Publication.RecommendationPublicationStruct[]>;
+    listPublications(): Promise<PublicationStruct[]>;
+    getPublicationById(id: string): Promise<PublicationStruct | null>;
+    getPublicationsByUserId(userId: string): Promise<RecommendationPublicationStruct[]>;
     getPublicationsCountByUserId(userId: string): Promise<number>;
-    getRecommendations(userId: string): Promise<T.Publication.PublicationStruct[]>;
+    getRecommendations(userId: string): Promise<PublicationStruct[]>;
     createPublication({ publisherId, description, images, publicationStatus, }: {
         publisherId: string;
         description: string;

@@ -4,11 +4,11 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from "@instamenta/vanilla-utility-pack";
-import { GroupStruct, MemberPopulated } from "../types/groups";
+import { GroupStruct, MemberPopulated } from "../types/group";
 import {
   PublicationStruct,
   RecommendationPublicationStruct,
-} from "../types/publications";
+} from "../types/publication";
 
 export class GroupRepository extends BaseRepository {
   public async createGroup(

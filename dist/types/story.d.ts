@@ -1,25 +1,25 @@
-import * as U from "./unions";
-export interface Story {
+import { StoryVisibilityUnion } from "./union";
+export interface StoryStruct {
     id: string;
-    user_id: string;
-    image_url: string;
-    created_at: string;
-    visibility: U.StoryVisibility;
-    likes_count: number;
-    comments_count: number;
+    userId: string;
+    imageUrl: string;
+    createdAt: string;
+    visibility: StoryVisibilityUnion;
+    likesCount: number;
+    commentsCount: number;
 }
-export interface Feed {
+export interface StoryFeedStruct {
     id: string;
     username: string;
-    first_name: string;
-    last_name: string;
-    user_picture: string;
-    image_url: string;
-    comments_count: number;
-    likes_count: number;
+    firstName: string;
+    lastName: string;
+    userPicture: string;
+    imageUrl: string;
+    commentsCount: number;
+    likesCount: number;
 }
-export type Full = Story | {
-    user_picture: string;
-    user_username: string;
+export type FullStoryStruct = StoryStruct | {
+    userPicture: string;
+    userUsername: string;
 };
 //# sourceMappingURL=story.d.ts.map

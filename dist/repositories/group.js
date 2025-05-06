@@ -1,20 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GroupRepository = void 0;
-const enumerations_1 = require("../utilities/enumerations");
+const utilities_1 = require("../utilities");
 const repository_base_1 = require("../base/repository.base");
 const vanilla_utility_pack_1 = require("@instamenta/vanilla-utility-pack");
 class GroupRepository extends repository_base_1.BaseRepository {
     async createGroup(userId, name, description, imageUrl) {
-        return this.database
-            .query(`
-
+        try {
+            const data = await this.database.query(`
                 INSERT INTO "groups" (owner_id, name, description, image_url)
                 VALUES ($1, $2, $3, $4)
                 RETURNING id
-			`, [userId, name, description, imageUrl])
-            .then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, "createShort"));
+			`, [userId, name, description, imageUrl]);
+            return data.rows[0].id;
+        }
+        catch (error) {
+            this.errorHandler(error, "createShort");
+        }
     }
     async removeGroup(userId, groupId) {
         try {
@@ -25,25 +27,16 @@ class GroupRepository extends repository_base_1.BaseRepository {
             AND user_id = $2;
 			`;
             const userRole = await this.database.query(getRoleQuery, [groupId, userId]);
-            if (!userRole.rows.length || userRole.rows[0].role !== enumerations_1.GroupRoles.OWNER) {
+            if (!userRole.rows.length || userRole.rows[0].role !== utilities_1.GroupRoles.OWNER) {
                 throw new vanilla_utility_pack_1.UnauthorizedError(" Only the owner can remove group.");
             }
         }
         catch (error) {
             this.errorHandler(error, "removeGroup");
         }
-        const deleteGroupQuery = `
-        DELETE
-        FROM "groups"
-        WHERE id = $1;`;
-        const deleteGroupMembersReferenceQuery = `
-        DELETE
-        FROM "group_members"
-        WHERE group_id = $1;`;
-        const deleteGroupPosts = `
-        DELETE
-        FROM "publications"
-        WHERE group_id = $1;`;
+        const deleteGroupQuery = `DELETE FROM "groups" WHERE id = $1;`;
+        const deleteGroupMembersReferenceQuery = `DELETE FROM "group_members" WHERE group_id = $1;`;
+        const deleteGroupPosts = `DELETE FROM "publications" WHERE group_id = $1;`;
         try {
             await Promise.all([
                 this.database.query(deleteGroupQuery, [groupId]),
@@ -71,9 +64,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
         ORDER BY g.members_count DESC;
 		`;
         try {
-            const result = await this.database.query(query, [
-                userId,
-            ]);
+            const result = await this.database.query(query, [userId]);
             return result.rows;
         }
         catch (error) {
@@ -89,9 +80,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
         ORDER BY g.members_count DESC
 		`;
         try {
-            const result = await this.database.query(query, [
-                userId,
-            ]);
+            const result = await this.database.query(query, [userId]);
             return result.rows;
         }
         catch (error) {
@@ -155,8 +144,8 @@ class GroupRepository extends repository_base_1.BaseRepository {
         try {
             const senderRole = await this.database.query(getRoleQuery, [groupId, senderId]);
             if (!senderRole.rows.length ||
-                (senderRole.rows[0].role !== enumerations_1.GroupRoles.OWNER &&
-                    senderRole.rows[0].role !== enumerations_1.GroupRoles.MODERATOR))
+                (senderRole.rows[0].role !== utilities_1.GroupRoles.OWNER &&
+                    senderRole.rows[0].role !== utilities_1.GroupRoles.MODERATOR))
                 throw new Error("Unauthorized: Only the owner or moderators can change roles.");
             const updateRoleQuery = `
           UPDATE "group_members"
@@ -198,11 +187,11 @@ class GroupRepository extends repository_base_1.BaseRepository {
                 ]),
             ]);
             if (!senderRole.rows.length ||
-                (senderRole.rows[0].role !== enumerations_1.GroupRoles.OWNER &&
-                    senderRole.rows[0].role !== enumerations_1.GroupRoles.MODERATOR))
+                (senderRole.rows[0].role !== utilities_1.GroupRoles.OWNER &&
+                    senderRole.rows[0].role !== utilities_1.GroupRoles.MODERATOR))
                 throw new Error("Unauthorized: Only the owner or moderators can change roles.");
             if (!recipientRole.rows.length ||
-                recipientRole.rows[0].role === enumerations_1.GroupRoles.OWNER)
+                recipientRole.rows[0].role === utilities_1.GroupRoles.OWNER)
                 throw new Error("Unauthorized: Cant remove the owner.");
         }
         catch (error) {
@@ -236,9 +225,7 @@ class GroupRepository extends repository_base_1.BaseRepository {
         WHERE g.id = $1;
 		`;
         try {
-            const result = await this.database.query(query, [
-                groupId,
-            ]);
+            const result = await this.database.query(query, [groupId]);
             return result.rowCount ? result.rows[0] : null;
         }
         catch (error) {

@@ -1,13 +1,12 @@
-import { QueryResult } from "pg";
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import type { PublicationStruct, RecommendationPublicationStruct } from "../types/publication";
 
 export class PublicationRepository extends BaseRepository {
   public async listPublications() {
     try {
       const query = "SELECT * FROM publications ORDER BY created_at DESC";
-      const result: QueryResult<T.Publication.PublicationStruct> =
-        await this.database.query(query);
+      const result =
+        await this.database.query<PublicationStruct>(query);
       return result.rows;
     } catch (error) {
       this.errorHandler(error, "listPublications");
@@ -17,8 +16,8 @@ export class PublicationRepository extends BaseRepository {
   public async getPublicationById(id: string) {
     try {
       const query = "SELECT * FROM publications WHERE id = $1";
-      const result: QueryResult<T.Publication.PublicationStruct> =
-        await this.database.query(query, [id]);
+      const result = await this.database.query<PublicationStruct
+      >(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getPublicationById");
@@ -47,7 +46,7 @@ export class PublicationRepository extends BaseRepository {
                      WHERE publisher_id = $1
                      ORDER BY created_at DESC`;
       const result =
-        await this.database.query<T.Publication.RecommendationPublicationStruct>(
+        await this.database.query<RecommendationPublicationStruct>(
           query,
           [userId],
         );
@@ -57,12 +56,12 @@ export class PublicationRepository extends BaseRepository {
     }
   }
 
-  public async getPublicationsCountByUserId(userId: string) {
+  public async getPublicationsCountByUserId(userId: string): Promise<number> {
     try {
       const query = `SELECT id
                      FROM publications
                      WHERE publisher_id = $1`;
-      const result = await this.database.query(query, [userId]);
+      const result = await this.database.query<object>(query, [userId]);
       return result.rowCount ?? 0;
     } catch (error) {
       this.errorHandler(error, "getPublicationsCountByUserId");
@@ -71,7 +70,7 @@ export class PublicationRepository extends BaseRepository {
 
   public async getRecommendations(
     userId: string,
-  ): Promise<T.Publication.PublicationStruct[]> {
+  ): Promise<PublicationStruct[]> {
     try {
       const query = `
           SELECT p.*,
@@ -96,11 +95,7 @@ export class PublicationRepository extends BaseRepository {
             AND p.publication_status = 'published'
           ORDER BY p.created_at
           LIMIT 20`;
-      const result: QueryResult<
-        T.Publication.PublicationStruct & {
-          liked_by_user: boolean;
-        }
-      > = await this.database.query(query, [userId]);
+      const result = await this.database.query<PublicationStruct & { liked_by_user: boolean }>(query, [userId]);
       const recommendations = result.rows;
 
       if (recommendations.length < 20) {
@@ -127,11 +122,7 @@ export class PublicationRepository extends BaseRepository {
                OR f.recipient_id = $1
             ORDER BY p.created_at
             LIMIT $2`;
-        const additionalResult: QueryResult<
-          T.Publication.PublicationStruct & {
-            liked_by_user: boolean;
-          }
-        > = await this.database.query(additionalQuery, [
+        const additionalResult = await this.database.query<PublicationStruct & { liked_by_user: boolean; }>(additionalQuery, [
           userId,
           remainingLimit,
         ]);
@@ -161,7 +152,7 @@ export class PublicationRepository extends BaseRepository {
           INSERT INTO publications (publisher_id, description, images, publication_status)
           VALUES ($1, $2, $3, $4)
           RETURNING id`;
-      const result: QueryResult<{ id: string }> = await this.database.query(
+      const result = await this.database.query<{ id: string }>(
         query,
         [publisherId, description, images, publicationStatus],
       );

@@ -1,27 +1,20 @@
 import { GroupRoles } from "../utilities/enumerations";
-export interface Group {
+export interface GroupStruct {
     id: string;
-    owner_id: string;
+    ownerId: string;
     name: string;
     description: string;
-    created_at: string;
-    members_count: number;
-    image_url: string;
-}
-export interface Member {
-    id: string;
-    group_id: string;
-    user_id: string;
-    member_since: string;
-    role: GroupRoles;
+    createdAt: string;
+    membersCount: number;
+    imageUrl: string;
 }
 export interface MemberPopulated {
-    user_id: string;
+    userId: string;
     username: string;
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     picture: string;
     role: GroupRoles;
-    member_since: string;
+    memberSince: string;
 }
 //# sourceMappingURL=group.d.ts.map

@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class MessageRepository extends repository_base_1.BaseRepository {
-    createMessage({ sender, recipient, content, friendship, images = [], files = [], }) {
-        return this.database
-            .query(`
+    async createMessage({ sender, recipient, content, friendship, images = [], files = [], }) {
+        try {
+            const data = await this.database.query(`
                 INSERT INTO "messages" (sender_id,
                                         recipient_id,
                                         friendship_id,
@@ -14,45 +14,57 @@ class MessageRepository extends repository_base_1.BaseRepository {
                                         files)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
-			`, [sender, recipient, friendship, content, images, files])
-            .then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, "createMessage"));
+			`, [sender, recipient, friendship, content, images, files]);
+            return data.rows[0].id;
+        }
+        catch (error) {
+            this.errorHandler(error, "createMessage");
+        }
     }
-    getMessagesByFriendshipId(friendshipId, skip = 0, limit = 20) {
-        return this.database
-            .query(`
+    async getMessagesByFriendshipId(friendshipId, skip = 0, limit = 20) {
+        try {
+            const data = await this.database.query(`
                 SELECT *
                 FROM messages
                 WHERE friendship_id = $1
                 ORDER BY created_at DESC
                 OFFSET $2 LIMIT $3
-			`, [friendshipId, skip, limit])
-            .then((data) => data.rows)
-            .catch((error) => this.errorHandler(error, "getMessagesByFriendshipId"));
+			`, [friendshipId, skip, limit]);
+            return data.rows;
+        }
+        catch (error) {
+            this.errorHandler(error, "getMessagesByFriendshipId");
+        }
     }
-    getMessagesByUsers(user1, user2, skip = 0, limit = 20) {
-        return this.database
-            .query(`
+    async getMessagesByUsers(user1, user2, skip = 0, limit = 20) {
+        try {
+            const data = await this.database.query(`
                 SELECT *
                 FROM messages
                 WHERE sender_id = $1 AND recipient_id = $2
                    OR sender_id = $2 AND recipient_id = $1
                 ORDER BY created_at DESC
                 OFFSET $3 LIMIT $4
-			`, [user1, user2, skip, limit])
-            .then((data) => data.rows)
-            .catch((error) => this.errorHandler(error, "getMessagesByUsers"));
+			`, [user1, user2, skip, limit]);
+            return data.rows;
+        }
+        catch (error) {
+            this.errorHandler(error, "getMessagesByUsers");
+        }
     }
-    updateMessageStatus(id, status) {
-        return this.database
-            .query(`
+    async updateMessageStatus(id, status) {
+        try {
+            const data = await this.database.query(`
                 UPDATE messages
                 SET message_status = $2,
                     updated_at     = NOW()
                 WHERE id = $1;
-			`, [id, status])
-            .then((data) => data.rowCount ?? null)
-            .catch((error) => this.errorHandler(error, "updateMessageStatus"));
+			`, [id, status]);
+            return data.rowCount ?? null;
+        }
+        catch (error) {
+            this.errorHandler(error, "updateMessageStatus");
+        }
     }
     async listConversations(userId) {
         const query = `

@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const JWT = __importStar(require("../utilities/jwt"));
-const config_1 = require("../utilities/config");
+const utilities_1 = require("../utilities");
 const zod_1 = require("zod");
 const controller_base_1 = require("../base/controller.base");
 const Validate = __importStar(require("../validators"));
@@ -75,7 +75,7 @@ class UserController extends controller_base_1.BaseController {
             });
             response
                 .status(http_status_codes_1.default.OK)
-                .cookie(config_1.SECURITY.JWT_TOKEN_NAME, token)
+                .cookie(utilities_1.SECURITY.JWT_TOKEN_NAME, token)
                 .json({ token, id: userId });
         }
         catch (error) {
@@ -103,7 +103,7 @@ class UserController extends controller_base_1.BaseController {
             });
             response
                 .status(http_status_codes_1.default.OK)
-                .cookie(config_1.SECURITY.JWT_TOKEN_NAME, token)
+                .cookie(utilities_1.SECURITY.JWT_TOKEN_NAME, token)
                 .json({ token, id: userData.id });
             await this.repository
                 .updateLastActiveAtById(userData.id)
@@ -178,7 +178,7 @@ class UserController extends controller_base_1.BaseController {
             });
             response
                 .status(http_status_codes_1.default.OK)
-                .cookie(config_1.SECURITY.JWT_TOKEN_NAME, token)
+                .cookie(utilities_1.SECURITY.JWT_TOKEN_NAME, token)
                 .json({ token, id, userData });
         }
         catch (error) {
@@ -206,7 +206,7 @@ class UserController extends controller_base_1.BaseController {
             });
             response
                 .status(http_status_codes_1.default.OK)
-                .cookie(config_1.SECURITY.JWT_TOKEN_NAME, token)
+                .cookie(utilities_1.SECURITY.JWT_TOKEN_NAME, token)
                 .json({ token, id, userData });
         }
         catch (error) {
@@ -239,7 +239,7 @@ class UserController extends controller_base_1.BaseController {
             });
             response
                 .status(http_status_codes_1.default.OK)
-                .cookie(config_1.SECURITY.JWT_TOKEN_NAME, token)
+                .cookie(utilities_1.SECURITY.JWT_TOKEN_NAME, token)
                 .json({ token, id, userData });
         }
         catch (error) {

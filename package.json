@@ -19,7 +19,6 @@
     "@instamenta/vanilla-utility-pack": "^1.0.1",
     "@instamenta/vlogger": "^1.0.7",
     "@types/bcrypt": "^5.0.2",
-    "@types/cookie": "^1.0.0",
     "@types/ms": "^2.1.0",
     "@types/node-media-server": "^2.3.7",
     "bcrypt": "^5.1.1",
@@ -43,6 +42,7 @@
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@types/compression": "^1.7.5",
+    "@types/cookie": "^0.6.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",

@@ -168,7 +168,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "listFriendsByUserId");
+      this.errorHandler(error, "listFriendsByUserId");
     }
   }
 
@@ -192,7 +192,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "listFriendsByUsername");
+      this.errorHandler(error, "listFriendsByUsername");
     }
   }
 
@@ -223,7 +223,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "listFriendRequests");
+      this.errorHandler(error, "listFriendRequests");
     }
   }
 
@@ -246,7 +246,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "listFriendRequestsOnly");
+      this.errorHandler(error, "listFriendRequestsOnly");
     }
   }
 
@@ -269,7 +269,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "listFriendSentOnly");
+      this.errorHandler(error, "listFriendSentOnly");
     }
   }
 
@@ -287,7 +287,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows[0] ?? null;
     } catch (error) {
-      return this.errorHandler(error, "getBySenderAndRecipient");
+      this.errorHandler(error, "getBySenderAndRecipient");
     }
   }
 
@@ -303,7 +303,7 @@ export class FriendRepository extends BaseRepository {
       );
       return data.rows[0] ?? null;
     } catch (error) {
-      return this.errorHandler(error, "getBySenderAndRecipient");
+      this.errorHandler(error, "getBySenderAndRecipient");
     }
   }
 }

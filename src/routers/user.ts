@@ -1,4 +1,4 @@
-import { UserController } from "../controllers/user";
+import { UserController } from "../controllers";
 import { Middlewares } from "../middlewares";
 import { BaseRouter } from "../base/router.base";
 
@@ -10,7 +10,6 @@ export class UserRouter extends BaseRouter<UserController> {
     // @ts-expect-error - to assign handlers
     this.router.post("/sign-in", Middlewares.isGuest, c.signIn.bind(c));
 
-    // @ts-expect-error - to assign handlers
     this.router.get("/", c.listUsers.bind(c));
 
     // @ts-expect-error - to assign handlers

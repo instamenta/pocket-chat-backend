@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
-import { GroupRepository } from "../repositories/group";
+import { GroupRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
-import * as T from "../types";
+import type { Request, Response } from "express";
+import type { GroupStruct, MemberPopulated } from "../types/group";
+import type { PublicationStruct } from "../types/publication";
 export declare class GroupController extends BaseController<GroupRepository> {
     createGroup(request: Request<object, {
         id: string;
@@ -17,13 +18,13 @@ export declare class GroupController extends BaseController<GroupRepository> {
     removeGroup(request: Request<{
         groupId: string;
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    listGroups(request: Request, response: Response<T.Group.GroupStruct[]>): Promise<void>;
+    listGroups(request: Request, response: Response<GroupStruct[]>): Promise<void>;
     listGroupsByUser(request: Request<{
         userId: string;
-    }>, response: Response<T.Group.GroupStruct[]>): Promise<void>;
+    }>, response: Response<GroupStruct[]>): Promise<void>;
     getGroupById(request: Request<{
         id: string;
-    }>, response: Response<T.Group.GroupStruct>): Promise<Response<T.Group.GroupStruct, Record<string, any>> | undefined>;
+    }>, response: Response<GroupStruct>): Promise<Response<GroupStruct, Record<string, any>> | undefined>;
     joinGroup(request: Request<{
         id: string;
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
@@ -42,19 +43,14 @@ export declare class GroupController extends BaseController<GroupRepository> {
     }>, response: Response): Promise<Response<any, Record<string, any>> | undefined>;
     getMembersByGroupId(request: Request<{
         id: string;
-    }>, response: Response<T.Group.MemberPopulated[]>): Promise<void>;
+    }>, response: Response<MemberPopulated[]>): Promise<void>;
     createPublication(request: Request<object, {
         id: string;
-    }, {
-        description: string;
-        images: string;
-        publication_status: string;
-        groupId: string;
-    }>, response: Response<{
+    }, Pick<PublicationStruct, "publisherId" | "description" | "images" | "publicationStatus" | "groupId">>, response: Response<{
         id: string;
     }>): Promise<void>;
     listPublications(request: Request<{
         groupId: string;
-    }>, response: Response<T.Publication.PublicationStruct[]>): Promise<void>;
+    }>, response: Response<PublicationStruct[]>): Promise<void>;
 }
 //# sourceMappingURL=group.d.ts.map

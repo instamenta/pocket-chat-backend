@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
 import { UserRepository } from "../repositories";
 import * as JWT from "../utilities/jwt";
-import { SECURITY } from "../utilities/config";
+import { SECURITY } from "../utilities";
 import { HashingHandler } from "../utilities/bcrypt";
 import { z } from "zod";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
+import { UserSchemaStruct } from "../types/user";
 
 export class UserController extends BaseController<UserRepository> {
   public constructor(
@@ -26,7 +26,7 @@ export class UserController extends BaseController<UserRepository> {
       object,
       { skip?: string; number?: string }
     >,
-    response: Response<Omit<T.User.UserSchemaStruct, "updatedAt">[]>,
+    response: Response<Omit<UserSchemaStruct, "updatedAt">[]>,
   ) {
     try {
       const { skip, limit } = { skip: 0, limit: 10 };
@@ -125,7 +125,7 @@ export class UserController extends BaseController<UserRepository> {
 
   public async authUser(
     request: Request,
-    response: Response<T.User.UserSchemaStruct>,
+    response: Response<UserSchemaStruct>,
   ) {
     try {
       const id = Validate.uuid.parse(request.user.id);
@@ -145,7 +145,7 @@ export class UserController extends BaseController<UserRepository> {
 
   public async getUserById(
     request: Request<{ id: string }>,
-    response: Response<T.User.UserSchemaStruct>,
+    response: Response<UserSchemaStruct>,
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
@@ -165,7 +165,7 @@ export class UserController extends BaseController<UserRepository> {
 
   public async getUserByUsername(
     request: Request<{ username: string }>,
-    response: Response<T.User.UserSchemaStruct>,
+    response: Response<UserSchemaStruct>,
   ) {
     try {
       const username = Validate.name.parse(request.params.username);
@@ -188,7 +188,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{
       token: string;
       id: string;
-      userData: T.User.UserSchemaStruct;
+      userData: UserSchemaStruct;
     }>,
   ) {
     try {
@@ -223,7 +223,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{
       token: string;
       id: string;
-      userData: T.User.UserSchemaStruct;
+      userData: UserSchemaStruct;
     }>,
   ) {
     try {
@@ -269,7 +269,7 @@ export class UserController extends BaseController<UserRepository> {
     response: Response<{
       token: string;
       id: string;
-      userData: T.User.UserSchemaStruct;
+      userData: UserSchemaStruct;
     }>,
   ) {
     try {

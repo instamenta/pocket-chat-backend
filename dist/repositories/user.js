@@ -8,10 +8,9 @@ class UserRepository extends repository_base_1.BaseRepository {
         super(client, logger);
         this.hashingHandler = hashingHandler;
     }
-    listUsers(skip = 0, limit = 0) {
-        return this.database
-            .query(`
-
+    async listUsers(skip = 0, limit = 0) {
+        try {
+            const data = await this.database.query(`
                 SELECT id,
                        username,
                        email,
@@ -23,85 +22,108 @@ class UserRepository extends repository_base_1.BaseRepository {
                        last_active_at
                 FROM users
                 OFFSET $1 LIMIT $2
-			`, [skip, limit])
-            .then((data) => data.rows)
-            .catch((error) => this.errorHandler(error, "listUsers"));
+			`, [skip, limit]);
+            return data.rows;
+        }
+        catch (error) {
+            this.errorHandler(error, "listUsers");
+        }
     }
-    getByUsername(username) {
-        return this.database
-            .query(`
-
+    async getByUsername(username) {
+        try {
+            const data = await this.database.query(`
                 SELECT id, username, password, email, username
                 FROM users u
                 WHERE u.username = $1
                 LIMIT 1;
-			`, [username])
-            .then((data) => (data.rows.length ? data.rows[0] : null))
-            .catch((error) => this.errorHandler(error, "getByUsername"));
+			`, [username]);
+            return data.rows.length ? data.rows[0] : null;
+        }
+        catch (error) {
+            return this.errorHandler(error, "getByUsername");
+        }
     }
-    updateLastActiveAtById(id) {
-        return this.database
-            .query(`
+    async updateLastActiveAtById(id) {
+        try {
+            const data = await this.database.query(`
                 UPDATE users
                 SET last_active_at = NOW()
                 WHERE id = $1;
-			`, [id])
-            .then((data) => data.rowCount ?? null)
-            .catch((error) => this.errorHandler(error, "updateLastActiveAtById"));
+			`, [id]);
+            return data.rowCount ?? null;
+        }
+        catch (error) {
+            this.errorHandler(error, "updateLastActiveAtById");
+        }
     }
     async createUser({ username, email, password, firstName, lastName, }) {
         const hashedPassword = await this.hashingHandler.hashPassword(password);
-        return this.database
-            .query(`
+        try {
+            const data = await this.database.query(`
                 INSERT INTO users ("username", "email", "password", "first_name", "last_name")
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING id;`, [username, email, hashedPassword, firstName, lastName])
-            .then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, "createUser"));
+                RETURNING id;`, [username, email, hashedPassword, firstName, lastName]);
+            return data.rows[0].id;
+        }
+        catch (error) {
+            return this.errorHandler(error, "createUser");
+        }
     }
-    getUserById(id) {
-        return this.database
-            .query(`
+    async getUserById(id) {
+        try {
+            const data = await this.database.query(`
                 SELECT *
                 FROM users
                 WHERE id = $1
-			`, [id])
-            .then((data) => (data.rowCount ? data.rows[0] : null))
-            .catch((error) => this.errorHandler(error, "getUserById"));
+			`, [id]);
+            return data.rowCount ? data.rows[0] : null;
+        }
+        catch (error) {
+            this.errorHandler(error, "getUserById");
+        }
     }
-    getUserByUsername(username) {
-        return this.database
-            .query(`
+    async getUserByUsername(username) {
+        try {
+            const data = await this.database.query(`
                 SELECT *
                 FROM users
                 WHERE username = $1
-			`, [username])
-            .then((data) => (data.rowCount ? data.rows[0] : null))
-            .catch((error) => this.errorHandler(error, "getUserByUsername"));
+			`, [username]);
+            return data.rowCount ? data.rows[0] : null;
+        }
+        catch (error) {
+            this.errorHandler(error, "getUserByUsername");
+        }
     }
-    updateProfilePicture(id, pictureUrl) {
-        return this.database
-            .query(`
+    async updateProfilePicture(id, pictureUrl) {
+        try {
+            const data = await this.database.query(`
                 UPDATE "users"
                 SET picture = $2
                 WHERE id = $1
                 RETURNING *
-			`, [id, pictureUrl])
-            .then((data) => (data.rows.length ? data.rows[0] : null))
-            .catch((error) => this.errorHandler(error, "updateProfilePicture"));
+			`, [id, pictureUrl]);
+            return data.rows.length ? data.rows[0] : null;
+        }
+        catch (error) {
+            this.errorHandler(error, "updateProfilePicture");
+        }
     }
-    updateBio(id, bio) {
-        return this.database
-            .query(`
+    async updateBio(id, bio) {
+        try {
+            const data = await this.database.query(`
                 UPDATE "users"
                 SET bio = $2
                 WHERE id = $1
                 RETURNING *
-			`, [id, bio])
-            .then((data) => (data.rows.length ? data.rows[0] : null))
-            .catch((error) => this.errorHandler(error, "updateProfilePicture"));
+			`, [id, bio]);
+            return data.rows.length ? data.rows[0] : null;
+        }
+        catch (error) {
+            this.errorHandler(error, "updateProfilePicture");
+        }
     }
-    updateProfilePublicInformation(id, { username, email, firstName, lastName, }) {
+    async updateProfilePublicInformation(id, { username, email, firstName, lastName, }) {
         const fields = [];
         const values = [id];
         if (username) {
@@ -120,15 +142,18 @@ class UserRepository extends repository_base_1.BaseRepository {
             fields.push(`last_name = $${Number(fields.length + 2).toString()}`);
             values.push(lastName);
         }
-        return this.database
-            .query(`
+        try {
+            const data = await this.database.query(`
                 UPDATE "users"
                 SET ${fields.join(", ")}
                 WHERE id = $1
                 RETURNING *
-			`, values)
-            .then((data) => (data.rows.length ? data.rows[0] : null))
-            .catch((error) => this.errorHandler(error, "updateProfilePublicInformation"));
+			`, values);
+            return data.rows.length ? data.rows[0] : null;
+        }
+        catch (error) {
+            return this.errorHandler(error, "updateProfilePublicInformation");
+        }
     }
 }
 exports.UserRepository = UserRepository;

@@ -1,24 +1,15 @@
-export interface Short {
+export interface ShortStruct {
     id: string;
-    user_id: string;
-    video_url: string;
-    description: string;
-    created_at: string;
-    likes_count: number;
-    comments_count: number;
-}
-export interface Populated {
-    id: string;
-    user_id: string;
-    user_picture: string;
+    userId: string;
+    userPicture: string;
     username: string;
-    first_name: string;
-    last_name: string;
-    video_url: string;
+    firstName: string;
+    lastName: string;
+    videoUrl: string;
     description: string;
-    created_at: string;
-    likes_count: number;
-    comments_count: number;
-    liked_by_user: boolean;
+    createdAt: string;
+    likesCount: number;
+    commentsCount: number;
+    likedByUser: boolean;
 }
 //# sourceMappingURL=short.d.ts.map

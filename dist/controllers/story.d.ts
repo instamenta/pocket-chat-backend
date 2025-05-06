@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { StoryRepository } from "../repositories";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
-import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
+import { FullStoryStruct, StoryFeedStruct } from "../types/story";
+import { CommentStructure, PopulatedCommentStructure } from "../types/comment";
 export declare class StoryController extends BaseController<StoryRepository> {
     private readonly notificator;
     constructor(repository: StoryRepository, logger: VLogger, notificator: Notificator);
@@ -14,22 +15,22 @@ export declare class StoryController extends BaseController<StoryRepository> {
     }>): Promise<Response<{
         id: string;
     }, Record<string, any>> | undefined>;
-    listStories(request: Request, response: Response<T.Story.StoryFeedStruct[]>): Promise<void>;
-    listFeedStories(request: Request, response: Response<T.Story.StoryFeedStruct[]>): Promise<void>;
+    listStories(request: Request, response: Response<StoryFeedStruct[]>): Promise<void>;
+    listFeedStories(request: Request, response: Response<StoryFeedStruct[]>): Promise<void>;
     listFriendStoriesByUsername(request: Request<{
         username: string;
-    }>, response: Response<T.Story.FullStoryStruct[]>): Promise<void>;
+    }>, response: Response<FullStoryStruct[]>): Promise<void>;
     likeStory(request: Request<{
         id: string;
     }>, response: Response<void>): Promise<void>;
     listCommentsByStory(request: Request<{
         storyId: string;
-    }>, response: Response<T.Comment.PopulatedCommentStructure[]>): Promise<void>;
+    }>, response: Response<PopulatedCommentStructure[]>): Promise<void>;
     createStoryComment(request: Request<{
         storyId: string;
     }, object, {
         content: string;
-    }>, response: Response<T.Comment.CommentStructure>): Promise<void>;
+    }>, response: Response<CommentStructure>): Promise<void>;
     deleteStoryComment(request: Request<{
         commentId: string;
     }>, response: Response<void>): Promise<void>;

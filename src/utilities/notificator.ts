@@ -8,7 +8,7 @@ import {
 import { NotificationTypes } from "./enumerations";
 import { NotImplementedError } from "@instamenta/vanilla-utility-pack";
 import VLogger, { IVlog } from "@instamenta/vlogger";
-import { NotificationData } from "../types/notifications";
+import { NotificationData } from "../types/notification";
 
 export class Notificator {
   private readonly log: IVlog;
@@ -361,8 +361,8 @@ export class Notificator {
       return;
     }
 
-    data.content = story.likes_count.toString();
-    data.recipientId = story.user_id;
+    data.content = story.likesCount.toString();
+    data.recipientId = story.userId;
 
     if (notification) {
       await this.repository.updateNotification(
@@ -444,8 +444,8 @@ export class Notificator {
       return;
     }
 
-    data.content = comment.likes_count.toString();
-    data.recipientId = comment.user_id;
+    data.content = comment.likesCount.toString();
+    data.recipientId = comment.userId;
 
     if (notification) {
       await this.repository.updateNotification(

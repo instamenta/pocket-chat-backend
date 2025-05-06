@@ -1,5 +1,5 @@
 import { Middlewares } from "../middlewares";
-import { ShortController } from "../controllers/short";
+import { ShortController } from "../controllers";
 import { BaseRouter } from "../base/router.base";
 
 export class ShortRouter extends BaseRouter<ShortController> {

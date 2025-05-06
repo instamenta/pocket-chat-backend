@@ -2,13 +2,13 @@ import "dotenv/config";
 import { Client } from "pg";
 import Redis from "ioredis";
 import * as Routers from "./routers";
-import { env } from "./utilities/config";
+import { env } from "./utilities";
 import * as Controllers from "./controllers";
 import * as Repositories from "./repositories";
 import { Middlewares } from "./middlewares";
-import { BCryptHashingHandler } from "./utilities/bcrypt";
+import { BCryptHashingHandler } from "./utilities";
 import { Notificator } from "./utilities/notificator";
-import { initializeAll } from "./utilities/intialize";
+import { initializeAll } from "./utilities";
 
 void (async function main() {
   const { api, database, cache, logger } = await initializeAll();
@@ -100,7 +100,6 @@ void (async function main() {
   api.use("/api/publication", router.publication);
   api.use("/api/notification", router.notification);
 
-  // @ts-expect-error - to assign handler
   api.use(Middlewares.errorHandler);
 
   api.listen(+env.SERVER_PORT, env.SERVER_HOST, () => {

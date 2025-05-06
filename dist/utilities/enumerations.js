@@ -1,15 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotificationTypes = exports.GroupRoles = exports.PublicationStatus = exports.SocketEvents = void 0;
-var SocketEvents;
-(function (SocketEvents) {
-    SocketEvents["MESSAGE"] = "message";
-    SocketEvents["JOIN_LIVE"] = "join_live";
-    SocketEvents["LEAVE_LIVE"] = "leave_live";
-    SocketEvents["LIVE_MESSAGE"] = "live_message";
-    SocketEvents["VIDEO_CALL_INVITE"] = "video-call-invite";
-    SocketEvents["VOICE_CALL_INVITE"] = "voice-call-invite";
-})(SocketEvents || (exports.SocketEvents = SocketEvents = {}));
+exports.NotificationTypes = exports.GroupRoles = exports.PublicationStatus = void 0;
 var PublicationStatus;
 (function (PublicationStatus) {
     PublicationStatus["Draft"] = "draft";

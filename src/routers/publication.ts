@@ -21,10 +21,8 @@ export class PublicationRouter extends BaseRouter<PublicationController> {
       c.getPublicationById.bind(c),
     );
 
-    // @ts-expect-error - to assign handlers
     this.router.get("/user/:id", c.getPublicationsByUserId.bind(c));
 
-    // @ts-expect-error - to assign handlers
     this.router.get("/user/:id/count", c.getPublicationsCountByUserId.bind(c));
 
     this.router.post(

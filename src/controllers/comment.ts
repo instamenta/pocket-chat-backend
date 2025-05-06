@@ -10,7 +10,7 @@ import type { Request, Response } from "express";
 import type {
   CommentStructure,
   PopulatedCommentStructure,
-} from "../types/comments";
+} from "../types/comment";
 
 export class CommentController extends BaseController<CommentRepository> {
   public constructor(

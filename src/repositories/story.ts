@@ -1,5 +1,10 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import { CommentStructure, PopulatedCommentStructure } from "../types/comment";
+import {
+  FullStoryStruct,
+  StoryFeedStruct,
+  StoryStruct,
+} from "../types/story";
 
 export class StoryRepository extends BaseRepository {
   public async createStory({
@@ -9,21 +14,19 @@ export class StoryRepository extends BaseRepository {
     userId: string;
     imageUrl: string;
   }) {
-    return this.database
-      .query<{ id: string }>(
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
-
                 INSERT INTO "stories" (user_id, image_url)
                 VALUES ($1, $2)
                 RETURNING id
 			`,
         [userId, imageUrl],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "createNotification"),
       );
+      return data.rows[0].id;
+    } catch (error) {
+      this.errorHandler(error, "createNotification");
+    }
   }
 
   public async listStories(userId: string) {
@@ -44,7 +47,7 @@ export class StoryRepository extends BaseRepository {
                      AND (f.sender_id = $1 OR f.recipient_id = $1)
                      AND s.user_id != $1;`;
     try {
-      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [
+      const result = await this.database.query<StoryFeedStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -81,7 +84,7 @@ export class StoryRepository extends BaseRepository {
 		`;
 
     try {
-      const result = await this.database.query<T.Story.StoryFeedStruct>(query, [
+      const result = await this.database.query<StoryFeedStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -96,11 +99,9 @@ export class StoryRepository extends BaseRepository {
         FROM stories
         WHERE id = $1`;
     try {
-      const result = await this.database.query<{
-        user_id: string;
-        id: string;
-        likes_count: string;
-      }>(query, [id]);
+      const result = await this.database.query<
+        Pick<StoryStruct, 'userId' | 'id' | 'likesCount'>
+      >(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "listFeedStories");
@@ -126,7 +127,7 @@ export class StoryRepository extends BaseRepository {
 		`;
 
     try {
-      const result = await this.database.query<T.Story.FullStoryStruct>(
+      const result = await this.database.query<FullStoryStruct>(
         friendStoriesQuery,
         [username],
       );
@@ -142,30 +143,26 @@ export class StoryRepository extends BaseRepository {
 
       const likeExistsQuery =
         "SELECT id FROM story_likes WHERE story_id = $1 AND user_id = $2";
-      const likeExistsResult = await this.database.query(likeExistsQuery, [
+      const likeExistsResult = await this.database.query<object>(likeExistsQuery, [
         storyId,
         userId,
       ]);
 
       if (likeExistsResult.rows.length > 0) {
-        const removeLikeQuery =
-          "DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2";
-        const decrementLikeCountQuery =
-          "UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1";
+        const removeLikeQuery = "DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2";
+        const decrementLikeCountQuery = "UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1";
 
         await Promise.all([
-          await this.database.query(removeLikeQuery, [storyId, userId]),
-          await this.database.query(decrementLikeCountQuery, [storyId]),
+          this.database.query(removeLikeQuery, [storyId, userId]),
+          this.database.query(decrementLikeCountQuery, [storyId]),
         ]);
       } else {
-        const addLikeQuery =
-          "INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)";
-        const incrementLikeCountQuery =
-          "UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1";
+        const addLikeQuery = "INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)";
+        const incrementLikeCountQuery = "UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1";
 
         await Promise.all([
-          await this.database.query(addLikeQuery, [storyId, userId]),
-          await this.database.query(incrementLikeCountQuery, [storyId]),
+          this.database.query(addLikeQuery, [storyId, userId]),
+          this.database.query(incrementLikeCountQuery, [storyId]),
         ]);
       }
 
@@ -200,7 +197,7 @@ export class StoryRepository extends BaseRepository {
 		`;
     try {
       const result =
-        await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
+        await this.database.query<PopulatedCommentStructure>(query, [
           storyId,
           userId,
         ]);
@@ -214,7 +211,7 @@ export class StoryRepository extends BaseRepository {
     storyId: string,
     userId: string,
     content: string,
-  ): Promise<T.Comment.CommentStructure> {
+  ): Promise<CommentStructure> {
     const insertQuery = `INSERT INTO story_comments (content, story_id, user_id)
                          VALUES ($1, $2, $3)
                          RETURNING *`;
@@ -225,7 +222,7 @@ export class StoryRepository extends BaseRepository {
 
     try {
       const insertResult =
-        await this.database.query<T.Comment.CommentStructure>(insertQuery, [
+        await this.database.query<CommentStructure>(insertQuery, [
           content,
           storyId,
           userId,
@@ -258,15 +255,14 @@ export class StoryRepository extends BaseRepository {
                          WHERE id = $1
                            AND user_id = $2`;
     try {
-      const story = await this.database.query<{ story_id: string }>(
-        selectQuery,
-        [commentId],
-      );
+      const story = await this.database.query<{ storyId: string }>(selectQuery, [
+        commentId,
+      ]);
       if (!story.rowCount) {
         throw new Error(`Failed to get story! Comment id ${commentId}`);
       }
 
-      await this.database.query(updateQuery, [story.rows[0].story_id]);
+      await this.database.query(updateQuery, [story.rows[0].storyId]);
 
       const result = await this.database.query(deleteQuery, [
         commentId,
@@ -285,7 +281,7 @@ export class StoryRepository extends BaseRepository {
     try {
       const likeExistsQuery =
         "SELECT id FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
-      const likeExistsResult = await this.database.query(likeExistsQuery, [
+      const likeExistsResult = await this.database.query<object>(likeExistsQuery, [
         commentId,
         userId,
       ]);
@@ -293,11 +289,11 @@ export class StoryRepository extends BaseRepository {
       if (likeExistsResult.rows.length > 0) {
         const removeLikeQuery =
           "DELETE FROM story_comment_likes WHERE comment_id = $1 AND user_id = $2";
-        await this.database.query(removeLikeQuery, [commentId, userId]);
+        await this.database.query<object>(removeLikeQuery, [commentId, userId]);
       } else {
         const addLikeQuery =
           "INSERT INTO story_comment_likes (comment_id, user_id) VALUES ($1, $2)";
-        await this.database.query(addLikeQuery, [commentId, userId]);
+        await this.database.query<object>(addLikeQuery, [commentId, userId]);
       }
     } catch (error) {
       this.errorHandler(error, "likeStoryComment");
@@ -317,8 +313,8 @@ export class StoryRepository extends BaseRepository {
     try {
       const result = await this.database.query<{
         id: string;
-        user_id: string;
-        likes_count: number;
+        userId: string;
+        likesCount: number;
       }>(query, [id]);
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {

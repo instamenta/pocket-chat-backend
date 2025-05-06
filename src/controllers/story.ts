@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
 import { StoryRepository } from "../repositories";
 import { z } from "zod";
-import { NotificationTypes } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
+import { FullStoryStruct, StoryFeedStruct } from "../types/story";
+import { CommentStructure, PopulatedCommentStructure } from "../types/comment";
 
 export class StoryController extends BaseController<StoryRepository> {
   public constructor(
@@ -51,7 +52,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listStories(
     request: Request,
-    response: Response<T.Story.StoryFeedStruct[]>,
+    response: Response<StoryFeedStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -66,7 +67,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listFeedStories(
     request: Request,
-    response: Response<T.Story.StoryFeedStruct[]>,
+    response: Response<StoryFeedStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -81,7 +82,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listFriendStoriesByUsername(
     request: Request<{ username: string }>,
-    response: Response<T.Story.FullStoryStruct[]>,
+    response: Response<FullStoryStruct[]>,
   ) {
     try {
       const userId = Validate.name.parse(request.params.username);
@@ -125,7 +126,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async listCommentsByStory(
     request: Request<{ storyId: string }>,
-    response: Response<T.Comment.PopulatedCommentStructure[]>,
+    response: Response<PopulatedCommentStructure[]>,
   ) {
     try {
       const storyId = Validate.uuid.parse(request.params.storyId);
@@ -144,7 +145,7 @@ export class StoryController extends BaseController<StoryRepository> {
 
   public async createStoryComment(
     request: Request<{ storyId: string }, object, { content: string }>,
-    response: Response<T.Comment.CommentStructure>,
+    response: Response<CommentStructure>,
   ) {
     try {
       const storyId = Validate.uuid.parse(request.params.storyId);

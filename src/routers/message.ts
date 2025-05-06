@@ -1,5 +1,5 @@
 import { Middlewares } from "../middlewares";
-import { MessageController } from "../controllers/message";
+import { MessageController } from "../controllers";
 import { BaseRouter } from "../base/router.base";
 
 export class MessageRouter extends BaseRouter<MessageController> {
@@ -20,9 +20,7 @@ export class MessageRouter extends BaseRouter<MessageController> {
       Middlewares.isAuthorized,
       c.listConversations.bind(c),
     );
-    // @ts-expect-error - to assign handlers
     this.router.get("/:friendshipId", c.listMessagesByFriendship.bind(c));
-    // @ts-expect-error - to assign handlers
     this.router.get("/:user1/:user2", c.listMessagesByUsers.bind(c));
   }
 }

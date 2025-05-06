@@ -60,7 +60,7 @@ export function isAuthorized(
       .status(statusCodes.UNAUTHORIZED)
       .json({ message: "Invalid token" });
   }
-  request.user = user;
+  (request as any).user = user;
   next();
 }
 

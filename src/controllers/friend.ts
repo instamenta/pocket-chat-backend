@@ -91,7 +91,7 @@ export class FriendController extends BaseController<FriendRepository> {
     response: Response<
       {
         id: string;
-        first_name: string;
+        firstName: string;
         picture: string;
         username: string;
       }[]

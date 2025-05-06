@@ -2,9 +2,9 @@ import { HashingHandler } from "../utilities/bcrypt";
 import z from "zod";
 import { BaseRepository } from "../base/repository.base";
 import { Client } from "pg";
-import * as T from "../types";
 import * as Validate from "../validators";
 import VLogger from "@instamenta/vlogger";
+import { GetUserByUsernameStruct, UserSchemaStruct } from "../types/user";
 
 export class UserRepository extends BaseRepository {
   public constructor(
@@ -15,14 +15,12 @@ export class UserRepository extends BaseRepository {
     super(client, logger);
   }
 
-  public listUsers(
-    skip = 0,
-    limit = 0,
-  ): Promise<Omit<T.User.UserSchemaStruct, "updatedAt">[]> {
-    return this.database
-      .query<Omit<T.User.UserSchemaStruct, "updatedAt">>(
+  public async listUsers(skip = 0, limit = 0) {
+    try {
+      const data = await this.database.query<
+        Omit<UserSchemaStruct, "updatedAt">
+      >(
         `
-
                 SELECT id,
                        username,
                        email,
@@ -36,46 +34,44 @@ export class UserRepository extends BaseRepository {
                 OFFSET $1 LIMIT $2
 			`,
         [skip, limit],
-      )
-      .then((data) => data.rows)
-
-      .catch((error: unknown) => this.errorHandler(error, "listUsers"));
+      );
+      return data.rows;
+    } catch (error) {
+      this.errorHandler(error, "listUsers");
+    }
   }
 
-  public getByUsername(
-    username: string,
-  ): Promise<T.User.GetUserByUsernameStruct | null> {
-    return this.database
-      .query<T.User.GetUserByUsernameStruct>(
+  public async getByUsername(username: string) {
+    try {
+      const data = await this.database.query<GetUserByUsernameStruct>(
         `
-
                 SELECT id, username, password, email, username
                 FROM users u
                 WHERE u.username = $1
                 LIMIT 1;
 			`,
         [username],
-      )
-      .then((data) => (data.rows.length ? data.rows[0] : null))
-
-      .catch((error: unknown) => this.errorHandler(error, "getByUsername"));
+      );
+      return data.rows.length ? data.rows[0] : null;
+    } catch (error) {
+      return this.errorHandler(error, "getByUsername");
+    }
   }
 
-  public updateLastActiveAtById(id: string) {
-    return this.database
-      .query(
+  public async updateLastActiveAtById(id: string) {
+    try {
+      const data = await this.database.query<object>(
         `
                 UPDATE users
                 SET last_active_at = NOW()
                 WHERE id = $1;
 			`,
         [id],
-      )
-      .then((data) => data.rowCount ?? null)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "updateLastActiveAtById"),
       );
+      return data.rowCount ?? null;
+    } catch (error) {
+      this.errorHandler(error, "updateLastActiveAtById");
+    }
   }
 
   public async createUser({
@@ -87,52 +83,55 @@ export class UserRepository extends BaseRepository {
   }: z.infer<typeof Validate.createUser>) {
     const hashedPassword = await this.hashingHandler.hashPassword(password);
 
-    return this.database
-      .query<{ id: string }>(
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
                 INSERT INTO users ("username", "email", "password", "first_name", "last_name")
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING id;`,
         [username, email, hashedPassword, firstName, lastName],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) => this.errorHandler(error, "createUser"));
+      );
+      return data.rows[0].id;
+    } catch (error) {
+      return this.errorHandler(error, "createUser");
+    }
   }
 
-  public getUserById(id: string) {
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+  public async getUserById(id: string) {
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
                 SELECT *
                 FROM users
                 WHERE id = $1
 			`,
         [id],
-      )
-      .then((data) => (data.rowCount ? data.rows[0] : null))
-
-      .catch((error: unknown) => this.errorHandler(error, "getUserById"));
+      );
+      return data.rowCount ? data.rows[0] : null;
+    } catch (error) {
+      this.errorHandler(error, "getUserById");
+    }
   }
 
-  public getUserByUsername(username: string) {
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+  public async getUserByUsername(username: string) {
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
                 SELECT *
                 FROM users
                 WHERE username = $1
 			`,
         [username],
-      )
-      .then((data) => (data.rowCount ? data.rows[0] : null))
-
-      .catch((error: unknown) => this.errorHandler(error, "getUserByUsername"));
+      );
+      return data.rowCount ? data.rows[0] : null;
+    } catch (error) {
+      this.errorHandler(error, "getUserByUsername");
+    }
   }
 
-  public updateProfilePicture(id: string, pictureUrl: string) {
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+  public async updateProfilePicture(id: string, pictureUrl: string) {
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
                 UPDATE "users"
                 SET picture = $2
@@ -140,17 +139,16 @@ export class UserRepository extends BaseRepository {
                 RETURNING *
 			`,
         [id, pictureUrl],
-      )
-      .then((data) => (data.rows.length ? data.rows[0] : null))
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "updateProfilePicture"),
       );
+      return data.rows.length ? data.rows[0] : null;
+    } catch (error) {
+      this.errorHandler(error, "updateProfilePicture");
+    }
   }
 
-  public updateBio(id: string, bio: string) {
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+  public async updateBio(id: string, bio: string) {
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
                 UPDATE "users"
                 SET bio = $2
@@ -158,14 +156,14 @@ export class UserRepository extends BaseRepository {
                 RETURNING *
 			`,
         [id, bio],
-      )
-      .then((data) => (data.rows.length ? data.rows[0] : null))
-      .catch((error: unknown) =>
-        this.errorHandler(error, "updateProfilePicture"),
       );
+      return data.rows.length ? data.rows[0] : null;
+    } catch (error) {
+      this.errorHandler(error, "updateProfilePicture");
+    }
   }
 
-  public updateProfilePublicInformation(
+  public async updateProfilePublicInformation(
     id: string,
     {
       username,
@@ -179,8 +177,8 @@ export class UserRepository extends BaseRepository {
       lastName?: string;
     },
   ) {
-    const fields = [];
-    const values = [id];
+    const fields: string[] = [];
+    const values: string[] = [id];
 
     if (username) {
       fields.push(`username = $${Number(fields.length + 2).toString()}`);
@@ -199,8 +197,8 @@ export class UserRepository extends BaseRepository {
       values.push(lastName);
     }
 
-    return this.database
-      .query<T.User.UserSchemaStruct>(
+    try {
+      const data = await this.database.query<UserSchemaStruct>(
         `
                 UPDATE "users"
                 SET ${fields.join(", ")}
@@ -208,11 +206,10 @@ export class UserRepository extends BaseRepository {
                 RETURNING *
 			`,
         values,
-      )
-      .then((data) => (data.rows.length ? data.rows[0] : null))
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "updateProfilePublicInformation"),
       );
+      return data.rows.length ? data.rows[0] : null;
+    } catch (error) {
+      return this.errorHandler(error, "updateProfilePublicInformation");
+    }
   }
 }

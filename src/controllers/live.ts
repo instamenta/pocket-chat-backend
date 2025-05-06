@@ -3,7 +3,8 @@ import statusCodes from "@instamenta/http-status-codes";
 import { LiveRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
+import { PopulatedLiveMessageStruct, PopulatedLiveStruct } from "../types/live";
+import { LiveStatesUnion } from "../types/union";
 
 export class LiveController extends BaseController<LiveRepository> {
   public async createLive(
@@ -28,7 +29,7 @@ export class LiveController extends BaseController<LiveRepository> {
 
   public async listLives(
     request: Request,
-    response: Response<T.Live.PopulatedLiveStruct[]>,
+    response: Response<PopulatedLiveStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);
@@ -43,7 +44,7 @@ export class LiveController extends BaseController<LiveRepository> {
 
   public async listLiveMessages(
     request: Request<{ liveId: string }>,
-    response: Response<T.Live.PopulatedLiveMessageStruct[]>,
+    response: Response<PopulatedLiveMessageStruct[]>,
   ) {
     try {
       const liveId = Validate.uuid.parse(request.params.liveId);
@@ -57,7 +58,7 @@ export class LiveController extends BaseController<LiveRepository> {
   }
 
   public async updateLiveState(
-    request: Request<{ state: T.U.LiveStatesUnion }>,
+    request: Request<{ state: LiveStatesUnion }>,
     response: Response,
   ) {
     try {

@@ -35,17 +35,17 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const Routers = __importStar(require("./routers"));
-const config_1 = require("./utilities/config");
+const utilities_1 = require("./utilities");
 const Controllers = __importStar(require("./controllers"));
 const Repositories = __importStar(require("./repositories"));
 const middlewares_1 = require("./middlewares");
-const bcrypt_1 = require("./utilities/bcrypt");
+const utilities_2 = require("./utilities");
 const notificator_1 = require("./utilities/notificator");
-const intialize_1 = require("./utilities/intialize");
+const utilities_3 = require("./utilities");
 void (async function main() {
-    const { api, database, cache, logger } = await (0, intialize_1.initializeAll)();
+    const { api, database, cache, logger } = await (0, utilities_3.initializeAll)();
     gracefulShutdown(database, cache);
-    const hashingHandler = new bcrypt_1.BCryptHashingHandler(logger);
+    const hashingHandler = new utilities_2.BCryptHashingHandler(logger);
     const repository = {
         user: new Repositories.UserRepository(database, logger, hashingHandler),
         live: new Repositories.LiveRepository(database, logger),
@@ -95,8 +95,8 @@ void (async function main() {
     api.use("/api/publication", router.publication);
     api.use("/api/notification", router.notification);
     api.use(middlewares_1.Middlewares.errorHandler);
-    api.listen(+config_1.env.SERVER_PORT, config_1.env.SERVER_HOST, () => {
-        logger.info("App", "", `Server is running on http://${config_1.env.SERVER_HOST}:${config_1.env.SERVER_PORT}`);
+    api.listen(+utilities_1.env.SERVER_PORT, utilities_1.env.SERVER_HOST, () => {
+        logger.info("App", "", `Server is running on http://${utilities_1.env.SERVER_HOST}:${utilities_1.env.SERVER_PORT}`);
     });
 })();
 function gracefulShutdown(database, cache) {

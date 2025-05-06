@@ -7,7 +7,6 @@ export {
 } from "./jwt";
 export { initializeAll } from "./intialize";
 export {
-  SocketEvents,
   PublicationStatus,
   GroupRoles,
   NotificationTypes,

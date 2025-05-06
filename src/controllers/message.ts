@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
-import { MessageRepository } from "../repositories/message";
+import { MessageRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
+import { ConversationsStruct, MessageStruct } from "../types/message";
 
 export class MessageController extends BaseController<MessageRepository> {
   public async sendMessage(
@@ -54,7 +54,7 @@ export class MessageController extends BaseController<MessageRepository> {
       object,
       { skip?: string; limit?: string }
     >,
-    response: Response<T.Message.MessageStruct[]>,
+    response: Response<MessageStruct[]>,
   ) {
     try {
       const messages = await this.repository.getMessagesByFriendshipId(
@@ -76,7 +76,7 @@ export class MessageController extends BaseController<MessageRepository> {
       object,
       { skip?: string; limit?: string }
     >,
-    response: Response<T.Message.MessageStruct[]>,
+    response: Response<MessageStruct[]>,
   ) {
     try {
       const messages = await this.repository.getMessagesByUsers(
@@ -119,7 +119,7 @@ export class MessageController extends BaseController<MessageRepository> {
 
   public async listConversations(
     request: Request,
-    response: Response<T.Message.ConversationsStruct[]>,
+    response: Response<ConversationsStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);

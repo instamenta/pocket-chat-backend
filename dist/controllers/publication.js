@@ -38,7 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PublicationController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
-const enumerations_1 = require("../utilities/enumerations");
+const utilities_1 = require("../utilities");
 const controller_base_1 = require("../base/controller.base");
 const Validate = __importStar(require("../validators"));
 class PublicationController extends controller_base_1.BaseController {
@@ -135,7 +135,7 @@ class PublicationController extends controller_base_1.BaseController {
             response.status(http_status_codes_1.default.OK).end();
             await this.notificator
                 .handleNotification({
-                type: enumerations_1.NotificationTypes.LIKE,
+                type: utilities_1.NotificationTypes.LIKE,
                 referenceId: publicationId,
                 recipientId: "",
                 senderId: userId,

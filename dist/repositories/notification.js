@@ -4,14 +4,17 @@ exports.NotificationRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class NotificationRepository extends repository_base_1.BaseRepository {
     async createNotification({ senderId, recipientId, type, seen, content, referenceId = "", }) {
-        return this.database
-            .query(`
+        try {
+            const data = await this.database.query(`
                 INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content, reference_id)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
-			`, [senderId, recipientId, type, seen, content, referenceId])
-            .then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, "createNotification"));
+			`, [senderId, recipientId, type, seen, content, referenceId]);
+            return data.rows[0].id;
+        }
+        catch (error) {
+            this.errorHandler(error, "createNotification");
+        }
     }
     async listNotifications(recipientId, filter = "all") {
         let query;
@@ -29,7 +32,7 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                         u.last_name,
                         n.reference_id
                  FROM notifications n
-                          JOIN "users" u ON n.recipient_id = u.id
+                        JOIN "users" u ON n.recipient_id = u.id
                  WHERE n.recipient_id = $1
                  ORDER BY n.created_at DESC `;
                 break;
@@ -48,30 +51,39 @@ class NotificationRepository extends repository_base_1.BaseRepository {
                  ORDER BY created_at DESC `;
                 break;
         }
-        return this.database
-            .query(query, [recipientId])
-            .then((data) => data.rows)
-            .catch((error) => this.errorHandler(error, "getNotifications"));
+        try {
+            const data = await this.database.query(query, [recipientId]);
+            return data.rows;
+        }
+        catch (error) {
+            this.errorHandler(error, "getNotifications");
+        }
     }
     async markNotificationAsSeen(id) {
-        return this.database
-            .query(`
+        try {
+            const data = await this.database.query(`
                 UPDATE notifications
                 SET seen = true
                 WHERE id = $1
-			`, [id])
-            .then((data) => data.rowCount ?? null)
-            .catch((error) => this.errorHandler(error, "markNotificationAsSeen"));
+			`, [id]);
+            return data.rowCount ?? null;
+        }
+        catch (error) {
+            this.errorHandler(error, "markNotificationAsSeen");
+        }
     }
     async markAllNotificationsAsSeen(recipientId) {
-        return this.database
-            .query(`
+        try {
+            const data = await this.database.query(`
                 UPDATE notifications
                 SET seen = true
                 WHERE recipient_id = $1
-			`, [recipientId])
-            .then((data) => data.rowCount ?? null)
-            .catch((error) => this.errorHandler(error, "markNotificationAsSeen"));
+			`, [recipientId]);
+            return data.rowCount ?? null;
+        }
+        catch (error) {
+            this.errorHandler(error, "markNotificationAsSeen");
+        }
     }
     async getNotificationByReferenceId(referenceId) {
         const query = `SELECT n.id,

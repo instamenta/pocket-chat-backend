@@ -1,5 +1,5 @@
 import { Middlewares } from "../middlewares";
-import { GroupController } from "../controllers/group";
+import { GroupController } from "../controllers";
 import { BaseRouter } from "../base/router.base";
 
 export class GroupRouter extends BaseRouter<GroupController> {
@@ -10,7 +10,6 @@ export class GroupRouter extends BaseRouter<GroupController> {
     // @ts-expect-error - to assign handlers
     this.router.get("/:id", Middlewares.isAuthorized, c.getGroupById.bind(c));
 
-    // @ts-expect-error - to assign handlers
     this.router.get("/list/:userId", c.listGroupsByUser.bind(c));
 
     this.router.get(

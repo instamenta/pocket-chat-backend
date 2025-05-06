@@ -1,33 +1,33 @@
 import { PublicationStatus } from "../utilities/enumerations";
-export interface Publication {
+export interface PublicationStruct {
     id: string;
-    created_at: string;
-    updated_at: string;
-    publication_status: PublicationStatus;
+    createdAt: string;
+    updatedAt: string;
+    publicationStatus: PublicationStatus;
     images: string[];
     description: string;
-    publisher_id: string;
-    likes_count: number;
-    comments_count: number;
+    publisherId: string;
+    likesCount: number;
+    commentsCount: number;
     publisher: string;
-    group_id?: string;
+    groupId?: string;
 }
-export interface Recommendation {
+export interface RecommendationPublicationStruct {
     id: string;
-    created_at: string;
-    updated_at: string;
-    publication_status: PublicationStatus;
+    createdAt: string;
+    updatedAt: string;
+    publicationStatus: PublicationStatus;
     images: string[];
     description: string;
-    publisher_id: string;
-    likes_count: number;
-    comments_count: number;
+    publisherId: string;
+    likesCount: number;
+    commentsCount: number;
     publisher: string;
     username: string;
     picture: string;
-    liked_by_user: boolean;
-    first_name: string;
-    last_name: string;
-    group_id?: string;
+    likedByUser: boolean;
+    firstName: string;
+    lastName: string;
+    groupId?: string;
 }
 //# sourceMappingURL=publication.d.ts.map

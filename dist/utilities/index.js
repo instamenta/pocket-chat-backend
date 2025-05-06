@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SECURITY = exports.env = exports.NotificationTypes = exports.GroupRoles = exports.PublicationStatus = exports.SocketEvents = exports.initializeAll = exports.removeTokenFromCookie = exports.getTokenFromCookie = exports.verifyToken = exports.signToken = exports.BCryptHashingHandler = void 0;
+exports.SECURITY = exports.env = exports.NotificationTypes = exports.GroupRoles = exports.PublicationStatus = exports.initializeAll = exports.removeTokenFromCookie = exports.getTokenFromCookie = exports.verifyToken = exports.signToken = exports.BCryptHashingHandler = void 0;
 var bcrypt_1 = require("./bcrypt");
 Object.defineProperty(exports, "BCryptHashingHandler", { enumerable: true, get: function () { return bcrypt_1.BCryptHashingHandler; } });
 var jwt_1 = require("./jwt");
@@ -11,7 +11,6 @@ Object.defineProperty(exports, "removeTokenFromCookie", { enumerable: true, get:
 var intialize_1 = require("./intialize");
 Object.defineProperty(exports, "initializeAll", { enumerable: true, get: function () { return intialize_1.initializeAll; } });
 var enumerations_1 = require("./enumerations");
-Object.defineProperty(exports, "SocketEvents", { enumerable: true, get: function () { return enumerations_1.SocketEvents; } });
 Object.defineProperty(exports, "PublicationStatus", { enumerable: true, get: function () { return enumerations_1.PublicationStatus; } });
 Object.defineProperty(exports, "GroupRoles", { enumerable: true, get: function () { return enumerations_1.GroupRoles; } });
 Object.defineProperty(exports, "NotificationTypes", { enumerable: true, get: function () { return enumerations_1.NotificationTypes; } });

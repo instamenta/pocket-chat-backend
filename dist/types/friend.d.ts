@@ -1,4 +1,4 @@
-import { FriendshipStatusUnion } from "./unions";
+import { FriendshipStatusUnion } from "./union";
 export interface FriendshipStruct {
     id: string;
     senderId: string;

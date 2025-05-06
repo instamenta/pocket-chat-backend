@@ -3,8 +3,9 @@ import { GroupRepository } from "../repositories";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
 import type { Request, Response } from "express";
-import type { GroupStruct, MemberPopulated } from "../types/groups";
-import type { PublicationStruct } from "../types/publications";
+import type { GroupStruct, MemberPopulated } from "../types/group";
+import type { PublicationStruct } from "../types/publication";
+import { PublicationStatus } from "../utilities";
 
 export class GroupController extends BaseController<GroupRepository> {
   public async createGroup(
@@ -244,22 +245,17 @@ export class GroupController extends BaseController<GroupRepository> {
     request: Request<
       object,
       { id: string },
-      {
-        description: string;
-        images: string;
-        publication_status: string;
-        groupId: string;
-      }
-    >,
+      Pick<PublicationStruct, "publisherId" | "description" | "images" | "publicationStatus" | "groupId">>,
     response: Response<{ id: string }>,
   ) {
     try {
+
       const data = Validate.createPublication.parse({
         publisherId: Validate.uuid.parse(request.user.id),
         description: request.body.description,
         images: request.body.images,
-        publicationStatus: request.body.publication_status,
-      });
+        publicationStatus: request.body.publicationStatus as PublicationStatus,
+      }) as Pick<PublicationStruct, "publisherId" | "description" | "images" | "publicationStatus" | "groupId">
 
       const groupId = Validate.uuid.parse(request.body.groupId);
 

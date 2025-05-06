@@ -6,8 +6,9 @@ import { NotificationTypes } from "../utilities/enumerations";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
+import { ShortStruct } from "../types/short";
+import { CommentStructure, PopulatedCommentStructure } from "../types/comment";
 
 export class ShortController extends BaseController<ShortRepository> {
   public constructor(
@@ -49,7 +50,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async listShorts(
     request: Request,
-    response: Response<T.Short.ShortStruct[]>,
+    response: Response<ShortStruct[]>,
   ) {
     this.log.log("listShorts");
     try {
@@ -65,7 +66,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async listShortsByUsername(
     request: Request<{ id: string }>,
-    response: Response<T.Short.ShortStruct[]>,
+    response: Response<ShortStruct[]>,
   ) {
     this.log.log("listShortsByUsername");
     try {
@@ -81,7 +82,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async getShortById(
     request: Request<{ shortId: string }>,
-    response: Response<T.Short.ShortStruct>,
+    response: Response<ShortStruct>,
   ) {
     this.log.log("getShortById");
     try {
@@ -139,7 +140,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async listCommentsByShort(
     request: Request<{ shortId: string }>,
-    response: Response<T.Comment.PopulatedCommentStructure[]>,
+    response: Response<PopulatedCommentStructure[]>,
   ) {
     this.log.log("listCommentsByShort");
     try {
@@ -159,7 +160,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async createShortComment(
     request: Request<{ shortId: string }, object, { content: string }>,
-    response: Response<T.Comment.CommentStructure>,
+    response: Response<CommentStructure>,
   ) {
     this.log.log("createShortComment");
     try {
@@ -241,11 +242,7 @@ export class ShortController extends BaseController<ShortRepository> {
 
   public async getCommentById(
     request: Request<{ commentId: string }>,
-    response: Response<
-      T.Comment.CommentStructure & {
-        likes_count: number;
-      }
-    >,
+    response: Response<CommentStructure & { likes_count: number }>,
   ) {
     this.log.log("getCommentById");
     try {

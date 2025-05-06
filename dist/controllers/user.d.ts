@@ -4,15 +4,15 @@ import { HashingHandler } from "../utilities/bcrypt";
 import { z } from "zod";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
+import { UserSchemaStruct } from "../types/user";
 export declare class UserController extends BaseController<UserRepository> {
     private readonly hashingHandler;
     constructor(repository: UserRepository, logger: VLogger, hashingHandler: HashingHandler);
     listUsers(request: Request<object, object, object, {
         skip?: string;
         number?: string;
-    }>, response: Response<Omit<T.User.UserSchemaStruct, "updatedAt">[]>): Promise<void>;
+    }>, response: Response<Omit<UserSchemaStruct, "updatedAt">[]>): Promise<void>;
     signUp(request: Request<object, z.infer<typeof Validate.createUser>>, response: Response<{
         token: string;
         id: string;
@@ -30,34 +30,34 @@ export declare class UserController extends BaseController<UserRepository> {
         token: string;
         id: string;
     }, Record<string, any>> | undefined>;
-    authUser(request: Request, response: Response<T.User.UserSchemaStruct>): Promise<Response<T.User.UserSchemaStruct, Record<string, any>> | undefined>;
+    authUser(request: Request, response: Response<UserSchemaStruct>): Promise<Response<UserSchemaStruct, Record<string, any>> | undefined>;
     getUserById(request: Request<{
         id: string;
-    }>, response: Response<T.User.UserSchemaStruct>): Promise<Response<T.User.UserSchemaStruct, Record<string, any>> | undefined>;
+    }>, response: Response<UserSchemaStruct>): Promise<Response<UserSchemaStruct, Record<string, any>> | undefined>;
     getUserByUsername(request: Request<{
         username: string;
-    }>, response: Response<T.User.UserSchemaStruct>): Promise<Response<T.User.UserSchemaStruct, Record<string, any>> | undefined>;
+    }>, response: Response<UserSchemaStruct>): Promise<Response<UserSchemaStruct, Record<string, any>> | undefined>;
     updateBio(request: Request<object, object, {
         bio: string;
     }>, response: Response<{
         token: string;
         id: string;
-        userData: T.User.UserSchemaStruct;
+        userData: UserSchemaStruct;
     }>): Promise<Response<{
         token: string;
         id: string;
-        userData: T.User.UserSchemaStruct;
+        userData: UserSchemaStruct;
     }, Record<string, any>> | undefined>;
     updateProfilePicture(request: Request<object, object, {
         picture_url: string;
     }>, response: Response<{
         token: string;
         id: string;
-        userData: T.User.UserSchemaStruct;
+        userData: UserSchemaStruct;
     }>): Promise<Response<{
         token: string;
         id: string;
-        userData: T.User.UserSchemaStruct;
+        userData: UserSchemaStruct;
     }, Record<string, any>> | undefined>;
     updateProfilePublicInformation(request: Request<object, object, {
         firstName: string;
@@ -67,11 +67,11 @@ export declare class UserController extends BaseController<UserRepository> {
     }>, response: Response<{
         token: string;
         id: string;
-        userData: T.User.UserSchemaStruct;
+        userData: UserSchemaStruct;
     }>): Promise<Response<{
         token: string;
         id: string;
-        userData: T.User.UserSchemaStruct;
+        userData: UserSchemaStruct;
     }, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=user.d.ts.map

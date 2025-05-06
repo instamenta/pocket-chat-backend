@@ -3,7 +3,7 @@ import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import type VLogger from "@instamenta/vlogger";
 import type { Request, Response } from "express";
-import type { CommentStructure, PopulatedCommentStructure } from "../types/comments";
+import type { CommentStructure, PopulatedCommentStructure } from "../types/comment";
 export declare class CommentController extends BaseController<CommentRepository> {
     private readonly notificator;
     constructor(repository: CommentRepository, logger: VLogger, notificator: Notificator);

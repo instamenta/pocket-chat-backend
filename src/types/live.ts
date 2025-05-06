@@ -1,4 +1,4 @@
-import { LiveStatesUnion } from "./unions";
+import { LiveStatesUnion } from "./union";
 
 export interface PopulatedLiveStruct {
   userId: string;

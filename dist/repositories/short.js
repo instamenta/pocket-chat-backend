@@ -114,16 +114,16 @@ class ShortRepository extends repository_base_1.BaseRepository {
                 const removeLikeQuery = "DELETE FROM short_likes WHERE short_id = $1 AND user_id = $2";
                 const decrementLikeCountQuery = "UPDATE shorts SET likes_count = likes_count - 1 WHERE id = $1";
                 await Promise.all([
-                    await this.database.query(removeLikeQuery, [shortId, userId]),
-                    await this.database.query(decrementLikeCountQuery, [shortId]),
+                    this.database.query(removeLikeQuery, [shortId, userId]),
+                    this.database.query(decrementLikeCountQuery, [shortId]),
                 ]);
             }
             else {
                 const addLikeQuery = "INSERT INTO short_likes (short_id, user_id) VALUES ($1, $2)";
                 const incrementLikeCountQuery = "UPDATE shorts SET likes_count = likes_count + 1 WHERE id = $1";
                 await Promise.all([
-                    await this.database.query(addLikeQuery, [shortId, userId]),
-                    await this.database.query(incrementLikeCountQuery, [shortId]),
+                    this.database.query(addLikeQuery, [shortId, userId]),
+                    this.database.query(incrementLikeCountQuery, [shortId]),
                 ]);
             }
             await this.database.query("COMMIT");

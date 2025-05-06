@@ -1,6 +1,6 @@
-import { NotificationTypes } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities";
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import type { NotificationStruct, PopulatedNotificationStruct } from "../types/notification";
 
 export class NotificationRepository extends BaseRepository {
   public async createNotification({
@@ -10,21 +10,20 @@ export class NotificationRepository extends BaseRepository {
     seen,
     content,
     referenceId = "",
-  }: Omit<T.Notification.NotificationStruct, "createdAt" | "id">) {
-    return this.database
-      .query<{ id: string }>(
+  }: Omit<NotificationStruct, "createdAt" | "id">) {
+    try {
+      const data = await this.database.query<{ id: string }>(
         `
                 INSERT INTO "notifications" (sender_id, recipient_id, type, seen, content, reference_id)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
 			`,
         [senderId, recipientId, type, seen, content, referenceId],
-      )
-      .then((data) => data.rows[0].id)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "createNotification"),
       );
+      return data.rows[0].id;
+    } catch (error) {
+      this.errorHandler(error, "createNotification");
+    }
   }
 
   public async listNotifications(
@@ -47,7 +46,7 @@ export class NotificationRepository extends BaseRepository {
                         u.last_name,
                         n.reference_id
                  FROM notifications n
-                          JOIN "users" u ON n.recipient_id = u.id
+                        JOIN "users" u ON n.recipient_id = u.id
                  WHERE n.recipient_id = $1
                  ORDER BY n.created_at DESC `;
         break;
@@ -67,45 +66,49 @@ export class NotificationRepository extends BaseRepository {
         break;
     }
 
-    return this.database
-      .query<T.Notification.PopulatedNotificationStruct>(query, [recipientId])
-      .then((data) => data.rows)
+    try {
+      const data = await this.database.query<PopulatedNotificationStruct>(
+        query,
+        [recipientId],
+      );
 
-      .catch((error: unknown) => this.errorHandler(error, "getNotifications"));
+      return data.rows;
+    } catch (error) {
+      this.errorHandler(error, "getNotifications");
+    }
   }
 
-  public async markNotificationAsSeen(id: string) {
-    return this.database
-      .query(
+  public async markNotificationAsSeen(id: string): Promise<number | null> {
+    try {
+      const data = await this.database.query<object>(
         `
                 UPDATE notifications
                 SET seen = true
                 WHERE id = $1
 			`,
         [id],
-      )
-      .then((data) => data.rowCount ?? null)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "markNotificationAsSeen"),
       );
+
+      return data.rowCount ?? null;
+    } catch (error) {
+      this.errorHandler(error, "markNotificationAsSeen");
+    }
   }
 
-  public async markAllNotificationsAsSeen(recipientId: string) {
-    return this.database
-      .query(
+  public async markAllNotificationsAsSeen(recipientId: string): Promise<number | null> {
+    try {
+      const data = await this.database.query<object>(
         `
                 UPDATE notifications
                 SET seen = true
                 WHERE recipient_id = $1
 			`,
         [recipientId],
-      )
-      .then((data) => data.rowCount ?? null)
-
-      .catch((error: unknown) =>
-        this.errorHandler(error, "markNotificationAsSeen"),
       );
+      return data.rowCount ?? null;
+    } catch (error) {
+      this.errorHandler(error, "markNotificationAsSeen");
+    }
   }
 
   public async getNotificationByReferenceId(referenceId: string) {
@@ -126,7 +129,7 @@ export class NotificationRepository extends BaseRepository {
 		`;
     try {
       const data =
-        await this.database.query<T.Notification.PopulatedNotificationStruct>(
+        await this.database.query<PopulatedNotificationStruct>(
           query,
           [referenceId],
         );
@@ -159,7 +162,7 @@ export class NotificationRepository extends BaseRepository {
                      AND n.type = $3`;
     try {
       const data =
-        await this.database.query<T.Notification.PopulatedNotificationStruct>(
+        await this.database.query<PopulatedNotificationStruct>(
           query,
           [senderId, recipientId, type],
         );
@@ -184,7 +187,7 @@ export class NotificationRepository extends BaseRepository {
                        sender_id  = $5
                    WHERE id = $1`;
     try {
-      await this.database.query(query, [id, content, seen, type, senderId]);
+      await this.database.query<object>(query, [id, content, seen, type, senderId]);
     } catch (error) {
       this.errorHandler(error, "getNotificationByReferenceId");
     }

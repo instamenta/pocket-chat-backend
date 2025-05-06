@@ -203,7 +203,7 @@ class GroupController extends controller_base_1.BaseController {
                 publisherId: Validate.uuid.parse(request.user.id),
                 description: request.body.description,
                 images: request.body.images,
-                publicationStatus: request.body.publication_status,
+                publicationStatus: request.body.publicationStatus,
             });
             const groupId = Validate.uuid.parse(request.body.groupId);
             const publicationId = await this.repository.createPublication({

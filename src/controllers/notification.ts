@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import statusCodes from "@instamenta/http-status-codes";
-import { NotificationRepository } from "../repositories/notification";
-import { NotificationTypes } from "../utilities/enumerations";
+import { NotificationRepository } from "../repositories";
+import { NotificationTypes } from "../utilities";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
+import { PopulatedNotificationStruct } from "../types/notification";
 
 export class NotificationController extends BaseController<NotificationRepository> {
   public createNotification(
@@ -34,7 +34,7 @@ export class NotificationController extends BaseController<NotificationRepositor
       object,
       { filter?: "all" | "seen" | "unseen" }
     >,
-    response: Response<T.Notification.PopulatedNotificationStruct[]>,
+    response: Response<PopulatedNotificationStruct[]>,
   ) {
     try {
       const notifications = await this.repository.listNotifications(

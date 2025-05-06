@@ -1,6 +1,6 @@
 import { BaseRepository } from "../base/repository.base";
 import type { QueryResult } from "pg";
-import type { ConversationsStruct, CreateMessageRequestStruct, MessageStruct } from "../types/messages";
+import type { ConversationsStruct, CreateMessageRequestStruct, MessageStruct } from "../types/message";
 
 export class MessageRepository extends BaseRepository {
   public async createMessage({
@@ -49,7 +49,7 @@ export class MessageRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "getMessagesByFriendshipId");
+      this.errorHandler(error, "getMessagesByFriendshipId");
     }
   }
 
@@ -73,7 +73,7 @@ export class MessageRepository extends BaseRepository {
       );
       return data.rows;
     } catch (error) {
-      return this.errorHandler(error, "getMessagesByUsers");
+      this.errorHandler(error, "getMessagesByUsers");
     }
   }
 
@@ -90,7 +90,7 @@ export class MessageRepository extends BaseRepository {
       );
       return data.rowCount ?? null;
     } catch (error) {
-      return this.errorHandler(error, "updateMessageStatus");
+      this.errorHandler(error, "updateMessageStatus");
     }
   }
 

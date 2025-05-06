@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StoryController = void 0;
 const http_status_codes_1 = __importDefault(require("@instamenta/http-status-codes"));
 const zod_1 = require("zod");
-const enumerations_1 = require("../utilities/enumerations");
+const utilities_1 = require("../utilities");
 const controller_base_1 = require("../base/controller.base");
 const Validate = __importStar(require("../validators"));
 class StoryController extends controller_base_1.BaseController {
@@ -105,7 +105,7 @@ class StoryController extends controller_base_1.BaseController {
             response.status(http_status_codes_1.default.OK).end();
             await this.notificator
                 .handleNotification({
-                type: enumerations_1.NotificationTypes.LIKE_STORY,
+                type: utilities_1.NotificationTypes.LIKE_STORY,
                 referenceId: "",
                 recipientId: "",
                 senderId: userId,
@@ -140,7 +140,7 @@ class StoryController extends controller_base_1.BaseController {
             response.status(http_status_codes_1.default.CREATED).json(comment);
             await this.notificator
                 .handleNotification({
-                type: enumerations_1.NotificationTypes.COMMENT_STORY,
+                type: utilities_1.NotificationTypes.COMMENT_STORY,
                 referenceId: storyId,
                 recipientId: "",
                 senderId: userId,
@@ -173,7 +173,7 @@ class StoryController extends controller_base_1.BaseController {
             await this.repository.likeStoryComment(commentId, userId);
             await this.notificator
                 .handleNotification({
-                type: enumerations_1.NotificationTypes.LIKE_STORY_COMMENT,
+                type: utilities_1.NotificationTypes.LIKE_STORY_COMMENT,
                 referenceId: commentId,
                 recipientId: "",
                 senderId: userId,

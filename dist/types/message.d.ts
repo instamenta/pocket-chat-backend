@@ -1,72 +1,27 @@
 import { z } from "zod";
-import { SocketEvents } from "../utilities/enumerations";
 import * as Validate from "../validators";
-import { MessageStatus } from "./unions";
-export type Create = z.infer<typeof Validate.createMessage>;
-export interface Message {
+import { MessageStatusUnion } from "./union";
+export type CreateMessageRequestStruct = z.infer<typeof Validate.createMessage>;
+export interface MessageStruct {
     id: string;
     edited: boolean;
     content: string;
-    sender_id: string;
-    created_at: string;
-    updated_at: string;
-    recipient_id: string;
-    friendship_id: string;
+    senderId: string;
+    createdAt: string;
+    updatedAt: string;
+    recipientId: string;
+    friendshipId: string;
     images?: string[];
     files?: string[];
-    message_status: MessageStatus;
+    messageStatus: MessageStatusUnion;
 }
-export interface MessageRequest {
-    date?: string;
-    sender: string;
-    content: string;
-    recipient: string;
-    images?: string[];
-    files?: string[];
-    type: SocketEvents;
-}
-export interface JoinLiveRequest {
-    type: SocketEvents;
-    liveId: string;
-}
-export interface LeaveLiveRequest {
-    type: SocketEvents;
-    liveId: string;
-}
-export interface LiveMessageRequest {
-    sender: string;
-    content: string;
-    liveId: string;
-    type: SocketEvents;
-}
-export interface VideoCallRequest {
-    room: string;
-    sender: string;
-    recipient: string;
-    type: SocketEvents;
-}
-export interface MessageResponse {
-    type: string;
-    date: string;
-    sender: string;
-    content: string;
-    recipient: string;
+export interface ConversationsStruct {
+    createdAt: string;
+    firstName: string;
+    lastMessage: string;
+    lastName: string;
     messageId: string;
-    friendship: string;
-    images?: string[];
-    files?: string[];
-}
-export interface JoinLiveResponse {
-    type: SocketEvents;
-    hostPeerId: string;
-}
-export interface Conversations {
-    created_at: string;
-    first_name: string;
-    last_message: string;
-    last_name: string;
-    message_id: string;
-    user_id: string;
+    userId: string;
     username: string;
     picture: string;
 }

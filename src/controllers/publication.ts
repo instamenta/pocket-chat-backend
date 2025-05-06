@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { PublicationRepository } from "../repositories";
 import statusCodes from "@instamenta/http-status-codes";
-import { NotificationTypes } from "../utilities/enumerations";
+import { NotificationTypes } from "../utilities";
 import { Notificator } from "../utilities/notificator";
 import { BaseController } from "../base/controller.base";
 import * as Validate from "../validators";
-import * as T from "../types";
 import VLogger from "@instamenta/vlogger";
+import { PublicationStruct } from "../types/publication";
 
 export class PublicationController extends BaseController<PublicationRepository> {
   public constructor(
@@ -19,7 +19,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async listPublications(
     _request: Request,
-    response: Response<T.Publication.PublicationStruct[]>,
+    response: Response<PublicationStruct[]>,
   ) {
     try {
       const publications = await this.repository.listPublications();
@@ -32,7 +32,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async getPublicationById(
     request: Request<{ id: string }>,
-    response: Response<T.Publication.PublicationStruct>,
+    response: Response<PublicationStruct>,
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
@@ -51,7 +51,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async getPublicationsByUserId(
     request: Request<{ id: string }>,
-    response: Response<T.Publication.PublicationStruct[]>,
+    response: Response<PublicationStruct[]>,
   ) {
     try {
       const id = Validate.uuid.parse(request.params.id);
@@ -81,7 +81,7 @@ export class PublicationController extends BaseController<PublicationRepository>
 
   public async getRecommendations(
     request: Request,
-    response: Response<T.Publication.PublicationStruct[]>,
+    response: Response<PublicationStruct[]>,
   ) {
     try {
       const userId = Validate.uuid.parse(request.user.id);

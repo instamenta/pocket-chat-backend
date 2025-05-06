@@ -1,6 +1,6 @@
 import { NotificationRepository, PublicationRepository, CommentRepository, ShortRepository, StoryRepository } from "../repositories";
 import VLogger from "@instamenta/vlogger";
-import { NotificationData } from "../types/notifications";
+import { NotificationData } from "../types/notification";
 export declare class Notificator {
     #private;
     private readonly repository;

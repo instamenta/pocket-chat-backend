@@ -48,17 +48,17 @@ export declare const createMessage: z.ZodObject<{
     files: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     content: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    sender: string;
-    recipient: string;
-    friendship: string;
+    content: string;
     images: string[];
-    files: string[];
-    content: string;
-}, {
     sender: string;
     recipient: string;
     friendship: string;
+    files: string[];
+}, {
     content: string;
+    sender: string;
+    recipient: string;
+    friendship: string;
     images?: string[] | undefined;
     files?: string[] | undefined;
 }>;
@@ -72,17 +72,17 @@ export declare const message: z.ZodObject<{
     files: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
     type: string;
+    content: string;
+    images: string[];
     sender: string;
     recipient: string;
-    images: string[];
     files: string[];
-    content: string;
     date: string;
 }, {
     type: string;
+    content: string;
     sender: string;
     recipient: string;
-    content: string;
     images?: string[] | undefined;
     files?: string[] | undefined;
     date?: string | undefined;
@@ -94,13 +94,13 @@ export declare const liveMessage: z.ZodObject<{
     content: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     type: string;
-    sender: string;
     content: string;
+    sender: string;
     liveId: string;
 }, {
     type: string;
-    sender: string;
     content: string;
+    sender: string;
     liveId: string;
 }>;
 export declare const videoCallInvitationRequest: z.ZodObject<{
@@ -128,14 +128,14 @@ export declare const createNotification: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     type: string;
     seen: boolean;
+    content: string;
     sender: string;
     recipient: string;
-    content: string;
 }, {
     type: string;
+    content: string;
     sender: string;
     recipient: string;
-    content: string;
     seen?: boolean | undefined;
 }>;
 export declare const updateProfilePublicInformation: z.ZodObject<{
@@ -161,13 +161,13 @@ export declare const createPublication: z.ZodObject<{
     images: z.ZodArray<z.ZodString, "many">;
     publicationStatus: z.ZodEnum<["draft", "published"]>;
 }, "strip", z.ZodTypeAny, {
-    images: string[];
     publisherId: string;
     description: string;
+    images: string[];
     publicationStatus: "draft" | "published";
 }, {
-    images: string[];
     publisherId: string;
+    images: string[];
     publicationStatus: "draft" | "published";
     description?: string | undefined;
 }>;
@@ -176,12 +176,12 @@ export declare const updatePublication: z.ZodObject<{
     images: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     publicationStatus: z.ZodOptional<z.ZodEnum<["draft", "published"]>>;
 }, "strip", z.ZodTypeAny, {
-    images?: string[] | undefined;
     content?: string | undefined;
+    images?: string[] | undefined;
     publicationStatus?: "draft" | "published" | undefined;
 }, {
-    images?: string[] | undefined;
     content?: string | undefined;
+    images?: string[] | undefined;
     publicationStatus?: "draft" | "published" | undefined;
 }>;
 export declare const createStory: z.ZodObject<{

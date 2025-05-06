@@ -4,15 +4,17 @@ exports.StoryRepository = void 0;
 const repository_base_1 = require("../base/repository.base");
 class StoryRepository extends repository_base_1.BaseRepository {
     async createStory({ userId, imageUrl, }) {
-        return this.database
-            .query(`
-
+        try {
+            const data = await this.database.query(`
                 INSERT INTO "stories" (user_id, image_url)
                 VALUES ($1, $2)
                 RETURNING id
-			`, [userId, imageUrl])
-            .then((data) => data.rows[0].id)
-            .catch((error) => this.errorHandler(error, "createNotification"));
+			`, [userId, imageUrl]);
+            return data.rows[0].id;
+        }
+        catch (error) {
+            this.errorHandler(error, "createNotification");
+        }
     }
     async listStories(userId) {
         const query = `SELECT u.id      AS user_id,
@@ -127,16 +129,16 @@ class StoryRepository extends repository_base_1.BaseRepository {
                 const removeLikeQuery = "DELETE FROM story_likes WHERE story_id = $1 AND user_id = $2";
                 const decrementLikeCountQuery = "UPDATE stories SET likes_count = likes_count - 1 WHERE id = $1";
                 await Promise.all([
-                    await this.database.query(removeLikeQuery, [storyId, userId]),
-                    await this.database.query(decrementLikeCountQuery, [storyId]),
+                    this.database.query(removeLikeQuery, [storyId, userId]),
+                    this.database.query(decrementLikeCountQuery, [storyId]),
                 ]);
             }
             else {
                 const addLikeQuery = "INSERT INTO story_likes (story_id, user_id) VALUES ($1, $2)";
                 const incrementLikeCountQuery = "UPDATE stories SET likes_count = likes_count + 1 WHERE id = $1";
                 await Promise.all([
-                    await this.database.query(addLikeQuery, [storyId, userId]),
-                    await this.database.query(incrementLikeCountQuery, [storyId]),
+                    this.database.query(addLikeQuery, [storyId, userId]),
+                    this.database.query(incrementLikeCountQuery, [storyId]),
                 ]);
             }
             await this.database.query("COMMIT");
@@ -214,11 +216,13 @@ class StoryRepository extends repository_base_1.BaseRepository {
                          WHERE id = $1
                            AND user_id = $2`;
         try {
-            const story = await this.database.query(selectQuery, [commentId]);
+            const story = await this.database.query(selectQuery, [
+                commentId,
+            ]);
             if (!story.rowCount) {
                 throw new Error(`Failed to get story! Comment id ${commentId}`);
             }
-            await this.database.query(updateQuery, [story.rows[0].story_id]);
+            await this.database.query(updateQuery, [story.rows[0].storyId]);
             const result = await this.database.query(deleteQuery, [
                 commentId,
                 userId,

@@ -1,12 +1,13 @@
 import { BaseRepository } from "../base/repository.base";
-import * as T from "../types";
+import { ShortStruct } from "../types/short";
+import { CommentStructure, PopulatedCommentStructure } from "../types/comment";
 
 export class ShortRepository extends BaseRepository {
   public async createShort(
     userId: string,
     videoUrl: string,
     description: string,
-  ) {
+  ): Promise<string> {
     const query = `INSERT INTO "shorts" (user_id, video_url, description)
                    VALUES ($1, $2, $3)
                    RETURNING id`;
@@ -42,7 +43,7 @@ export class ShortRepository extends BaseRepository {
                    ORDER BY s.created_at DESC`;
     // --                    WHERE s.user_id != $1
     try {
-      const result = await this.database.query<T.Short.ShortStruct>(query, [
+      const result = await this.database.query<ShortStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -71,7 +72,7 @@ export class ShortRepository extends BaseRepository {
                    WHERE s.user_id = $1
                    ORDER BY s.created_at DESC`;
     try {
-      const result = await this.database.query<T.Short.ShortStruct>(query, [
+      const result = await this.database.query<ShortStruct>(query, [
         userId,
       ]);
       return result.rows;
@@ -97,7 +98,7 @@ export class ShortRepository extends BaseRepository {
                    WHERE s.id = $1
                    LIMIT 1`;
     try {
-      const result = await this.database.query<T.Short.ShortStruct>(query, [
+      const result = await this.database.query<ShortStruct>(query, [
         id,
       ]);
       return result.rowCount ? result.rows[0] : null;
@@ -115,7 +116,7 @@ export class ShortRepository extends BaseRepository {
         userId,
       ]);
 
-      await this.database.query("BEGIN");
+      await this.database.query<object>("BEGIN");
 
       if (likeExistsResult.rows.length > 0) {
         const removeLikeQuery =
@@ -124,8 +125,8 @@ export class ShortRepository extends BaseRepository {
           "UPDATE shorts SET likes_count = likes_count - 1 WHERE id = $1";
 
         await Promise.all([
-          await this.database.query(removeLikeQuery, [shortId, userId]),
-          await this.database.query(decrementLikeCountQuery, [shortId]),
+          this.database.query<object>(removeLikeQuery, [shortId, userId]),
+          this.database.query<object>(decrementLikeCountQuery, [shortId]),
         ]);
       } else {
         const addLikeQuery =
@@ -134,8 +135,8 @@ export class ShortRepository extends BaseRepository {
           "UPDATE shorts SET likes_count = likes_count + 1 WHERE id = $1";
 
         await Promise.all([
-          await this.database.query(addLikeQuery, [shortId, userId]),
-          await this.database.query(incrementLikeCountQuery, [shortId]),
+          this.database.query<object>(addLikeQuery, [shortId, userId]),
+          this.database.query<object>(incrementLikeCountQuery, [shortId]),
         ]);
       }
 
@@ -171,7 +172,7 @@ export class ShortRepository extends BaseRepository {
 		`;
     try {
       const result =
-        await this.database.query<T.Comment.PopulatedCommentStructure>(query, [
+        await this.database.query<PopulatedCommentStructure>(query, [
           shortId,
           userId,
         ]);
@@ -185,7 +186,7 @@ export class ShortRepository extends BaseRepository {
     shortId: string,
     userId: string,
     content: string,
-  ): Promise<T.Comment.CommentStructure> {
+  ): Promise<CommentStructure> {
     const insertQuery = `
         INSERT INTO short_comments (content, short_id, user_id)
         VALUES ($1, $2, $3)
@@ -198,7 +199,7 @@ export class ShortRepository extends BaseRepository {
 
     try {
       const insertResult =
-        await this.database.query<T.Comment.CommentStructure>(insertQuery, [
+        await this.database.query<CommentStructure>(insertQuery, [
           content,
           shortId,
           userId,
@@ -241,7 +242,7 @@ export class ShortRepository extends BaseRepository {
 
       await this.database.query(updateQuery, [short.rows[0].short_id]);
 
-      const result = await this.database.query(deleteQuery, [
+      const result = await this.database.query<object>(deleteQuery, [
         commentId,
         userId,
       ]);
@@ -287,9 +288,11 @@ export class ShortRepository extends BaseRepository {
         GROUP BY c.id;
 		`;
     try {
-      const result = await this.database.query<
-        T.Comment.CommentStructure & { likes_count: number }
-      >(query, [id]);
+      const result = await this.database.query<CommentStructure & { likes_count: number }>(
+        query,
+        [id],
+      );
+
       return result.rowCount ? result.rows[0] : null;
     } catch (error) {
       this.errorHandler(error, "getCommentById");

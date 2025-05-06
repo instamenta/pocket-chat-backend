@@ -1,6 +1,6 @@
 import { BaseRepository } from "../base/repository.base";
 import { PopulatedLiveMessageStruct, PopulatedLiveStruct } from "../types/live";
-import { LiveStatesUnion } from "../types/unions";
+import { LiveStatesUnion } from "../types/union";
 
 export class LiveRepository extends BaseRepository {
   public async createLive(userId: string): Promise<string> {

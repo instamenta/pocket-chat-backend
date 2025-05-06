@@ -1,4 +1,4 @@
-import { StoryVisibilityUnion } from "./unions";
+import { StoryVisibilityUnion } from "./union";
 
 export interface StoryStruct {
   id: string;

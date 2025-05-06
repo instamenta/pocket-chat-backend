@@ -2,7 +2,7 @@ import { BaseRepository } from "../base/repository.base";
 import type {
   CommentStructure,
   PopulatedCommentStructure,
-} from "../types/comments";
+} from "../types/comment";
 
 export class CommentRepository extends BaseRepository {
   public async listCommentsByPublication(
